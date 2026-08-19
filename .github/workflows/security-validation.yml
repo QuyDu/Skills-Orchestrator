@@ -39,7 +39,7 @@ jobs:
       - name: Record successful matrix evidence
         run: node scripts/ci-evidence.mjs record --os "${{ runner.os }}" --node "${{ matrix.node }}" --commit "${{ github.sha }}" --output "reports/ci-runs/${{ runner.os }}-${{ matrix.node }}.json"
       - name: Upload matrix evidence
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ci-${{ runner.os }}-${{ matrix.node }}
           path: reports/ci-runs/*.json
@@ -70,7 +70,7 @@ jobs:
       - name: Aggregate evidence
         run: node scripts/ci-evidence.mjs aggregate --input reports/ci-download --output reports/cross-platform-ci-evidence.json --commit "${{ github.sha }}"
       - name: Upload release evidence
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: cross-platform-ci-evidence
           path: reports/cross-platform-ci-evidence.json
