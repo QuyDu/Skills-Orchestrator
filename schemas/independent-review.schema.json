@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skills-orchestrator.dev/schemas/independent-review/1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "algorithm", "status", "reviewer", "reviewedSha256", "approvedAt", "scope", "findings", "reviewerPublicKeyPem", "signature"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "algorithm": { "const": "RSA-SHA256" },
+    "status": { "enum": ["approved", "rejected"] },
+    "reviewer": { "type": "string", "minLength": 1 },
+    "reviewedSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "approvedAt": { "type": "string", "format": "date-time" },
+    "scope": {
+      "type": "array",
+      "uniqueItems": true,
+      "allOf": [
+        { "contains": { "const": "source" } },
+        { "contains": { "const": "security-scan" } },
+        { "contains": { "const": "codeql" } },
+        { "contains": { "const": "threat-model" } },
+        { "contains": { "const": "recovery" } },
+        { "contains": { "const": "package-installation" } }
+      ],
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "findings": { "type": "array", "maxItems": 0, "items": { "type": "string" } },
+    "reviewerPublicKeyPem": { "type": "string", "minLength": 1 },
+    "signature": { "type": "string", "minLength": 1, "contentEncoding": "base64" }
+  }
+}

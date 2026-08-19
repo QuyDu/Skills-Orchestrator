@@ -1,0 +1,41 @@
+{
+  // Model Context Protocol servers for this project.
+  // VS Code reads this file as JSONC, so comments are supported.
+  //
+  // The two servers below are HTTP endpoints. They require no local package
+  // installation and work in environments where the public npm registry is blocked.
+  "servers": {
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/"
+    },
+    "microsoft-learn": {
+      "type": "http",
+      "url": "https://learn.microsoft.com/api/mcp"
+    }
+  }
+
+  // Optional stdio servers.
+  //
+  // These download and execute packages from the public npm registry every time
+  // they start. They are disabled by default because this project is designed to
+  // run without public registry access, and because unpinned package execution is
+  // not permitted by the security standards in .github/instructions/security.instructions.md.
+  //
+  // To enable one, move it into "servers" above and replace PINNED_VERSION with an
+  // exact version you have reviewed. Resolve the current version with:
+  //   npm view @azure/mcp version
+  //   npm view @azure-devops/mcp version
+  // Never use a floating tag. Pin the exact version and update it deliberately.
+  //
+  // "azure": {
+  //   "type": "stdio",
+  //   "command": "npx",
+  //   "args": ["-y", "@azure/mcp@PINNED_VERSION", "server", "start"]
+  // },
+  // "azure-devops": {
+  //   "type": "stdio",
+  //   "command": "npx",
+  //   "args": ["-y", "@azure-devops/mcp@PINNED_VERSION", "YOUR_ADO_ORGANIZATION"]
+  // }
+}

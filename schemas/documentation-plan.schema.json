@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skills-orchestrator.dev/schemas/documentation-plan/1.0.0",
+  "title": "Documentation Plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "generatedAt", "status", "documents", "contradictions", "limitations"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "status": { "enum": ["planned", "applied", "blocked"] },
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "kind", "audience", "action", "verifiedClaims", "unverifiedClaims"],
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "kind": { "enum": ["readme", "decision-record", "deployment-guide", "operations-runbook", "architecture-overview", "executive-summary"] },
+          "audience": { "enum": ["contributor", "operator", "security-reviewer", "executive"] },
+          "action": { "enum": ["create", "update", "unchanged", "blocked"] },
+          "reason": { "type": ["string", "null"] },
+          "verifiedClaims": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+          "unverifiedClaims": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+        }
+      }
+    },
+    "contradictions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["document", "authoritativeArtifact", "detail"],
+        "properties": {
+          "document": { "type": "string", "minLength": 1 },
+          "authoritativeArtifact": { "type": "string", "minLength": 1 },
+          "detail": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "limitations": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "blocked" } }, "required": ["status"] },
+      "then": { "properties": { "limitations": { "minItems": 1 } } }
+    }
+  ]
+}

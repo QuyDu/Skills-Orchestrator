@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skills-orchestrator.dev/schemas/deployment-review/1.0.0",
+  "title": "Deployment Review",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "reviewId", "generatedAt", "candidate", "decision", "gates", "verification", "rollback", "limitations"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "reviewId": { "type": "string", "pattern": "^DEP-[0-9]{4,}$" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["release", "targetEnvironment", "carriesProductionData", "blastRadius"],
+      "properties": {
+        "release": { "type": "string", "minLength": 1 },
+        "targetEnvironment": { "type": "string", "minLength": 1 },
+        "carriesProductionData": { "type": "boolean" },
+        "blastRadius": { "type": "string", "minLength": 1 }
+      }
+    },
+    "decision": { "enum": ["ready", "conditional", "blocked"] },
+    "gates": {
+      "type": "array",
+      "minItems": 7,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["gate", "state", "evidence"],
+        "properties": {
+          "gate": {
+            "enum": [
+              "build-reproducibility",
+              "configuration-completeness",
+              "environment-parity",
+              "security-findings-closed",
+              "architecture-findings-closed",
+              "data-safety",
+              "observability"
+            ]
+          },
+          "state": { "enum": ["pass", "fail", "not-applicable"] },
+          "evidence": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+          "acceptedBy": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "verification": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["signal", "expected"],
+        "properties": {
+          "signal": { "type": "string", "minLength": 1 },
+          "expected": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "rollback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["route", "triggerConditions", "estimatedDuration", "irreversibleSteps"],
+      "properties": {
+        "route": { "type": "string", "minLength": 1 },
+        "triggerConditions": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "estimatedDuration": { "type": "string", "minLength": 1 },
+        "irreversibleSteps": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "limitations": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "decision": { "const": "ready" } }, "required": ["decision"] },
+      "then": {
+        "properties": {
+          "gates": { "items": { "properties": { "state": { "not": { "const": "fail" } } } } }
+        }
+      }
+    }
+  ]
+}

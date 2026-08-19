@@ -1,0 +1,21 @@
+frameworkVersion: 9.0.0
+runtimeVersion: 1.0.0
+profile: core
+paths:
+  skills: .github/skills
+  reports: reports
+  schemas: schemas
+runtime:
+  eventStream: reports/execution-log.jsonl
+  stateSnapshot: reports/current-execution-state.json
+  appendOnly: true
+policy:
+  mode: enforce
+  defaultDecision: require-approval
+scheduler:
+  maxConcurrentWorkflows: 1
+  fairness: fifo
+inventory:
+  includeProjectSkills: true
+  includeReports: true
+  includeAddIns: true

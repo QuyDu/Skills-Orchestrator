@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skills-orchestrator.dev/schemas/release-manifest/1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "product", "distribution", "publicDistributionAllowed", "requiredArtifacts", "requireSignature", "requireIndependentReview", "requiredPlatforms", "requiredNodeMajors", "releaseStatus", "blockers"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "product": { "const": "project-skills-orchestrator" },
+    "distribution": { "const": "private-internal-package" },
+    "publicDistributionAllowed": { "const": false },
+    "requiredArtifacts": { "type": "array", "minItems": 5, "uniqueItems": true, "items": { "enum": ["standalone", "private-package", "checksums", "sbom", "provenance"] } },
+    "requireSignature": { "const": true },
+    "requireIndependentReview": { "const": true },
+    "requiredPlatforms": { "type": "array", "minItems": 3, "maxItems": 3, "uniqueItems": true, "items": { "enum": ["windows", "linux", "macos"] } },
+    "requiredNodeMajors": { "type": "array", "minItems": 3, "maxItems": 3, "uniqueItems": true, "items": { "enum": [22, 24, 26] } },
+    "releaseStatus": { "enum": ["blocked", "production-ready"] },
+    "blockers": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+  }
+}

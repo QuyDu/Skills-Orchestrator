@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://project-skills.dev/schemas/workflow-plan/1.0.0",
+  "title": "Workflow Plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "workflowId", "runId", "intent", "status", "createdAt", "steps"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "workflowId": { "type": "string", "minLength": 1 },
+    "runId": { "type": "string", "minLength": 1 },
+    "intent": { "type": "string", "minLength": 1 },
+    "status": { "const": "planned" },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "skill", "action", "status"],
+        "properties": {
+          "id": { "type": "string" },
+          "skill": { "type": "string" },
+          "action": { "type": "string" },
+          "status": { "enum": ["planned", "ready", "blocked", "completed", "failed", "skipped"] },
+          "inputs": { "type": "array", "items": { "type": "string" } },
+          "outputs": { "type": "array", "items": { "type": "string" } },
+          "requiresApproval": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}

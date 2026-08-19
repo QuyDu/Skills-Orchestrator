@@ -1,0 +1,251 @@
+{
+  "schemaVersion": "1.0.0",
+  "planId": "PLAN-2026-08-19-PSO-110",
+  "generatedAt": "2026-08-19T00:00:00.000Z",
+  "sourceReview": "reports/code-audit-review.json",
+  "prioritization": [
+    "prerequisite",
+    "security-severity",
+    "user-impact",
+    "exploitability",
+    "confidence",
+    "remediation-cost"
+  ],
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "Clear the release assurance blockers",
+      "itemIds": ["REM-0101"]
+    },
+    {
+      "id": "M2",
+      "title": "Make automated classification decisions visible and correctable",
+      "itemIds": ["REM-0102", "REM-0103"]
+    },
+    {
+      "id": "M3",
+      "title": "Extend pinning to generated pipelines and reduce maintenance cost",
+      "itemIds": ["REM-0104", "REM-0105"]
+    }
+  ],
+  "items": [
+    {
+      "id": "REM-0101",
+      "title": "Sign the release, obtain independent review, and publish cross-platform evidence",
+      "findingIds": ["AUD-0101"],
+      "securitySeverity": "medium",
+      "priority": 1,
+      "ownerRole": "Release owner",
+      "dependsOn": [],
+      "scope": "release/release-manifest.json, signing infrastructure, independent review evidence, and hosted CI evidence",
+      "implementationSteps": [
+        "Provision a trusted signing identity and record its public key fingerprint outside the repository.",
+        "Sign the release candidate and verify with npm run release:verify.",
+        "Commission an independent security review and record its signed result against the reviewed scope.",
+        "Run the cross-platform workflow on Windows, Linux, and macOS for Node 22, 24, and 26 and publish the aggregated evidence.",
+        "Clear each blocker in release/release-manifest.json only after its evidence artifact verifies."
+      ],
+      "bestPracticeReferences": [
+        {
+          "title": "Microsoft Security Development Lifecycle",
+          "publisher": "Microsoft",
+          "url": "https://www.microsoft.com/en-us/securityengineering/sdl",
+          "accessedAt": "2026-08-19",
+          "kind": "microsoft"
+        }
+      ],
+      "acceptanceCriteria": [
+        "npm run release:verify passes against a signed candidate.",
+        "reports/cross-platform-ci-evidence.json covers every required operating system and Node major.",
+        "release/release-manifest.json lists no remaining blockers.",
+        "SECURITY.md and README.md describe the achieved assurance rather than pending work."
+      ],
+      "verification": [
+        "Verify the signature with the externally pinned fingerprint.",
+        "Confirm the independent review record binds to the reviewed scope and findings.",
+        "Re-run npm run check and the release verification chain."
+      ],
+      "rollout": "Each blocker clears independently; no runtime change is required.",
+      "rollback": "Reinstate the blocker in the manifest; the verification tooling already fails closed.",
+      "requiresApproval": true,
+      "approvalReason": "Introduces signing key custody and authorizes external publication of release evidence.",
+      "residualRisk": "Signing keys require ongoing custody and rotation discipline.",
+      "parallelGroup": null
+    },
+    {
+      "id": "REM-0102",
+      "title": "Distinguish genuine coverage from shallow overlap in equivalence classification",
+      "findingIds": ["AUD-0102"],
+      "securitySeverity": "none",
+      "priority": 2,
+      "ownerRole": "Runtime engineer",
+      "dependsOn": [],
+      "scope": "pso.mjs equivalence classification, adoption plan output, and adoption tests",
+      "implementationSteps": [
+        "Add a coverage-depth signal such as relative content length or checklist-item count to the classifier.",
+        "Introduce an overlap classification that is reported but does not suppress installation.",
+        "Downgrade a match to overlap when the project's file is materially thinner than the framework template.",
+        "Print overlap and coverage separately in the adoption summary and record both in the plan.",
+        "Add fixtures for a thin existing instruction and a comprehensive one."
+      ],
+      "bestPracticeReferences": [
+        {
+          "title": "Customize AI responses in VS Code",
+          "publisher": "Microsoft",
+          "url": "https://code.visualstudio.com/docs/copilot/copilot-customization",
+          "accessedAt": "2026-08-19",
+          "kind": "microsoft"
+        }
+      ],
+      "acceptanceCriteria": [
+        "A single-line existing instruction produces an overlap report and the framework template is still installed.",
+        "A comprehensive existing instruction still suppresses the framework template.",
+        "Both classifications appear separately in the printed summary and the plan.",
+        "--force-templates continues to install regardless of classification."
+      ],
+      "verification": [
+        "Run the thin and comprehensive equivalence fixtures.",
+        "Confirm a rerun after adoption still reports zero changes.",
+        "Run npm run check."
+      ],
+      "rollout": "Ship the overlap classification and reporting before changing what is suppressed.",
+      "rollback": "Restore the current threshold; templates are only ever created when absent, so no existing project is affected.",
+      "requiresApproval": false,
+      "approvalReason": null,
+      "residualRisk": "Any depth heuristic can misjudge a concise but complete standard.",
+      "parallelGroup": "A"
+    },
+    {
+      "id": "REM-0103",
+      "title": "Report truncated stack scans and accept a declared stack on adopt",
+      "findingIds": ["AUD-0103"],
+      "securitySeverity": "none",
+      "priority": 3,
+      "ownerRole": "Runtime engineer",
+      "dependsOn": [],
+      "scope": "pso.mjs stack detection, adoption plan output, adopt command options, and adoption tests",
+      "implementationSteps": [
+        "Return whether the depth limit or entry cap was reached alongside the detected tags.",
+        "Record the truncation state in the adoption plan and print it in the summary.",
+        "Accept --stack on the adopt command and union it with detected tags.",
+        "Add a fixture that exceeds the entry cap and assert the truncation notice appears."
+      ],
+      "bestPracticeReferences": [
+        {
+          "title": "Node.js File system API",
+          "publisher": "OpenJS Foundation",
+          "url": "https://nodejs.org/api/fs.html",
+          "accessedAt": "2026-08-19",
+          "kind": "industry"
+        }
+      ],
+      "acceptanceCriteria": [
+        "A repository exceeding the cap reports a truncated scan in the plan and the printed summary.",
+        "A normal repository reports a complete scan.",
+        "A declared stack on adopt installs the corresponding instruction files regardless of detection."
+      ],
+      "verification": [
+        "Run the truncation fixture.",
+        "Adopt with an explicit --stack and confirm the declared instructions are installed.",
+        "Run npm run check."
+      ],
+      "rollout": "Additive reporting first, then the adopt-side override.",
+      "rollback": "Remove the notice and the option; detection behavior is unchanged.",
+      "requiresApproval": false,
+      "approvalReason": null,
+      "residualRisk": "Repositories that legitimately exceed the cap will see the notice on every run.",
+      "parallelGroup": "A"
+    },
+    {
+      "id": "REM-0104",
+      "title": "Pin setup actions and toolchain versions in generated pipelines",
+      "findingIds": ["AUD-0104"],
+      "securitySeverity": "none",
+      "priority": 4,
+      "ownerRole": "Security engineer",
+      "dependsOn": [],
+      "scope": "pso.mjs workflow generation, scripts/security-check.mjs, and adoption tests",
+      "implementationSteps": [
+        "Verify the current commit SHA of the official setup action for each supported stack.",
+        "Emit the pinned action together with an explicit toolchain version for each stack.",
+        "Extend the template pinning rule so generated workflow content is checked with the same standard.",
+        "Assert in tests that every generated workflow pins both the action and the toolchain version."
+      ],
+      "bestPracticeReferences": [
+        {
+          "title": "Security hardening for GitHub Actions",
+          "publisher": "GitHub",
+          "url": "https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions",
+          "accessedAt": "2026-08-19",
+          "kind": "vendor"
+        }
+      ],
+      "acceptanceCriteria": [
+        "Every generated workflow references only actions pinned to a full commit SHA.",
+        "Each supported stack pins an explicit toolchain version.",
+        "The pinning rule fails on a deliberately unpinned generated workflow."
+      ],
+      "verification": [
+        "Generate a project for each supported stack and assert pinning.",
+        "Run a generated pipeline for at least one non-Node stack and confirm it succeeds.",
+        "Run npm run check."
+      ],
+      "rollout": "Add one stack at a time as each SHA is verified; unverified stacks keep the current behavior.",
+      "rollback": "Fall back to the runner-provided invocation for the affected stack.",
+      "requiresApproval": false,
+      "approvalReason": null,
+      "residualRisk": "Pinned action SHAs require deliberate maintenance to receive upstream fixes.",
+      "parallelGroup": "B"
+    },
+    {
+      "id": "REM-0105",
+      "title": "Decompose the runtime and add a dependency-free hygiene gate",
+      "findingIds": ["AUD-0105"],
+      "securitySeverity": "none",
+      "priority": 5,
+      "ownerRole": "Framework maintainer",
+      "dependsOn": [],
+      "scope": "pso.mjs, a new internal module directory, package.json scripts, and the release file list",
+      "implementationSteps": [
+        "Split the runtime along existing seams: detection, template planning, transactions, verification, inventory, and the command-line interface.",
+        "Keep pso.mjs as the single executable entry point and update the shipped file list accordingly.",
+        "Add a hygiene gate that runs without third-party dependencies, or record a documented development-only exception to the zero-dependency rule.",
+        "Refactor in small steps, running npm run check after each."
+      ],
+      "bestPracticeReferences": [
+        {
+          "title": "Node.js Modules: ECMAScript modules",
+          "publisher": "OpenJS Foundation",
+          "url": "https://nodejs.org/api/esm.html",
+          "accessedAt": "2026-08-19",
+          "kind": "industry"
+        }
+      ],
+      "acceptanceCriteria": [
+        "Each module has a single stated responsibility.",
+        "pso.mjs remains directly executable and the packaged distribution still installs offline.",
+        "npm run check passes with no behavior change.",
+        "The hygiene gate fails on a deliberately introduced violation."
+      ],
+      "verification": [
+        "Run npm run check after each refactoring step.",
+        "Run the offline package installation test against the rebuilt candidate.",
+        "Confirm the hygiene gate detects a seeded violation."
+      ],
+      "rollout": "Incremental, one seam at a time, each step independently revertible.",
+      "rollback": "Revert the affected step; the entry point contract does not change.",
+      "requiresApproval": false,
+      "approvalReason": null,
+      "residualRisk": "A dependency-free hygiene gate is necessarily less capable than an established linter.",
+      "parallelGroup": "B"
+    }
+  ],
+  "dispositions": [],
+  "limitations": [
+    "Ordering reflects security severity and user impact; no calendar dates or effort estimates are included.",
+    "REM-0101 is the only item requiring approval and the only one that depends on organizational process rather than code.",
+    "Items sharing a parallel group have no ordering constraint between them and may proceed concurrently.",
+    "No finding from this audit blocks use of the 1.0.0 candidate for authorized internal work.",
+    "This plan does not execute any remediation work; each item requires its own implementation pass and verification run."
+  ]
+}

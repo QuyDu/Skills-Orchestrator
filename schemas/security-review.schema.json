@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skills-orchestrator.dev/schemas/security-review/1.0.0",
+  "title": "Security Review",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "reviewId", "generatedAt", "scope", "findings", "limitations"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "reviewId": { "type": "string", "pattern": "^SEC-[0-9]{4,}$" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "included", "excluded", "trustBoundaries"],
+      "properties": {
+        "kind": { "enum": ["diff", "component", "repository"] },
+        "included": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "excluded": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "trustBoundaries": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/finding" }
+    },
+    "limitations": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+  },
+  "$defs": {
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "path", "category", "classification", "severity", "confidence", "impact", "evidence", "resolution", "references"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^SECF-[0-9]{4,}$" },
+        "title": { "type": "string", "minLength": 1 },
+        "path": { "type": "string", "minLength": 1 },
+        "line": { "type": ["integer", "null"], "minimum": 1 },
+        "category": {
+          "enum": [
+            "secret-exposure",
+            "authentication",
+            "authorization",
+            "injection",
+            "deserialization",
+            "server-side-request-forgery",
+            "cryptography",
+            "network-exposure",
+            "identity-configuration",
+            "supply-chain",
+            "data-handling",
+            "logging-and-audit",
+            "prompt-injection"
+          ]
+        },
+        "classification": { "enum": ["proven-weakness", "hardening-opportunity"] },
+        "severity": { "enum": ["critical", "high", "medium", "low", "informational"] },
+        "confidence": { "enum": ["high", "medium", "low"] },
+        "impact": { "type": "string", "minLength": 1 },
+        "exploitPath": { "type": ["string", "null"] },
+        "evidence": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "resolution": { "type": "string", "minLength": 1 },
+        "requiresRotation": { "type": "boolean" },
+        "references": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "classification": { "const": "proven-weakness" } }, "required": ["classification"] },
+          "then": { "properties": { "exploitPath": { "type": "string", "minLength": 1 } }, "required": ["exploitPath"] }
+        }
+      ]
+    }
+  }
+}

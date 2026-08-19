@@ -1,0 +1,8 @@
+dist/
+node_modules/
+.skills-orchestrator/
+.pso-release.lock
+*.pem
+*.key
+*.pfx
+*.p12

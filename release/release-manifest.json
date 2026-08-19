@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.0.0",
+  "product": "project-skills-orchestrator",
+  "distribution": "private-internal-package",
+  "publicDistributionAllowed": false,
+  "requiredArtifacts": [
+    "standalone",
+    "checksums",
+    "private-package",
+    "sbom",
+    "provenance"
+  ],
+  "requireSignature": true,
+  "requireIndependentReview": true,
+  "requiredPlatforms": [
+    "windows",
+    "linux",
+    "macos"
+  ],
+  "requiredNodeMajors": [
+    22,
+    24,
+    26
+  ],
+  "releaseStatus": "blocked",
+  "blockers": [
+    "trusted-signing-identity",
+    "independent-security-review",
+    "cross-platform-ci-evidence"
+  ]
+}

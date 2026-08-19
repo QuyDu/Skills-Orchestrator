@@ -1,0 +1,155 @@
+{
+  "schemaVersion": "1.0.0",
+  "description": "Declares which project scaffold templates apply to a target repository. 'requires' lists stack tags; a template installs when any listed tag is detected or declared. 'always' templates install unconditionally. 'createOnly' templates are never added to an existing repository during adoption.",
+  "templates": [
+    {
+      "path": ".editorconfig",
+      "kind": "workspace-support",
+      "purpose": "editor formatting baseline",
+      "requires": "always"
+    },
+    {
+      "path": ".gitattributes",
+      "kind": "workspace-support",
+      "purpose": "line ending normalization",
+      "requires": "always"
+    },
+    {
+      "path": ".vscode/mcp.json",
+      "kind": "workspace-support",
+      "purpose": "model context protocol servers",
+      "requires": "always"
+    },
+    {
+      "path": "docs/adr/0000-template.md",
+      "kind": "documentation",
+      "purpose": "architecture decision record template",
+      "requires": "always"
+    },
+    {
+      "path": "docs/README.md",
+      "kind": "documentation",
+      "purpose": "documentation index",
+      "requires": "always",
+      "createOnly": true
+    },
+    {
+      "path": ".github/copilot-instructions.md",
+      "kind": "instructions",
+      "purpose": "repository instructions",
+      "requires": "always",
+      "createOnly": true
+    },
+    {
+      "path": ".github/instructions/clarification.instructions.md",
+      "kind": "scoped-instructions",
+      "purpose": "clarification protocol questions before work",
+      "applyTo": "**",
+      "requires": "always",
+      "mandatory": true
+    },
+    {
+      "path": ".github/instructions/security.instructions.md",
+      "kind": "scoped-instructions",
+      "purpose": "security secrets identity injection owasp",
+      "applyTo": "**",
+      "requires": "always"
+    },
+    {
+      "path": ".github/instructions/markdown.instructions.md",
+      "kind": "scoped-instructions",
+      "purpose": "markdown documentation writing",
+      "applyTo": "**/*.md",
+      "requires": "always"
+    },
+    {
+      "path": ".github/instructions/tests.instructions.md",
+      "kind": "scoped-instructions",
+      "purpose": "automated test authoring",
+      "applyTo": "**/tests/**,**/test/**,**/*.test.*,**/*.spec.*,**/*Tests.cs",
+      "requires": ["tests"]
+    },
+    {
+      "path": ".github/instructions/typescript.instructions.md",
+      "kind": "scoped-instructions",
+      "purpose": "typescript javascript authoring",
+      "applyTo": "**/*.ts,**/*.tsx,**/*.js,**/*.mjs,**/*.cjs",
+      "requires": ["typescript", "javascript"]
+    },
+    {
+      "path": ".github/instructions/csharp.instructions.md",
+      "kind": "scoped-instructions",
+      "purpose": "csharp dotnet authoring",
+      "applyTo": "**/*.cs",
+      "requires": ["csharp"]
+    },
+    {
+      "path": ".github/instructions/powershell.instructions.md",
+      "kind": "scoped-instructions",
+      "purpose": "powershell scripting",
+      "applyTo": "**/*.ps1,**/*.psm1,**/*.psd1",
+      "requires": ["powershell"]
+    },
+    {
+      "path": ".github/instructions/bicep.instructions.md",
+      "kind": "scoped-instructions",
+      "purpose": "bicep azure infrastructure as code",
+      "applyTo": "**/*.bicep,**/*.bicepparam",
+      "requires": ["bicep"]
+    },
+    {
+      "path": ".github/agents/azure-architect.agent.md",
+      "kind": "agent",
+      "purpose": "azure architecture design review well-architected",
+      "requires": ["bicep", "terraform", "csharp", "typescript", "javascript", "python"]
+    },
+    {
+      "path": ".github/agents/security-reviewer.agent.md",
+      "kind": "agent",
+      "purpose": "security review vulnerabilities owasp",
+      "requires": "always"
+    },
+    {
+      "path": ".github/agents/documentation-writer.agent.md",
+      "kind": "agent",
+      "purpose": "documentation readme adr runbook authoring",
+      "requires": "always"
+    },
+    {
+      "path": ".github/prompts/create-adr.prompt.md",
+      "kind": "prompt",
+      "purpose": "create architecture decision record",
+      "requires": "always"
+    },
+    {
+      "path": ".github/prompts/review-architecture.prompt.md",
+      "kind": "prompt",
+      "purpose": "review architecture well-architected pillars",
+      "requires": "always"
+    },
+    {
+      "path": ".github/prompts/security-review.prompt.md",
+      "kind": "prompt",
+      "purpose": "security review findings severity",
+      "requires": "always"
+    },
+    {
+      "path": ".github/prompts/executive-summary.prompt.md",
+      "kind": "prompt",
+      "purpose": "executive summary status risk decision",
+      "requires": "always"
+    },
+    {
+      "path": ".github/prompts/project-status.prompt.md",
+      "kind": "prompt",
+      "purpose": "project status blockers next action",
+      "requires": "always"
+    },
+    {
+      "path": ".github/prompts/new-component.prompt.md",
+      "kind": "prompt",
+      "purpose": "scaffold new component module service",
+      "requires": "always"
+    }
+  ]
+}

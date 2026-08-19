@@ -1,0 +1,49 @@
+profiles:
+  core:
+    required:
+      - project-skills-orchestrator
+      - clarify-the-ask
+      - workflow-planner
+      - policy-engine
+      - workflow-state-manager
+      - skill-inventory
+      - skill-dependency-manager
+      - skill-create
+      - framework-health-check
+      - project-setup
+      - development-environment-readiness
+      - systematic-debugging
+      - regression-test-development
+      - change-review
+      - ci-failure-triage
+      - dependency-maintenance
+      - audit-code
+      - audit-review-findings
+      - audit-plan-remediation
+      - security-review
+      - architecture-review
+      - documentation-builder
+      - deployment-review
+      - prepare-commit
+  durable:
+    extends: core
+    required:
+      - workflow-state-manager
+      - artifact-upgrade
+      - project-handoff
+      - workflow-recovery
+      - project-knowledge-capture
+      - project-memory
+      - audit-azure-environment
+  distributed:
+    extends: durable
+    required:
+      - workflow-scheduler
+      - multi-agent-coordinator
+      - workflow-telemetry
+  advanced:
+    extends: distributed
+    required:
+      - policy-engine
+      - workflow-simulator
+      - skill-registry

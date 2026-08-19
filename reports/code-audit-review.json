@@ -1,0 +1,237 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewId": "REVIEW-2026-08-19-PSO-110",
+  "generatedAt": "2026-08-19T00:00:00.000Z",
+  "sourceReport": "reports/code-audit-findings.json",
+  "sourceAuditId": "AUDIT-2026-08-19-PSO-110",
+  "summary": {
+    "total": 5,
+    "confirmed": 5,
+    "needsMoreEvidence": 0,
+    "disputed": 0,
+    "falsePositive": 0
+  },
+  "findings": [
+    {
+      "findingId": "AUD-0101",
+      "status": "confirmed",
+      "title": "Release blockers remain open for signing, independent review, and cross-platform evidence",
+      "category": "configuration",
+      "bugType": "Incomplete release assurance",
+      "securitySeverity": "medium",
+      "confidence": "high",
+      "context": "The gates are implemented correctly and are failing correctly. The build produces an unsigned candidate and refuses to relax the internal distribution policy. What is outstanding is external evidence that only the owning organization can supply.",
+      "riskExplanation": "Without a trusted signature a consumer cannot verify that the distribution they received is the one that was built. Without an independent review, the security posture rests entirely on the author's own assessment. Without cross-platform evidence, support for Linux and macOS on all three Node majors is asserted rather than demonstrated. None of this makes the software unsafe; it bounds how confidently the release may be described.",
+      "rootCause": "Signing identity, external review, and hosted CI evidence are organizational processes rather than code changes, and none has been completed for this build.",
+      "resolution": {
+        "recommended": "Obtain a trusted signing identity and sign the candidate, commission and record an independent security review, publish cross-platform CI evidence, and clear each manifest blocker only when its evidence artifact exists and verifies.",
+        "alternatives": [
+          "Ship as an explicitly unsigned internal preview, which is the current honest position.",
+          "Relax the manifest to declare the blockers satisfied, which would be false and is rejected."
+        ],
+        "tradeoffs": [
+          "Signing requires key custody and a rotation process.",
+          "Independent review has cost and lead time."
+        ],
+        "rollout": "Each blocker clears independently; no code change is required.",
+        "rollback": "Reinstate the blocker in the manifest; the verification tooling already fails closed."
+      },
+      "verification": [
+        "Run npm run release:verify against a signed candidate and confirm signature validation passes.",
+        "Confirm reports/cross-platform-ci-evidence.json covers Windows, Linux, and macOS on Node 22, 24, and 26.",
+        "Confirm release/release-manifest.json lists no remaining blockers."
+      ],
+      "dependencies": [],
+      "containment": "Continue to restrict distribution to authorized internal use and keep the open blockers stated in README.md and SECURITY.md.",
+      "references": [
+        {
+          "title": "Microsoft Security Development Lifecycle",
+          "publisher": "Microsoft",
+          "url": "https://www.microsoft.com/en-us/securityengineering/sdl",
+          "accessedAt": "2026-08-19",
+          "kind": "microsoft"
+        }
+      ],
+      "decisionRationale": "Confirmed by direct reading of the release manifest and the build script; both correctly report the blocked state.",
+      "severityChangeRationale": null
+    },
+    {
+      "findingId": "AUD-0102",
+      "status": "confirmed",
+      "title": "Equivalence classification can suppress a framework standard that is broader than the project's own",
+      "category": "architecture",
+      "bugType": "Heuristic classification risk",
+      "securitySeverity": "none",
+      "confidence": "high",
+      "context": "This is the residual risk of the feature that closed the previous audit's largest finding. Suppression is deliberately conservative in three ways: mandatory templates are exempt, every decision is printed with its covering path and recorded in the plan, and --force-templates restores installation. The remaining exposure is that a thin project file can outrank a detailed framework standard.",
+      "riskExplanation": "A repository can end up with weaker guidance than intended while the plan reports the topic as covered. Because the decision is visible in the dry run, the failure requires a reviewer to skip reading the covered list, which is plausible but not silent.",
+      "rootCause": "Equivalence is scored on scope overlap and vocabulary overlap only. Neither signal reflects how much guidance the existing file actually provides.",
+      "resolution": {
+        "recommended": "Add a coverage-depth signal such as relative content length or checklist-item count, and downgrade a match to a reported overlap rather than a suppression when the project's file is materially thinner.",
+        "alternatives": [
+          "Require manual confirmation for every covered decision, which does not scale.",
+          "Report only and never suppress, which reintroduces duplicate governance.",
+          "Compare semantically using a model, which makes planning non-deterministic and network-dependent."
+        ],
+        "tradeoffs": [
+          "Any depth heuristic is itself approximate and can misjudge a concise but complete standard."
+        ],
+        "rollout": "Ship the downgrade behavior first so the plan distinguishes overlap from coverage before changing what is installed.",
+        "rollback": "Revert to the current threshold; installation behavior is unchanged for existing projects because templates are only created when absent."
+      },
+      "verification": [
+        "Adopt a fixture whose existing instruction is a single line and assert the framework template is reported as an overlap rather than suppressed.",
+        "Adopt a fixture whose existing instruction is comprehensive and assert suppression still occurs.",
+        "Confirm --force-templates continues to install regardless of classification."
+      ],
+      "dependencies": [],
+      "containment": "Review the covered list in the dry run before applying to any repository with its own instruction library.",
+      "references": [
+        {
+          "title": "Customize AI responses in VS Code",
+          "publisher": "Microsoft",
+          "url": "https://code.visualstudio.com/docs/copilot/copilot-customization",
+          "accessedAt": "2026-08-19",
+          "kind": "microsoft"
+        }
+      ],
+      "decisionRationale": "Confirmed by reading the classifier thresholds and by the passing fixture, where a five-line appsec file suppressed the full framework security standard.",
+      "severityChangeRationale": null
+    },
+    {
+      "findingId": "AUD-0103",
+      "status": "confirmed",
+      "title": "Stack detection is bounded and can under-report languages in very large repositories",
+      "category": "correctness",
+      "bugType": "Bounded scan limitation",
+      "securitySeverity": "none",
+      "confidence": "high",
+      "context": "The bound is a deliberate performance decision and is correct in principle. The defect is not the limit itself but that reaching it is invisible: the plan reports a detected stack with no indication that the scan stopped early.",
+      "riskExplanation": "A large monorepo can quietly receive fewer scoped standards than it needs, and the user has no signal to prompt them to declare the stack explicitly. Silence about a truncated analysis is the specific problem, not the truncation.",
+      "rootCause": "The scan tracks its limits internally but discards that state instead of returning it with the detected tags.",
+      "resolution": {
+        "recommended": "Record whether either limit was reached, surface a truncated-scan notice in the plan and printed summary, and accept a --stack override on adopt so a user can declare what detection missed.",
+        "alternatives": [
+          "Raise the limits, which shifts the threshold without removing the blind spot.",
+          "Remove the limits, which makes planning unbounded on large repositories."
+        ],
+        "tradeoffs": [
+          "An extra notice adds output noise on repositories that legitimately hit the cap."
+        ],
+        "rollout": "Additive reporting change followed by the adopt-side override.",
+        "rollback": "Remove the notice; detection behavior is unchanged."
+      },
+      "verification": [
+        "Construct a fixture that exceeds the entry cap and assert the plan reports a truncated scan.",
+        "Assert a declared stack on adopt installs the corresponding instruction files regardless of detection.",
+        "Confirm normal repositories report a complete scan."
+      ],
+      "dependencies": [],
+      "containment": "For very large repositories, inspect the reported detected stack in the dry run and confirm it matches expectations before applying.",
+      "references": [
+        {
+          "title": "Node.js File system API",
+          "publisher": "OpenJS Foundation",
+          "url": "https://nodejs.org/api/fs.html",
+          "accessedAt": "2026-08-19",
+          "kind": "industry"
+        }
+      ],
+      "decisionRationale": "Confirmed by reading the scan implementation; the limits are enforced and the resulting state is not surfaced.",
+      "severityChangeRationale": null
+    },
+    {
+      "findingId": "AUD-0104",
+      "status": "confirmed",
+      "title": "Generated pipelines for non-Node stacks depend on unpinned runner-provided tooling",
+      "category": "dependency",
+      "bugType": "Implicit environment dependency",
+      "securitySeverity": "none",
+      "confidence": "high",
+      "context": "This was a deliberate trade-off taken during implementation. Emitting official setup actions requires full commit SHAs, and no verified SHA was available for the non-Node setup actions at authoring time. Fabricating one would have been considerably worse than depending on preinstalled tooling. The checkout, setup-node, upload-artifact, and download-artifact pins were subsequently refreshed in this release by resolving each tag to its commit with git ls-remote, which demonstrates the exact procedure the remaining stacks need.",
+      "riskExplanation": "A runner image update can change a compiler or SDK version under a project with no repository change, producing an unexplained build difference or failure. The exposure is limited to generated pipelines the user has not yet customized, and the repository's own workflows are fully pinned.",
+      "rootCause": "The pinning standard is enforced for shipped templates and repository workflows but the generated workflow content is produced from code that had no verified SHAs to emit for most stacks.",
+      "resolution": {
+        "recommended": "Add verified commit SHAs for the official setup action of each supported stack, emit them with an explicit toolchain version, and extend the pinning rule to cover generated workflow content.",
+        "alternatives": [
+          "Document the dependency and leave it to the user, which leaves the default weaker than the stated standard.",
+          "Emit no steps for stacks without a pinned setup action, which removes useful functionality."
+        ],
+        "tradeoffs": [
+          "Pinned action SHAs require deliberate maintenance to receive upstream fixes."
+        ],
+        "rollout": "Add one stack at a time as each SHA is verified.",
+        "rollback": "Fall back to the current runner-provided invocation."
+      },
+      "verification": [
+        "Assert every generated workflow references only actions pinned to a full commit SHA.",
+        "Assert each supported stack pins an explicit toolchain version.",
+        "Run a generated pipeline for at least one non-Node stack and confirm it succeeds."
+      ],
+      "dependencies": [],
+      "containment": "Treat the generated pipeline as a starting point and pin the toolchain in the project before relying on it for release gating.",
+      "references": [
+        {
+          "title": "Security hardening for GitHub Actions",
+          "publisher": "GitHub",
+          "url": "https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions",
+          "accessedAt": "2026-08-19",
+          "kind": "vendor"
+        }
+      ],
+      "decisionRationale": "Confirmed by reading the workflow generator; only checkout and Node setup carry pinned SHAs.",
+      "severityChangeRationale": null
+    },
+    {
+      "findingId": "AUD-0105",
+      "status": "confirmed",
+      "title": "The runtime is a single large module with no automated hygiene tooling",
+      "category": "maintainability",
+      "bugType": "Module size and missing static analysis",
+      "securitySeverity": "none",
+      "confidence": "high",
+      "context": "The single-file design is a direct consequence of the zero-dependency, registry-free constraint that makes the distribution deployable in restricted environments. That constraint also blocks the usual linting tooling. The cost has grown as features accumulated.",
+      "riskExplanation": "Review and onboarding effort scales with file size rather than change size, and hygiene depends entirely on the contract suite and manual inspection. Neither is a correctness risk today, but both raise the cost of every future change and increase the chance a regression is missed in review.",
+      "rootCause": "The zero-dependency constraint was applied to development tooling as well as to the shipped runtime, and no decomposition was performed as the feature set grew.",
+      "resolution": {
+        "recommended": "Split the runtime into modules along existing seams such as detection, template planning, transactions, and inventory while keeping a single executable entry point, and add a hygiene gate that runs without third-party dependencies or a documented development-only exception.",
+        "alternatives": [
+          "Accept the single file and rely on the contract suite, which is the current position.",
+          "Adopt a full linting toolchain as a development dependency, which weakens the registry-free story for contributors."
+        ],
+        "tradeoffs": [
+          "Decomposition touches nearly every function and must be verified purely by the existing suite.",
+          "A dependency-free hygiene gate is necessarily less capable than an established linter."
+        ],
+        "rollout": "Refactor in small, individually verified steps with no behavior change per step.",
+        "rollback": "Each step is independently revertible because the public entry point does not change."
+      },
+      "verification": [
+        "Confirm each module has a single stated responsibility and the entry point remains executable directly.",
+        "Confirm npm run check passes after decomposition with no behavior change.",
+        "Confirm the hygiene gate fails on a deliberately introduced violation."
+      ],
+      "dependencies": [],
+      "containment": null,
+      "references": [
+        {
+          "title": "Node.js Modules: ECMAScript modules",
+          "publisher": "OpenJS Foundation",
+          "url": "https://nodejs.org/api/esm.html",
+          "accessedAt": "2026-08-19",
+          "kind": "industry"
+        }
+      ],
+      "decisionRationale": "Confirmed by inspection of the module and the package manifest; no lint script or static analysis configuration exists.",
+      "severityChangeRationale": null
+    }
+  ],
+  "limitations": [
+    "Every finding identifier, category, bug type, severity, and confidence value is preserved from the source report; no severity was changed.",
+    "This review supersedes REVIEW-2026-08-19-PSO-083, whose eleven findings were remediated in the 1.0.0 candidate.",
+    "Evidence was refreshed after the VS Code workspace, editor launch, and Copilot cloud agent environment work landed; the test count, scanned file count, and module size reflect the published tree.",
+    "Root-cause statements for behavior introduced in this release are informed by direct knowledge of the change and are not independently corroborated.",
+    "No effort estimates are included; sequencing belongs to the remediation plan.",
+    "Resolution options were assessed against repository evidence only, without maintainer roadmap or customer commitments."
+  ]
+}

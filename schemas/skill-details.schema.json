@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://project-skills.dev/schemas/skill-details/1.0.0",
+  "title": "Skill Details",
+  "type": "object",
+  "required": ["schemaVersion", "generatedAt", "skills"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "runtimeVersion": { "type": "string" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "path", "description", "lifecycle", "confidence", "dependencies", "reports", "sha256", "audit"],
+        "properties": {
+          "name": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+          "path": { "type": "string" },
+          "description": { "type": "string" },
+          "lifecycle": { "enum": ["draft", "tested", "validated", "production", "deprecated", "retired"] },
+          "confidence": { "enum": ["low", "medium", "high"] },
+          "dependencies": { "type": "array", "items": { "type": "string" } },
+          "reports": { "type": "array", "items": { "type": "string" } },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "audit": {
+            "type": "object",
+            "required": ["status", "checkedAt", "findings"],
+            "properties": {
+              "status": { "enum": ["passed", "findings"] },
+              "checkedAt": { "type": "string", "format": "date-time" },
+              "findings": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        }
+      }
+    }
+  }
+}

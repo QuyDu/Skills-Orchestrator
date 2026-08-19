@@ -1,0 +1,11 @@
+SKILLS ORCHESTRATOR INTERNAL USE TERMS
+
+Copyright (c) 2026 the Skills Orchestrator repository owner. All rights reserved.
+
+Permission is granted only to authorized personnel and contractors of the owning organization to use, reproduce, and modify this software for the organization's internal business purposes, subject to its security, privacy, records-management, and acceptable-use policies.
+
+The software and its documentation may not be sold, sublicensed, publicly distributed, published to a public package registry, or provided to any third party without prior written authorization from the repository owner and any required legal, security, and export-control review.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT. TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE COPYRIGHT OWNER AND CONTRIBUTORS ARE NOT LIABLE FOR ANY CLAIM, DAMAGES, DATA LOSS, SECURITY INCIDENT, OR OTHER LIABILITY ARISING FROM OR RELATED TO THE SOFTWARE OR ITS USE.
+
+Use of this software does not replace required backups, change review, security validation, non-production testing, authorization, or production approval. By using the software, the user acknowledges the security and risk acceptance requirements documented in SECURITY.md.

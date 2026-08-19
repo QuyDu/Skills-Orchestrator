@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skills-orchestrator.dev/schemas/cross-platform-ci-evidence/1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "commit", "generatedAt", "runs"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "commit": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "runs": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["schemaVersion", "os", "node", "commit", "status", "completedAt"],
+        "properties": {
+          "schemaVersion": { "const": "1.0.0" },
+          "os": { "enum": ["windows", "linux", "macos"] },
+          "node": { "enum": [22, 24, 26] },
+          "commit": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+          "status": { "const": "passed" },
+          "completedAt": { "type": "string", "format": "date-time" }
+        }
+      }
+    }
+  }
+}

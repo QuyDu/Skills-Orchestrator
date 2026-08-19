@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skills-orchestrator.dev/schemas/resolved-configuration/1.0.0",
+  "title": "Skills Orchestrator Resolved Configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "profile", "platforms", "packs", "routing", "clarification", "policy"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "profile": { "enum": ["core", "durable", "distributed", "advanced"] },
+    "platforms": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["agent", "ci"],
+      "properties": {
+        "agent": { "enum": ["github-copilot", "agents-md"] },
+        "ci": { "enum": ["auto", "manual", "github-actions", "azure-devops", "gitlab-ci"] }
+      }
+    },
+    "packs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "enum": ["core", "durable", "distributed", "advanced"] }
+    },
+    "routing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["precedence"],
+      "properties": {
+        "precedence": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": { "enum": ["project-domain", "framework"] }
+        }
+      }
+    },
+    "clarification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "maxQuestionsPerRound", "blockOnMaterialAmbiguity", "askEveryPrompt", "questionsPerPrompt", "confirmPlanBeforeExecution"],
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "maxQuestionsPerRound": { "type": "integer", "minimum": 1, "maximum": 10 },
+        "blockOnMaterialAmbiguity": { "type": "boolean" },
+        "askEveryPrompt": { "type": "boolean" },
+        "questionsPerPrompt": { "type": "integer", "minimum": 1, "maximum": 10 },
+        "confirmPlanBeforeExecution": { "type": "boolean" }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requireApprovalFor"],
+      "properties": {
+        "requireApprovalFor": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": ["external", "privileged", "destructive", "irreversible", "production-data-mutation", "commit", "push"]
+          }
+        }
+      }
+    }
+  }
+}
