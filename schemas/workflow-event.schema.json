@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://project-skills.dev/schemas/workflow-event/1.0.0",
+  "title": "Workflow Event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["eventId", "eventType", "occurredAt", "sequence", "workflowId", "runId", "actor", "payload"],
+  "properties": {
+    "eventId": { "type": "string", "minLength": 1 },
+    "eventType": { "type": "string", "pattern": "^[a-z]+(?:[.-][a-z]+)*$" },
+    "occurredAt": { "type": "string", "format": "date-time" },
+    "sequence": { "type": "integer", "minimum": 1 },
+    "workflowId": { "type": "string", "minLength": 1 },
+    "runId": { "type": "string", "minLength": 1 },
+    "causationId": { "type": "string" },
+    "correlationId": { "type": "string" },
+    "actor": { "type": "string", "minLength": 1 },
+    "skill": { "type": "string" },
+    "payload": { "type": "object" }
+  }
+}

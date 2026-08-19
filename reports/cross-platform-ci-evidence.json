@@ -1,0 +1,79 @@
+{
+  "schemaVersion": "1.0.0",
+  "commit": "b91b562c13f28ad53c6d60ad89c968eae6a34683",
+  "generatedAt": "2026-08-01T13:25:17.945Z",
+  "runs": [
+    {
+      "schemaVersion": "1.0.0",
+      "os": "linux",
+      "node": 22,
+      "commit": "b91b562c13f28ad53c6d60ad89c968eae6a34683",
+      "status": "passed",
+      "completedAt": "2026-08-01T13:24:35.946Z"
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "os": "linux",
+      "node": 24,
+      "commit": "b91b562c13f28ad53c6d60ad89c968eae6a34683",
+      "status": "passed",
+      "completedAt": "2026-08-01T13:24:30.340Z"
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "os": "linux",
+      "node": 26,
+      "commit": "b91b562c13f28ad53c6d60ad89c968eae6a34683",
+      "status": "passed",
+      "completedAt": "2026-08-01T13:24:34.041Z"
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "os": "macos",
+      "node": 22,
+      "commit": "b91b562c13f28ad53c6d60ad89c968eae6a34683",
+      "status": "passed",
+      "completedAt": "2026-08-01T13:24:30.285Z"
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "os": "macos",
+      "node": 24,
+      "commit": "b91b562c13f28ad53c6d60ad89c968eae6a34683",
+      "status": "passed",
+      "completedAt": "2026-08-01T13:24:31.011Z"
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "os": "macos",
+      "node": 26,
+      "commit": "b91b562c13f28ad53c6d60ad89c968eae6a34683",
+      "status": "passed",
+      "completedAt": "2026-08-01T13:24:36.911Z"
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "os": "windows",
+      "node": 22,
+      "commit": "b91b562c13f28ad53c6d60ad89c968eae6a34683",
+      "status": "passed",
+      "completedAt": "2026-08-01T13:24:48.015Z"
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "os": "windows",
+      "node": 24,
+      "commit": "b91b562c13f28ad53c6d60ad89c968eae6a34683",
+      "status": "passed",
+      "completedAt": "2026-08-01T13:24:52.132Z"
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "os": "windows",
+      "node": 26,
+      "commit": "b91b562c13f28ad53c6d60ad89c968eae6a34683",
+      "status": "passed",
+      "completedAt": "2026-08-01T13:24:48.542Z"
+    }
+  ]
+}

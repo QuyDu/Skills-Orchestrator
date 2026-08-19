@@ -1,0 +1,302 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-19T14:49:53.401Z",
+  "artifacts": [
+    {
+      "report": "reports/architecture-review.json",
+      "producer": "architecture-review"
+    },
+    {
+      "report": "reports/architecture-review.md",
+      "producer": "architecture-review"
+    },
+    {
+      "report": "reports/artifact-upgrade-plan.json",
+      "producer": "artifact-upgrade"
+    },
+    {
+      "report": "reports/artifact-upgrade-report.md",
+      "producer": "artifact-upgrade"
+    },
+    {
+      "report": "reports/azure-audit-findings.json",
+      "producer": "audit-azure-environment"
+    },
+    {
+      "report": "reports/code-audit-findings.json",
+      "producer": "audit-code"
+    },
+    {
+      "report": "reports/audit-remediation-plan.json",
+      "producer": "audit-plan-remediation"
+    },
+    {
+      "report": "reports/audit-remediation-plan.md",
+      "producer": "audit-plan-remediation"
+    },
+    {
+      "report": "reports/code-audit-review.json",
+      "producer": "audit-review-findings"
+    },
+    {
+      "report": "reports/code-audit-review.md",
+      "producer": "audit-review-findings"
+    },
+    {
+      "report": "reports/azure-audit-review.json",
+      "producer": "audit-review-findings"
+    },
+    {
+      "report": "reports/azure-audit-review.md",
+      "producer": "audit-review-findings"
+    },
+    {
+      "report": "reports/change-review.json",
+      "producer": "change-review"
+    },
+    {
+      "report": "reports/change-review.md",
+      "producer": "change-review"
+    },
+    {
+      "report": "reports/ci-triage-result.json",
+      "producer": "ci-failure-triage"
+    },
+    {
+      "report": "reports/ci-triage-result.md",
+      "producer": "ci-failure-triage"
+    },
+    {
+      "report": "reports/clarification-result.json",
+      "producer": "clarify-the-ask"
+    },
+    {
+      "report": "reports/clarification-result.md",
+      "producer": "clarify-the-ask"
+    },
+    {
+      "report": "reports/dependency-maintenance.json",
+      "producer": "dependency-maintenance"
+    },
+    {
+      "report": "reports/dependency-maintenance.md",
+      "producer": "dependency-maintenance"
+    },
+    {
+      "report": "reports/deployment-review.json",
+      "producer": "deployment-review"
+    },
+    {
+      "report": "reports/deployment-review.md",
+      "producer": "deployment-review"
+    },
+    {
+      "report": "reports/development-environment-readiness.json",
+      "producer": "development-environment-readiness"
+    },
+    {
+      "report": "reports/development-environment-readiness.md",
+      "producer": "development-environment-readiness"
+    },
+    {
+      "report": "reports/documentation-plan.json",
+      "producer": "documentation-builder"
+    },
+    {
+      "report": "reports/documentation-plan.md",
+      "producer": "documentation-builder"
+    },
+    {
+      "report": "reports/framework-health.json",
+      "producer": "framework-health-check"
+    },
+    {
+      "report": "reports/framework-health.md",
+      "producer": "framework-health-check"
+    },
+    {
+      "report": "reports/conformance-report.json",
+      "producer": "framework-health-check"
+    },
+    {
+      "report": "reports/conformance-report.md",
+      "producer": "framework-health-check"
+    },
+    {
+      "report": "reports/coordination-state.json",
+      "producer": "multi-agent-coordinator"
+    },
+    {
+      "report": "reports/coordination-state.md",
+      "producer": "multi-agent-coordinator"
+    },
+    {
+      "report": "reports/policy-evaluation.json",
+      "producer": "policy-engine"
+    },
+    {
+      "report": "reports/policy-evaluation.md",
+      "producer": "policy-engine"
+    },
+    {
+      "report": "reports/policy-decision-log.jsonl",
+      "producer": "policy-engine"
+    },
+    {
+      "report": "reports/project-handoff.json",
+      "producer": "project-handoff"
+    },
+    {
+      "report": "reports/project-handoff.md",
+      "producer": "project-handoff"
+    },
+    {
+      "report": "reports/current-work-state.json",
+      "producer": "project-handoff"
+    },
+    {
+      "report": "reports/knowledge.json",
+      "producer": "project-knowledge-capture"
+    },
+    {
+      "report": "reports/knowledge-capture.md",
+      "producer": "project-knowledge-capture"
+    },
+    {
+      "report": "reports/project-memory.json",
+      "producer": "project-memory"
+    },
+    {
+      "report": "reports/project-memory.md",
+      "producer": "project-memory"
+    },
+    {
+      "report": "reports/project-setup-plan.json",
+      "producer": "project-setup"
+    },
+    {
+      "report": "reports/project-setup-plan.md",
+      "producer": "project-setup"
+    },
+    {
+      "report": "reports/workflow-completion.json",
+      "producer": "project-skills-orchestrator"
+    },
+    {
+      "report": "reports/workflow-completion.md",
+      "producer": "project-skills-orchestrator"
+    },
+    {
+      "report": "reports/regression-test-result.json",
+      "producer": "regression-test-development"
+    },
+    {
+      "report": "reports/regression-test-result.md",
+      "producer": "regression-test-development"
+    },
+    {
+      "report": "reports/security-review.json",
+      "producer": "security-review"
+    },
+    {
+      "report": "reports/security-review.md",
+      "producer": "security-review"
+    },
+    {
+      "report": "reports/skill-dependency-graph.json",
+      "producer": "skill-dependency-manager"
+    },
+    {
+      "report": "reports/skill-dependency-report.md",
+      "producer": "skill-dependency-manager"
+    },
+    {
+      "report": "reports/skill-inventory.json",
+      "producer": "skill-inventory"
+    },
+    {
+      "report": "reports/skill-inventory.md",
+      "producer": "skill-inventory"
+    },
+    {
+      "report": "reports/skill-details.json",
+      "producer": "skill-inventory"
+    },
+    {
+      "report": "reports/skill-details.md",
+      "producer": "skill-inventory"
+    },
+    {
+      "report": "reports/artifact-ownership.json",
+      "producer": "skill-inventory"
+    },
+    {
+      "report": "reports/skill-registry.json",
+      "producer": "skill-registry"
+    },
+    {
+      "report": "reports/skill-registry.md",
+      "producer": "skill-registry"
+    },
+    {
+      "report": "reports/debugging-result.json",
+      "producer": "systematic-debugging"
+    },
+    {
+      "report": "reports/debugging-result.md",
+      "producer": "systematic-debugging"
+    },
+    {
+      "report": "reports/workflow-plan.json",
+      "producer": "workflow-planner"
+    },
+    {
+      "report": "reports/workflow-plan.md",
+      "producer": "workflow-planner"
+    },
+    {
+      "report": "reports/recovery-plan.json",
+      "producer": "workflow-recovery"
+    },
+    {
+      "report": "reports/recovery-plan.md",
+      "producer": "workflow-recovery"
+    },
+    {
+      "report": "reports/scheduler-state.json",
+      "producer": "workflow-scheduler"
+    },
+    {
+      "report": "reports/scheduler-state.md",
+      "producer": "workflow-scheduler"
+    },
+    {
+      "report": "reports/workflow-simulation.json",
+      "producer": "workflow-simulator"
+    },
+    {
+      "report": "reports/workflow-simulation.md",
+      "producer": "workflow-simulator"
+    },
+    {
+      "report": "reports/current-execution-state.json",
+      "producer": "workflow-state-manager"
+    },
+    {
+      "report": "reports/current-execution-state.md",
+      "producer": "workflow-state-manager"
+    },
+    {
+      "report": "reports/execution-log.jsonl",
+      "producer": "workflow-state-manager"
+    },
+    {
+      "report": "reports/workflow-telemetry.json",
+      "producer": "workflow-telemetry"
+    },
+    {
+      "report": "reports/workflow-telemetry.md",
+      "producer": "workflow-telemetry"
+    }
+  ]
+}

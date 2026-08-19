@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://project-skills.dev/schemas/clarification-result/1.0.0",
+  "title": "Clarification Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "clarificationId", "generatedAt", "status", "requestSummary", "confirmedRequirements", "projectFacts", "assumptions", "conflicts", "rounds", "openQuestions", "decision"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "clarificationId": { "type": "string", "pattern": "^CLR-[0-9]{4,}$" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "status": { "enum": ["ready", "blocked"] },
+    "requestSummary": { "type": "string", "minLength": 1 },
+    "confirmedRequirements": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "projectFacts": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "assumptions": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "conflicts": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "rounds": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["round", "questions"],
+        "properties": {
+          "round": { "type": "integer", "minimum": 1 },
+          "questions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id", "question", "materialDecision", "recommendedDefault", "answer"],
+              "properties": {
+                "id": { "type": "string", "pattern": "^Q-[0-9]{4,}$" },
+                "question": { "type": "string", "minLength": 1 },
+                "materialDecision": { "type": "string", "minLength": 1 },
+                "recommendedDefault": { "type": ["string", "null"] },
+                "answer": { "type": ["string", "null"] }
+              }
+            }
+          }
+        }
+      }
+    },
+    "openQuestions": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "decision": { "enum": ["proceed-to-planning", "wait-for-answers"] }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "blocked" } }, "required": ["status"] },
+      "then": {
+        "properties": {
+          "openQuestions": { "minItems": 1 },
+          "decision": { "const": "wait-for-answers" }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "status": { "const": "ready" } }, "required": ["status"] },
+      "then": { "properties": { "decision": { "const": "proceed-to-planning" } } }
+    }
+  ]
+}

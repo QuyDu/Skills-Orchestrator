@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://project-skills.dev/schemas/skill-inventory/1.0.0",
+  "title": "Skill Inventory",
+  "type": "object",
+  "required": ["schemaVersion", "generatedAt", "skills"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "path", "description", "lifecycle", "confidence", "dependencies", "reports"],
+        "properties": {
+          "name": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+          "path": { "type": "string" },
+          "description": { "type": "string" },
+          "lifecycle": { "enum": ["draft", "tested", "validated", "production", "deprecated", "retired"] },
+          "confidence": { "enum": ["low", "medium", "high"] },
+          "dependencies": { "type": "array", "items": { "type": "string" } },
+          "reports": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

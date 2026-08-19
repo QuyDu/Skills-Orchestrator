@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://project-skills.dev/schemas/current-execution-state/1.0.0",
+  "title": "Current Execution State",
+  "type": "object",
+  "required": ["schemaVersion", "workflowId", "runId", "status", "currentStep", "totalSteps", "lastSequence", "updatedAt"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "workflowId": { "type": "string" },
+    "runId": { "type": "string" },
+    "status": { "enum": ["planned", "running", "waiting-approval", "paused", "recovering", "blocked", "failed", "cancelled", "completed"] },
+    "currentStep": { "type": "integer", "minimum": 0 },
+    "totalSteps": { "type": "integer", "minimum": 0 },
+    "activeSkill": { "type": "string" },
+    "lastCompletedStep": { "type": "integer", "minimum": 0 },
+    "resumeFromStep": { "type": "integer", "minimum": 0 },
+    "lastSequence": { "type": "integer", "minimum": 0 },
+    "updatedAt": { "type": "string", "format": "date-time" }
+  }
+}

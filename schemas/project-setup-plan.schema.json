@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skills-orchestrator.dev/schemas/project-setup-plan/1.0.0",
+  "title": "Project Setup Plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "generatedAt", "status", "project", "detected", "artifacts", "skills", "limitations"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "status": { "enum": ["planned", "applied", "blocked"] },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "purpose", "profile"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "purpose": { "type": "string", "minLength": 1 },
+        "profile": { "enum": ["core", "durable", "distributed", "advanced"] },
+        "targetCloud": { "type": ["string", "null"] }
+      }
+    },
+    "detected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["languages", "frameworks", "hasTests", "hasInfrastructure", "hasContinuousIntegration"],
+      "properties": {
+        "languages": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "frameworks": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "hasTests": { "type": "boolean" },
+        "hasInfrastructure": { "type": "boolean" },
+        "hasContinuousIntegration": { "type": "boolean" }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "kind", "action", "rationale"],
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "kind": { "enum": ["instructions", "scoped-instructions", "prompt", "agent", "skill", "workspace-support", "documentation", "configuration", "continuous-integration"] },
+          "action": { "enum": ["create", "already-present", "conflict"] },
+          "rationale": { "type": "string", "minLength": 1 },
+          "conflictDetail": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "requirement", "rationale"],
+        "properties": {
+          "name": { "type": "string", "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$" },
+          "requirement": { "enum": ["required", "suggested", "not-applicable"] },
+          "rationale": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "limitations": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "nextAction": { "type": ["string", "null"] }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "applied" } }, "required": ["status"] },
+      "then": {
+        "properties": {
+          "artifacts": {
+            "items": { "properties": { "action": { "not": { "const": "conflict" } } } }
+          }
+        }
+      }
+    }
+  ]
+}

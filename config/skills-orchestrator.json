@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0.0",
+  "profile": "core",
+  "platforms": {
+    "agent": "github-copilot",
+    "ci": "auto"
+  },
+  "packs": [
+    "core"
+  ],
+  "routing": {
+    "precedence": [
+      "project-domain",
+      "framework"
+    ]
+  },
+  "clarification": {
+    "enabled": true,
+    "maxQuestionsPerRound": 3,
+    "blockOnMaterialAmbiguity": true
+  },
+  "policy": {
+    "requireApprovalFor": [
+      "external",
+      "privileged",
+      "destructive",
+      "irreversible",
+      "production-data-mutation",
+      "commit",
+      "push"
+    ]
+  }
+}

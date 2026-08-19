@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://project-skills.dev/schemas/code-audit-findings/1.0.0",
+  "title": "Code Audit Findings",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "auditId", "generatedAt", "scope", "provenance", "coverage", "summary", "findings", "limitations"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "auditId": { "type": "string", "minLength": 1 },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "revision", "included", "excluded"],
+      "properties": {
+        "repository": { "type": "string" },
+        "revision": { "type": "string" },
+        "included": { "type": "array", "items": { "type": "string" } },
+        "excluded": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "provenance": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["tool", "version", "command", "status"],
+        "properties": {
+          "tool": { "type": "string" },
+          "version": { "type": "string" },
+          "command": { "type": "string" },
+          "status": { "enum": ["passed", "failed", "blocked", "skipped", "degraded"] },
+          "exitCode": { "type": ["integer", "null"] },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "coverage": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "uniqueItems": true,
+      "allOf": [
+        { "contains": { "type": "object", "properties": { "area": { "const": "security" } }, "required": ["area"] } },
+        { "contains": { "type": "object", "properties": { "area": { "const": "correctness-reliability" } }, "required": ["area"] } },
+        { "contains": { "type": "object", "properties": { "area": { "const": "resource-management" } }, "required": ["area"] } },
+        { "contains": { "type": "object", "properties": { "area": { "const": "performance" } }, "required": ["area"] } },
+        { "contains": { "type": "object", "properties": { "area": { "const": "dependencies-configuration" } }, "required": ["area"] } },
+        { "contains": { "type": "object", "properties": { "area": { "const": "code-hygiene" } }, "required": ["area"] } },
+        { "contains": { "type": "object", "properties": { "area": { "const": "design-maintainability" } }, "required": ["area"] } },
+        { "contains": { "type": "object", "properties": { "area": { "const": "tests-operability" } }, "required": ["area"] } }
+      ],
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["area", "status", "checks", "evidence", "limitations"],
+        "properties": {
+          "area": { "enum": ["security", "correctness-reliability", "resource-management", "performance", "dependencies-configuration", "code-hygiene", "design-maintainability", "tests-operability"] },
+          "status": { "enum": ["completed", "partial", "blocked", "not-applicable", "failed"] },
+          "checks": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+          "evidence": { "type": "array", "items": { "type": "string" } },
+          "limitations": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["total", "bySecuritySeverity", "byCategory"],
+      "properties": {
+        "total": { "type": "integer", "minimum": 0 },
+        "bySecuritySeverity": { "type": "object" },
+        "byCategory": { "type": "object" }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/finding" }
+    },
+    "limitations": { "type": "array", "items": { "type": "string" } }
+  },
+  "$defs": {
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "description"],
+      "properties": {
+        "path": { "type": "string" },
+        "startLine": { "type": "integer", "minimum": 1 },
+        "endLine": { "type": "integer", "minimum": 1 },
+        "description": { "type": "string", "minLength": 1 }
+      }
+    },
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "publisher", "url", "accessedAt", "kind"],
+      "properties": {
+        "title": { "type": "string" },
+        "publisher": { "type": "string" },
+        "url": { "type": "string", "format": "uri" },
+        "accessedAt": { "type": "string", "format": "date" },
+        "kind": { "enum": ["microsoft", "industry", "vendor", "standard"] }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "category", "bugType", "securitySeverity", "confidence", "observedBehavior", "expectedBehavior", "impact", "likelihood", "evidence", "resolution", "verification", "references"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^AUD-[0-9]{4,}$" },
+        "title": { "type": "string", "minLength": 1 },
+        "category": { "enum": ["security", "correctness", "reliability", "resource-management", "concurrency", "performance", "dependency", "configuration", "code-hygiene", "architecture", "testing", "operability", "accessibility", "privacy", "maintainability"] },
+        "bugType": { "type": "string", "minLength": 1 },
+        "securitySeverity": { "enum": ["critical", "high", "medium", "low", "none"] },
+        "confidence": { "enum": ["high", "medium", "low"] },
+        "cwe": { "type": "array", "items": { "type": "string", "pattern": "^CWE-[0-9]+$" } },
+        "cvss": { "type": "object", "required": ["version", "vector", "score"], "properties": { "version": { "type": "string" }, "vector": { "type": "string" }, "score": { "type": "number", "minimum": 0, "maximum": 10 } } },
+        "observedBehavior": { "type": "string", "minLength": 1 },
+        "expectedBehavior": { "type": "string", "minLength": 1 },
+        "impact": { "type": "string", "minLength": 1 },
+        "likelihood": { "enum": ["high", "medium", "low", "not-applicable"] },
+        "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } },
+        "affectedLocations": { "type": "array", "items": { "$ref": "#/$defs/evidence" } },
+        "resolution": { "type": "string", "minLength": 1 },
+        "verification": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "references": { "type": "array", "items": { "$ref": "#/$defs/reference" } },
+        "assumptions": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

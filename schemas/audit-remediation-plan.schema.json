@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://project-skills.dev/schemas/audit-remediation-plan/1.0.0",
+  "title": "Audit Remediation Plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "planId", "generatedAt", "sourceReview", "prioritization", "milestones", "items", "dispositions", "limitations"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "planId": { "type": "string", "minLength": 1 },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "sourceReview": { "type": "string" },
+    "prioritization": { "type": "array", "minItems": 1, "items": { "enum": ["prerequisite", "containment", "security-severity", "exploitability", "user-impact", "confidence", "remediation-cost"] } },
+    "milestones": { "type": "array", "items": { "type": "object", "required": ["id", "title", "itemIds"], "properties": { "id": { "type": "string" }, "title": { "type": "string" }, "itemIds": { "type": "array", "items": { "type": "string" } } } } },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "findingIds", "securitySeverity", "priority", "ownerRole", "dependsOn", "scope", "implementationSteps", "acceptanceCriteria", "verification", "rollout", "rollback", "requiresApproval", "residualRisk"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^REM-[0-9]{4,}$" },
+          "title": { "type": "string" },
+          "findingIds": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^AUD-[0-9]{4,}$" } },
+          "securitySeverity": { "enum": ["critical", "high", "medium", "low", "none"] },
+          "priority": { "type": "integer", "minimum": 1 },
+          "ownerRole": { "type": "string", "minLength": 1 },
+          "dependsOn": { "type": "array", "items": { "type": "string", "pattern": "^REM-[0-9]{4,}$" } },
+          "scope": { "type": "string" },
+          "implementationSteps": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+          "bestPracticeReferences": { "type": "array", "items": { "$ref": "code-audit-findings.schema.json#/$defs/reference" } },
+          "acceptanceCriteria": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+          "verification": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+          "rollout": { "type": "string" },
+          "rollback": { "type": "string" },
+          "requiresApproval": { "type": "boolean" },
+          "approvalReason": { "type": ["string", "null"] },
+          "residualRisk": { "type": "string" },
+          "parallelGroup": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "dispositions": { "type": "array", "items": { "type": "object", "required": ["findingId", "status", "rationale", "requiresApproval"], "properties": { "findingId": { "type": "string", "pattern": "^AUD-[0-9]{4,}$" }, "status": { "enum": ["needs-more-evidence", "disputed", "false-positive", "risk-accepted", "deferred"] }, "rationale": { "type": "string" }, "requiresApproval": { "type": "boolean" } } } },
+    "limitations": { "type": "array", "items": { "type": "string" } }
+  }
+}

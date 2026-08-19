@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://project-skills.dev/schemas/development-environment-readiness/1.0.0",
+  "title": "Development Environment Readiness",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "assessmentId", "generatedAt", "status", "scope", "requirements", "validations", "plannedActions", "limitations"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "assessmentId": { "type": "string", "pattern": "^ENV-[0-9]{4,}$" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "status": { "enum": ["ready", "degraded", "blocked"] },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["projectRoot", "operatingSystem", "architecture", "role"],
+      "properties": {
+        "projectRoot": { "type": "string", "minLength": 1 },
+        "operatingSystem": { "type": "string", "minLength": 1 },
+        "architecture": { "type": "string", "minLength": 1 },
+        "role": { "type": "string", "minLength": 1 }
+      }
+    },
+    "requirements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "category", "name", "required", "status", "expected", "observed", "evidence", "remediation"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^REQ-[0-9]{4,}$" },
+          "category": { "enum": ["permissions", "editor", "source-control", "runtime", "authentication", "project-environment", "extensions", "debugging", "testing", "automation", "security"] },
+          "name": { "type": "string", "minLength": 1 },
+          "required": { "type": "boolean" },
+          "status": { "enum": ["ready", "missing", "misconfigured", "unverified", "not-applicable"] },
+          "expected": { "type": "string" },
+          "observed": { "type": "string" },
+          "evidence": { "type": "array", "items": { "type": "string" } },
+          "remediation": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "validations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "status", "command", "evidence"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^VAL-[0-9]{4,}$" },
+          "name": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["passed", "failed", "blocked", "skipped"] },
+          "command": { "type": ["string", "null"] },
+          "evidence": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "plannedActions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "scope", "dependsOn", "mutating", "requiresApproval", "status", "rollback"],
+        "allOf": [
+          {
+            "if": { "properties": { "mutating": { "const": true } }, "required": ["mutating"] },
+            "then": { "properties": { "requiresApproval": { "const": true } } }
+          }
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^ACT-[0-9]{4,}$" },
+          "title": { "type": "string", "minLength": 1 },
+          "scope": { "enum": ["repository", "user", "machine", "remote"] },
+          "dependsOn": { "type": "array", "items": { "type": "string", "pattern": "^ACT-[0-9]{4,}$" } },
+          "mutating": { "type": "boolean" },
+          "requiresApproval": { "type": "boolean" },
+          "status": { "enum": ["proposed", "approved", "completed", "blocked", "declined"] },
+          "rollback": { "type": "string" }
+        }
+      }
+    },
+    "limitations": { "type": "array", "items": { "type": "string" } }
+  }
+}

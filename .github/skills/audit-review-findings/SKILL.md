@@ -1,0 +1,82 @@
+---
+name: audit-review-findings
+description: Transform structured audit findings into a traceable mixed-audience review while preserving IDs, severity, confidence, evidence, and limitations. Use between audit-code and remediation planning; do not use to discover new findings.
+lifecycle: tested
+confidence: medium
+---
+
+# audit-review-findings
+
+## Purpose
+
+Transform structured audit findings into a traceable mixed-audience review while preserving IDs, severity, confidence, evidence, and limitations.
+
+## Preconditions
+
+- Read repository instructions and applicable configuration.
+- Inspect authoritative existing artifacts before replacing derived views.
+- Verify that this skill owns the requested decision or output.
+
+## Inputs
+
+- `reports/code-audit-findings.json` from `audit-code` and/or `reports/azure-audit-findings.json` from `audit-azure-environment`.
+- The source revision and repository evidence cited by each finding.
+- Current authoritative Microsoft documentation and applicable industry standards.
+
+## Approved Tools and Resources
+
+- Use read-only repository inspection by default.
+- Use deterministic scripts and schema validators when provided.
+- Use mutating tools only within the approved workflow boundary.
+
+## Read and Write Boundaries
+
+- Write only the owned reports listed below.
+- Never rewrite accepted event-stream records.
+- Do not silently mutate source, infrastructure, external systems, or unrelated artifacts.
+
+## Procedure
+
+1. Select the input report by audit type and validate it against its declared schema before interpreting findings.
+2. Preserve every source finding ID and evidence reference. Do not silently add, merge, split, suppress, or change severity; record each review decision and rationale.
+3. Reproduce or corroborate each finding where feasible and classify it as `confirmed`, `needs-more-evidence`, `disputed`, or `false-positive`.
+4. Explain why the issue matters, the affected behavior and stakeholders, exploitability when relevant, security severity, bug type, root cause, and likely consequence of leaving it unresolved.
+5. Add implementation-ready resolution guidance, alternatives and tradeoffs, validation steps, rollout considerations, and rollback guidance proportional to risk.
+6. Cite current Microsoft best practices when the technology is Microsoft-owned or Microsoft guidance applies. Also cite authoritative industry practices such as OWASP, CWE, NIST, CIS, language/framework maintainers, or standards bodies as applicable. Include title, publisher, URL, and access date; never invent a citation.
+7. Identify prerequisites and dependencies among findings without scheduling remediation. Mark urgent containment separately from permanent repair.
+8. Order the human-readable review by confirmed security severity, then dependency impact and confidence. Preserve limitations and unresolved questions.
+9. Validate the reviewed findings JSON against `schemas/audit-findings-review.schema.json`, then write it for downstream planning and generate its Markdown view.
+
+## Validation
+
+- Input and output reports validate against their schemas, including `schemas/audit-findings-review.schema.json`, and every source finding appears exactly once in the reviewed output.
+- Each confirmed finding contains issue context, bug type, security severity, resolution detail, verification steps, and applicable best-practice citations.
+- Severity changes, false-positive decisions, and unresolved evidence are explicit and justified.
+- Machine-readable JSON remains authoritative; Markdown preserves IDs, ordering, status, and limitations.
+
+## Outputs
+
+- `reports/code-audit-review.json`
+- `reports/code-audit-review.md`
+- `reports/azure-audit-review.json`
+- `reports/azure-audit-review.md`
+
+## Failure Behavior
+
+- Fail closed when authority, evidence, schema compatibility, or approval is missing.
+- Preserve valid partial artifacts and identify a safe resume or recovery point.
+- Never report success for blocked or unvalidated work.
+
+## Approval Gates
+
+Pause for explicit approval before destructive, external, privileged, irreversible, or scope-expanding actions.
+
+## Composition and Dependencies
+
+- audit-code
+- audit-azure-environment
+
+## Examples
+
+- Invoke `audit-review-findings` when its owned capability is selected by the workflow plan.
+- Validate its reports before downstream skills consume them.

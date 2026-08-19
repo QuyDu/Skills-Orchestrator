@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skills-orchestrator.dev/schemas/adoption-transaction/1.0.0",
+  "title": "Skills Orchestrator Adoption Transaction",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "transactionId", "status", "projectRoot", "riskAcceptance", "createdAt", "updatedAt", "entries"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "transactionId": { "type": "string", "minLength": 1, "maxLength": 200, "pattern": "^[A-Za-z0-9._-]+$" },
+    "status": { "enum": ["prepared", "applying", "completed", "rolled-back", "recovery-required"] },
+    "projectRoot": { "type": "string", "minLength": 1 },
+    "riskAcceptance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["noticeVersion", "acceptedAt", "method"],
+      "properties": {
+        "noticeVersion": { "const": "1.0.0" },
+        "acceptedAt": { "type": "string", "format": "date-time" },
+        "method": { "enum": ["interactive", "cli-flag"] }
+      }
+    },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "completedAt": { "type": "string", "format": "date-time" },
+    "rolledBackAt": { "type": "string", "format": "date-time" },
+    "failure": { "type": "string" },
+    "rollbackFailure": { "type": "string" },
+    "entries": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "originalState", "backup"],
+        "properties": {
+          "path": { "type": "string", "minLength": 1, "pattern": "^(?![A-Za-z]:)(?![/\\\\])(?!.*(?:^|[/\\\\])\\.\\.(?:[/\\\\]|$)).+$" },
+          "originalState": { "type": "string", "pattern": "^(missing|(file|directory):sha256:[a-f0-9]{64})$" },
+          "backup": {
+            "type": ["string", "null"],
+            "pattern": "^backup/"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,516 @@
+{
+  "schemaVersion": "1.0.0",
+  "runtimeVersion": "1.0.0",
+  "generatedAt": "2026-08-19T14:49:53.401Z",
+  "skills": [
+    {
+      "name": "architecture-review",
+      "path": ".github/skills/architecture-review/SKILL.md",
+      "description": "Assess a repository's designed architecture against reliability, security, cost, operational, and performance criteria using infrastructure-as-code, configuration, and decision records. Use for design-time review of the architecture a repository defines; use audit-azure-environment instead to assess a deployed cloud tenant.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "clarify-the-ask"
+      ],
+      "reports": [
+        "reports/architecture-review.json",
+        "reports/architecture-review.md"
+      ]
+    },
+    {
+      "name": "artifact-upgrade",
+      "path": ".github/skills/artifact-upgrade/SKILL.md",
+      "description": "Plan and validate schema and artifact migrations with compatibility checks, backups, rollback routes, and migration evidence. Use when a schema or artifact version changes and existing records must migrate; use dependency-maintenance instead for application package upgrades.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "skill-inventory",
+        "skill-dependency-manager"
+      ],
+      "reports": [
+        "reports/artifact-upgrade-plan.json",
+        "reports/artifact-upgrade-report.md"
+      ]
+    },
+    {
+      "name": "audit-azure-environment",
+      "path": ".github/skills/audit-azure-environment/SKILL.md",
+      "description": "Perform an evidence-based, read-only Azure security, reliability, governance, cost, and configuration assessment. Use to assess a deployed tenant, subscription, or resource group; use architecture-review instead for design-time review of infrastructure code in the repository.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [],
+      "reports": [
+        "reports/azure-audit-findings.json"
+      ]
+    },
+    {
+      "name": "audit-code",
+      "path": ".github/skills/audit-code/SKILL.md",
+      "description": "Perform a complete, read-only repository audit for security, correctness, resource management, performance, dependencies, tests, architecture, and maintainability with structured evidence. Use for a whole-repository assessment; use change-review for a bounded diff and security-review for a security-only pass.",
+      "lifecycle": "tested",
+      "confidence": "medium",
+      "dependencies": [],
+      "reports": [
+        "reports/code-audit-findings.json"
+      ]
+    },
+    {
+      "name": "audit-plan-remediation",
+      "path": ".github/skills/audit-plan-remediation/SKILL.md",
+      "description": "Convert validated audit findings into prioritized remediation work with owners, dependencies, verification, rollout, and rollback guidance. Use after findings are reviewed and confirmed; do not use to generate findings or to execute the remediation work.",
+      "lifecycle": "tested",
+      "confidence": "medium",
+      "dependencies": [
+        "audit-review-findings",
+        "policy-engine"
+      ],
+      "reports": [
+        "reports/audit-remediation-plan.json",
+        "reports/audit-remediation-plan.md"
+      ]
+    },
+    {
+      "name": "audit-review-findings",
+      "path": ".github/skills/audit-review-findings/SKILL.md",
+      "description": "Transform structured audit findings into a traceable mixed-audience review while preserving IDs, severity, confidence, evidence, and limitations. Use between audit-code and remediation planning; do not use to discover new findings.",
+      "lifecycle": "tested",
+      "confidence": "medium",
+      "dependencies": [
+        "audit-code",
+        "audit-azure-environment"
+      ],
+      "reports": [
+        "reports/code-audit-review.json",
+        "reports/code-audit-review.md",
+        "reports/azure-audit-review.json",
+        "reports/azure-audit-review.md"
+      ]
+    },
+    {
+      "name": "change-review",
+      "path": ".github/skills/change-review/SKILL.md",
+      "description": "Review a bounded working-tree, commit, or pull-request diff for defects, security regressions, requirement gaps, and missing tests, with severity-ranked evidence. Use before commit or merge; use audit-code instead for repository-wide assessment.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "policy-engine"
+      ],
+      "reports": [
+        "reports/change-review.json",
+        "reports/change-review.md"
+      ]
+    },
+    {
+      "name": "ci-failure-triage",
+      "path": ".github/skills/ci-failure-triage/SKILL.md",
+      "description": "Resolve a specific CI run or pull request, extract actionable failing checks and logs, diagnose the local cause, and verify a scoped repair. Use for failing hosted pipelines; do not use for local-only test failures or general workflow design.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "policy-engine",
+        "systematic-debugging",
+        "regression-test-development",
+        "workflow-state-manager"
+      ],
+      "reports": [
+        "reports/ci-triage-result.json",
+        "reports/ci-triage-result.md"
+      ]
+    },
+    {
+      "name": "clarify-the-ask",
+      "path": ".github/skills/clarify-the-ask/SKILL.md",
+      "description": "Determine whether a development request is sufficiently defined, inspect available project evidence, surface conflicts and assumptions, and ask only material clarifying questions before planning or implementation. Use for ambiguous, conflicting, high-impact, or underspecified requests; skip questions when repository evidence and safe defaults are sufficient.",
+      "lifecycle": "tested",
+      "confidence": "medium",
+      "dependencies": [],
+      "reports": [
+        "reports/clarification-result.json",
+        "reports/clarification-result.md"
+      ]
+    },
+    {
+      "name": "dependency-maintenance",
+      "path": ".github/skills/dependency-maintenance/SKILL.md",
+      "description": "Assess and update application package dependencies with provenance, advisory, compatibility, lockfile, and test evidence. Use for package upgrades or vulnerability remediation; do not use for Agent Skill graph dependencies or schema migrations.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "policy-engine",
+        "regression-test-development",
+        "workflow-state-manager"
+      ],
+      "reports": [
+        "reports/dependency-maintenance.json",
+        "reports/dependency-maintenance.md"
+      ]
+    },
+    {
+      "name": "deployment-review",
+      "path": ".github/skills/deployment-review/SKILL.md",
+      "description": "Validate that a release candidate is deployable by checking build reproducibility, configuration completeness, environment parity, verification steps, and rollback readiness. Use before requesting deployment approval; this skill never performs a deployment.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "architecture-review",
+        "security-review"
+      ],
+      "reports": [
+        "reports/deployment-review.json",
+        "reports/deployment-review.md"
+      ]
+    },
+    {
+      "name": "development-environment-readiness",
+      "path": ".github/skills/development-environment-readiness/SKILL.md",
+      "description": "Assess, plan, configure, and validate a project's pre-coding development environment, including access, editor, source control, runtimes, authentication, isolation, debugging, testing, automation, and security gates. Use when onboarding a repository or preparing a new project; do not use for feature implementation.",
+      "lifecycle": "tested",
+      "confidence": "medium",
+      "dependencies": [
+        "policy-engine",
+        "workflow-state-manager"
+      ],
+      "reports": [
+        "reports/development-environment-readiness.json",
+        "reports/development-environment-readiness.md"
+      ]
+    },
+    {
+      "name": "documentation-builder",
+      "path": ".github/skills/documentation-builder/SKILL.md",
+      "description": "Generate and maintain README files, decision records, deployment guides, and operations runbooks that are verified against repository evidence. Use when documentation is missing, stale, or contradicts the code; do not use to narrate changes an agent just made.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "clarify-the-ask"
+      ],
+      "reports": [
+        "reports/documentation-plan.json",
+        "reports/documentation-plan.md"
+      ]
+    },
+    {
+      "name": "framework-health-check",
+      "path": ".github/skills/framework-health-check/SKILL.md",
+      "description": "Validate framework structure, skill contracts, schemas, ownership, profiles, fixtures, configuration, and conformance evidence. Use to verify the installed orchestrator framework itself; use audit-code instead to assess application code.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "skill-inventory",
+        "skill-dependency-manager"
+      ],
+      "reports": [
+        "reports/framework-health.json",
+        "reports/framework-health.md",
+        "reports/conformance-report.json",
+        "reports/conformance-report.md"
+      ]
+    },
+    {
+      "name": "multi-agent-coordinator",
+      "path": ".github/skills/multi-agent-coordinator/SKILL.md",
+      "description": "Coordinate concurrent agents with leases, fencing tokens, ownership transfer, conflict detection, and shared-read or exclusive-write semantics. Use when more than one agent may write the same artifacts concurrently; do not use for single-agent sequential work.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "workflow-state-manager",
+        "workflow-scheduler"
+      ],
+      "reports": [
+        "reports/coordination-state.json",
+        "reports/coordination-state.md"
+      ]
+    },
+    {
+      "name": "policy-engine",
+      "path": ".github/skills/policy-engine/SKILL.md",
+      "description": "Evaluate centralized authorization, risk, compliance, escalation, and approval policies without executing the governed action. Use to decide whether an action is allowed, denied, or approval-gated; never use it to perform the action.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [],
+      "reports": [
+        "reports/policy-evaluation.json",
+        "reports/policy-evaluation.md",
+        "reports/policy-decision-log.jsonl"
+      ]
+    },
+    {
+      "name": "prepare-commit",
+      "path": ".github/skills/prepare-commit/SKILL.md",
+      "description": "Prepare a minimal, validated change set and commit summary after bounded change review, without committing, pushing, deploying, or bypassing protections. Use when changes are ready for a pre-commit decision.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "change-review"
+      ],
+      "reports": []
+    },
+    {
+      "name": "project-handoff",
+      "path": ".github/skills/project-handoff/SKILL.md",
+      "description": "Record verified project continuity, milestone status, key decisions, blockers, last completed work, and the next approved action. Use at the end of a work session or before transferring ownership so the next agent or person can resume; do not use as a change log.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "workflow-state-manager"
+      ],
+      "reports": [
+        "reports/project-handoff.json",
+        "reports/project-handoff.md",
+        "reports/current-work-state.json"
+      ]
+    },
+    {
+      "name": "project-knowledge-capture",
+      "path": ".github/skills/project-knowledge-capture/SKILL.md",
+      "description": "Transform verified decisions, lessons, patterns, anti-patterns, and architecture discoveries into reusable project knowledge. Use when an insight should outlive the current task; use project-handoff instead for current status and next actions.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "project-handoff"
+      ],
+      "reports": [
+        "reports/knowledge.json",
+        "reports/knowledge-capture.md"
+      ]
+    },
+    {
+      "name": "project-memory",
+      "path": ".github/skills/project-memory/SKILL.md",
+      "description": "Maintain operational experience and durable preferences while ensuring current instructions and repository evidence outrank saved memory. Use to record or recall durable working preferences across sessions; never use stored memory to override the current request or repository evidence.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "project-knowledge-capture"
+      ],
+      "reports": [
+        "reports/project-memory.json",
+        "reports/project-memory.md"
+      ]
+    },
+    {
+      "name": "project-setup",
+      "path": ".github/skills/project-setup/SKILL.md",
+      "description": "Establish a new application's repository structure, agent customization layer, standards, and required skill set so development can start from a governed baseline. Use when starting a new application or bringing an unstructured repository up to the project baseline; do not use for feature implementation or dependency installation.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "clarify-the-ask",
+        "workflow-planner"
+      ],
+      "reports": [
+        "reports/project-setup-plan.json",
+        "reports/project-setup-plan.md"
+      ]
+    },
+    {
+      "name": "project-skills-orchestrator",
+      "path": ".github/skills/project-skills-orchestrator/SKILL.md",
+      "description": "Coordinate project workflows by discovering capabilities, routing intent, enforcing ownership boundaries, and composing approved skills. Use to route any request that spans more than one skill or whose owner is unclear; do not use when a single owning skill clearly applies.",
+      "lifecycle": "tested",
+      "confidence": "medium",
+      "dependencies": [
+        "clarify-the-ask",
+        "workflow-planner",
+        "skill-inventory",
+        "policy-engine",
+        "workflow-state-manager"
+      ],
+      "reports": [
+        "reports/workflow-completion.json",
+        "reports/workflow-completion.md"
+      ]
+    },
+    {
+      "name": "regression-test-development",
+      "path": ".github/skills/regression-test-development/SKILL.md",
+      "description": "Create or strengthen focused automated tests that reproduce a bug or specify a requested behavior, then capture red-green validation evidence. Use when a change needs durable regression coverage; do not use only to execute an existing test suite.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "policy-engine",
+        "workflow-state-manager"
+      ],
+      "reports": [
+        "reports/regression-test-result.json",
+        "reports/regression-test-result.md"
+      ]
+    },
+    {
+      "name": "security-review",
+      "path": ".github/skills/security-review/SKILL.md",
+      "description": "Review code, configuration, and infrastructure for exploitable weaknesses, secret exposure, identity and authorization defects, and OWASP Top 10 categories with severity-ranked evidence. Use before merging or releasing security-relevant change; use audit-code instead for whole-repository quality assessment.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "audit-code"
+      ],
+      "reports": [
+        "reports/security-review.json",
+        "reports/security-review.md"
+      ]
+    },
+    {
+      "name": "skill-create",
+      "path": ".github/skills/skill-create/SKILL.md",
+      "description": "Create or update concise, composable skill packages with valid metadata, bounded tools, ownership, validation, dependencies, and examples. Use to author or revise a skill contract; do not use to invoke an existing skill.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "skill-inventory",
+        "skill-dependency-manager"
+      ],
+      "reports": []
+    },
+    {
+      "name": "skill-dependency-manager",
+      "path": ".github/skills/skill-dependency-manager/SKILL.md",
+      "description": "Resolve skill and artifact dependencies, validate compatible versions, detect cycles, assess upgrade impact, and generate dependency graphs. Use for the skill and artifact graph; use dependency-maintenance instead for application package dependencies.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "skill-inventory"
+      ],
+      "reports": [
+        "reports/skill-dependency-graph.json",
+        "reports/skill-dependency-report.md"
+      ]
+    },
+    {
+      "name": "skill-inventory",
+      "path": ".github/skills/skill-inventory/SKILL.md",
+      "description": "Discover and inventory skills, reports, add-ins, integrations, schemas, templates, adapters, migrations, runtime components, and configuration extensions. Use to establish what capabilities and artifacts a project actually has before planning; do not use to execute them.",
+      "lifecycle": "tested",
+      "confidence": "medium",
+      "dependencies": [],
+      "reports": [
+        "reports/skill-inventory.json",
+        "reports/skill-inventory.md",
+        "reports/skill-details.json",
+        "reports/skill-details.md",
+        "reports/artifact-ownership.json"
+      ]
+    },
+    {
+      "name": "skill-registry",
+      "path": ".github/skills/skill-registry/SKILL.md",
+      "description": "Manage governed skill package metadata, discovery, provenance, integrity, lifecycle promotion, deprecation, retirement, and revocation proposals. Use to promote, deprecate, retire, or verify the provenance of a skill package; use skill-create instead to author its content.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "skill-inventory",
+        "skill-dependency-manager",
+        "policy-engine"
+      ],
+      "reports": [
+        "reports/skill-registry.json",
+        "reports/skill-registry.md"
+      ]
+    },
+    {
+      "name": "systematic-debugging",
+      "path": ".github/skills/systematic-debugging/SKILL.md",
+      "description": "Reproduce an observed software failure, gather diagnostic evidence, isolate its root cause, and verify the smallest safe fix. Use for failing behavior, crashes, incorrect output, flaky tests, or regressions; do not use for broad repository audits.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "policy-engine",
+        "workflow-state-manager"
+      ],
+      "reports": [
+        "reports/debugging-result.json",
+        "reports/debugging-result.md"
+      ]
+    },
+    {
+      "name": "workflow-planner",
+      "path": ".github/skills/workflow-planner/SKILL.md",
+      "description": "Convert user intent into an ordered, validated workflow plan with inputs, outputs, approvals, checkpoints, rollback points, and recovery routes. Use after clarification to turn a confirmed request into an executable sequence; do not use to execute the plan.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "clarify-the-ask",
+        "skill-inventory",
+        "skill-dependency-manager"
+      ],
+      "reports": [
+        "reports/workflow-plan.json",
+        "reports/workflow-plan.md"
+      ]
+    },
+    {
+      "name": "workflow-recovery",
+      "path": ".github/skills/workflow-recovery/SKILL.md",
+      "description": "Analyze interrupted or partially failed workflows and produce a safe recovery plan from events, checkpoints, artifacts, and handoffs. Use when a workflow was interrupted, crashed, or partially applied and must resume safely; do not use for normal planning.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "workflow-state-manager",
+        "project-handoff"
+      ],
+      "reports": [
+        "reports/recovery-plan.json",
+        "reports/recovery-plan.md"
+      ]
+    },
+    {
+      "name": "workflow-scheduler",
+      "path": ".github/skills/workflow-scheduler/SKILL.md",
+      "description": "Own admission, prioritization, fairness, budgets, deadlines, throttling, capacity, and starvation prevention for eligible workflows. Use when multiple eligible workflows compete for limited capacity or budget; do not use for a single sequential workflow.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "workflow-state-manager",
+        "policy-engine"
+      ],
+      "reports": [
+        "reports/scheduler-state.json",
+        "reports/scheduler-state.md"
+      ]
+    },
+    {
+      "name": "workflow-simulator",
+      "path": ".github/skills/workflow-simulator/SKILL.md",
+      "description": "Predict workflow behavior, failure paths, approval rejection, conflicts, migrations, interruptions, and budget outcomes without real mutations. Use to dry-run a plan and expose failure and approval paths before committing to it; this skill never mutates real state.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "workflow-planner",
+        "policy-engine"
+      ],
+      "reports": [
+        "reports/workflow-simulation.json",
+        "reports/workflow-simulation.md"
+      ]
+    },
+    {
+      "name": "workflow-state-manager",
+      "path": ".github/skills/workflow-state-manager/SKILL.md",
+      "description": "Maintain live event-sourced execution state and deterministic pause, resume, approval-wait, checkpoint, and terminal-state behavior. Use to read or advance authoritative execution state; use policy-engine for approval decisions and project-skills-orchestrator for routing.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "workflow-planner"
+      ],
+      "reports": [
+        "reports/current-execution-state.json",
+        "reports/current-execution-state.md",
+        "reports/execution-log.jsonl"
+      ]
+    },
+    {
+      "name": "workflow-telemetry",
+      "path": ".github/skills/workflow-telemetry/SKILL.md",
+      "description": "Derive operational metrics, resource usage, retries, failures, approvals, artifacts, and skill performance from authoritative runtime events. Use to analyze recorded workflow events after execution; do not use as a live monitoring or alerting system.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "workflow-state-manager"
+      ],
+      "reports": [
+        "reports/workflow-telemetry.json",
+        "reports/workflow-telemetry.md"
+      ]
+    }
+  ]
+}
