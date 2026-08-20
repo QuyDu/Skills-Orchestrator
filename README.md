@@ -85,11 +85,13 @@ Asks whether your target is new, already local, or a remote GitHub repository, t
 node .\pso.mjs create-project `
   --name "My Project" `
   --destination "C:\Projects" `
-  --profile core `
+  --profile durable `
   --stack typescript `
   --open `
   --accept-risk
 ```
+
+`--profile` is optional and defaults to `durable`, which requires the continuity skills and `audit-azure-environment` in addition to the `core` set. Pass `--profile core` for a smaller required set that excludes the deployed-environment Azure audit.
 
 `--stack` is optional and accepts a comma-separated list. It decides which scoped instruction files are installed, what the build and test tasks run, which debug configurations are written, and what the generated CI workflow actually executes.
 
@@ -100,6 +102,33 @@ Supported values: `typescript`, `javascript`, `csharp`, `python`, `powershell`, 
 Without `--stack`, you get the universal standards and a CI workflow that **fails until you configure it**. That is deliberate — a pipeline that passes without testing anything is worse than no pipeline.
 
 The destination must be absent or empty. The project is published only after installation verification passes.
+
+### Hand the first task over with `--intent`
+
+`--intent` records what you want built first, so the new workspace opens with the work already in front of the agent.
+
+```powershell
+node .\pso.mjs create-project `
+  --name "Skills Orchestrator Demo" `
+  --destination "C:\repos" `
+  --stack typescript `
+  --intent "Demo started 10:30 am and runs for 1 hour. Build a web app that explains the demo and counts down to the end." `
+  --open `
+  --accept-risk
+```
+
+Describe the **application** only. The project itself already exists by the time the agent reads this, so an intent that says "create a new project" tells the agent to create something it is already sitting inside.
+
+Two things happen:
+
+- `docs/PROJECT-BRIEF.md` is written into the project, recording the requested outcome verbatim alongside an ISO 8601 creation timestamp. The brief is the durable copy; it survives closing the window.
+- With `--open`, the outcome is handed to Copilot Chat **in ask mode**, with the brief attached as context.
+
+Ask mode is deliberate. A newly created folder has not been trusted yet, and the text arrived over a command-line argument that a script could just as easily have supplied. The first turn therefore reads the brief, asks its three clarifying questions, and proposes a plan — it cannot write files. Switch to Agent mode once you approve.
+
+Relative times are left alone. `--intent` is never parsed for dates; the agent resolves "10:30 am" against the recorded creation timestamp and asks if that is ambiguous.
+
+If Visual Studio Code cannot be launched, project creation still succeeds and the composed prompt is printed for you to paste.
 
 ### First run in Visual Studio Code
 
@@ -167,7 +196,7 @@ Useful flags:
 | --- | --- |
 | `--force-templates` | Install framework templates even where an equivalent already exists |
 | `--force-adopt` | Proceed against a directory with no recognized project marker |
-| `--profile` | `core`, `durable`, `distributed`, or `advanced` |
+| `--profile` | `core`, `durable`, `distributed`, or `advanced`. Adoption keeps the profile the project already declares; new projects default to `durable` |
 
 ### Clone and provision in one step
 

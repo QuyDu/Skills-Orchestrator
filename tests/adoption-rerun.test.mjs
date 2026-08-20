@@ -488,7 +488,10 @@ test("accepted project creation records the risk acknowledgment", async () => {
     assert.equal(manifest.riskAcceptance.noticeVersion, "1.0.0");
     assert.equal(manifest.riskAcceptance.method, "cli-flag");
     assert.match(manifest.riskAcceptance.acceptedAt, /^\d{4}-\d{2}-\d{2}T/);
+    assert.equal(manifest.conformanceProfile, "durable");
     const created = path.join(parent, "accepted-fixture");
+    const orchestrator = await readFile(path.join(created, "config", "orchestrator.yaml"), "utf8");
+    assert.match(orchestrator, /^profile: durable$/m);
     const inventory = JSON.parse(await readFile(path.join(created, "reports", "skill-inventory.json"), "utf8"));
     assert.equal(inventory.skills.length, expectedSkillCount);
     const verification = JSON.parse(await readFile(path.join(created, "reports", "installation-verification.json"), "utf8"));
@@ -509,6 +512,8 @@ test("accepted project creation records the risk acknowledgment", async () => {
     assert.equal(verification.checks.copilotRouted, true);
     assert.equal(verification.checks.agentInstructionsRouted, true);
     assert.equal(verification.checks.workspaceSupportPresent, true);
+    const configuredProfile = JSON.parse(await readFile(path.join(created, "config", "skills-orchestrator.json"), "utf8")).profile;
+    assert.equal(configuredProfile, "durable");
   } finally {
     await rm(parent, { recursive: true, force: true });
   }
@@ -724,6 +729,153 @@ test("--open reports its outcome and never fails project creation", async () => 
   } finally {
     await rm(parent, { recursive: true, force: true });
   }
+});
+
+test("--intent records the requested outcome and stamps an unambiguous creation time", async () => {
+  const parent = await mkdtemp(path.join(os.tmpdir(), "pso-intent-"));
+  const outcome = "Demo started 10:30 am and runs for 1 hour. Build a web app with a countdown to the end.";
+  try {
+    const created = spawnSync(process.execPath, [runtime, "create-project", "--name", "Intent Demo", "--destination", parent, "--intent", outcome, "--accept-risk", "--open"], {
+      cwd: root,
+      encoding: "utf8",
+      env: { ...process.env, PSO_SUPPRESS_EDITOR_LAUNCH: "1" }
+    });
+    assert.equal(created.status, 0, created.stderr);
+
+    const project = path.join(parent, "intent-demo");
+    const brief = await readFile(path.join(project, "docs", "PROJECT-BRIEF.md"), "utf8");
+    assert.ok(brief.includes(outcome), "the requested outcome is recorded verbatim");
+    assert.match(brief, /ask three clarifying questions/);
+    assert.match(brief, /Resolve every relative or partial time/);
+
+    const manifest = JSON.parse(await readFile(path.join(project, "project-orchestrator.json"), "utf8"));
+    assert.match(manifest.createdAt, /^\d{4}-\d{2}-\d{2}T[\d:.]+Z$/);
+    assert.ok(brief.includes(manifest.createdAt), "the brief and the manifest agree on the creation instant");
+
+    assert.match(created.stdout, /Project brief:/);
+    assert.match(created.stdout, /Paste this into Copilot Chat/);
+    assert.ok(created.stdout.includes(outcome), "the fallback prints a prompt the user can actually paste");
+  } finally {
+    await rm(parent, { recursive: true, force: true });
+  }
+});
+
+test("a project created without --intent carries no brief", async () => {
+  const parent = await mkdtemp(path.join(os.tmpdir(), "pso-nointent-"));
+  try {
+    const created = spawnSync(process.execPath, [runtime, "create-project", "--name", "Quiet Demo", "--destination", parent, "--accept-risk"], {
+      cwd: root, encoding: "utf8"
+    });
+    assert.equal(created.status, 0, created.stderr);
+    assert.equal(existsSync(path.join(parent, "quiet-demo", "docs", "PROJECT-BRIEF.md")), false);
+    assert.doesNotMatch(created.stdout, /Project brief:/);
+  } finally {
+    await rm(parent, { recursive: true, force: true });
+  }
+});
+
+test("intent text is stored verbatim and never interpreted as a command", async () => {
+  const parent = await mkdtemp(path.join(os.tmpdir(), "pso-intent-safe-"));
+  const hostile = 'Build a page & echo pwned > owned.txt; rm -rf / `whoami` $(id) | tee out';
+  try {
+    const created = spawnSync(process.execPath, [runtime, "create-project", "--name", "Safe Demo", "--destination", parent, "--intent", hostile, "--accept-risk"], {
+      cwd: root, encoding: "utf8"
+    });
+    assert.equal(created.status, 0, created.stderr);
+    const project = path.join(parent, "safe-demo");
+    const brief = await readFile(path.join(project, "docs", "PROJECT-BRIEF.md"), "utf8");
+    assert.ok(brief.includes(hostile), "metacharacters survive intact rather than being expanded or stripped");
+    assert.equal(existsSync(path.join(project, "owned.txt")), false);
+    assert.equal(existsSync(path.join(root, "owned.txt")), false);
+  } finally {
+    await rm(parent, { recursive: true, force: true });
+  }
+});
+
+test("every created project receives the Azure discovery and deployment scaffold", async () => {
+  const parent = await mkdtemp(path.join(os.tmpdir(), "pso-infra-"));
+  try {
+    // No --stack: the scaffold installs unconditionally, so a stackless project still gets it.
+    const created = spawnSync(process.execPath, [runtime, "create-project", "--name", "Infra Demo", "--destination", parent, "--accept-risk"], {
+      cwd: root, encoding: "utf8"
+    });
+    assert.equal(created.status, 0, created.stderr);
+    const infra = path.join(parent, "infra-demo", "infra");
+    for (const file of ["deploy.ps1", "discover.ps1", "deploy-infra.ps1", "main.bicep", "README.md"]) {
+      assert.equal(existsSync(path.join(infra, file)), true, `infra/${file} is installed`);
+    }
+    const instructions = await readFile(path.join(parent, "infra-demo", ".github", "instructions", "azure-deployment.instructions.md"), "utf8");
+    assert.match(instructions, /applyTo:\s*"infra\/\*\*"/);
+  } finally {
+    await rm(parent, { recursive: true, force: true });
+  }
+});
+
+test("the Azure scaffold carries no tenant, subscription, or credential material", async () => {
+  const infra = path.join(root, "templates", "project", "infra");
+  const files = await readdir(infra);
+  const forbidden = [
+    [/\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/i, "a literal GUID, which would pin a tenant or subscription"],
+    [/client_?secret|clientSecret/i, "a client secret reference"],
+    [/--password|-Password\b/, "a password argument"],
+    [/service[- ]?principal\s*=|\bsp_?password\b/i, "service principal credentials"]
+  ];
+  for (const file of files) {
+    const content = await readFile(path.join(infra, file), "utf8");
+    // Built-in role definition ids are global Azure constants, not environment identifiers.
+    const scannable = content.split("\n").filter((line) => !/RoleId|roleDefinition/i.test(line)).join("\n");
+    for (const [pattern, description] of forbidden) {
+      assert.doesNotMatch(scannable, pattern, `infra/${file} must not contain ${description}`);
+    }
+  }
+});
+
+test("the Azure baseline authenticates by managed identity and follows the shipped Bicep standards", async () => {
+  const bicep = await readFile(path.join(root, "templates", "project", "infra", "main.bicep"), "utf8");
+  assert.match(bicep, /targetScope = 'resourceGroup'/, "targetScope is declared explicitly");
+  assert.match(bicep, /type: 'SystemAssigned'/, "the web app gets a managed identity");
+  assert.match(bicep, /Microsoft\.Authorization\/roleAssignments/, "access is granted by RBAC rather than keys");
+  assert.match(bicep, /param publicNetworkAccess string = 'Enabled'/, "the baseline deploys reachable");
+  assert.match(bicep, /isAzureGov \? 'AzureUSGovernment' : 'AzureCloud'/, "one build serves both clouds");
+  assert.doesNotMatch(bicep, /listKeys\(|\.keys\[0\]|primaryKey/i, "no service key is ever read into app settings");
+});
+
+test("the reachable-by-default baseline states the production hardening it still needs", async () => {
+  const readme = await readFile(path.join(root, "templates", "project", "infra", "README.md"), "utf8");
+  assert.match(readme, /change this before production/i);
+  assert.match(readme, /private endpoints/i);
+  const instructions = await readFile(path.join(root, "templates", "project", ".github", "instructions", "azure-deployment.instructions.md"), "utf8");
+  assert.match(instructions, /not a substitute for network isolation/i);
+});
+
+test("the Azure baseline treats Key Vault as optional", async () => {
+  const bicep = await readFile(path.join(root, "templates", "project", "infra", "main.bicep"), "utf8");
+  assert.match(bicep, /param deployKeyVault bool = true/);
+  assert.match(bicep, /resource keyVault '[^']+' = if \(deployKeyVault\)/, "the vault itself is conditional");
+  assert.match(bicep, /resource keyVaultSecretsUser '[^']+' = if \(deployKeyVault\)/, "its role assignment disappears with it");
+  // A conditional resource is null until deployed, so every read of it must be safe-dereferenced.
+  assert.doesNotMatch(bicep, /keyVault\.properties/, "no unguarded read of a resource that may not exist");
+  const deploy = await readFile(path.join(root, "templates", "project", "infra", "deploy.ps1"), "utf8");
+  assert.match(deploy, /\[switch\]\$NoKeyVault/, "the switch is reachable from the entry point");
+});
+
+test("discovery probes every region rather than only the target region", async () => {
+  const discover = await readFile(path.join(root, "templates", "project", "infra", "discover.ps1"), "utf8");
+  assert.match(discover, /function Get-AzureCognitiveKindRegion/);
+  assert.match(discover, /function Invoke-AzureDiscovery/);
+  // The all-region probe omits --location on purpose; pinning it reports false negatives.
+  assert.match(discover, /az cognitiveservices account list-skus --kind \$Kind `\r?\n\s*--query "\[\]\.locations"/);
+  assert.match(discover, /'gpt-5\.1', 'gpt-4\.1'/, "the model preference ladder is present");
+});
+
+// Regression guard: `chat` is implemented in cli.js, so handing it to the Electron binary opens a
+// window and silently discards the subcommand, which looked like success.
+test("the chat handover invokes the VS Code CLI entry point, not the Electron binary alone", async () => {
+  const source = await readFile(runtime, "utf8");
+  assert.match(source, /ELECTRON_RUN_AS_NODE/, "the CLI entry point is invoked the way the launcher does");
+  assert.match(source, /args\.unshift\(cliPath\)/, "cli.js is prepended to the chat arguments");
+  assert.match(source, /%~dp0\(\[\^"\]\*\?cli\\\.js\)/, "the cli.js path is read from the launcher rather than guessed");
+  assert.doesNotMatch(source, /shell:\s*true/, "no spawn uses a shell, so intent text cannot be interpreted as a command");
 });
 
 test("created projects wire a usable VS Code workspace for the declared stack", async () => {  const parent = await mkdtemp(path.join(os.tmpdir(), "pso-workspace-"));

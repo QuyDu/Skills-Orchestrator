@@ -34,7 +34,7 @@ Verified registry-free distribution: 30 skills
 node .\pso.mjs create-project `
   --name "PSO Test Project" `
   --destination "C:\repos" `
-  --profile core `
+  --profile durable `
   --accept-risk
 ```
 
@@ -44,7 +44,7 @@ Or use the PowerShell launcher:
 .\pso.ps1 create-project `
   --name "PSO Test Project" `
   --destination "C:\repos" `
-  --profile core `
+  --profile durable `
   --accept-risk
 ```
 
@@ -58,7 +58,7 @@ The new project is created under `C:\repos\pso-test-project`. Open its `.code-wo
 node .\pso.mjs clone-setup `
   --repository "https://github.com/owner/project.git" `
   --destination "C:\repos\project" `
-  --profile core `
+  --profile durable `
   --accept-risk
 ```
 

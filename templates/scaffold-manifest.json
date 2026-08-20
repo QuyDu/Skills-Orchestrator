@@ -98,6 +98,48 @@
       "requires": ["bicep"]
     },
     {
+      "path": ".github/instructions/azure-deployment.instructions.md",
+      "kind": "scoped-instructions",
+      "purpose": "azure deployment discovery managed identity sovereign cloud",
+      "applyTo": "infra/**",
+      "requires": "always"
+    },
+    {
+      "path": "infra/deploy.ps1",
+      "kind": "deployment",
+      "purpose": "azure deployment orchestrator entry point",
+      "requires": "always",
+      "createOnly": true
+    },
+    {
+      "path": "infra/discover.ps1",
+      "kind": "deployment",
+      "purpose": "azure region service and model discovery",
+      "requires": "always",
+      "createOnly": true
+    },
+    {
+      "path": "infra/deploy-infra.ps1",
+      "kind": "deployment",
+      "purpose": "azure bicep deployment library",
+      "requires": "always",
+      "createOnly": true
+    },
+    {
+      "path": "infra/main.bicep",
+      "kind": "deployment",
+      "purpose": "azure baseline managed identity key vault openai",
+      "requires": "always",
+      "createOnly": true
+    },
+    {
+      "path": "infra/README.md",
+      "kind": "deployment",
+      "purpose": "azure deployment pipeline documentation",
+      "requires": "always",
+      "createOnly": true
+    },
+    {
       "path": ".github/agents/azure-architect.agent.md",
       "kind": "agent",
       "purpose": "azure architecture design review well-architected",

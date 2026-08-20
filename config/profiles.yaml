@@ -18,6 +18,7 @@ profiles:
       - ci-failure-triage
       - dependency-maintenance
       - audit-code
+      - audit-azure-environment
       - audit-review-findings
       - audit-plan-remediation
       - security-review
@@ -34,7 +35,6 @@ profiles:
       - workflow-recovery
       - project-knowledge-capture
       - project-memory
-      - audit-azure-environment
   distributed:
     extends: durable
     required:

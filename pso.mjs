@@ -14,8 +14,11 @@ const RISK_ACCEPTANCE_VERSION = "1.0.0";
 const SCRIPT_ROOT = path.dirname(fileURLToPath(import.meta.url));
 const SUPPORTED_NODE_MAJORS = new Set([22, 24, 26]);
 const PROFILES = new Set(["core", "durable", "distributed", "advanced"]);
+// Newly provisioned projects default to durable so continuity and audit-azure-environment are required, not merely installed.
+const DEFAULT_PROJECT_PROFILE = "durable";
 const CONFIGURATION_PATH = path.join("config", "skills-orchestrator.json");
 const TEMPLATE_ROOT_RELATIVE = "templates/project";
+const BRIEF_RELATIVE_PATH = "docs/PROJECT-BRIEF.md";
 const SCAFFOLD_MANIFEST_RELATIVE = "templates/scaffold-manifest.json";
 const STACK_TAGS = new Set([
   "typescript", "javascript", "csharp", "python", "powershell", "bicep",
@@ -1055,8 +1058,49 @@ function workspaceSettings() {
   return `${JSON.stringify(WORKSPACE_SETTINGS, null, 2)}\n`;
 }
 
+function projectBrief({ displayName, profile, declaredStack, createdAt, intent }) {
+  const stackRow = declaredStack.size ? [...declaredStack].sort().join(", ") : "not declared";
+  return `# Project brief
+
+| Field | Value |
+| --- | --- |
+| Project | ${displayName} |
+| Profile | ${profile} |
+| Stack | ${stackRow} |
+| Created | ${createdAt} |
+| Provisioned by | Project Skills Orchestrator ${VERSION} |
+
+## Requested outcome
+
+${intent}
+
+## How to treat this brief
+
+This brief records the outcome requested when the project was created. It is a request, not an
+approved plan, and it does not authorize any change on its own.
+
+Resolve every relative or partial time in the requested outcome against the creation timestamp
+above. Do not assume a date or time zone that the requested outcome does not state.
+
+Read \`.github/copilot-instructions.md\` before acting. The mandatory clarification protocol applies
+to this brief exactly as it applies to any other prompt: ask three clarifying questions, state the
+objective, steps, affected files, and risks, then wait for explicit approval.
+`;
+}
+
+// Kept pure so the composed handover text can be asserted without launching an editor.
+function kickoffPrompt({ createdAt, intent }) {
+  return [
+    `This project was created by Project Skills Orchestrator at ${createdAt}.`,
+    "Read docs/PROJECT-BRIEF.md and .github/copilot-instructions.md before proposing anything.",
+    `Requested outcome: ${intent}`,
+    "Resolve relative times against the creation timestamp in the brief.",
+    "Follow the repository engagement protocol: ask three clarifying questions, state the plan, and wait for explicit approval."
+  ].join(" ");
+}
+
 // VS Code ships a .cmd launcher on Windows, which Node refuses to spawn without a shell, so the real executable is resolved instead.
-async function resolveEditorExecutable() {
+async function resolveEditorLauncher() {
   const directories = (process.env.PATH ?? "").split(path.delimiter).filter(Boolean);
   const candidates = process.platform === "win32"
     ? [["code.cmd", "Code.exe"], ["code-insiders.cmd", "Code - Insiders.exe"]]
@@ -1067,14 +1111,34 @@ async function resolveEditorExecutable() {
       if (!existsSync(launcherPath)) continue;
       if (!windowsExecutable) {
         const details = await lstat(launcherPath).catch(() => null);
-        if (details?.isFile()) return launcherPath;
+        if (details?.isFile()) return { launcherPath, executable: launcherPath };
         continue;
       }
       const executable = path.normalize(path.join(path.dirname(launcherPath), "..", windowsExecutable));
-      if (existsSync(executable)) return executable;
+      if (existsSync(executable)) return { launcherPath, executable };
     }
   }
   return null;
+}
+
+async function resolveEditorExecutable() {
+  const resolved = await resolveEditorLauncher();
+  return resolved ? resolved.executable : null;
+}
+
+// Subcommands such as `chat` live in cli.js, not in the Electron binary: passing one straight to
+// Code.exe opens a window and silently discards it. An install can also stage a newer versioned
+// cli.js beside the active one, so the launcher script is the only authoritative record of which
+// copy belongs to the running build.
+async function resolveEditorCli() {
+  const resolved = await resolveEditorLauncher();
+  if (!resolved) return null;
+  if (process.platform !== "win32") return { executable: resolved.executable, cliPath: null };
+  const script = await readFile(resolved.launcherPath, "utf8").catch(() => "");
+  const referenced = script.match(/%~dp0([^"]*?cli\.js)/i);
+  if (!referenced) return null;
+  const cliPath = path.normalize(path.join(path.dirname(resolved.launcherPath), referenced[1]));
+  return existsSync(cliPath) ? { executable: resolved.executable, cliPath } : null;
 }
 
 async function openInEditor(targets) {
@@ -1089,6 +1153,31 @@ async function openInEditor(targets) {
     return { opened: true, executable };
   } catch (error) {
     return { opened: false, reason: error.message };
+  }
+}
+
+// Opens the project and seeds the handover prompt in one invocation; launching the workspace
+// separately would race the chat call, which could target whichever window was active first.
+async function openWithKickoff(root, briefRelativePath, prompt) {
+  if (process.env.PSO_SUPPRESS_EDITOR_LAUNCH === "1") {
+    return { opened: false, seeded: false, reason: "Editor launch suppressed by PSO_SUPPRESS_EDITOR_LAUNCH" };
+  }
+  const resolved = await resolveEditorCli();
+  if (!resolved) return { opened: false, seeded: false, reason: "The Visual Studio Code command line was not found on PATH" };
+  const { executable, cliPath } = resolved;
+  // The prompt is a discrete argument and never reaches a shell, so its content cannot be interpreted as a command.
+  const args = ["chat", "--mode", "ask", "--add-file", briefRelativePath, prompt];
+  const environment = { ...process.env };
+  if (cliPath) {
+    args.unshift(cliPath);
+    environment.ELECTRON_RUN_AS_NODE = "1";
+  }
+  try {
+    const child = spawn(executable, args, { cwd: root, detached: true, stdio: "ignore", env: environment });
+    child.unref();
+    return { opened: true, seeded: true, executable };
+  } catch (error) {
+    return { opened: false, seeded: false, reason: error.message };
   }
 }
 
@@ -1155,10 +1244,12 @@ async function ensureEmptyTarget(root) {
   if ((await readdir(root)).length > 0) throw new Error(`Target exists and is not empty: ${root}`);
 }
 
-async function createProject({ name: enteredName, destination, profile = "core", stack = "", open = false, riskAcceptance }) {
+async function createProject({ name: enteredName, destination, profile = DEFAULT_PROJECT_PROFILE, stack = "", open = false, intent = "", riskAcceptance }) {
   if (!riskAcceptance) throw new Error("Risk acceptance is required before project creation");
   if (!PROFILES.has(profile)) throw new Error(`Unsupported profile: ${profile}`);
   const declaredStack = stack ? parseStackOption(stack) : new Set();
+  const requestedOutcome = String(intent ?? "").trim();
+  const createdAt = new Date().toISOString();
   const displayName = enteredName.trim();
   const name = normalizeName(displayName);
   const parent = await realpath(path.resolve(destination));
@@ -1199,7 +1290,7 @@ async function createProject({ name: enteredName, destination, profile = "core",
       conformanceProfile: profile,
       declaredStack: [...declaredStack].sort(),
       riskAcceptance,
-      createdAt: new Date().toISOString(),
+      createdAt,
       status: "initialized",
       nextAction: "Run development-environment-readiness before the first implementation objective"
     };
@@ -1224,6 +1315,11 @@ async function createProject({ name: enteredName, destination, profile = "core",
     if (workspaceLaunchContent) files.set(".vscode/launch.json", workspaceLaunchContent);
     const copilotSetupContent = copilotSetupStepsWorkflow(declaredStack);
     if (copilotSetupContent) files.set(".github/workflows/copilot-setup-steps.yml", copilotSetupContent);
+    if (requestedOutcome) {
+      files.set(BRIEF_RELATIVE_PATH, projectBrief({
+        displayName, profile, declaredStack, createdAt, intent: requestedOutcome
+      }));
+    }
     for (const [relative, content] of files) {
       const target = path.join(staging, relative);
       await mkdir(path.dirname(target), { recursive: true });
@@ -1236,8 +1332,11 @@ async function createProject({ name: enteredName, destination, profile = "core",
     throw new Error(`Project creation stopped. Staging path preserved for recovery: ${staging}\n${error.message}`);
   }
   const workspace = path.join(root, `${name}.code-workspace`);
-  const launch = open ? await openInEditor([workspace, path.join(root, "README.md")]) : null;
-  return { name, root, workspace, profile, launch };
+  const prompt = requestedOutcome ? kickoffPrompt({ createdAt, intent: requestedOutcome }) : null;
+  let launch = null;
+  if (open && prompt) launch = await openWithKickoff(root, BRIEF_RELATIVE_PATH, prompt);
+  else if (open) launch = await openInEditor([workspace, path.join(root, "README.md")]);
+  return { name, root, workspace, profile, launch, prompt, brief: prompt ? path.join(root, BRIEF_RELATIVE_PATH) : null };
 }
 
 async function sameFile(left, right) {
@@ -2055,27 +2154,41 @@ async function guidedCreate() {
     const name = await terminal.question("Project name: ");
     const destination = await terminal.question(`Destination folder [${process.cwd()}]: `);
     const stack = await terminal.question(`Stack, comma separated, blank for none [${[...STACK_TAGS].sort().join(", ")}]: `);
+    const intent = await terminal.question("What should be built first? Blank to skip: ");
     const openAnswer = await terminal.question("Open in Visual Studio Code when finished? [Y/n]: ");
     const riskAcceptance = await promptRiskAcceptance(terminal);
     const result = await createProject({
       name,
       destination: destination.trim() || process.cwd(),
       stack: stack.trim(),
+      intent: intent.trim(),
       open: !openAnswer.trim().toLowerCase().startsWith("n"),
       riskAcceptance
     });
     console.log(`Created project: ${result.root}`);
     console.log(`Open workspace: ${result.workspace}`);
-    reportLaunch(result.launch);
+    reportLaunch(result);
   } finally {
     terminal.close();
   }
 }
 
-function reportLaunch(launch) {
-  if (!launch) return console.log("Rerun with --open to launch Visual Studio Code automatically.");
-  if (launch.opened) return console.log("Opening Visual Studio Code. Accept the workspace trust prompt and the recommended extensions to enable tasks, debugging, and MCP servers.");
-  return console.log(`Could not open Visual Studio Code automatically: ${launch.reason}. Open the workspace file listed above manually.`);
+function reportLaunch({ launch, prompt, brief }) {
+  if (brief) console.log(`Project brief: ${brief}`);
+  if (!launch) {
+    if (prompt) console.log("Rerun with --open to launch Visual Studio Code and hand the requested outcome to the agent.");
+    else console.log("Rerun with --open to launch Visual Studio Code automatically.");
+    return;
+  }
+  if (launch.opened) {
+    console.log("Opening Visual Studio Code. Accept the workspace trust prompt and the recommended extensions to enable tasks, debugging, and MCP servers.");
+    if (launch.seeded) {
+      console.log("The requested outcome was handed to chat in ask mode, so the first turn can plan and ask questions but cannot change files. Switch to Agent mode once you approve the plan.");
+    }
+    return;
+  }
+  console.log(`Could not open Visual Studio Code automatically: ${launch.reason}. Open the workspace file listed above manually.`);
+  if (prompt) console.log(`Paste this into Copilot Chat in the new project:\n\n${prompt}\n`);
 }
 
 // Windows can refuse a directory rename while an indexer or scanner still holds a handle in the staging tree.
@@ -2097,7 +2210,7 @@ async function publishStagedProject(staging, destination) {
   }
 }
 
-async function cloneAndSetup({ repository: enteredRepository, destination, profile = "core", riskAcceptance }) {
+async function cloneAndSetup({ repository: enteredRepository, destination, profile = DEFAULT_PROJECT_PROFILE, riskAcceptance }) {
   if (!riskAcceptance) throw new Error("Risk acceptance is required before cloning and provisioning a repository");
   if (!PROFILES.has(profile)) throw new Error(`Unsupported profile: ${profile}`);
   const { repository, name } = validateGitHubRepository(enteredRepository);
@@ -2143,12 +2256,12 @@ async function guidedSetup() {
     if (projectType === "n" || projectType === "new") {
       const name = await terminal.question("Project name: ");
       const destination = await terminal.question(`Parent destination folder [${process.cwd()}]: `);
-      const enteredProfile = await terminal.question("Conformance profile [core]: ");
+      const enteredProfile = await terminal.question(`Conformance profile [${DEFAULT_PROJECT_PROFILE}]: `);
       const riskAcceptance = await promptRiskAcceptance(terminal);
       const result = await createProject({
         name,
         destination: destination.trim() || process.cwd(),
-        profile: enteredProfile.trim().toLowerCase() || "core",
+        profile: enteredProfile.trim().toLowerCase() || DEFAULT_PROJECT_PROFILE,
         riskAcceptance
       });
       console.log(`\nCreated project: ${result.root}`);
@@ -2157,8 +2270,8 @@ async function guidedSetup() {
     }
     if (projectType === "e" || projectType === "existing") {
       const project = await terminal.question("Where is the existing repository saved? ");
-      const enteredProfile = await terminal.question("Conformance profile [core]: ");
-      const plan = await buildAdoptionPlan(project, enteredProfile.trim().toLowerCase() || "core");
+      const enteredProfile = await terminal.question(`Conformance profile [${DEFAULT_PROJECT_PROFILE}]: `);
+      const plan = await buildAdoptionPlan(project, enteredProfile.trim().toLowerCase() || DEFAULT_PROJECT_PROFILE);
       printAdoptionPlan(plan);
       if (!plan.canApply) {
         console.log("\nNo files were changed. Resolve the listed conflicts and run setup again.");
@@ -2178,12 +2291,12 @@ async function guidedSetup() {
       const repositoryDetails = validateGitHubRepository(repository);
       const defaultDestination = path.join(process.cwd(), repositoryDetails.name);
       const destination = await terminal.question(`Local destination path [${defaultDestination}]: `);
-      const enteredProfile = await terminal.question("Conformance profile [core]: ");
+      const enteredProfile = await terminal.question(`Conformance profile [${DEFAULT_PROJECT_PROFILE}]: `);
       const riskAcceptance = await promptRiskAcceptance(terminal);
       const result = await cloneAndSetup({
         repository,
         destination: destination.trim() || defaultDestination,
-        profile: enteredProfile.trim().toLowerCase() || "core",
+        profile: enteredProfile.trim().toLowerCase() || DEFAULT_PROJECT_PROFILE,
         riskAcceptance
       });
       console.log(`\nCloned and provisioned project: ${result.root}`);
@@ -2200,8 +2313,8 @@ function help() {
 
 Usage:
   node .\\pso.mjs
-  node .\\pso.mjs create-project --name "My Project" --destination "C:\\repos" --profile core --stack typescript --open --accept-risk
-  node .\\pso.mjs clone-setup --repository "https://github.com/owner/project.git" [--destination "C:\\repos\\project"] --profile core --accept-risk
+  node .\\pso.mjs create-project --name "My Project" --destination "C:\\repos" --profile durable --stack typescript --open --accept-risk
+  node .\\pso.mjs clone-setup --repository "https://github.com/owner/project.git" [--destination "C:\\repos\\project"] --profile durable --accept-risk
   node .\\pso.mjs adopt --project "C:\\repos\\existing" --profile core --dry-run
   node .\\pso.mjs adopt --project "C:\\repos\\existing" --profile core --apply --accept-risk
   node .\\pso.mjs recover --project "C:\\repos\\existing" [--transaction ID]
@@ -2211,6 +2324,8 @@ Usage:
   node .\\pso.mjs --version
 
 New project:
+  --profile selects the conformance profile. The default is ${DEFAULT_PROJECT_PROFILE}.
+  Supported values: ${[...PROFILES].join(", ")}
   --stack is optional and accepts a comma-separated list. It selects the scoped
   instruction files, the build and test tasks, the debug configurations, and the
   continuous-integration commands. Without it none of those are generated.
@@ -2218,6 +2333,10 @@ New project:
   --open launches Visual Studio Code on the generated workspace when the editor
   is installed. Accept the workspace trust prompt to enable tasks, debugging,
   and MCP servers.
+  --intent records the outcome you want built first. It is written to
+  docs/PROJECT-BRIEF.md, and with --open it is handed to Copilot Chat in ask
+  mode so the first turn can plan and ask questions but cannot change files.
+  Describe the application only; the project itself already exists by then.
 
 Adoption:
   --force-templates installs framework templates even where an equivalent exists.
@@ -2255,14 +2374,15 @@ async function main() {
     const result = await createProject({
       name: options.name,
       destination: options.destination,
-      profile: options.profile ?? "core",
+      profile: options.profile ?? DEFAULT_PROJECT_PROFILE,
       stack: options.stack ?? "",
+      intent: options.intent ?? "",
       open: options.open === true,
       riskAcceptance
     });
     console.log(`Created project: ${result.root}`);
     console.log(`Open workspace: ${result.workspace}`);
-    return reportLaunch(result.launch);
+    return reportLaunch(result);
   }
   if (command === "clone-setup") {
     if (!options.repository) throw new Error("Use --repository with a GitHub URL");
@@ -2270,7 +2390,7 @@ async function main() {
     const result = await cloneAndSetup({
       repository: options.repository,
       destination: options.destination,
-      profile: options.profile ?? "core",
+      profile: options.profile ?? DEFAULT_PROJECT_PROFILE,
       riskAcceptance
     });
     return console.log(`Cloned and provisioned project: ${result.root}`);

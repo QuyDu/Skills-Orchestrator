@@ -70,6 +70,17 @@ async function loadSkills() {
   }));
 }
 
+async function loadProfiles() {
+  const source = await readFile(path.join(root, "config", "profiles.yaml"), "utf8");
+  // The block terminator must be the next profile header or end of input; a bare `$` ends every block at its first newline.
+  const blocks = [...source.matchAll(/^ {2}([a-z]+):\r?\n([\s\S]*?)(?=^ {2}[a-z]+:|(?![\s\S]))/gm)];
+  assert.ok(blocks.length, "profiles.yaml declares no profiles");
+  return new Map(blocks.map(([, name, block]) => [name, {
+    parent: block.match(/^ {4}extends: ([a-z]+)\r?$/m)?.[1],
+    required: [...block.matchAll(/^ {6}- ([a-z0-9-]+)\r?$/gm)].map((match) => match[1])
+  }]));
+}
+
 test("all skill IDs and metadata are uniform", async () => {
   const skills = await loadSkills();
   const lifecycles = new Set(["draft", "tested", "validated", "production", "deprecated", "retired"]);
@@ -191,14 +202,7 @@ test("profiles are dependency-closed", async () => {
     skill.metadata.name,
     sectionItems(skill.source, "Composition and Dependencies").filter((dependency) => dependency !== "None")
   ]));
-  const profileSource = await readFile(path.join(root, "config", "profiles.yaml"), "utf8");
-  const blocks = [...profileSource.matchAll(/^  ([a-z]+):\r?\n([\s\S]*?)(?=^  [a-z]+:|\s*$)/gm)];
-  const profiles = new Map();
-  for (const [, name, block] of blocks) {
-    const parent = block.match(/^    extends: ([a-z]+)$/m)?.[1];
-    const required = [...block.matchAll(/^      - ([a-z0-9-]+)$/gm)].map((match) => match[1]);
-    profiles.set(name, { parent, required });
-  }
+  const profiles = await loadProfiles();
 
   function effective(name) {
     const profile = profiles.get(name);
@@ -208,12 +212,27 @@ test("profiles are dependency-closed", async () => {
 
   for (const name of profiles.keys()) {
     const selected = effective(name);
+    assert.ok(selected.size, `${name} profile parsed no required skills`);
     for (const skill of selected) {
       for (const dependency of graph.get(skill)) {
         assert.ok(selected.has(dependency), `${name} profile omits ${skill} dependency ${dependency}`);
       }
     }
   }
+});
+
+test("the default new-project profile requires the deployed-environment Azure audit", async () => {
+  const runtimeSource = await readFile(path.join(root, "pso.mjs"), "utf8");
+  const defaultProfile = runtimeSource.match(/^const DEFAULT_PROJECT_PROFILE = "([a-z]+)";$/m)?.[1];
+  assert.ok(defaultProfile, "pso.mjs must declare DEFAULT_PROJECT_PROFILE");
+
+  const profiles = await loadProfiles();
+  const selected = new Set();
+  for (let name = defaultProfile; name; name = profiles.get(name).parent) {
+    assert.ok(profiles.has(name), `unknown profile ${name}`);
+    for (const skill of profiles.get(name).required) selected.add(skill);
+  }
+  assert.ok(selected.has("audit-azure-environment"), `${defaultProfile} profile omits audit-azure-environment`);
 });
 
 test("all dependencies resolve and the graph is acyclic", async () => {
