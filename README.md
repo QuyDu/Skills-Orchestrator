@@ -4,7 +4,7 @@ Turn any repository into a governed GitHub Copilot workspace: agent instructions
 
 | Item | Value |
 | --- | --- |
-| Runtime version | `1.0.1` |
+| Runtime version | `1.0.2` |
 | Framework version | `9.0.0` |
 | Skill catalog | 36 governed skills |
 | Supported Node.js | 22, 24, 26 |

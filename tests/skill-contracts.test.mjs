@@ -184,8 +184,7 @@ test("every generated and adopted project carries the mandatory clarification pr
   assert.match(discoveryScript, /Azure cloud selection failed after 3 invalid responses/);
   const generatedInstructions = await readFile(path.join(templateRoot, ".github", "copilot-instructions.md"), "utf8");
   assert.match(generatedInstructions, /reports\/project-handoff\.json/);
-  assert.match(generatedInstructions, /--no-clarification/);
-  assert.match(generatedInstructions, /--nmc/);
+  assert.match(generatedInstructions, /--proceed/);
   assert.ok(existsSync(path.join(templateRoot, ".github", "prompts", "skills-help.prompt.md")));
 
   for (const relative of [

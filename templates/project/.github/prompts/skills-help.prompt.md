@@ -41,14 +41,13 @@ You can combine them:
 
 ## Clarification override
 
-Append either exact token to the current prompt when you do not want the normal clarification round:
+Append the exact token to the current prompt when you do not want the normal clarification round:
 
 ```text
---no-clarification
---nmc
+--proceed
 ```
 
-These tokens do not authorize deployment, destructive changes, privileged access, commits, or pushes.
+This token does not authorize deployment, destructive changes, privileged access, commits, or pushes.
 
 ## Project startup order
 

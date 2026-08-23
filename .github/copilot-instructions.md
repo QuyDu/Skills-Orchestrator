@@ -15,7 +15,7 @@ Apply this to every new user prompt, without exception, before any analysis, too
 - Never treat your own plan description as approval.
 - Never proceed merely because three questions were asked; unresolved material ambiguity still blocks.
 - The only exception is an explicit instruction in the current prompt to skip clarification,
-  including `--no-clarification` or its short alias `--nmc`.
+  including the exact `--proceed` token.
 
 ## Orchestration
 

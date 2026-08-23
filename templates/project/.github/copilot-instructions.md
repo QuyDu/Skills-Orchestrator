@@ -19,7 +19,7 @@ Apply this to every new user prompt, without exception, before any analysis, too
 - Ground the three questions in repository evidence; ask about intent, scope, constraints, and acceptance criteria rather than facts the repository already answers.
 - Never treat your own plan description as approval.
 - Never proceed merely because three questions were asked; unresolved material ambiguity still blocks.
-- The only exception is an explicit instruction in the current prompt to skip clarification.
+- The only exception is an explicit instruction in the current prompt to skip clarification, including the exact `--proceed` token.
 <!-- pso:end id=clarification-protocol -->
 
 <!-- pso:begin id=orchestration-routing version=1 -->
@@ -43,7 +43,7 @@ when the user declines and record that decision in the next handoff.
 `/Azure Discovery` accepts `-Commercial` or `-Gov`. If neither is supplied, ask the user to choose
 `1. Commercial` or `2. Gov`; accept only `1` or `2`, retry three invalid responses, then report an
 error and exit. To explicitly bypass the normal clarification round, append the exact token
-`--no-clarification` or `--nmc` to the prompt. These are user instructions to proceed with reasonable defaults,
+`--proceed` to the prompt. This is a user instruction to proceed with reasonable defaults,
 not permission for destructive, external, privileged, irreversible, commit, or push actions.
 
 ## Project purpose

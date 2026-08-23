@@ -8,7 +8,7 @@ import { createHash, randomUUID } from "node:crypto";
 import { spawn, spawnSync } from "node:child_process";
 import { setTimeout as delay } from "node:timers/promises";
 
-const VERSION = "1.0.1";
+const VERSION = "1.0.2";
 const FRAMEWORK_VERSION = "9.0.0";
 const RISK_ACCEPTANCE_VERSION = "1.0.0";
 const SCRIPT_ROOT = path.dirname(fileURLToPath(import.meta.url));
@@ -126,7 +126,7 @@ Apply this to every new user prompt, without exception, before any analysis, too
 - Ground the three questions in repository evidence; ask about intent, scope, constraints, and acceptance criteria rather than facts the repository already answers.
 - Never treat your own plan description as approval.
 - Never proceed merely because three questions were asked; unresolved material ambiguity still blocks.
-- The only exception is an explicit instruction in the current prompt to skip clarification.`;
+- The only exception is an explicit instruction in the current prompt to skip clarification, including the exact \`--proceed\` token.`;
 const COPILOT_ORCHESTRATION_INSTRUCTION = `## Orchestration
 
 ${COPILOT_INSTRUCTION}`;
