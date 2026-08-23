@@ -730,11 +730,22 @@ async function hasProjectMarker(directory) {
 async function detectProjectStack(root) {
   const tags = new Set();
   let visited = 0;
+  let truncated = false;
   async function scan(directory, depth) {
-    if (depth > SCAN_MAX_DEPTH || visited >= SCAN_MAX_ENTRIES) return;
+    if (depth > SCAN_MAX_DEPTH) {
+      truncated = true;
+      return;
+    }
+    if (visited >= SCAN_MAX_ENTRIES) {
+      truncated = true;
+      return;
+    }
     const entries = await readdir(directory, { withFileTypes: true }).catch(() => []);
     for (const entry of entries) {
-      if (visited >= SCAN_MAX_ENTRIES) return;
+      if (visited >= SCAN_MAX_ENTRIES) {
+        truncated = true;
+        return;
+      }
       visited += 1;
       if (entry.isSymbolicLink()) continue;
       const name = entry.name.toLowerCase();
@@ -752,7 +763,7 @@ async function detectProjectStack(root) {
   }
   await scan(root, 0);
   if (tags.has("typescript")) tags.add("javascript");
-  return tags;
+  return { tags, truncated };
 }
 
 function parseStackOption(value) {
@@ -786,6 +797,14 @@ function templateApplies(template, stack) {
 // Only actions with a verified commit SHA are emitted; every other stack uses tooling preinstalled on GitHub-hosted runners.
 const CHECKOUT_ACTION = "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1";
 const SETUP_NODE_ACTION = "actions/setup-node@820762786026740c76f36085b0efc47a31fe5020";
+const SETUP_PYTHON_ACTION = "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1";
+const SETUP_DOTNET_ACTION = "actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68";
+const SETUP_JAVA_ACTION = "actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961";
+const SETUP_GO_ACTION = "actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16";
+const SETUP_RUST_ACTION = "dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772";
+const SETUP_RUBY_ACTION = "ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b";
+const SETUP_PHP_ACTION = "shivammathur/setup-php@df2faad913c2a040778bb075f5472db69131ed11";
+const SETUP_TERRAFORM_ACTION = "hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd";
 const CI_STACK_STEPS = new Map([
   ["javascript", `      - name: Set up Node.js
         uses: ${SETUP_NODE_ACTION}
@@ -795,47 +814,80 @@ const CI_STACK_STEPS = new Map([
         run: npm ci
       - name: Test
         run: npm test`],
-  ["python", `      - name: Install Python dependencies
+  ["python", `      - name: Set up Python
+        uses: ${SETUP_PYTHON_ACTION}
+        with:
+          python-version: '3.12'
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           if [ -f pyproject.toml ]; then pip install .; fi
       - name: Test
         run: python -m pytest`],
-  ["csharp", `      - name: Restore
+  ["csharp", `      - name: Set up .NET
+        uses: ${SETUP_DOTNET_ACTION}
+        with:
+          dotnet-version: '8.0.x'
+      - name: Restore
         run: dotnet restore
       - name: Build
         run: dotnet build --no-restore --configuration Release
       - name: Test
         run: dotnet test --no-build --configuration Release`],
-  ["java", `      - name: Build and test
+  ["java", `      - name: Set up Java
+        uses: ${SETUP_JAVA_ACTION}
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Build and test
         run: |
           if [ -f pom.xml ]; then mvn -B --no-transfer-progress verify; else ./gradlew build; fi`],
-  ["go", `      - name: Build
+  ["go", `      - name: Set up Go
+        uses: ${SETUP_GO_ACTION}
+        with:
+          go-version: '1.23.x'
+      - name: Build
         run: go build ./...
       - name: Test
         run: go test ./...`],
-  ["rust", `      - name: Build
+  ["rust", `      - name: Set up Rust
+        uses: ${SETUP_RUST_ACTION}
+        with:
+          toolchain: '1.86.0'
+      - name: Build
         run: cargo build --locked
       - name: Test
         run: cargo test --locked`],
-  ["ruby", `      - name: Install dependencies
+  ["ruby", `      - name: Set up Ruby
+        uses: ${SETUP_RUBY_ACTION}
+        with:
+          ruby-version: '3.3'
+      - name: Install dependencies
         run: bundle install
       - name: Test
         run: bundle exec rake`],
-  ["php", `      - name: Install dependencies
+  ["php", `      - name: Set up PHP
+        uses: ${SETUP_PHP_ACTION}
+        with:
+          php-version: '8.3'
+      - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
       - name: Test
         run: vendor/bin/phpunit`],
   ["powershell", `      - name: Analyze PowerShell
         shell: pwsh
         run: |
-          Install-Module PSScriptAnalyzer -Force -Scope CurrentUser -ErrorAction Stop
+          Install-Module PSScriptAnalyzer -RequiredVersion 1.24.0 -Force -Scope CurrentUser -ErrorAction Stop
           Invoke-ScriptAnalyzer -Path . -Recurse -EnableExit`],
   ["bicep", `      - name: Build Bicep
         run: |
           find . -name '*.bicep' -print0 | xargs -0 -r -n1 az bicep build --file`],
-  ["terraform", `      - name: Validate Terraform
+  ["terraform", `      - name: Set up Terraform
+        uses: ${SETUP_TERRAFORM_ACTION}
+        with:
+          terraform_version: '1.9.x'
+      - name: Validate Terraform
         run: |
           terraform fmt -check -recursive
           terraform init -backend=false
@@ -1240,7 +1292,8 @@ async function discoverCustomizationAssets(root) {
         kind,
         path: relative,
         applyTo: globSet(details.applyTo),
-        tokens: new Set([...significantTokens(entry.name.replace(pattern, "")), ...significantTokens(details.description ?? "")])
+        tokens: new Set([...significantTokens(entry.name.replace(pattern, "")), ...significantTokens(details.description ?? "")]),
+        sourceLength: source.length
       });
     }
   }
@@ -1256,7 +1309,7 @@ function findEquivalentAsset(template, assets) {
     const sharedTokens = [...templateTokens].filter((token) => asset.tokens.has(token)).length;
     if (template.kind === "scoped-instructions") {
       const sharedGlobs = [...templateGlobs].some((glob) => asset.applyTo.has(glob));
-      if (sharedGlobs && sharedTokens >= 1) return asset;
+      if (sharedGlobs && sharedTokens >= 1 && asset.sourceLength >= 80) return asset;
       continue;
     }
     if (sharedTokens >= 2) return asset;
@@ -1481,7 +1534,7 @@ function skillHelpPrompt(skill) {
   return `---\nmode: agent\ndescription: Help for the ${skill.name} skill.\n---\n\n# ${skill.name} Help\n\n${skill.description}\n\nRead the complete contract at .github/skills/${skill.name}/SKILL.md before using this skill.${details}\n\n## Related commands\n\n- Run the skill with /${skill.name}.\n- Open this help with /${skill.name}-help.\n- Inspect the full contract with @.github/skills/${skill.name}/SKILL.md.\n`;
 }
 
-async function buildAdoptionPlan(projectRoot, profileOverride, projectNameOverride, { forceTemplates = false, forceAdopt = false } = {}) {
+async function buildAdoptionPlan(projectRoot, profileOverride, projectNameOverride, { forceTemplates = false, forceAdopt = false, stackOverride = "" } = {}) {
   const requestedRoot = path.resolve(projectRoot);
   if (!existsSync(requestedRoot)) throw new Error(`Repository path does not exist: ${requestedRoot}`);
   const root = await realpath(requestedRoot);
@@ -1593,7 +1646,10 @@ async function buildAdoptionPlan(projectRoot, profileOverride, projectNameOverri
   }
 
   const scaffoldTemplates = await loadScaffoldManifest();
-  const detectedStack = await detectProjectStack(root);
+  const detectedResult = await detectProjectStack(root);
+  const detectedStack = detectedResult.tags;
+  const explicitStack = stackOverride ? parseStackOption(stackOverride) : new Set();
+  for (const tag of explicitStack) detectedStack.add(tag);
   const customizationAssets = await discoverCustomizationAssets(root);
   for (const template of scaffoldTemplates) {
     if (template.createOnly || ADOPTION_TEMPLATE_EXCLUSIONS.has(template.path)) continue;
@@ -1752,6 +1808,7 @@ async function buildAdoptionPlan(projectRoot, profileOverride, projectNameOverri
     resolvedConfiguration,
     mode: "existing-project-adoption",
     detectedStack: [...detectedStack].sort(),
+    stackScanTruncated: detectedResult.truncated,
     actions,
     counts,
     canApply: counts.conflict === 0
@@ -1762,6 +1819,7 @@ function printAdoptionPlan(plan) {
   console.log(`\nExisting project: ${plan.projectRoot}`);
   console.log(`Profile: ${plan.profile}`);
   console.log(`Detected stack: ${plan.detectedStack.length ? plan.detectedStack.join(", ") : "none detected"}`);
+  if (plan.stackScanTruncated) console.log("Warning: stack detection reached its scan limit; use --stack to declare any missed stacks.");
   console.log(`Files to create: ${plan.counts.create}`);
   console.log(`Existing skills to update: ${plan.counts["update-skill"]}`);
   console.log(`Project skill references to migrate: ${plan.counts["update-skill-references"]}`);
@@ -1968,7 +2026,8 @@ async function applyAdoption(plan, riskAcceptance) {
 async function updateProject(projectRoot, options) {
   const plan = await buildAdoptionPlan(projectRoot, options.profile, undefined, {
     forceTemplates: options["force-templates"] === true,
-    forceAdopt: true
+    forceAdopt: true,
+    stackOverride: options.stack ?? ""
   });
   if (options.json) return console.log(JSON.stringify(portableAdoptionPlan(plan), null, 2));
   printAdoptionPlan(plan);
@@ -2490,7 +2549,8 @@ async function main() {
     if (options.json && options.apply) throw new Error("Use --json only with an adoption dry run");
     const plan = await buildAdoptionPlan(options.project, options.profile, undefined, {
       forceTemplates: options["force-templates"] === true,
-      forceAdopt: options["force-adopt"] === true
+      forceAdopt: options["force-adopt"] === true,
+      stackOverride: options.stack ?? ""
     });
     if (options.json) return console.log(JSON.stringify(portableAdoptionPlan(plan), null, 2));
     printAdoptionPlan(plan);

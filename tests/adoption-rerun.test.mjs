@@ -595,6 +595,9 @@ description: Application security rules
 ---
 
 # AppSec
+
+- Validate all external input and encode output at trust boundaries.
+- Never store secrets in source; use managed identity and least privilege.
 `, "utf8");
 
     const dryRun = runAdoption(project, "--dry-run");
@@ -625,6 +628,8 @@ description: Application security rules
 ---
 
 # AppSec
+- Validate all external input and encode output at trust boundaries.
+- Never store secrets in source; use managed identity and least privilege.
 `, "utf8");
 
     const result = spawnSync(process.execPath, [runtime, "adopt", "--project", project, "--profile", "core", "--dry-run", "--json"], {
@@ -1077,6 +1082,21 @@ test("discovery probes every region rather than only the target region", async (
   // The all-region probe omits --location on purpose; pinning it reports false negatives.
   assert.match(discover, /az cognitiveservices account list-skus --kind \$Kind `\r?\n\s*--query "\[\]\.locations"/);
   assert.match(discover, /'gpt-5\.1', 'gpt-4\.1'/, "the model preference ladder is present");
+});
+
+test("adoption accepts an explicit stack override", async () => {
+  const project = await mkdtemp(path.join(os.tmpdir(), "pso-stack-override-"));
+  try {
+    await writeFile(path.join(project, "package.json"), "{\"name\":\"stack-override\"}\n", "utf8");
+    const plan = spawnSync(process.execPath, [runtime, "adopt", "--project", project, "--profile", "core", "--stack", "python", "--dry-run", "--json"], {
+      cwd: root, encoding: "utf8"
+    });
+    assert.equal(plan.status, 0, plan.stderr);
+    const output = JSON.parse(plan.stdout);
+    assert.ok(output.detectedStack.includes("python"));
+  } finally {
+    await rm(project, { recursive: true, force: true });
+  }
 });
 
 // Regression guard: `chat` is implemented in cli.js, so handing it to the Electron binary opens a

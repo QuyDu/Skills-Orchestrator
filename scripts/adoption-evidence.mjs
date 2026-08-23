@@ -153,6 +153,8 @@ description: Application security rules
 ---
 
 # AppSec
+- Validate all external input and encode output at trust boundaries.
+- Never store secrets in source; use managed identity and least privilege.
 `, "utf8");
 
     const initialPlan = dryRun(project);

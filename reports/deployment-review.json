@@ -1,0 +1,107 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewId": "DEP-2026-08-23-0001",
+  "generatedAt": "2026-08-23T17:56:35.579Z",
+  "candidate": {
+    "release": "project-skills-orchestrator 1.0.2, commit e879bd635cd42e99b4c4419151b3ce35a1e6222f",
+    "targetEnvironment": "authorized internal production distribution",
+    "carriesProductionData": false,
+    "blastRadius": "Recipients use the package to create or modify development repositories and agent configuration; a bad release can affect generated project setup and workflow guidance."
+  },
+  "decision": "blocked",
+  "gates": [
+    {
+      "gate": "build-reproducibility",
+      "state": "pass",
+      "evidence": [
+        "npm run check passed on Node.js 24.14.1",
+        "npm run release:verify:candidate passed with 110 checksum-covered files",
+        "package-lock.json is committed and the package declares zero dependencies"
+      ]
+    },
+    {
+      "gate": "configuration-completeness",
+      "state": "pass",
+      "evidence": [
+        "release/release-manifest.json declares the required standalone, checksum, package, SBOM, and provenance artifacts",
+        "README.md and SECURITY.md restrict distribution to authorized internal use"
+      ]
+    },
+    {
+      "gate": "environment-parity",
+      "state": "fail",
+      "evidence": [
+        "reports/cross-platform-ci-evidence.json covers Windows, Linux, and macOS on Node 22, 24, and 26, but is bound to commit b91b562c13f28ad53c6d60ad89c968eae6a34683 rather than candidate commit e879bd635cd42e99b4c4419151b3ce35a1e6222f"
+      ]
+    },
+    {
+      "gate": "security-findings-closed",
+      "state": "fail",
+      "evidence": [
+        "npm run security passed with zero findings",
+        "release/release-manifest.json still requires trusted-signing-identity and independent-security-review",
+        "The current audit identifies unresolved release assurance work"
+      ]
+    },
+    {
+      "gate": "architecture-findings-closed",
+      "state": "fail",
+      "evidence": [
+        "reports/code-audit-review.json records confirmed architecture and maintainability findings AUD-0102 through AUD-0105",
+        "reports/audit-remediation-plan.json lists remediation milestones that are not complete"
+      ]
+    },
+    {
+      "gate": "data-safety",
+      "state": "not-applicable",
+      "evidence": [
+        "The package is a registry-free CLI and does not carry production application data or perform deployment migrations"
+      ]
+    },
+    {
+      "gate": "observability",
+      "state": "fail",
+      "evidence": [
+        "No current production distribution dashboard, alert, or operational health signal is recorded for package consumption and generated-project failures"
+      ]
+    }
+  ],
+  "verification": [
+    {
+      "signal": "release:verify against the signed candidate",
+      "expected": "Signature, checksum, SBOM, provenance, and release contract verification pass with the trusted public-key fingerprint."
+    },
+    {
+      "signal": "cross-platform CI evidence commit field",
+      "expected": "Every required Windows, Linux, and macOS run on Node 22, 24, and 26 references e879bd635cd42e99b4c4419151b3ce35a1e6222f."
+    },
+    {
+      "signal": "independent review decision",
+      "expected": "A qualified reviewer who did not author the release signs an evidence record bound to the candidate and resolves or accepts findings by named owner."
+    },
+    {
+      "signal": "generated-project smoke test",
+      "expected": "A fresh project can be created, verified, updated, and can run its documented help and Azure Discovery workflows without unintended external mutation."
+    }
+  ],
+  "rollback": {
+    "route": "Stop internal distribution, retain the candidate for investigation, and restore the previous approved package version. For already-created projects, use the transactional project recovery workflow and restore from the project backup or prior Git revision.",
+    "triggerConditions": [
+      "Candidate signature, checksum, or provenance verification fails",
+      "A generated-project smoke test modifies an unowned path or exposes secret material",
+      "A critical or high-severity security finding is discovered",
+      "Cross-platform behavior diverges from the candidate evidence"
+    ],
+    "estimatedDuration": "Stop distribution immediately; package rollback is expected within one release operation, while affected project recovery depends on each repository backup and transaction journal.",
+    "irreversibleSteps": [
+      "Any user-generated project changes made after applying this package cannot be automatically undone without a repository backup or explicit recovery decision."
+    ]
+  },
+  "limitations": [
+    "No live Azure environment or deployment was accessed.",
+    "No hosted CI run, branch protection state, or remote Actions history was retrieved.",
+    "The candidate is unsigned and has no independent review record bound to this commit.",
+    "Cross-platform evidence exists but is stale for this candidate commit.",
+    "Observability for package distribution and generated-project runtime behavior is not established in repository evidence."
+  ]
+}
