@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "runtimeVersion": "1.0.2",
-  "generatedAt": "2026-08-23T18:13:21.699Z",
+  "generatedAt": "2026-08-23T18:57:45.565Z",
   "skills": [
     {
       "name": "architecture-review",
@@ -218,6 +218,20 @@
         "reports/framework-health.md",
         "reports/conformance-report.json",
         "reports/conformance-report.md"
+      ]
+    },
+    {
+      "name": "linkedin-post",
+      "path": ".github/skills/linkedin-post/SKILL.md",
+      "description": "Analyze the current project and prepare a reviewable LinkedIn post draft for Microsoft employees and the technical community, including update posts based on project history.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "project-handoff",
+        "documentation-builder"
+      ],
+      "reports": [
+        "reports/linkedin-post-draft.md"
       ]
     },
     {

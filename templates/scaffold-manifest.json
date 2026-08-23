@@ -117,6 +117,12 @@
       "requires": "always"
     },
     {
+      "path": ".github/prompts/linkedin-post.prompt.md",
+      "kind": "prompt",
+      "purpose": "draft project LinkedIn posts and updates",
+      "requires": "always"
+    },
+    {
       "path": "infra/deploy.ps1",
       "kind": "deployment",
       "purpose": "azure deployment orchestrator entry point",

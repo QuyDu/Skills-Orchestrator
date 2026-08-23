@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-08-23T18:13:21.699Z",
+  "generatedAt": "2026-08-23T18:57:45.565Z",
   "artifacts": [
     {
       "report": "reports/architecture-review.json",
@@ -129,6 +129,10 @@
     {
       "report": "reports/conformance-report.md",
       "producer": "framework-health-check"
+    },
+    {
+      "report": "reports/linkedin-post-draft.md",
+      "producer": "linkedin-post"
     },
     {
       "report": "reports/coordination-state.json",

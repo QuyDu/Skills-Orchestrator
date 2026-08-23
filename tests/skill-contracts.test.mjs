@@ -22,6 +22,7 @@ const expectedSkillIds = [
   "development-environment-readiness",
   "documentation-builder",
   "framework-health-check",
+  "linkedin-post",
   "multi-agent-coordinator",
   "policy-engine",
   "prepare-commit",
@@ -186,6 +187,9 @@ test("every generated and adopted project carries the mandatory clarification pr
   assert.match(generatedInstructions, /reports\/project-handoff\.json/);
   assert.match(generatedInstructions, /--proceed/);
   assert.ok(existsSync(path.join(templateRoot, ".github", "prompts", "skills-help.prompt.md")));
+  const linkedinPrompt = await readFile(path.join(templateRoot, ".github", "prompts", "linkedin-post.prompt.md"), "utf8");
+  assert.match(linkedinPrompt, /reports\/linkedin-post-draft\.md/);
+  assert.match(linkedinPrompt, /--update/);
 
   for (const relative of [
     ".editorconfig",

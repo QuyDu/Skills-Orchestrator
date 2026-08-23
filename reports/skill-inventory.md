@@ -1,6 +1,6 @@
 # Skill Inventory
 
-Generated: 2026-08-23T18:13:21.699Z
+Generated: 2026-08-23T18:57:45.565Z
 
 | Skill | Description |
 | --- | --- |
@@ -19,6 +19,7 @@ Generated: 2026-08-23T18:13:21.699Z
 | development-environment-readiness | Assess, plan, configure, and validate a project's pre-coding development environment, including access, editor, source control, runtimes, authentication, isolation, debugging, testing, automation, and security gates. Use when onboarding a repository or preparing a new project; do not use for feature implementation. |
 | documentation-builder | Generate and maintain README files, decision records, deployment guides, and operations runbooks that are verified against repository evidence. Use when documentation is missing, stale, or contradicts the code; do not use to narrate changes an agent just made. |
 | framework-health-check | Validate framework structure, skill contracts, schemas, ownership, profiles, fixtures, configuration, and conformance evidence. Use to verify the installed orchestrator framework itself; use audit-code instead to assess application code. |
+| linkedin-post | Analyze the current project and prepare a reviewable LinkedIn post draft for Microsoft employees and the technical community, including update posts based on project history. |
 | multi-agent-coordinator | Coordinate concurrent agents with leases, fencing tokens, ownership transfer, conflict detection, and shared-read or exclusive-write semantics. Use when more than one agent may write the same artifacts concurrently; do not use for single-agent sequential work. |
 | policy-engine | Evaluate centralized authorization, risk, compliance, escalation, and approval policies without executing the governed action. Use to decide whether an action is allowed, denied, or approval-gated; never use it to perform the action. |
 | prepare-commit | Prepare a minimal, validated change set and commit summary after bounded change review, without committing, pushing, deploying, or bypassing protections. Use when changes are ready for a pre-commit decision. |

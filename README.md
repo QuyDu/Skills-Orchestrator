@@ -23,7 +23,7 @@ It has two halves.
 
 **A command-line installer** (`pso.mjs`) that creates a new project or adopts an existing one. It runs entirely on Node.js built-ins — no packages to install, no registry access — and every change it makes is planned, journaled, and verified.
 
-**A catalog of 35 skills** installed into `.github/skills/`, invoked from GitHub Copilot Chat in Agent mode. Each skill is a bounded contract: what it owns, what it reads, what it writes, when it must stop and ask you.
+**A catalog of 36 skills** installed into `.github/skills/`, invoked from GitHub Copilot Chat in Agent mode. Each skill is a bounded contract: what it owns, what it reads, what it writes, when it must stop and ask you.
 
 ### What makes it different
 
@@ -106,6 +106,11 @@ Every generated project is standalone: it receives its own copy of the complete 
 catalog, schemas, workflows, prompts, agents, and Azure discovery scaffold. Stack-specific editor
 tasks, launch configurations, and extensions remain conditional so a Python project does not show
 misleading .NET or Terraform commands.
+
+Use `/linkedin-post` to analyze a project and prepare a reviewable draft for Microsoft employees
+and the technical community. Use `/linkedin-post --update` to compare against
+`reports/linkedin-post-history.md` and describe only verified changes. Drafts are saved to
+`reports/linkedin-post-draft.md`; publication always remains a user-approved external action.
 
 To refresh a standalone project from a newer Skills Orchestrator checkout, preview the update first:
 
@@ -237,7 +242,7 @@ Clones into an isolated staging directory, provisions, verifies, and only then p
 | `.github/instructions/` | Scoped standards applied by glob — only the ones your stack needs |
 | `.github/prompts/` | `/create-adr`, `/review-architecture`, `/executive-summary`, `/security-review`, `/project-status`, `/new-component` |
 | `.github/agents/` | Azure Architect, Security Reviewer, Documentation Writer |
-| `.github/skills/` | The 35-skill catalog |
+| `.github/skills/` | The 36-skill catalog |
 | `.github/workflows/ci.yml` | Stack-aware pipeline, SHA-pinned actions (new projects only) |
 | `.github/workflows/copilot-setup-steps.yml` | Preinstalls dependencies for Copilot cloud agent and Copilot code review (new projects with a stack) |
 | `.vscode/tasks.json` | Build and test tasks for the stack — `Ctrl+Shift+B` and Test Explorer work immediately |

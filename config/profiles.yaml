@@ -37,6 +37,7 @@ profiles:
       - workflow-recovery
       - project-knowledge-capture
       - project-memory
+      - linkedin-post
   distributed:
     extends: durable
     required:
