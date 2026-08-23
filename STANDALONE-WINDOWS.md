@@ -35,6 +35,7 @@ node .\pso.mjs create-project `
   --name "PSO Test Project" `
   --destination "C:\repos" `
   --profile durable `
+  --color "#004578" `
   --accept-risk
 ```
 
@@ -45,12 +46,13 @@ Or use the PowerShell launcher:
   --name "PSO Test Project" `
   --destination "C:\repos" `
   --profile durable `
+  --color "#004578" `
   --accept-risk
 ```
 
 If PowerShell script execution is restricted, use the `node .\pso.mjs` form.
 
-The new project is created under `C:\repos\pso-test-project`. Open its `.code-workspace` file in Visual Studio Code.
+The new project is created under `C:\repos\pso-test-project`. Open its `.code-workspace` file in Visual Studio Code. The optional `--color` value must use `#RRGGBB`; when omitted it defaults to `#004578`. The title and status colors are written to both `.vscode/settings.json` and the generated workspace file used by **Preferences: Open Workspace Settings (JSON)**.
 
 ## Clone and provision a GitHub project
 

@@ -1,10 +1,10 @@
 {
   "schemaVersion": "1.0.0",
-  "auditId": "AUDIT-2026-08-19-PSO-110",
-  "generatedAt": "2026-08-19T00:00:00.000Z",
+  "auditId": "AUDIT-2026-08-23-PSO-111",
+  "generatedAt": "2026-08-23T00:00:00.000Z",
   "scope": {
     "repository": "Skills-Orchestrator",
-    "revision": "1.0.0 release tree including the VS Code workspace, editor launch, and Copilot cloud agent environment work",
+    "revision": "23be47b525897036ae9ce913ea428909efcddd8a plus current working-tree changes",
     "included": [
       "pso.mjs",
       "scripts/**/*.mjs",
@@ -35,17 +35,17 @@
       "tool": "Node.js",
       "version": "24.14.1",
       "command": "npm run check",
-      "status": "passed",
-      "exitCode": 0,
-      "notes": "Syntax validation, security scan, unsigned release build and verification, 53 tests, offline package installation, 35-skill inventory, and distribution verification all passed."
+      "status": "failed",
+      "exitCode": 1,
+      "notes": "Not run to completion: the release step is blocked by Windows EPERM replacing the existing dist release directory; the independent test run recorded 69/70 tests passed, with only the offline package-install test consuming the stale malformed dist artifact failing."
     },
     {
       "tool": "npm",
       "version": "11.11.0",
-      "command": "npm install --package-lock-only --ignore-scripts",
+      "command": "node --check pso.mjs",
       "status": "passed",
       "exitCode": 0,
-      "notes": "Lock file regenerated for version 1.0.0; zero declared dependencies."
+      "notes": "JavaScript syntax validation passed."
     },
     {
       "tool": "Project Skills Orchestrator security scanner",
@@ -58,10 +58,26 @@
     {
       "tool": "Project Skills Orchestrator runtime",
       "version": "1.0.0",
-      "command": "node pso.mjs create-project --stack; node pso.mjs adopt --dry-run; node pso.mjs adopt --apply",
+      "command": "node pso.mjs verify",
       "status": "passed",
       "exitCode": 0,
-      "notes": "Stack-aware creation, stack detection, equivalence suppression, managed-region migration, workspace task and debug generation, editor launch, Copilot setup steps generation, and rerun idempotence exercised against disposable fixtures. A clean clone from the published remote passed the full gate."
+      "notes": "Inventoried and audited 36 skills; schemas, profiles, dependencies, ownership, and audit pipeline verified."
+    },
+    {
+      "tool": "PowerShell parser",
+      "version": "7",
+      "command": "ParseFile all *.ps1, *.psm1, and *.psd1 files",
+      "status": "passed",
+      "exitCode": 0,
+      "notes": "All PowerShell files parsed successfully; no Azure commands were executed."
+    },
+    {
+      "tool": "Node.js test runner",
+      "version": "24.14.1",
+      "command": "npm test",
+      "status": "failed",
+      "exitCode": 1,
+      "notes": "69 of 70 tests passed. package-install.test.mjs failed because the stale dist artifact contains the previously malformed scaffold manifest."
     }
   ],
   "coverage": [
@@ -449,6 +465,7 @@
     "MCP server implementations and GitHub-hosted runner images are external and were not evaluated.",
     "No linter or complexity tool is configured, so code hygiene and maintainability were assessed by inspection and by the contract suite.",
     "Adoption and creation were exercised against synthetic fixtures, not against a large production repository.",
-    "Skill contract quality was assessed structurally; the runtime behavior of agent-executed skills was not measured."
+    "Skill contract quality was assessed structurally; the runtime behavior of agent-executed skills was not measured.",
+    "The offline package-install test could not be validated against a freshly rebuilt release because Windows denied replacement of the existing dist release directory with EPERM; the stale artifact still contains the earlier malformed scaffold manifest."
   ]
 }

@@ -105,6 +105,18 @@
       "requires": "always"
     },
     {
+      "path": ".github/prompts/azure-discovery.prompt.md",
+      "kind": "prompt",
+      "purpose": "azure commercial and government discovery",
+      "requires": "always"
+    },
+    {
+      "path": ".github/prompts/skills-help.prompt.md",
+      "kind": "prompt",
+      "purpose": "skill usage and VS Code chat syntax guide",
+      "requires": "always"
+    },
+    {
       "path": "infra/deploy.ps1",
       "kind": "deployment",
       "purpose": "azure deployment orchestrator entry point",

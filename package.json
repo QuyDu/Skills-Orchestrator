@@ -1,6 +1,6 @@
 {
   "name": "project-skills-orchestrator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "type": "module",
   "packageManager": "npm@11.11.0",
@@ -31,7 +31,8 @@
     "release:verify": "node scripts/verify-release.mjs",
     "release:status": "node scripts/release-status.mjs",
     "verify": "node pso.mjs verify",
-    "inventory": "node pso.mjs inventory --root ."
+    "inventory": "node pso.mjs inventory --root .",
+    "evidence:adoption": "node scripts/adoption-evidence.mjs"
   },
   "engines": {
     "node": "^22.0.0 || ^24.0.0 || ^26.0.0"

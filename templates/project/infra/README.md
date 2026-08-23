@@ -32,9 +32,35 @@ defines its functions and exits without doing anything. Only `deploy.ps1` does w
 ./deploy.ps1 -SiteName contoso-api -AzureGov -Location usgovvirginia
 ```
 
-`-SiteName` drives every resource name (`rg-<name>`, `app-<name>-<hash>`, `kv-<name>-<hash>`), so
-separate names are fully isolated and the same repository deploys into a fresh subscription
-unchanged.
+When neither `-Commercial` nor `-Gov` is supplied, the script asks:
+
+```text
+1. Commercial
+2. Gov
+```
+
+Only `1` or `2` is accepted. After three invalid responses, discovery exits with an error. The
+legacy `-AzureGov` switch remains supported as an alias for `-Gov`.
+
+The Copilot skill `/Azure Discovery` runs the same read-only probe and writes both
+`reports/azure-discovery.json` and the readable `reports/azure-discovery.md`. Use
+`/Azure Discovery -Commercial` or `/Azure Discovery -Gov` to select a cloud without the menu.
+
+`-SiteName` drives every resource name and is capped at 12 characters so the derived names stay
+inside Azure's limits:
+
+| Resource | Pattern | Worst case |
+| --- | --- | --- |
+| Resource group | `rg-<name>` | 15 |
+| App Service plan | `asp-<name>-<hash>` | 23 of 40 |
+| Web app | `app-<name>-<hash>` | 23 of 60 |
+| Key Vault | `kv<name><hash>` | 20 of 24 |
+| Azure OpenAI | `oai-<name>-<hash>` | 23 of 64 |
+
+`<hash>` is six characters of `uniqueString(resourceGroup().id)`. The Key Vault name drops hyphens
+because Key Vault rejects consecutive and trailing hyphens, and it is never truncated, so the
+uniqueness suffix always survives in that globally unique namespace. Separate site names stay fully
+isolated and the same repository deploys into a fresh subscription unchanged.
 
 ## Authentication
 

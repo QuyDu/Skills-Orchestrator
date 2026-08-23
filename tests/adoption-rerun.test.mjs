@@ -3,7 +3,7 @@ import { mkdtemp, mkdir, readFile, readdir, realpath, rename, rm, symlink, write
 import { existsSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { pathToFileURL } from "node:url";
 import test from "node:test";
@@ -21,6 +21,40 @@ function runAdoption(project, mode, options = ["--profile", "core"]) {
   });
   assert.equal(result.status, 0, `${mode} failed:\n${result.stdout}\n${result.stderr}`);
   return `${result.stdout}${result.stderr}`;
+}
+
+function runInteractive(args, exchanges) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(process.execPath, [runtime, ...args], { cwd: root, stdio: ["pipe", "pipe", "pipe"] });
+    let stdout = "";
+    let stderr = "";
+    let exchangeIndex = 0;
+    const timeout = setTimeout(() => {
+      child.kill();
+      reject(new Error(`Interactive command timed out after ${exchangeIndex} answers:\n${stdout}\n${stderr}`));
+    }, 15000);
+    child.stdout.setEncoding("utf8");
+    child.stderr.setEncoding("utf8");
+    child.stdout.on("data", (chunk) => {
+      stdout += chunk;
+      const exchange = exchanges[exchangeIndex];
+      if (exchange?.prompt.test(stdout)) {
+        child.stdin.write(`${exchange.answer}\n`);
+        exchangeIndex += 1;
+      }
+    });
+    child.stderr.on("data", (chunk) => {
+      stderr += chunk;
+    });
+    child.on("error", (error) => {
+      clearTimeout(timeout);
+      reject(error);
+    });
+    child.on("close", (status) => {
+      clearTimeout(timeout);
+      resolve({ status, stdout, stderr, answers: exchangeIndex });
+    });
+  });
 }
 
 test("clone-setup clones a GitHub repository and publishes only after verified adoption", async (context) => {
@@ -216,10 +250,13 @@ No approval is required for read-only work.
     assert.match(agentInstructions, /\.github\/skills\/project-skills-orchestrator\/SKILL\.md/);
     assert.ok(existsSync(path.join(project, ".vscode", "extensions.json")));
     assert.ok(existsSync(path.join(project, ".vscode", "settings.json")));
+    const adoptedSettings = JSON.parse(await readFile(path.join(project, ".vscode", "settings.json"), "utf8"));
+    assert.ok(!Object.hasOwn(adoptedSettings, "window.title"), "adoption must not impose new-project workspace identity");
+    assert.ok(!Object.hasOwn(adoptedSettings, "workbench.colorCustomizations"), "adoption must preserve the existing color theme");
 
     const manifest = JSON.parse(await readFile(path.join(project, "project-orchestrator.json"), "utf8"));
     assert.equal(manifest.frameworkVersion, "9.0.0");
-    assert.equal(manifest.runtimeVersion, "1.0.0");
+    assert.equal(manifest.runtimeVersion, "1.0.1");
     assert.equal(manifest.conformanceProfile, "core");
     assert.equal(manifest.riskAcceptance.noticeVersion, "1.0.0");
     assert.equal(manifest.riskAcceptance.method, "cli-flag");
@@ -577,6 +614,80 @@ description: Application security rules
   }
 });
 
+test("adoption dry-run emits a portable JSON plan without mutating the project", async () => {
+  const project = await mkdtemp(path.join(os.tmpdir(), "pso-json-plan-"));
+  try {
+    await writeFile(path.join(project, "package.json"), "{\"name\":\"json-plan-fixture\"}\n", "utf8");
+    await mkdir(path.join(project, ".github", "instructions"), { recursive: true });
+    await writeFile(path.join(project, ".github", "instructions", "appsec.instructions.md"), `---
+applyTo: "**"
+description: Application security rules
+---
+
+# AppSec
+`, "utf8");
+
+    const result = spawnSync(process.execPath, [runtime, "adopt", "--project", project, "--profile", "core", "--dry-run", "--json"], {
+      cwd: root,
+      encoding: "utf8"
+    });
+    assert.equal(result.status, 0, result.stderr);
+    const plan = JSON.parse(result.stdout);
+    assert.equal(plan.project.name, path.basename(project));
+    assert.equal(plan.profile, "core");
+    assert.equal(plan.counts.covered, 1);
+    assert.ok(plan.actions.some((action) => action.action === "covered"
+      && action.path === ".github/instructions/security.instructions.md"
+      && action.coveredBy === ".github/instructions/appsec.instructions.md"));
+    assert.ok(!Object.hasOwn(plan, "projectRoot"));
+    assert.ok(plan.actions.every((action) => !Object.hasOwn(action, "source") && !Object.hasOwn(action, "content")));
+    assert.ok(!existsSync(path.join(project, "reports")));
+    assert.ok(!existsSync(path.join(project, "project-orchestrator.json")));
+
+    const rejected = spawnSync(process.execPath, [runtime, "adopt", "--project", project, "--profile", "core", "--apply", "--accept-risk", "--json"], {
+      cwd: root,
+      encoding: "utf8"
+    });
+    assert.notEqual(rejected.status, 0);
+    assert.match(`${rejected.stdout}${rejected.stderr}`, /Use --json only with an adoption dry run/);
+    assert.ok(!existsSync(path.join(project, "reports")));
+  } finally {
+    await rm(project, { recursive: true, force: true });
+  }
+});
+
+test("adoption evidence generator captures the initial plan and no-op rerun", async () => {
+  const output = await mkdtemp(path.join(os.tmpdir(), "pso-adoption-evidence-output-"));
+  try {
+    const result = spawnSync(process.execPath, [path.join(root, "scripts", "adoption-evidence.mjs"), "--output-dir", output], {
+      cwd: root,
+      encoding: "utf8"
+    });
+    assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
+
+    const jsonPath = path.join(output, "adoption-rerun-evidence.json");
+    const markdownPath = path.join(output, "adoption-rerun-evidence.md");
+    const source = await readFile(jsonPath, "utf8");
+    const evidence = JSON.parse(source);
+    assert.equal(evidence.schemaVersion, "1.0.0");
+    assert.equal(evidence.profile, "core");
+    assert.ok(evidence.before.summary.plannedWrites > 0);
+    assert.equal(evidence.before.summary.coveredAssets, 1);
+    assert.equal(evidence.before.summary.conflicts, 0);
+    assert.equal(evidence.after.summary.plannedWrites, 0);
+    assert.ok(evidence.after.counts["already-current"] > 0);
+    assert.equal(evidence.after.noOp, true);
+    assert.doesNotMatch(source, /"(?:projectRoot|source|content)"/);
+
+    const markdown = await readFile(markdownPath, "utf8");
+    assert.match(markdown, /## Before Apply/);
+    assert.match(markdown, /## No-Op Rerun/);
+    assert.match(markdown, /security\.instructions\.md/);
+  } finally {
+    await rm(output, { recursive: true, force: true });
+  }
+});
+
 test("adoption recognizes additional ecosystems and refuses unknown directories without an override", async () => {
   const cases = [
     ["pom.xml", "<project></project>\n"],
@@ -686,8 +797,21 @@ test("the workspace is configured so VS Code discovers every customization witho
     assert.equal(settings["chat.includeApplyingInstructions"], true);
     assert.equal(settings["chat.includeReferencedInstructions"], true);
     assert.equal(settings["chat.promptFilesRecommendations"], true);
+    assert.equal(settings["window.title"], "🚀 Discovery Demo • ${rootName}");
+    assert.deepEqual(settings["workbench.colorCustomizations"], {
+      "titleBar.activeBackground": "#004578",
+      "titleBar.activeForeground": "#FFFFFF",
+      "statusBar.background": "#004578",
+      "statusBar.foreground": "#FFFFFF"
+    });
     assert.ok(!Object.hasOwn(settings, "chat.promptFiles"), "the superseded prompt file toggle is not written");
     assert.ok(!Object.hasOwn(settings, "github.copilot.chat.codeGeneration.useInstructionFiles"), "the deprecated instruction setting is not written");
+
+    const manifest = JSON.parse(await readFile(path.join(project, "project-orchestrator.json"), "utf8"));
+    assert.equal(manifest.workspaceColor, "#004578");
+    const workspace = JSON.parse(await readFile(path.join(project, "discovery-demo.code-workspace"), "utf8"));
+    assert.equal(workspace.settings["window.title"], settings["window.title"]);
+    assert.deepEqual(workspace.settings["workbench.colorCustomizations"], settings["workbench.colorCustomizations"]);
 
     for (const relative of [
       ".github/copilot-instructions.md",
@@ -703,6 +827,62 @@ test("the workspace is configured so VS Code discovers every customization witho
     const readme = await readFile(path.join(project, "README.md"), "utf8");
     assert.match(readme, /workspace trust/i);
     assert.match(readme, /recommended extensions/i);
+  } finally {
+    await rm(parent, { recursive: true, force: true });
+  }
+});
+
+test("new projects validate and apply a custom workspace color", async () => {
+  const parent = await mkdtemp(path.join(os.tmpdir(), "pso-workspace-color-"));
+  try {
+    const custom = spawnSync(process.execPath, [runtime, "create-project", "--name", "Light Workspace", "--destination", parent, "--color", "#ffffff", "--accept-risk"], {
+      cwd: root,
+      encoding: "utf8"
+    });
+    assert.equal(custom.status, 0, custom.stderr);
+    const settings = JSON.parse(await readFile(path.join(parent, "light-workspace", ".vscode", "settings.json"), "utf8"));
+    assert.equal(settings["window.title"], "🚀 Light Workspace • ${rootName}");
+    assert.deepEqual(settings["workbench.colorCustomizations"], {
+      "titleBar.activeBackground": "#FFFFFF",
+      "titleBar.activeForeground": "#000000",
+      "statusBar.background": "#FFFFFF",
+      "statusBar.foreground": "#000000"
+    });
+    const manifest = JSON.parse(await readFile(path.join(parent, "light-workspace", "project-orchestrator.json"), "utf8"));
+    assert.equal(manifest.workspaceColor, "#FFFFFF");
+    const workspace = JSON.parse(await readFile(path.join(parent, "light-workspace", "light-workspace.code-workspace"), "utf8"));
+    assert.equal(workspace.settings["window.title"], settings["window.title"]);
+    assert.deepEqual(workspace.settings["workbench.colorCustomizations"], settings["workbench.colorCustomizations"]);
+
+    const invalid = spawnSync(process.execPath, [runtime, "create-project", "--name", "Invalid Workspace", "--destination", parent, "--color", "blue", "--accept-risk"], {
+      cwd: root,
+      encoding: "utf8"
+    });
+    assert.notEqual(invalid.status, 0);
+    assert.match(`${invalid.stdout}${invalid.stderr}`, /Workspace color must use #RRGGBB format/);
+    assert.ok(!existsSync(path.join(parent, "invalid-workspace")));
+  } finally {
+    await rm(parent, { recursive: true, force: true });
+  }
+});
+
+test("guided project creation prompts for the workspace color", async () => {
+  const parent = await mkdtemp(path.join(os.tmpdir(), "pso-guided-color-"));
+  try {
+    const created = await runInteractive(["create-project"], [
+      { prompt: /Project name: /, answer: "Guided Color" },
+      { prompt: /Destination folder \[[^\]]+\]: /, answer: parent },
+      { prompt: /Stack, comma separated, blank for none \[[^\]]+\]: /, answer: "" },
+      { prompt: /Workspace accent color \[#004578\]: /, answer: "#D13438" },
+      { prompt: /What should be built first\? Blank to skip: /, answer: "" },
+      { prompt: /Open in Visual Studio Code when finished\? \[Y\/n\]: /, answer: "n" },
+      { prompt: /Type "I ACCEPT" to acknowledge the risks and continue: /, answer: "I ACCEPT" }
+    ]);
+    assert.equal(created.status, 0, `${created.stdout}\n${created.stderr}`);
+    assert.equal(created.answers, 7, created.stdout);
+    const settings = JSON.parse(await readFile(path.join(parent, "guided-color", ".vscode", "settings.json"), "utf8"));
+    assert.equal(settings["workbench.colorCustomizations"]["titleBar.activeBackground"], "#D13438");
+    assert.equal(settings["workbench.colorCustomizations"]["titleBar.activeForeground"], "#FFFFFF");
   } finally {
     await rm(parent, { recursive: true, force: true });
   }
@@ -804,8 +984,39 @@ test("every created project receives the Azure discovery and deployment scaffold
     for (const file of ["deploy.ps1", "discover.ps1", "deploy-infra.ps1", "main.bicep", "README.md"]) {
       assert.equal(existsSync(path.join(infra, file)), true, `infra/${file} is installed`);
     }
+    const skillCount = (await readdir(path.join(root, ".github", "skills"), { withFileTypes: true }))
+      .filter((entry) => entry.isDirectory()).length;
+    const promptFiles = await readdir(path.join(parent, "infra-demo", ".github", "prompts"));
+    assert.equal(promptFiles.filter((file) => file.endsWith("-help.prompt.md") && file !== "skills-help.prompt.md").length, skillCount);
+    assert.ok(promptFiles.includes("skills-help.prompt.md"));
     const instructions = await readFile(path.join(parent, "infra-demo", ".github", "instructions", "azure-deployment.instructions.md"), "utf8");
     assert.match(instructions, /applyTo:\s*"infra\/\*\*"/);
+  } finally {
+    await rm(parent, { recursive: true, force: true });
+  }
+});
+
+test("standalone project update refreshes framework skills without replacing project files", async () => {
+  const parent = await mkdtemp(path.join(os.tmpdir(), "pso-update-"));
+  try {
+    const created = spawnSync(process.execPath, [runtime, "create-project", "--name", "Update Demo", "--destination", parent, "--accept-risk"], {
+      cwd: root, encoding: "utf8"
+    });
+    assert.equal(created.status, 0, created.stderr);
+    const project = path.join(parent, "update-demo");
+    const skillPath = path.join(project, ".github", "skills", "azure-discovery", "SKILL.md");
+    const projectFile = path.join(project, "src", "owned.txt");
+    const report = path.join(project, "reports", "azure-discovery.md");
+    await writeFile(skillPath, "project-owned replacement\n", "utf8");
+    await writeFile(projectFile, "preserve me\n", "utf8");
+    await writeFile(report, "preserve report\n", "utf8");
+    const updated = spawnSync(process.execPath, [runtime, "update", "--project", project, "--accept-risk"], {
+      cwd: root, encoding: "utf8"
+    });
+    assert.equal(updated.status, 0, updated.stderr);
+    assert.match(await readFile(skillPath, "utf8"), /Discover the services, regions, models/);
+    assert.equal(await readFile(projectFile, "utf8"), "preserve me\n");
+    assert.equal(await readFile(report, "utf8"), "preserve report\n");
   } finally {
     await rm(parent, { recursive: true, force: true });
   }

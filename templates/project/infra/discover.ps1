@@ -60,6 +60,31 @@ function Resolve-AzureOpenAIApiVersion {
     }
 }
 
+function Resolve-AzureCloudSelection {
+    param(
+        [switch]$Gov,
+        [switch]$Commercial
+    )
+
+    if ($Gov -and $Commercial) {
+        throw 'Choose only one Azure cloud: -Gov or -Commercial.'
+    }
+    if ($Gov) { return 'AzureUSGovernment' }
+    if ($Commercial) { return 'AzureCloud' }
+
+    for ($attempt = 1; $attempt -le 3; $attempt++) {
+        Write-Host "`nChoose the Azure cloud:" -ForegroundColor Cyan
+        Write-Host '1. Commercial'
+        Write-Host '2. Gov'
+        $choice = Read-Host 'Enter 1 or 2'
+        if ($choice -eq '1') { return 'AzureCloud' }
+        if ($choice -eq '2') { return 'AzureUSGovernment' }
+        Write-Host 'Invalid response. Enter only 1 or 2.' -ForegroundColor Yellow
+    }
+
+    throw 'Azure cloud selection failed after 3 invalid responses. Exiting discovery.'
+}
+
 function Invoke-AzureDiscovery {
     <#
     .SYNOPSIS  Probe a region for available services and the best available OpenAI model.
@@ -75,12 +100,13 @@ function Invoke-AzureDiscovery {
     #>
     param(
         [Parameter(Mandatory)][string]$Location,
-        [switch]$AzureGov,
+        [Alias('AzureGov')][switch]$Gov,
+        [switch]$Commercial,
         [string]$PreferModel,
-        [string]$DiscoveryOutputPath
+        [string]$DiscoveryOutputPath = (Join-Path $PSScriptRoot '..\reports\azure-discovery.json')
     )
 
-    $cloud = if ($AzureGov) { 'AzureUSGovernment' } else { 'AzureCloud' }
+    $cloud = Resolve-AzureCloudSelection -Gov:$Gov -Commercial:$Commercial
     Write-Host "`n=== Azure discovery ($Location, $cloud) ===" -ForegroundColor Cyan
 
     $cognitiveAvailable = Test-AzureCognitiveKind -Kind 'AIServices' -Location $Location
@@ -143,6 +169,7 @@ function Invoke-AzureDiscovery {
     }
 
     $result = @{
+        discoveredAt       = (Get-Date).ToUniversalTime().ToString('o')
         cloud              = $cloud
         location           = $Location
         cognitiveAvailable = $cognitiveAvailable
@@ -155,8 +182,27 @@ function Invoke-AzureDiscovery {
     }
 
     if ($DiscoveryOutputPath) {
+        $outputDirectory = Split-Path -Parent $DiscoveryOutputPath
+        New-Item -ItemType Directory -Path $outputDirectory -Force | Out-Null
         $result | ConvertTo-Json -Depth 5 | Set-Content -Path $DiscoveryOutputPath -Encoding utf8
+        $markdownPath = [IO.Path]::ChangeExtension($DiscoveryOutputPath, '.md')
+        $availability = if ($result.openAIAvailable) { 'available' } else { 'not available' }
+        @(
+            '# Azure Discovery'
+            ''
+            "- Discovered at (UTC): $($result.discoveredAt)"
+            "- Cloud: $($result.cloud)"
+            "- Location: $($result.location)"
+            "- Cognitive Services: $($result.cognitiveAvailable)"
+            "- Azure OpenAI: $availability"
+            "- Selected model: $($result.openAIModelName)"
+            "- Model version: $($result.openAIModelVersion)"
+            "- Model SKU: $($result.openAIModelSku)"
+            "- API version: $($result.openAIApiVersion)"
+            "- Cognitive regions: $($result.cognitiveRegions -join ', ')"
+        ) | Set-Content -Path $markdownPath -Encoding utf8
         Write-Host "  Discovery written to $DiscoveryOutputPath" -ForegroundColor Gray
+        Write-Host "  Readable report written to $markdownPath" -ForegroundColor Gray
     }
 
     return $result

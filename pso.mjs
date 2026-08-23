@@ -8,7 +8,7 @@ import { createHash, randomUUID } from "node:crypto";
 import { spawn, spawnSync } from "node:child_process";
 import { setTimeout as delay } from "node:timers/promises";
 
-const VERSION = "1.0.0";
+const VERSION = "1.0.1";
 const FRAMEWORK_VERSION = "9.0.0";
 const RISK_ACCEPTANCE_VERSION = "1.0.0";
 const SCRIPT_ROOT = path.dirname(fileURLToPath(import.meta.url));
@@ -16,6 +16,7 @@ const SUPPORTED_NODE_MAJORS = new Set([22, 24, 26]);
 const PROFILES = new Set(["core", "durable", "distributed", "advanced"]);
 // Newly provisioned projects default to durable so continuity and audit-azure-environment are required, not merely installed.
 const DEFAULT_PROJECT_PROFILE = "durable";
+const DEFAULT_WORKSPACE_COLOR = "#004578";
 const CONFIGURATION_PATH = path.join("config", "skills-orchestrator.json");
 const TEMPLATE_ROOT_RELATIVE = "templates/project";
 const BRIEF_RELATIVE_PATH = "docs/PROJECT-BRIEF.md";
@@ -197,6 +198,20 @@ function normalizeName(value) {
     throw new Error("Project name must contain 1-64 letters, numbers, spaces, or hyphens");
   }
   return normalized;
+}
+
+function normalizeWorkspaceColor(value) {
+  const color = String(value ?? "").trim() || DEFAULT_WORKSPACE_COLOR;
+  if (!/^#[0-9a-f]{6}$/i.test(color)) throw new Error("Workspace color must use #RRGGBB format");
+  return color.toUpperCase();
+}
+
+function workspaceForeground(color) {
+  const channels = color.slice(1).match(/.{2}/g)
+    .map((channel) => Number.parseInt(channel, 16) / 255)
+    .map((channel) => channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4);
+  const luminance = 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
+  return luminance > 0.179 ? "#000000" : "#FFFFFF";
 }
 
 // Appends only the framework blocks that are absent so project-authored instruction text survives every rerun.
@@ -600,7 +615,7 @@ function parseArgs(args) {
       continue;
     }
     const key = value.slice(2);
-    if (["help", "version", "dry-run", "apply", "accept-risk", "force-templates", "force-adopt", "open"].includes(key)) {
+    if (["help", "version", "dry-run", "apply", "accept-risk", "force-templates", "force-adopt", "open", "json"].includes(key)) {
       result[key] = true;
       continue;
     }
@@ -1044,7 +1059,7 @@ function workspaceLaunch(stack) {
   return unique.length ? `${JSON.stringify({ version: "0.2.0", configurations: unique }, null, 2)}\n` : null;
 }
 
-// Only settings that current VS Code documents as gating customization discovery are written.
+// Folder-scoped settings also support projects opened directly instead of through the generated workspace file.
 const WORKSPACE_SETTINGS = Object.freeze({
   "files.trimTrailingWhitespace": true,
   "editor.formatOnSave": true,
@@ -1054,8 +1069,22 @@ const WORKSPACE_SETTINGS = Object.freeze({
   "chat.promptFilesRecommendations": true
 });
 
-function workspaceSettings() {
-  return `${JSON.stringify(WORKSPACE_SETTINGS, null, 2)}\n`;
+function workspaceIdentitySettings({ displayName, color }) {
+  const normalizedColor = normalizeWorkspaceColor(color);
+  const foreground = workspaceForeground(normalizedColor);
+  return {
+    "window.title": `\u{1F680} ${displayName} \u2022 \${rootName}`,
+    "workbench.colorCustomizations": {
+      "titleBar.activeBackground": normalizedColor,
+      "titleBar.activeForeground": foreground,
+      "statusBar.background": normalizedColor,
+      "statusBar.foreground": foreground
+    }
+  };
+}
+
+function workspaceSettings(identity) {
+  return `${JSON.stringify({ ...WORKSPACE_SETTINGS, ...(identity ? workspaceIdentitySettings(identity) : {}) }, null, 2)}\n`;
 }
 
 function projectBrief({ displayName, profile, declaredStack, createdAt, intent }) {
@@ -1244,7 +1273,7 @@ async function ensureEmptyTarget(root) {
   if ((await readdir(root)).length > 0) throw new Error(`Target exists and is not empty: ${root}`);
 }
 
-async function createProject({ name: enteredName, destination, profile = DEFAULT_PROJECT_PROFILE, stack = "", open = false, intent = "", riskAcceptance }) {
+async function createProject({ name: enteredName, destination, profile = DEFAULT_PROJECT_PROFILE, stack = "", color = DEFAULT_WORKSPACE_COLOR, open = false, intent = "", riskAcceptance }) {
   if (!riskAcceptance) throw new Error("Risk acceptance is required before project creation");
   if (!PROFILES.has(profile)) throw new Error(`Unsupported profile: ${profile}`);
   const declaredStack = stack ? parseStackOption(stack) : new Set();
@@ -1252,6 +1281,7 @@ async function createProject({ name: enteredName, destination, profile = DEFAULT
   const createdAt = new Date().toISOString();
   const displayName = enteredName.trim();
   const name = normalizeName(displayName);
+  const workspaceColor = normalizeWorkspaceColor(color);
   const parent = await realpath(path.resolve(destination));
   const root = path.join(parent, name);
   await ensureEmptyTarget(root);
@@ -1277,9 +1307,14 @@ async function createProject({ name: enteredName, destination, profile = DEFAULT
       await cp(path.join(SCRIPT_ROOT, TEMPLATE_ROOT_RELATIVE, template.path), target, { errorOnExist: true });
     }
 
+    const workspaceIdentity = { displayName, color: workspaceColor };
     const workspace = {
       folders: [{ path: "." }],
-      settings: { "editor.formatOnSave": true, "files.exclude": { "**/dist": true } }
+      settings: {
+        "editor.formatOnSave": true,
+        "files.exclude": { "**/dist": true },
+        ...workspaceIdentitySettings(workspaceIdentity)
+      }
     };
     const manifest = {
       schemaVersion: "1.0.0",
@@ -1289,6 +1324,7 @@ async function createProject({ name: enteredName, destination, profile = DEFAULT
       runtimeVersion: VERSION,
       conformanceProfile: profile,
       declaredStack: [...declaredStack].sort(),
+      workspaceColor,
       riskAcceptance,
       createdAt,
       status: "initialized",
@@ -1300,7 +1336,7 @@ async function createProject({ name: enteredName, destination, profile = DEFAULT
       [".gitignore", "dist/\nnode_modules/\n.env\n.skills-orchestrator/\n"],
       [".github/workflows/ci.yml", continuousIntegrationWorkflow(declaredStack)],
       [".vscode/extensions.json", workspaceExtensions(declaredStack)],
-      [".vscode/settings.json", workspaceSettings()],
+      [".vscode/settings.json", workspaceSettings(workspaceIdentity)],
       [`${name}.code-workspace`, `${JSON.stringify(workspace, null, 2)}\n`],
       ["project-orchestrator.json", `${JSON.stringify(manifest, null, 2)}\n`],
       [CONFIGURATION_PATH, `${JSON.stringify({ ...DEFAULT_CONFIGURATION, profile }, null, 2)}\n`],
@@ -1309,6 +1345,10 @@ async function createProject({ name: enteredName, destination, profile = DEFAULT
       ["src/.gitkeep", ""],
       ["tests/.gitkeep", ""]
     ]);
+    const frameworkSkills = await discoverSkills(SCRIPT_ROOT);
+    for (const skill of frameworkSkills) {
+      files.set(`.github/prompts/${skill.name}-help.prompt.md`, skillHelpPrompt(skill));
+    }
     const workspaceTaskContent = workspaceTasks(declaredStack);
     if (workspaceTaskContent) files.set(".vscode/tasks.json", workspaceTaskContent);
     const workspaceLaunchContent = workspaceLaunch(declaredStack);
@@ -1432,6 +1472,15 @@ async function discoverSkills(root) {
   return skills;
 }
 
+function skillHelpPrompt(skill) {
+  const sections = ["Purpose", "Preconditions", "Inputs", "Approved Tools and Resources", "Read and Write Boundaries", "Procedure", "Validation", "Outputs", "Failure Behavior", "Approval Gates", "Composition and Dependencies", "Examples"];
+  const details = sections.map((heading) => {
+    const items = sectionItems(skill.source, heading);
+    return items.length ? `\n### ${heading}\n${items.map((item) => `- ${item}`).join("\n")}` : "";
+  }).join("");
+  return `---\nmode: agent\ndescription: Help for the ${skill.name} skill.\n---\n\n# ${skill.name} Help\n\n${skill.description}\n\nRead the complete contract at .github/skills/${skill.name}/SKILL.md before using this skill.${details}\n\n## Related commands\n\n- Run the skill with /${skill.name}.\n- Open this help with /${skill.name}-help.\n- Inspect the full contract with @.github/skills/${skill.name}/SKILL.md.\n`;
+}
+
 async function buildAdoptionPlan(projectRoot, profileOverride, projectNameOverride, { forceTemplates = false, forceAdopt = false } = {}) {
   const requestedRoot = path.resolve(projectRoot);
   if (!existsSync(requestedRoot)) throw new Error(`Repository path does not exist: ${requestedRoot}`);
@@ -1532,6 +1581,15 @@ async function buildAdoptionPlan(projectRoot, profileOverride, projectNameOverri
     if (!existsSync(destination)) actions.push({ action: "create", ...item });
     else if (await sameFile(item.source, destination)) actions.push({ action: "already-current", ...item });
     else actions.push({ action: "update-framework-file", ...item, reason: "Synchronize the installed framework configuration" });
+  }
+
+  for (const skill of frameworkSkills) {
+    const helpPath = `.github/prompts/${skill.name}-help.prompt.md`;
+    const destination = path.join(root, helpPath);
+    const content = skillHelpPrompt(skill);
+    if (!existsSync(destination)) actions.push({ action: "create", kind: "help", path: helpPath, content });
+    else if (await readFile(destination, "utf8") === content) actions.push({ action: "already-current", kind: "help", path: helpPath });
+    else actions.push({ action: "update-wiring-file", kind: "help", path: helpPath, content, reason: "Regenerate help from the current skill contract" });
   }
 
   const scaffoldTemplates = await loadScaffoldManifest();
@@ -1725,6 +1783,15 @@ function printAdoptionPlan(plan) {
   }
 }
 
+function portableAdoptionPlan(plan) {
+  const { projectRoot, ...portablePlan } = plan;
+  return {
+    ...portablePlan,
+    project: { name: plan.projectName ?? path.basename(projectRoot) },
+    actions: plan.actions.map(({ source, content, ...action }) => action)
+  };
+}
+
 async function verifyInstallation(plan, reportName = "adoption-verification.json") {
   const failures = [];
   const frameworkSkills = await discoverSkills(SCRIPT_ROOT);
@@ -1898,6 +1965,21 @@ async function applyAdoption(plan, riskAcceptance) {
   }
 }
 
+async function updateProject(projectRoot, options) {
+  const plan = await buildAdoptionPlan(projectRoot, options.profile, undefined, {
+    forceTemplates: options["force-templates"] === true,
+    forceAdopt: true
+  });
+  if (options.json) return console.log(JSON.stringify(portableAdoptionPlan(plan), null, 2));
+  printAdoptionPlan(plan);
+  if (options["dry-run"] === true) {
+    console.log("\nDry run only. No project files were changed.");
+    return;
+  }
+  const riskAcceptance = acknowledgeRisk(options["accept-risk"] === true, "cli-flag");
+  return applyAdoption(plan, riskAcceptance);
+}
+
 async function applyAdoptionLocked(plan) {
   for (const item of plan.actions.filter((action) => action.action === "replace-duplicate")) {
     await rm(path.join(plan.projectRoot, item.path), { recursive: true, force: true });
@@ -1929,12 +2011,7 @@ async function applyAdoptionLocked(plan) {
   }
   const reports = path.join(plan.projectRoot, "reports");
   await mkdir(reports, { recursive: true });
-  const { projectRoot, ...portablePlan } = plan;
-  const reportPlan = {
-    ...portablePlan,
-    project: { name: plan.projectName ?? path.basename(projectRoot) },
-    actions: plan.actions.map(({ source, content, ...action }) => action)
-  };
+  const reportPlan = portableAdoptionPlan(plan);
   await writeFile(path.join(reports, "adoption-plan.json"), `${JSON.stringify(reportPlan, null, 2)}\n`, "utf8");
   const markdown = `# Project Skills Orchestrator Adoption
 
@@ -2154,6 +2231,7 @@ async function guidedCreate() {
     const name = await terminal.question("Project name: ");
     const destination = await terminal.question(`Destination folder [${process.cwd()}]: `);
     const stack = await terminal.question(`Stack, comma separated, blank for none [${[...STACK_TAGS].sort().join(", ")}]: `);
+    const color = await terminal.question(`Workspace accent color [${DEFAULT_WORKSPACE_COLOR}]: `);
     const intent = await terminal.question("What should be built first? Blank to skip: ");
     const openAnswer = await terminal.question("Open in Visual Studio Code when finished? [Y/n]: ");
     const riskAcceptance = await promptRiskAcceptance(terminal);
@@ -2161,6 +2239,7 @@ async function guidedCreate() {
       name,
       destination: destination.trim() || process.cwd(),
       stack: stack.trim(),
+      color: color.trim() || DEFAULT_WORKSPACE_COLOR,
       intent: intent.trim(),
       open: !openAnswer.trim().toLowerCase().startsWith("n"),
       riskAcceptance
@@ -2257,11 +2336,13 @@ async function guidedSetup() {
       const name = await terminal.question("Project name: ");
       const destination = await terminal.question(`Parent destination folder [${process.cwd()}]: `);
       const enteredProfile = await terminal.question(`Conformance profile [${DEFAULT_PROJECT_PROFILE}]: `);
+      const color = await terminal.question(`Workspace accent color [${DEFAULT_WORKSPACE_COLOR}]: `);
       const riskAcceptance = await promptRiskAcceptance(terminal);
       const result = await createProject({
         name,
         destination: destination.trim() || process.cwd(),
         profile: enteredProfile.trim().toLowerCase() || DEFAULT_PROJECT_PROFILE,
+        color: color.trim() || DEFAULT_WORKSPACE_COLOR,
         riskAcceptance
       });
       console.log(`\nCreated project: ${result.root}`);
@@ -2313,7 +2394,7 @@ function help() {
 
 Usage:
   node .\\pso.mjs
-  node .\\pso.mjs create-project --name "My Project" --destination "C:\\repos" --profile durable --stack typescript --open --accept-risk
+  node .\pso.mjs create-project --name "My Project" --destination "C:\repos" --profile durable --stack typescript --color "#004578" --open --accept-risk
   node .\\pso.mjs clone-setup --repository "https://github.com/owner/project.git" [--destination "C:\\repos\\project"] --profile durable --accept-risk
   node .\\pso.mjs adopt --project "C:\\repos\\existing" --profile core --dry-run
   node .\\pso.mjs adopt --project "C:\\repos\\existing" --profile core --apply --accept-risk
@@ -2330,6 +2411,7 @@ New project:
   instruction files, the build and test tasks, the debug configurations, and the
   continuous-integration commands. Without it none of those are generated.
   Supported values: ${[...STACK_TAGS].sort().join(", ")}
+  --color sets the new workspace accent using #RRGGBB. The default is ${DEFAULT_WORKSPACE_COLOR}.
   --open launches Visual Studio Code on the generated workspace when the editor
   is installed. Accept the workspace trust prompt to enable tasks, debugging,
   and MCP servers.
@@ -2341,6 +2423,13 @@ New project:
 Adoption:
   --force-templates installs framework templates even where an equivalent exists.
   --force-adopt proceeds against a directory with no recognized project marker.
+  --json emits a portable dry-run plan to standard output without changing the project.
+
+Update:
+  node .\\pso.mjs update --project "C:\\repos\\existing" --dry-run
+  node .\\pso.mjs update --project "C:\\repos\\existing" --accept-risk
+  Refreshes copied framework skills, schemas, configuration, and missing scaffold assets while
+  preserving application code, reports, and project-owned instruction customizations.
 
 Clone setup:
   --destination is optional; the default is .\\<repository-name>
@@ -2376,6 +2465,7 @@ async function main() {
       destination: options.destination,
       profile: options.profile ?? DEFAULT_PROJECT_PROFILE,
       stack: options.stack ?? "",
+      color: options.color ?? DEFAULT_WORKSPACE_COLOR,
       intent: options.intent ?? "",
       open: options.open === true,
       riskAcceptance
@@ -2397,10 +2487,12 @@ async function main() {
   }
   if (command === "adopt") {
     if (!options.project) throw new Error("Use --project with the existing repository path");
+    if (options.json && options.apply) throw new Error("Use --json only with an adoption dry run");
     const plan = await buildAdoptionPlan(options.project, options.profile, undefined, {
       forceTemplates: options["force-templates"] === true,
       forceAdopt: options["force-adopt"] === true
     });
+    if (options.json) return console.log(JSON.stringify(portableAdoptionPlan(plan), null, 2));
     printAdoptionPlan(plan);
     if (options.apply) {
       const riskAcceptance = acknowledgeRisk(options["accept-risk"] === true, "cli-flag");
@@ -2408,6 +2500,10 @@ async function main() {
     }
     console.log("\nDry run only. No project files were changed.");
     return;
+  }
+  if (command === "update") {
+    if (!options.project) throw new Error("Use --project with the standalone project path");
+    return updateProject(options.project, options);
   }
   if (command === "recover") {
     if (!options.project) throw new Error("Use --project with the repository path to recover");

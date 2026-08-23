@@ -1,17 +1,17 @@
 # Project Skills Orchestrator
 
-Turn any repository into a governed GitHub Copilot workspace: agent instructions, scoped standards, reusable prompts, specialist agents, and 35 governed skills — installed consistently, verified after every run, and safe to rerun.
+Turn any repository into a governed GitHub Copilot workspace: agent instructions, scoped standards, reusable prompts, specialist agents, and 36 governed skills — installed consistently, verified after every run, and safe to rerun.
 
 | Item | Value |
 | --- | --- |
-| Runtime version | `1.0.0` |
+| Runtime version | `1.0.1` |
 | Framework version | `9.0.0` |
-| Skill catalog | 35 governed skills |
+| Skill catalog | 36 governed skills |
 | Supported Node.js | 22, 24, 26 |
 | Dependencies | None |
 | Distribution | Authorized internal use only |
 
-> **Release status.** This build passes its full local gate. Three release blockers remain open and are tracked in [release/release-manifest.json](release/release-manifest.json): trusted signing identity, independent security review, and cross-platform CI evidence. See [SECURITY.md](SECURITY.md) and [docs/THREAT-MODEL.md](docs/THREAT-MODEL.md).
+> **Release status.** This build is an unsigned internal candidate. Three release blockers remain open and are tracked in [release/release-manifest.json](release/release-manifest.json): trusted signing identity, independent security review, and cross-platform CI evidence. See [SECURITY.md](SECURITY.md) and [docs/THREAT-MODEL.md](docs/THREAT-MODEL.md).
 
 ---
 
@@ -77,7 +77,7 @@ This tool modifies repositories. Back up your work, review the dry run, and test
 node .\pso.mjs
 ```
 
-Asks whether your target is new, already local, or a remote GitHub repository, then collects the destination, profile, and stack.
+Asks whether your target is new, already local, or a remote GitHub repository, then collects the destination, profile, stack, and workspace accent color.
 
 ### Create a new project
 
@@ -87,6 +87,7 @@ node .\pso.mjs create-project `
   --destination "C:\Projects" `
   --profile durable `
   --stack typescript `
+  --color "#004578" `
   --open `
   --accept-risk
 ```
@@ -97,7 +98,24 @@ node .\pso.mjs create-project `
 
 Supported values: `typescript`, `javascript`, `csharp`, `python`, `powershell`, `bicep`, `terraform`, `java`, `ruby`, `php`, `go`, `rust`, `swift`, `tests`.
 
+`--color` is optional and accepts a six-digit hexadecimal color. It defaults to `#004578`. New projects use it for the active title bar and status bar, set the window title to `🚀 <project name> • ${rootName}`, and choose black or white foreground text automatically for contrast. The values are written to `.vscode/settings.json` for direct-folder use and to the generated `.code-workspace` file used by **Preferences: Open Workspace Settings (JSON)**. The guided prompts accept the same value.
+
 `--open` launches Visual Studio Code on the generated workspace with the README showing. Without it the workspace path is printed for you to open manually.
+
+Every generated project is standalone: it receives its own copy of the complete governed skill
+catalog, schemas, workflows, prompts, agents, and Azure discovery scaffold. Stack-specific editor
+tasks, launch configurations, and extensions remain conditional so a Python project does not show
+misleading .NET or Terraform commands.
+
+To refresh a standalone project from a newer Skills Orchestrator checkout, preview the update first:
+
+```powershell
+node .\pso.mjs update --project "C:\Projects\my-project" --dry-run
+node .\pso.mjs update --project "C:\Projects\my-project" --accept-risk
+```
+
+The updater refreshes orchestrator-owned skills, schemas, configuration, and missing framework
+assets. It preserves application code, reports, and project-owned instruction customizations.
 
 Without `--stack`, you get the universal standards and a CI workflow that **fails until you configure it**. That is deliberate — a pipeline that passes without testing anything is worse than no pipeline.
 
@@ -332,10 +350,12 @@ Every profile is dependency-closed and enforced by tests.
 | `node .\pso.mjs create-project ... --accept-risk` | Create a new governed project |
 | `node .\pso.mjs clone-setup ... --accept-risk` | Clone a GitHub repository and provision it |
 | `node .\pso.mjs adopt ... --dry-run` | Preview changes to an existing project |
+| `node .\pso.mjs adopt ... --dry-run --json` | Emit the portable plan as JSON without changing the project |
 | `node .\pso.mjs adopt ... --apply --accept-risk` | Apply the reviewed plan |
 | `node .\pso.mjs recover --project PATH` | Restore an interrupted adoption |
 | `node .\pso.mjs inventory --root PATH` | Regenerate and validate the skill inventory |
 | `node .\pso.mjs plan --root PATH --intent TEXT` | Create a workflow plan |
+| `npm run evidence:adoption` | Regenerate disposable-fixture adoption and no-op evidence |
 | `npm run check` | Full conformance gate |
 
 ## Reports
@@ -344,10 +364,14 @@ Every profile is dependency-closed and enforced by tests.
 | --- | --- |
 | `reports/installation-verification.json` | Proof a new project is complete and correctly wired |
 | `reports/adoption-verification.json` | Proof an adopted project is current |
-| `reports/adoption-plan.json` | Exact actions from the last run, including skipped and covered decisions |
+| `reports/adoption-plan.json` | Exact actions applied by the last adoption of a target project, including skipped and covered decisions |
+| `reports/adoption-rerun-evidence.json` | Reproducible before/apply/no-op evidence from a disposable project fixture |
+| `reports/adoption-rerun-evidence.md` | Concise presentation view derived from the rerun evidence |
 | `reports/skill-inventory.json` | Installed skills, dependencies, lifecycle, outputs |
-| `reports/artifact-ownership.json` | The single producer of every report |
+| `reports/artifact-ownership.json` | The declared producer of every skill-owned report |
 | `reports/execution-log.jsonl` | Append-only workflow event stream |
+
+An adoption dry run never writes into the target repository, so it does not create `reports/adoption-plan.json`. Use `--json` to capture that portable plan from standard output. The target report is persisted only after an approved apply. The source repository's rerun evidence is generated separately with `npm run evidence:adoption` against a disposable local fixture.
 
 ## Recovery
 

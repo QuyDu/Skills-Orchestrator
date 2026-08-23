@@ -13,6 +13,7 @@ const expectedSkillIds = [
   "audit-code",
   "audit-plan-remediation",
   "audit-review-findings",
+  "azure-discovery",
   "change-review",
   "ci-failure-triage",
   "clarify-the-ask",
@@ -171,6 +172,22 @@ test("every generated and adopted project carries the mandatory clarification pr
   assert.match(scoped, /^applyTo: "\*\*"$/m);
   assert.match(scoped, /Ask exactly \*\*three\*\* clarifying questions\./);
 
+  const discovery = skills.get("azure-discovery");
+  assert.ok(discovery, "azure-discovery skill must be available to generated projects");
+  assert.match(discovery.source, /1\. Commercial/);
+  assert.match(discovery.source, /2\. Gov/);
+  assert.match(discovery.source, /three attempts total/);
+  assert.ok(existsSync(path.join(templateRoot, ".github", "prompts", "azure-discovery.prompt.md")));
+  const discoveryScript = await readFile(path.join(templateRoot, "infra", "discover.ps1"), "utf8");
+  assert.match(discoveryScript, /azure-discovery\.json/);
+  assert.match(discoveryScript, /ChangeExtension\(\$DiscoveryOutputPath, '\.md'\)/);
+  assert.match(discoveryScript, /Azure cloud selection failed after 3 invalid responses/);
+  const generatedInstructions = await readFile(path.join(templateRoot, ".github", "copilot-instructions.md"), "utf8");
+  assert.match(generatedInstructions, /reports\/project-handoff\.json/);
+  assert.match(generatedInstructions, /--no-clarification/);
+  assert.match(generatedInstructions, /--nmc/);
+  assert.ok(existsSync(path.join(templateRoot, ".github", "prompts", "skills-help.prompt.md")));
+
   for (const relative of [
     ".editorconfig",
     ".vscode/mcp.json",
@@ -233,6 +250,29 @@ test("the default new-project profile requires the deployed-environment Azure au
     for (const skill of profiles.get(name).required) selected.add(skill);
   }
   assert.ok(selected.has("audit-azure-environment"), `${defaultProfile} profile omits audit-azure-environment`);
+});
+
+test("shipped Bicep keeps derived Azure resource names inside service limits", async () => {
+  const infra = path.join(root, "templates", "project", "infra");
+  const bicep = await readFile(path.join(infra, "main.bicep"), "utf8");
+
+  const maxSiteName = Number(bicep.match(/@maxLength\((\d+)\)\r?\n@description\([^)]*\)\r?\nparam siteName/)?.[1]);
+  assert.ok(Number.isInteger(maxSiteName), "siteName must declare a maximum length");
+  const hash = Number(bicep.match(/take\(uniqueString\(resourceGroup\(\)\.id\), (\d+)\)/)?.[1]);
+  assert.ok(Number.isInteger(hash), "the uniqueness suffix must be explicitly bounded");
+
+  // Key Vault is globally unique and capped at 24; truncating the name would discard the suffix.
+  assert.doesNotMatch(bicep, /var keyVaultName = take\(/, "the vault name must never be truncated");
+  assert.match(bicep, /var compactName = replace\(toLower\(siteName\), '-', ''\)/, "vault names must drop hyphens");
+  assert.ok(2 + maxSiteName + hash <= 24, "Key Vault name can exceed its 24 character limit");
+
+  for (const [prefix, limit] of [["asp-", 40], ["app-", 60], ["oai-", 64]]) {
+    const worstCase = prefix.length + maxSiteName + 1 + hash;
+    assert.ok(worstCase <= limit, `${prefix} name reaches ${worstCase}, over the ${limit} character limit`);
+  }
+
+  const deploy = await readFile(path.join(infra, "deploy.ps1"), "utf8");
+  assert.match(deploy, new RegExp(`\\{2,${maxSiteName}\\}`), "the entry point must validate the same site name bound");
 });
 
 test("all dependencies resolve and the graph is acyclic", async () => {

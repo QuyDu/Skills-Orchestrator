@@ -1,0 +1,515 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-21T13:03:14.743Z",
+  "runtimeVersion": "1.0.0",
+  "profile": "core",
+  "fixture": {
+    "name": "adoption-evidence-fixture",
+    "stackSignals": [
+      "package.json"
+    ],
+    "projectOwnedAssets": [
+      ".github/instructions/appsec.instructions.md"
+    ]
+  },
+  "verification": {
+    "dryRunDidNotMutate": true,
+    "appliedPlanMatchesDryRun": true
+  },
+  "before": {
+    "summary": {
+      "plannedWrites": 86,
+      "coveredAssets": 1,
+      "conflicts": 0,
+      "alreadyCurrent": 0,
+      "skipped": 4
+    },
+    "counts": {
+      "create": 86,
+      "update-skill": 0,
+      "update-skill-references": 0,
+      "update-framework-file": 0,
+      "update-wiring-file": 0,
+      "replace-duplicate": 0,
+      "already-current": 0,
+      "skipped": 4,
+      "covered": 1,
+      "conflict": 0
+    },
+    "plannedWrites": [
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/architecture-review"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/artifact-upgrade"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/audit-azure-environment"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/audit-code"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/audit-plan-remediation"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/audit-review-findings"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/change-review"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/ci-failure-triage"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/clarify-the-ask"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/dependency-maintenance"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/deployment-review"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/development-environment-readiness"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/documentation-builder"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/framework-health-check"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/multi-agent-coordinator"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/policy-engine"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/prepare-commit"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/project-handoff"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/project-knowledge-capture"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/project-memory"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/project-setup"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/project-skills-orchestrator"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/regression-test-development"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/security-review"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/skill-create"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/skill-dependency-manager"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/skill-inventory"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/skill-registry"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/systematic-debugging"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/workflow-planner"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/workflow-recovery"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/workflow-scheduler"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/workflow-simulator"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/workflow-state-manager"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/workflow-telemetry"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/adoption-transaction.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/architecture-review.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/audit-findings-review.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/audit-remediation-plan.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/clarification-result.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/code-audit-findings.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/cross-platform-ci-evidence.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/current-execution-state.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/deployment-review.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/development-environment-readiness.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/documentation-plan.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/independent-review.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/project-installation-verification.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/project-setup-plan.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/release-manifest.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/release-readiness.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/release-signature.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/resolved-configuration.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/security-check.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/security-review.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/skill-details.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/skill-inventory.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/workflow-event.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/workflow-plan.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "configuration",
+        "path": "config/profiles.yaml"
+      },
+      {
+        "action": "create",
+        "kind": "scaffold",
+        "path": ".editorconfig"
+      },
+      {
+        "action": "create",
+        "kind": "scaffold",
+        "path": ".gitattributes"
+      },
+      {
+        "action": "create",
+        "kind": "scaffold",
+        "path": ".vscode/mcp.json"
+      },
+      {
+        "action": "create",
+        "kind": "scaffold",
+        "path": "docs/adr/0000-template.md"
+      },
+      {
+        "action": "create",
+        "kind": "scaffold",
+        "path": ".github/instructions/clarification.instructions.md"
+      },
+      {
+        "action": "create",
+        "kind": "scaffold",
+        "path": ".github/instructions/markdown.instructions.md"
+      },
+      {
+        "action": "create",
+        "kind": "scaffold",
+        "path": ".github/instructions/typescript.instructions.md"
+      },
+      {
+        "action": "create",
+        "kind": "scaffold",
+        "path": ".github/instructions/azure-deployment.instructions.md"
+      },
+      {
+        "action": "create",
+        "kind": "scaffold",
+        "path": ".github/agents/azure-architect.agent.md"
+      },
+      {
+        "action": "create",
+        "kind": "scaffold",
+        "path": ".github/agents/security-reviewer.agent.md"
+      },
+      {
+        "action": "create",
+        "kind": "scaffold",
+        "path": ".github/agents/documentation-writer.agent.md"
+      },
+      {
+        "action": "create",
+        "kind": "scaffold",
+        "path": ".github/prompts/create-adr.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "scaffold",
+        "path": ".github/prompts/review-architecture.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "scaffold",
+        "path": ".github/prompts/security-review.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "scaffold",
+        "path": ".github/prompts/executive-summary.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "scaffold",
+        "path": ".github/prompts/project-status.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "scaffold",
+        "path": ".github/prompts/new-component.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "manifest",
+        "path": "project-orchestrator.json"
+      },
+      {
+        "action": "create",
+        "kind": "configuration",
+        "path": "config/orchestrator.yaml"
+      },
+      {
+        "action": "create",
+        "kind": "configuration",
+        "path": "config/skills-orchestrator.json"
+      },
+      {
+        "action": "create",
+        "kind": "instructions",
+        "path": ".github/copilot-instructions.md"
+      },
+      {
+        "action": "create",
+        "kind": "instructions",
+        "path": "AGENTS.md"
+      },
+      {
+        "action": "create",
+        "kind": "workspace-support",
+        "path": ".vscode/extensions.json"
+      },
+      {
+        "action": "create",
+        "kind": "workspace-support",
+        "path": ".vscode/settings.json"
+      },
+      {
+        "action": "create",
+        "kind": "workspace-support",
+        "path": ".vscode/tasks.json"
+      },
+      {
+        "action": "create",
+        "kind": "workspace-support",
+        "path": ".vscode/launch.json"
+      }
+    ],
+    "coveredAssets": [
+      {
+        "action": "covered",
+        "kind": "scaffold",
+        "path": ".github/instructions/security.instructions.md",
+        "coveredBy": ".github/instructions/appsec.instructions.md",
+        "reason": "Existing scoped-instructions already covers security secrets identity injection owasp; use --force-templates to install anyway"
+      }
+    ],
+    "conflicts": []
+  },
+  "after": {
+    "summary": {
+      "plannedWrites": 0,
+      "coveredAssets": 1,
+      "conflicts": 0,
+      "alreadyCurrent": 86,
+      "skipped": 4
+    },
+    "counts": {
+      "create": 0,
+      "update-skill": 0,
+      "update-skill-references": 0,
+      "update-framework-file": 0,
+      "update-wiring-file": 0,
+      "replace-duplicate": 0,
+      "already-current": 86,
+      "skipped": 4,
+      "covered": 1,
+      "conflict": 0
+    },
+    "plannedWrites": [],
+    "coveredAssets": [
+      {
+        "action": "covered",
+        "kind": "scaffold",
+        "path": ".github/instructions/security.instructions.md",
+        "coveredBy": ".github/instructions/appsec.instructions.md",
+        "reason": "Existing scoped-instructions already covers security secrets identity injection owasp; use --force-templates to install anyway"
+      }
+    ],
+    "conflicts": [],
+    "noOp": true
+  }
+}

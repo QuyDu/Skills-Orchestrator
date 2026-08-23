@@ -30,7 +30,10 @@ This protocol has the highest precedence in this repository. It applies to every
 
 ## Only exception
 
-The current prompt explicitly instructs you to skip clarification. A prior prompt's instruction does not carry forward.
+The current prompt explicitly instructs you to skip clarification, including either exact token
+`--no-clarification` or `--nmc`. A prior prompt's instruction does not carry forward. These tokens never
+overrides approval gates or authorizes destructive, external, privileged, irreversible, commit, or
+push actions.
 
 ## Recording
 

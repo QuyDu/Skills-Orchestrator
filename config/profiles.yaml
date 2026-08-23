@@ -19,6 +19,7 @@ profiles:
       - dependency-maintenance
       - audit-code
       - audit-azure-environment
+      - azure-discovery
       - audit-review-findings
       - audit-plan-remediation
       - security-review
@@ -26,6 +27,7 @@ profiles:
       - documentation-builder
       - deployment-review
       - prepare-commit
+      - project-handoff
   durable:
     extends: core
     required:

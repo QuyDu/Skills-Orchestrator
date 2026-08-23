@@ -1,0 +1,17 @@
+{
+
+"window.title": "🎯 Project Skills Orchestrator • ${rootName}",
+
+"workbench.colorCustomizations": {
+
+"titleBar.activeBackground": "#107C10",
+
+"titleBar.activeForeground": "#FFFFFF",
+
+"statusBar.background": "#107C10",
+
+"statusBar.foreground": "#FFFFFF"
+8
+}
+
+}

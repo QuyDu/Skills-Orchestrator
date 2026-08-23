@@ -5,8 +5,8 @@
 targetScope = 'resourceGroup'
 
 @minLength(2)
-@maxLength(20)
-@description('Base name for every resource in this deployment.')
+@maxLength(12)
+@description('Base name for every resource in this deployment. Kept short so derived names stay inside Azure service limits.')
 param siteName string
 
 @description('Region for the deployment.')
@@ -43,9 +43,13 @@ param tags object = {}
 @description('Data-plane public access. Enabled lets the baseline run without a VNet. Production must set Disabled and front these services with private endpoints, recorded in an ADR.')
 param publicNetworkAccess string = 'Enabled'
 
-var suffix = uniqueString(resourceGroup().id)
+// Six hash characters keep globally unique names short while staying deterministic per resource group.
+var suffix = take(uniqueString(resourceGroup().id), 6)
+// Key Vault allows no consecutive or trailing hyphens and caps at 24, so its name drops separators entirely.
+var compactName = replace(toLower(siteName), '-', '')
+var appServicePlanName = 'asp-${siteName}-${suffix}'
 var webAppName = 'app-${siteName}-${suffix}'
-var keyVaultName = take('kv-${siteName}-${suffix}', 24)
+var keyVaultName = 'kv${compactName}${suffix}'
 var openAIName = 'oai-${siteName}-${suffix}'
 
 // Built-in role: Key Vault Secrets User.
@@ -54,7 +58,7 @@ var keyVaultSecretsUserRoleId = '4633458b-17de-408a-b874-0445c86b69e6'
 var openAIUserRoleId = '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2024-04-01' = {
-  name: 'plan-${siteName}-${suffix}'
+  name: appServicePlanName
   location: location
   tags: tags
   sku: {

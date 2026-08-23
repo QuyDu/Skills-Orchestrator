@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
-  "runtimeVersion": "1.0.0",
-  "generatedAt": "2026-08-20T16:52:03.362Z",
+  "runtimeVersion": "1.0.1",
+  "generatedAt": "2026-08-23T16:32:20.901Z",
   "skills": [
     {
       "name": "architecture-review",
@@ -84,6 +84,20 @@
         "reports/code-audit-review.md",
         "reports/azure-audit-review.json",
         "reports/azure-audit-review.md"
+      ]
+    },
+    {
+      "name": "azure-discovery",
+      "path": ".github/skills/azure-discovery/SKILL.md",
+      "description": "Discover Azure Commercial or Azure US Government service and model availability for the current project, persist dated results, and identify when a refresh is needed.",
+      "lifecycle": "tested",
+      "confidence": "medium",
+      "dependencies": [
+        "project-handoff"
+      ],
+      "reports": [
+        "reports/azure-discovery.json",
+        "reports/azure-discovery.md"
       ]
     },
     {

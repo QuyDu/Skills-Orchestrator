@@ -19,8 +19,11 @@
     deployments with different names are fully isolated.
 .PARAMETER Location
     Target region. Defaults to eastus, or usgovvirginia with -AzureGov.
-.PARAMETER AzureGov
+.PARAMETER Gov
     Deploy to Azure US Government. Sets AZURE_CLOUD so the app resolves sovereign endpoints.
+.PARAMETER Commercial
+    Deploy to Azure Commercial. If neither cloud switch is supplied, the script displays a
+    numeric selection menu.
 .PARAMETER PreferModel
     Try this OpenAI model first, falling back to the normal preference order if the region
     does not offer it.
@@ -38,7 +41,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory)]
-    [ValidatePattern('^[a-zA-Z0-9-]{2,20}$')]
+    [ValidatePattern('^[a-zA-Z0-9-]{2,12}$')]
     [string]$SiteName,
 
     [string]$Location,
@@ -54,7 +57,9 @@ param(
 
     [switch]$NoKeyVault,
 
-    [switch]$AzureGov,
+    [Alias('AzureGov')][switch]$Gov,
+
+    [switch]$Commercial,
 
     [switch]$WhatIf
 )
@@ -66,25 +71,25 @@ if (-not (Get-Command az -ErrorAction SilentlyContinue)) {
     throw "The Azure CLI is required. Install it and run 'az login'."
 }
 
-if (-not $Location) {
-    $Location = if ($AzureGov) { 'usgovvirginia' } else { 'eastus' }
-}
-
 . (Join-Path $PSScriptRoot 'discover.ps1')
 . (Join-Path $PSScriptRoot 'deploy-infra.ps1')
 
-$expectedCloud = if ($AzureGov) { 'AzureUSGovernment' } else { 'AzureCloud' }
+$expectedCloud = Resolve-AzureCloudSelection -Gov:$Gov -Commercial:$Commercial
+if (-not $Location) {
+    $Location = if ($expectedCloud -eq 'AzureUSGovernment') { 'usgovvirginia' } else { 'eastus' }
+}
+
 $activeCloud = az cloud show --query name -o tsv 2>$null
 if ($activeCloud -and $activeCloud -ne $expectedCloud) {
     throw "Signed in to '$activeCloud' but '$expectedCloud' was requested. Run: az cloud set --name $expectedCloud"
 }
 
-$discovery = Invoke-AzureDiscovery -Location $Location -AzureGov:$AzureGov `
+$discovery = Invoke-AzureDiscovery -Location $Location -Gov:($expectedCloud -eq 'AzureUSGovernment') `
     -PreferModel $PreferModel -DiscoveryOutputPath $DiscoveryOutputPath
 
 $outputs = Invoke-InfrastructureDeploy -SiteName $SiteName -Location $Location -Discovery $discovery `
     -AppServiceSku $AppServiceSku -LinuxFxVersion $LinuxFxVersion -DeployKeyVault:(-not $NoKeyVault) `
-    -AzureGov:$AzureGov -WhatIf:$WhatIf
+    -AzureGov:($expectedCloud -eq 'AzureUSGovernment') -WhatIf:$WhatIf
 
 if ($WhatIf) {
     Write-Host "`nWhat-if complete. Nothing was created or changed." -ForegroundColor Cyan

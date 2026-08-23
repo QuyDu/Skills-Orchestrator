@@ -22,11 +22,14 @@ test("production scripts and release metadata are present", async () => {
   assert.ok(help.stdout.includes("--destination is optional"));
   assert.ok(help.stdout.includes("credential-free GitHub HTTPS URL"));
   assert.ok(help.stdout.includes("destination must not already exist"));
+  assert.ok(help.stdout.includes("--json emits a portable dry-run plan"));
+  assert.ok(help.stdout.includes("--color sets the new workspace accent"));
   assert.equal(manifest.scripts.security, "node scripts/security-check.mjs");
   assert.equal(manifest.scripts.release, "node scripts/build-release.mjs");
   assert.equal(manifest.scripts["release:verify:candidate"], "node scripts/verify-release.mjs --candidate");
   assert.equal(manifest.scripts["release:verify"], "node scripts/verify-release.mjs");
   assert.equal(manifest.scripts["release:status"], "node scripts/release-status.mjs");
+  assert.equal(manifest.scripts["evidence:adoption"], "node scripts/adoption-evidence.mjs");
   assert.match(manifest.scripts.check, /npm run security/);
   assert.match(manifest.scripts.check, /production-gates\.test\.mjs/);
   assert.match(manifest.scripts.check, /security-fuzz\.test\.mjs/);
@@ -36,6 +39,7 @@ test("production scripts and release metadata are present", async () => {
   assert.ok(existsSync(path.join(root, "scripts", "build-release.mjs")));
   assert.ok(existsSync(path.join(root, "scripts", "verify-release.mjs")));
   assert.ok(existsSync(path.join(root, "scripts", "release-status.mjs")));
+  assert.ok(existsSync(path.join(root, "scripts", "adoption-evidence.mjs")));
   assert.ok(existsSync(path.join(root, "release", "release-manifest.json")));
   assert.ok(existsSync(path.join(root, ".github", "workflows", "codeql.yml")));
 

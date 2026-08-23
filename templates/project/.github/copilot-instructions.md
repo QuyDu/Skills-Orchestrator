@@ -31,6 +31,21 @@ Use `.github/skills/project-skills-orchestrator/SKILL.md` for project orchestrat
 - Machine-readable artifacts under `reports/` are authoritative. Markdown views are derived.
 - Never rewrite accepted records in `reports/execution-log.jsonl`.
 
+## Startup continuity and Azure discovery
+
+At the beginning of work, read `reports/project-handoff.json` before planning or changing files. If
+it does not exist, create an initial handoff through `/project-handoff`. After understanding the
+handoff, read `reports/azure-discovery.md` and `reports/azure-discovery.json`. If discovery is
+missing, ask whether the user wants to run `/Azure Discovery`. If its recorded `discoveredAt`
+timestamp is more than 14 days old, ask whether the user wants to rerun it. Continue with a warning
+when the user declines and record that decision in the next handoff.
+
+`/Azure Discovery` accepts `-Commercial` or `-Gov`. If neither is supplied, ask the user to choose
+`1. Commercial` or `2. Gov`; accept only `1` or `2`, retry three invalid responses, then report an
+error and exit. To explicitly bypass the normal clarification round, append the exact token
+`--no-clarification` or `--nmc` to the prompt. These are user instructions to proceed with reasonable defaults,
+not permission for destructive, external, privileged, irreversible, commit, or push actions.
+
 ## Project purpose
 
 <!-- Replace: one paragraph describing what this system does and who uses it. -->

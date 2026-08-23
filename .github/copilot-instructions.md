@@ -14,7 +14,8 @@ Apply this to every new user prompt, without exception, before any analysis, too
 - Ground the three questions in repository evidence; ask about intent, scope, constraints, and acceptance criteria rather than facts the repository already answers.
 - Never treat your own plan description as approval.
 - Never proceed merely because three questions were asked; unresolved material ambiguity still blocks.
-- The only exception is an explicit instruction in the current prompt to skip clarification.
+- The only exception is an explicit instruction in the current prompt to skip clarification,
+  including `--no-clarification` or its short alias `--nmc`.
 
 ## Orchestration
 
