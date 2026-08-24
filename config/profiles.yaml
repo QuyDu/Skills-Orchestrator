@@ -12,6 +12,7 @@ profiles:
       - framework-health-check
       - project-setup
       - development-environment-readiness
+      - environment-update
       - systematic-debugging
       - regression-test-development
       - change-review
@@ -38,6 +39,7 @@ profiles:
       - project-knowledge-capture
       - project-memory
       - linkedin-post
+      - azure-cleanup
   distributed:
     extends: durable
     required:

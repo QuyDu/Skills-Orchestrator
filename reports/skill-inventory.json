@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "runtimeVersion": "1.0.2",
-  "generatedAt": "2026-08-23T18:57:45.565Z",
+  "generatedAt": "2026-08-24T17:32:55.225Z",
   "skills": [
     {
       "name": "architecture-review",
@@ -84,6 +84,22 @@
         "reports/code-audit-review.md",
         "reports/azure-audit-review.json",
         "reports/azure-audit-review.md"
+      ]
+    },
+    {
+      "name": "azure-cleanup",
+      "path": ".github/skills/azure-cleanup/SKILL.md",
+      "description": "Safely inspect and, after explicit confirmation, remove Azure resources associated with a project using resource-group, resource, or all-project cleanup scopes.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "azure-discovery",
+        "project-handoff",
+        "policy-engine"
+      ],
+      "reports": [
+        "reports/azure-cleanup.json",
+        "reports/azure-cleanup.md"
       ]
     },
     {
@@ -201,6 +217,21 @@
       "reports": [
         "reports/documentation-plan.json",
         "reports/documentation-plan.md"
+      ]
+    },
+    {
+      "name": "environment-update",
+      "path": ".github/skills/environment-update/SKILL.md",
+      "description": "Inventory installed development tools and present available updates, then update only existing tools selected by the user with complete findings and error reporting.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "development-environment-readiness",
+        "policy-engine"
+      ],
+      "reports": [
+        "reports/environment-update.json",
+        "reports/environment-update.md"
       ]
     },
     {

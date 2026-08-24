@@ -1534,6 +1534,15 @@ function skillHelpPrompt(skill) {
   return `---\nmode: agent\ndescription: Help for the ${skill.name} skill.\n---\n\n# ${skill.name} Help\n\n${skill.description}\n\nRead the complete contract at .github/skills/${skill.name}/SKILL.md before using this skill.${details}\n\n## Related commands\n\n- Run the skill with /${skill.name}.\n- Open this help with /${skill.name}-help.\n- Inspect the full contract with @.github/skills/${skill.name}/SKILL.md.\n`;
 }
 
+async function printSkillHelp(skillName) {
+  const requested = skillName?.trim().toLowerCase();
+  if (!requested) return false;
+  const skill = (await discoverSkills(SCRIPT_ROOT)).find((item) => item.name === requested);
+  if (!skill) throw new Error(`Unknown skill: ${skillName}. Run node .\\pso.mjs help to see general usage, or inspect .github\\skills.`);
+  console.log(skillHelpPrompt(skill));
+  return true;
+}
+
 async function buildAdoptionPlan(projectRoot, profileOverride, projectNameOverride, { forceTemplates = false, forceAdopt = false, stackOverride = "" } = {}) {
   const requestedRoot = path.resolve(projectRoot);
   if (!existsSync(requestedRoot)) throw new Error(`Repository path does not exist: ${requestedRoot}`);
@@ -2502,7 +2511,10 @@ async function main() {
   const options = parseArgs(process.argv.slice(2));
   const command = options._[0];
   if (options.version) return console.log(VERSION);
-  if (options.help || command === "help") return help();
+  if (options.help || command === "help") {
+    if (await printSkillHelp(options._[options.help ? 0 : 1])) return;
+    return help();
+  }
   if (command === "verify") {
     const required = [".github/skills", "schemas", "config/profiles.yaml", TEMPLATE_ROOT_RELATIVE, SCAFFOLD_MANIFEST_RELATIVE];
     const missing = required.filter((item) => !existsSync(path.join(SCRIPT_ROOT, item)));

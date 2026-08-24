@@ -123,6 +123,18 @@
       "requires": "always"
     },
     {
+      "path": ".github/prompts/azure-cleanup.prompt.md",
+      "kind": "prompt",
+      "purpose": "safe azure resource cleanup with confirmation",
+      "requires": "always"
+    },
+    {
+      "path": ".github/prompts/environment-update.prompt.md",
+      "kind": "prompt",
+      "purpose": "inventory and update existing development tools",
+      "requires": "always"
+    },
+    {
       "path": "infra/deploy.ps1",
       "kind": "deployment",
       "purpose": "azure deployment orchestrator entry point",
@@ -154,6 +166,13 @@
       "path": "infra/README.md",
       "kind": "deployment",
       "purpose": "azure deployment pipeline documentation",
+      "requires": "always",
+      "createOnly": true
+    },
+    {
+      "path": "infra/cleanup.ps1",
+      "kind": "deployment",
+      "purpose": "azure resource cleanup with what-if confirmation",
       "requires": "always",
       "createOnly": true
     },

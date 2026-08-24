@@ -1,12 +1,12 @@
 # Project Skills Orchestrator
 
-Turn any repository into a governed GitHub Copilot workspace: agent instructions, scoped standards, reusable prompts, specialist agents, and 36 governed skills — installed consistently, verified after every run, and safe to rerun.
+Turn any repository into a governed GitHub Copilot workspace: agent instructions, scoped standards, reusable prompts, specialist agents, and 39 governed skills — installed consistently, verified after every run, and safe to rerun.
 
 | Item | Value |
 | --- | --- |
 | Runtime version | `1.0.2` |
 | Framework version | `9.0.0` |
-| Skill catalog | 36 governed skills |
+| Skill catalog | 39 governed skills |
 | Supported Node.js | 22, 24, 26 |
 | Dependencies | None |
 | Distribution | Authorized internal use only |
@@ -23,7 +23,7 @@ It has two halves.
 
 **A command-line installer** (`pso.mjs`) that creates a new project or adopts an existing one. It runs entirely on Node.js built-ins — no packages to install, no registry access — and every change it makes is planned, journaled, and verified.
 
-**A catalog of 36 skills** installed into `.github/skills/`, invoked from GitHub Copilot Chat in Agent mode. Each skill is a bounded contract: what it owns, what it reads, what it writes, when it must stop and ask you.
+**A catalog of 39 skills** installed into `.github/skills/`, invoked from GitHub Copilot Chat in Agent mode. Each skill is a bounded contract: what it owns, what it reads, what it writes, when it must stop and ask you.
 
 ### What makes it different
 
@@ -125,6 +125,21 @@ assets. It preserves application code, reports, and project-owned instruction cu
 Without `--stack`, you get the universal standards and a CI workflow that **fails until you configure it**. That is deliberate — a pipeline that passes without testing anything is worse than no pipeline.
 
 The destination must be absent or empty. The project is published only after installation verification passes.
+
+### Get help for any skill
+
+The source repository and every generated project expose a deterministic help route for each
+skill. In Copilot Chat, run `/<skill-name>-help` or start with `/skills-help`. From the CLI,
+print the same contract-based guide with:
+
+```powershell
+node .\pso.mjs help azure-discovery
+node .\pso.mjs --help azure-cleanup
+```
+
+The guide includes the skill's purpose, inputs, boundaries, validation, approval gates, and
+composition dependencies. Help is read-only; it never authorizes deployment, cleanup, commits,
+pushes, or other gated actions.
 
 ### Hand the first task over with `--intent`
 
@@ -240,9 +255,9 @@ Clones into an isolated staging directory, provisions, verifies, and only then p
 | --- | --- |
 | `.github/copilot-instructions.md` | Repository constitution: engagement protocol, orchestration, purpose, architecture, coding, naming, Azure, security, testing, documentation |
 | `.github/instructions/` | Scoped standards applied by glob — only the ones your stack needs |
-| `.github/prompts/` | `/create-adr`, `/review-architecture`, `/executive-summary`, `/security-review`, `/project-status`, `/new-component` |
+| `.github/prompts/` | `/create-adr`, `/review-architecture`, `/executive-summary`, `/security-review`, `/project-status`, `/new-component`, `/azure-cleanup`, `/environment-update`, `/release-readiness`, and skill help prompts |
 | `.github/agents/` | Azure Architect, Security Reviewer, Documentation Writer |
-| `.github/skills/` | The 36-skill catalog |
+| `.github/skills/` | The 39-skill catalog |
 | `.github/workflows/ci.yml` | Stack-aware pipeline, SHA-pinned actions (new projects only) |
 | `.github/workflows/copilot-setup-steps.yml` | Preinstalls dependencies for Copilot cloud agent and Copilot code review (new projects with a stack) |
 | `.vscode/tasks.json` | Build and test tasks for the stack — `Ctrl+Shift+B` and Test Explorer work immediately |

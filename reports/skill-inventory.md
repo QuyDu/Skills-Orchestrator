@@ -1,6 +1,6 @@
 # Skill Inventory
 
-Generated: 2026-08-23T18:57:45.565Z
+Generated: 2026-08-24T17:32:55.225Z
 
 | Skill | Description |
 | --- | --- |
@@ -10,6 +10,7 @@ Generated: 2026-08-23T18:57:45.565Z
 | audit-code | Perform a complete, read-only repository audit for security, correctness, resource management, performance, dependencies, tests, architecture, and maintainability with structured evidence. Use for a whole-repository assessment; use change-review for a bounded diff and security-review for a security-only pass. |
 | audit-plan-remediation | Convert validated audit findings into prioritized remediation work with owners, dependencies, verification, rollout, and rollback guidance. Use after findings are reviewed and confirmed; do not use to generate findings or to execute the remediation work. |
 | audit-review-findings | Transform structured audit findings into a traceable mixed-audience review while preserving IDs, severity, confidence, evidence, and limitations. Use between audit-code and remediation planning; do not use to discover new findings. |
+| azure-cleanup | Safely inspect and, after explicit confirmation, remove Azure resources associated with a project using resource-group, resource, or all-project cleanup scopes. |
 | azure-discovery | Discover Azure Commercial or Azure US Government service and model availability for the current project, persist dated results, and identify when a refresh is needed. |
 | change-review | Review a bounded working-tree, commit, or pull-request diff for defects, security regressions, requirement gaps, and missing tests, with severity-ranked evidence. Use before commit or merge; use audit-code instead for repository-wide assessment. |
 | ci-failure-triage | Resolve a specific CI run or pull request, extract actionable failing checks and logs, diagnose the local cause, and verify a scoped repair. Use for failing hosted pipelines; do not use for local-only test failures or general workflow design. |
@@ -18,6 +19,7 @@ Generated: 2026-08-23T18:57:45.565Z
 | deployment-review | Validate that a release candidate is deployable by checking build reproducibility, configuration completeness, environment parity, verification steps, and rollback readiness. Use before requesting deployment approval; this skill never performs a deployment. |
 | development-environment-readiness | Assess, plan, configure, and validate a project's pre-coding development environment, including access, editor, source control, runtimes, authentication, isolation, debugging, testing, automation, and security gates. Use when onboarding a repository or preparing a new project; do not use for feature implementation. |
 | documentation-builder | Generate and maintain README files, decision records, deployment guides, and operations runbooks that are verified against repository evidence. Use when documentation is missing, stale, or contradicts the code; do not use to narrate changes an agent just made. |
+| environment-update | Inventory installed development tools and present available updates, then update only existing tools selected by the user with complete findings and error reporting. |
 | framework-health-check | Validate framework structure, skill contracts, schemas, ownership, profiles, fixtures, configuration, and conformance evidence. Use to verify the installed orchestrator framework itself; use audit-code instead to assess application code. |
 | linkedin-post | Analyze the current project and prepare a reviewable LinkedIn post draft for Microsoft employees and the technical community, including update posts based on project history. |
 | multi-agent-coordinator | Coordinate concurrent agents with leases, fencing tokens, ownership transfer, conflict detection, and shared-read or exclusive-write semantics. Use when more than one agent may write the same artifacts concurrently; do not use for single-agent sequential work. |

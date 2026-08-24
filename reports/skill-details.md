@@ -1,6 +1,6 @@
 # Skill Details
 
-Generated: 2026-08-23T18:57:45.565Z
+Generated: 2026-08-24T17:32:55.225Z
 
 | Skill | Lifecycle | Confidence | Audit | Dependencies |
 | --- | --- | --- | --- | --- |
@@ -10,6 +10,7 @@ Generated: 2026-08-23T18:57:45.565Z
 | audit-code | tested | medium | passed | None |
 | audit-plan-remediation | tested | medium | passed | audit-review-findings, policy-engine |
 | audit-review-findings | tested | medium | passed | audit-code, audit-azure-environment |
+| azure-cleanup | draft | low | passed | azure-discovery, project-handoff, policy-engine |
 | azure-discovery | tested | medium | passed | project-handoff |
 | change-review | draft | low | passed | policy-engine |
 | ci-failure-triage | draft | low | passed | policy-engine, systematic-debugging, regression-test-development, workflow-state-manager |
@@ -18,6 +19,7 @@ Generated: 2026-08-23T18:57:45.565Z
 | deployment-review | draft | low | passed | architecture-review, security-review |
 | development-environment-readiness | tested | medium | passed | policy-engine, workflow-state-manager |
 | documentation-builder | draft | low | passed | clarify-the-ask |
+| environment-update | draft | low | passed | development-environment-readiness, policy-engine |
 | framework-health-check | draft | low | passed | skill-inventory, skill-dependency-manager |
 | linkedin-post | draft | low | passed | project-handoff, documentation-builder |
 | multi-agent-coordinator | draft | low | passed | workflow-state-manager, workflow-scheduler |

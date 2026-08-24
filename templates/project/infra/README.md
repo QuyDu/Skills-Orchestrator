@@ -46,6 +46,28 @@ The Copilot skill `/Azure Discovery` runs the same read-only probe and writes bo
 `reports/azure-discovery.json` and the readable `reports/azure-discovery.md`. Use
 `/Azure Discovery -Commercial` or `/Azure Discovery -Gov` to select a cloud without the menu.
 
+## Cleanup
+
+Cleanup is read-only by default. Preview a project resource group:
+
+```powershell
+./cleanup.ps1 -All -SiteName contoso-api -Commercial
+```
+
+Preview a single resource or named group:
+
+```powershell
+./cleanup.ps1 -Resource app-contoso-api -RG rg-contoso-api -Gov
+./cleanup.ps1 -ResourceGroup rg-contoso-api -Commercial
+```
+
+The script lists the subscription, cloud, target, and resources first. To apply a deletion, add
+`-Apply` and type `DELETE` when asked. Every result and error is reported; no credentials are stored.
+
+Use `/environment-update` to inventory already-installed development tools and list available
+updates. It reports all findings first, supports `-WhatIf` by default, and requires selection and
+confirmation before updating a tool.
+
 `-SiteName` drives every resource name and is capped at 12 characters so the derived names stay
 inside Azure's limits:
 

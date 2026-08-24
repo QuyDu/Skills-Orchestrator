@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-08-23T18:57:45.565Z",
+  "generatedAt": "2026-08-24T17:32:55.225Z",
   "artifacts": [
     {
       "report": "reports/architecture-review.json",
@@ -49,6 +49,14 @@
     {
       "report": "reports/azure-audit-review.md",
       "producer": "audit-review-findings"
+    },
+    {
+      "report": "reports/azure-cleanup.json",
+      "producer": "azure-cleanup"
+    },
+    {
+      "report": "reports/azure-cleanup.md",
+      "producer": "azure-cleanup"
     },
     {
       "report": "reports/azure-discovery.json",
@@ -113,6 +121,14 @@
     {
       "report": "reports/documentation-plan.md",
       "producer": "documentation-builder"
+    },
+    {
+      "report": "reports/environment-update.json",
+      "producer": "environment-update"
+    },
+    {
+      "report": "reports/environment-update.md",
+      "producer": "environment-update"
     },
     {
       "report": "reports/framework-health.json",

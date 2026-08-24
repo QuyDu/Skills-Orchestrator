@@ -13,6 +13,7 @@ const expectedSkillIds = [
   "audit-code",
   "audit-plan-remediation",
   "audit-review-findings",
+  "azure-cleanup",
   "azure-discovery",
   "change-review",
   "ci-failure-triage",
@@ -21,6 +22,7 @@ const expectedSkillIds = [
   "deployment-review",
   "development-environment-readiness",
   "documentation-builder",
+  "environment-update",
   "framework-health-check",
   "linkedin-post",
   "multi-agent-coordinator",
@@ -156,6 +158,22 @@ test("every generated and adopted project carries the mandatory clarification pr
   assert.match(orchestrator.source, /Route every new user prompt through `clarify-the-ask` first/);
 
   const runtime = await readFile(path.join(root, "pso.mjs"), "utf8");
+
+test("every governed skill has deterministic help coverage", async () => {
+  const skills = await loadSkills();
+  const rootHelp = await readFile(path.join(root, ".github", "prompts", "skills-help.prompt.md"), "utf8");
+  assert.match(rootHelp, /complete governed skill catalog/);
+  assert.match(rootHelp, /Composition and Dependencies/);
+  const runtime = await readFile(path.join(root, "pso.mjs"), "utf8");
+  assert.match(runtime, /async function printSkillHelp\(skillName\)/);
+  assert.match(runtime, /Unknown skill:/);
+
+  for (const skill of skills) {
+    const skillName = skill.metadata.name;
+    assert.match(skill.source, /^## Composition and Dependencies$/m, `${skillName} must expose composition guidance`);
+    assert.match(runtime, /files\.set\(`\.github\/prompts\/\$\{skill\.name\}-help\.prompt\.md`/, `runtime must generate help for ${skillName}`);
+  }
+});
   assert.match(runtime, /const CLARIFICATION_PROTOCOL_HEADING = "## Engagement protocol \(mandatory, highest precedence\)"/);
   assert.match(runtime, /Ask exactly three clarifying questions\./);
   assert.match(runtime, /is missing the managed \$\{block\.id\} region/);
@@ -190,6 +208,9 @@ test("every generated and adopted project carries the mandatory clarification pr
   const linkedinPrompt = await readFile(path.join(templateRoot, ".github", "prompts", "linkedin-post.prompt.md"), "utf8");
   assert.match(linkedinPrompt, /reports\/linkedin-post-draft\.md/);
   assert.match(linkedinPrompt, /--update/);
+  for (const prompt of ["azure-cleanup-help.prompt.md", "environment-update-help.prompt.md", "release-readiness.prompt.md"]) {
+    assert.ok(existsSync(path.join(root, ".github", "prompts", prompt)), `missing repository prompt ${prompt}`);
+  }
 
   for (const relative of [
     ".editorconfig",
