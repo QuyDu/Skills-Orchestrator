@@ -1169,6 +1169,51 @@ objective, steps, affected files, and risks, then wait for explicit approval.
 `;
 }
 
+function projectBlueprint({ name, displayName, declaredStack, createdAt, intent }) {
+  const languages = [...declaredStack].filter((tag) => tag !== "tests").sort();
+  const frameworks = [];
+  const infrastructure = declaredStack.has("bicep") || declaredStack.has("terraform");
+  const blueprint = {
+    schemaVersion: "1.0.0",
+    project: {
+      name,
+      purpose: intent || `Build the ${displayName} project.`,
+      type: infrastructure ? "infrastructure" : "other"
+    },
+    stack: {
+      languages: languages.length ? languages : ["undecided"],
+      frameworks
+    },
+    delivery: {
+      target: infrastructure ? "azure" : "local",
+      environment: "development",
+      ...(infrastructure ? { cloud: "AzureCloud" } : {})
+    },
+    quality: {
+      testing: ["automated tests"],
+      security: ["secret scanning", "dependency review"],
+      observability: ["health and error reporting"]
+    },
+    assumptions: ["This initial blueprint is derived from create-project inputs and requires review before implementation."],
+    acceptanceCriteria: ["The project builds and its automated tests pass in the declared development environment."],
+    generatedAt: createdAt
+  };
+  delete blueprint.generatedAt;
+  return `${JSON.stringify(blueprint, null, 2)}\n`;
+}
+
+function projectBlueprintMarkdown({ displayName, createdAt }) {
+  return `# Project Blueprint
+
+This initial blueprint was generated for **${displayName}** at ${createdAt}. Review and refine
+it with \`/project-blueprint\` before beginning application implementation.
+
+The machine-readable source is \`docs/PROJECT-BLUEPRINT.json\`. It records confirmed decisions,
+assumptions, quality requirements, and acceptance criteria without storing credentials or secret
+values.
+`;
+}
+
 // Kept pure so the composed handover text can be asserted without launching an editor.
 function kickoffPrompt({ createdAt, intent }) {
   return [
@@ -1392,6 +1437,8 @@ async function createProject({ name: enteredName, destination, profile = DEFAULT
       [".vscode/settings.json", workspaceSettings(workspaceIdentity)],
       [`${name}.code-workspace`, `${JSON.stringify(workspace, null, 2)}\n`],
       ["project-orchestrator.json", `${JSON.stringify(manifest, null, 2)}\n`],
+      ["docs/PROJECT-BLUEPRINT.json", projectBlueprint({ name, displayName, declaredStack, createdAt, intent: requestedOutcome })],
+      ["docs/PROJECT-BLUEPRINT.md", projectBlueprintMarkdown({ displayName, createdAt })],
       [CONFIGURATION_PATH, `${JSON.stringify({ ...DEFAULT_CONFIGURATION, profile }, null, 2)}\n`],
       ["config/orchestrator.yaml", `frameworkVersion: ${FRAMEWORK_VERSION}\nruntimeVersion: ${VERSION}\nprofile: ${profile}\npaths:\n  skills: .github/skills\n  reports: reports\n  schemas: schemas\nruntime:\n  eventStream: reports/execution-log.jsonl\n  stateSnapshot: reports/current-execution-state.json\n  appendOnly: true\nproject:\n  name: ${name}\n  initialized: true\n`],
       ["reports/.gitkeep", ""],

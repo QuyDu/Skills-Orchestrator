@@ -527,6 +527,14 @@ test("accepted project creation records the risk acknowledgment", async () => {
     assert.match(manifest.riskAcceptance.acceptedAt, /^\d{4}-\d{2}-\d{2}T/);
     assert.equal(manifest.conformanceProfile, "durable");
     const created = path.join(parent, "accepted-fixture");
+    const blueprint = JSON.parse(await readFile(path.join(created, "docs", "PROJECT-BLUEPRINT.json"), "utf8"));
+    assert.equal(blueprint.schemaVersion, "1.0.0");
+    assert.equal(blueprint.project.name, "accepted-fixture");
+    assert.equal(blueprint.delivery.environment, "development");
+    assert.deepEqual(blueprint.quality.testing, ["automated tests"]);
+    assert.ok(!JSON.stringify(blueprint).match(/password|token|secret value|connection string/i));
+    const blueprintSummary = await readFile(path.join(created, "docs", "PROJECT-BLUEPRINT.md"), "utf8");
+    assert.match(blueprintSummary, /\/project-blueprint/);
     const orchestrator = await readFile(path.join(created, "config", "orchestrator.yaml"), "utf8");
     assert.match(orchestrator, /^profile: durable$/m);
     const inventory = JSON.parse(await readFile(path.join(created, "reports", "skill-inventory.json"), "utf8"));

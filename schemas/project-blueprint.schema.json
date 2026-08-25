@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skills-orchestrator.local/schemas/project-blueprint.schema.json",
+  "title": "Project Blueprint",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "project", "stack", "delivery", "quality"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "purpose", "type"],
+      "properties": {
+        "name": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,63}$" },
+        "purpose": { "type": "string", "minLength": 1, "maxLength": 2000 },
+        "type": { "type": "string", "enum": ["web-app", "api", "ai-data", "infrastructure", "cli", "library", "service", "other"] },
+        "owner": { "type": "string", "minLength": 1, "maxLength": 200 }
+      }
+    },
+    "stack": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["languages", "frameworks"],
+      "properties": {
+        "languages": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1, "maxLength": 40 } },
+        "frameworks": { "type": "array", "items": { "type": "string", "minLength": 1, "maxLength": 80 } },
+        "runtime": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "database": { "type": "string", "minLength": 1, "maxLength": 120 }
+      }
+    },
+    "delivery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target", "environment"],
+      "properties": {
+        "target": { "type": "string", "enum": ["local", "azure", "hybrid", "other"] },
+        "environment": { "type": "string", "enum": ["development", "test", "staging", "production"] },
+        "cloud": { "type": "string", "enum": ["AzureCloud", "AzureUSGovernment"] },
+        "region": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "deploymentMethod": { "type": "string", "enum": ["manual", "github-actions", "azure-devops", "other"] }
+      }
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["testing", "security", "observability"],
+      "properties": {
+        "testing": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1, "maxLength": 80 } },
+        "security": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1, "maxLength": 120 } },
+        "observability": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1, "maxLength": 120 } },
+        "compliance": { "type": "array", "items": { "type": "string", "minLength": 1, "maxLength": 120 } }
+      }
+    },
+    "assumptions": { "type": "array", "items": { "type": "string", "minLength": 1, "maxLength": 500 } },
+    "acceptanceCriteria": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1, "maxLength": 500 } }
+  }
+}
