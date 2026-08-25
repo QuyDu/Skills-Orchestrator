@@ -117,6 +117,24 @@
       "requires": "always"
     },
     {
+      "path": ".github/prompts/project-blueprint.prompt.md",
+      "kind": "prompt",
+      "purpose": "versioned project requirements and delivery blueprint",
+      "requires": "always"
+    },
+    {
+      "path": ".github/prompts/project-start.prompt.md",
+      "kind": "prompt",
+      "purpose": "start a governed project lifecycle from its blueprint",
+      "requires": "always"
+    },
+    {
+      "path": ".github/prompts/project-validate.prompt.md",
+      "kind": "prompt",
+      "purpose": "validate project foundation before implementation",
+      "requires": "always"
+    },
+    {
       "path": ".github/prompts/linkedin-post.prompt.md",
       "kind": "prompt",
       "purpose": "draft project LinkedIn posts and updates",

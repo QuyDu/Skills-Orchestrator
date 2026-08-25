@@ -180,6 +180,16 @@ test("every governed skill has deterministic help coverage", async () => {
   assert.match(runtime, /copies of the managed \$\{block\.id\} region/);
 
   const templateRoot = path.join(root, "templates", "project");
+  const blueprint = JSON.parse(await readFile(path.join(root, "schemas", "project-blueprint.schema.json"), "utf8"));
+  assert.equal(blueprint.$schema, "https://json-schema.org/draft/2020-12/schema");
+  assert.equal(blueprint.properties.schemaVersion.const, "1.0.0");
+  assert.equal(blueprint.additionalProperties, false);
+  assert.ok(blueprint.required.includes("project"));
+  assert.ok(blueprint.required.includes("delivery"));
+  const blueprintPrompt = await readFile(path.join(templateRoot, ".github", "prompts", "project-blueprint.prompt.md"), "utf8");
+  assert.match(blueprintPrompt, /docs\/PROJECT-BLUEPRINT\.json/);
+  assert.match(blueprintPrompt, /azure-discovery/);
+  assert.match(blueprintPrompt, /Never place credentials, tokens, connection strings, or secret values/);
   const repositoryInstructions = await readFile(path.join(templateRoot, ".github", "copilot-instructions.md"), "utf8");
   assert.match(repositoryInstructions, /<!-- pso:begin id=clarification-protocol version=1 -->/);
   assert.match(repositoryInstructions, /<!-- pso:end id=clarification-protocol -->/);
@@ -210,6 +220,11 @@ test("every governed skill has deterministic help coverage", async () => {
   assert.match(linkedinPrompt, /--update/);
   for (const prompt of ["azure-cleanup-help.prompt.md", "environment-update-help.prompt.md", "release-readiness.prompt.md"]) {
     assert.ok(existsSync(path.join(root, ".github", "prompts", prompt)), `missing repository prompt ${prompt}`);
+  }
+  assert.ok(existsSync(path.join(root, ".github", "prompts", "project-blueprint.prompt.md")));
+  for (const prompt of ["project-start.prompt.md", "project-validate.prompt.md", "project-status.prompt.md"]) {
+    assert.ok(existsSync(path.join(root, ".github", "prompts", prompt)), `missing repository prompt ${prompt}`);
+    assert.ok(existsSync(path.join(templateRoot, ".github", "prompts", prompt)), `missing template prompt ${prompt}`);
   }
 
   for (const relative of [

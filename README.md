@@ -107,6 +107,11 @@ catalog, schemas, workflows, prompts, agents, and Azure discovery scaffold. Stac
 tasks, launch configurations, and extensions remain conditional so a Python project does not show
 misleading .NET or Terraform commands.
 
+Start a new project with `/project-start`, which uses `/project-blueprint` before implementation. It records the confirmed
+purpose, project type, stack, delivery target, Azure cloud and region, quality requirements,
+assumptions, and acceptance criteria in a versioned blueprint that can be handed to setup,
+architecture review, and workflow planning.
+
 Use `/linkedin-post` to analyze a project and prepare a reviewable draft for Microsoft employees
 and the technical community. Use `/linkedin-post --update` to compare against
 `reports/linkedin-post-history.md` and describe only verified changes. Drafts are saved to
@@ -255,7 +260,7 @@ Clones into an isolated staging directory, provisions, verifies, and only then p
 | --- | --- |
 | `.github/copilot-instructions.md` | Repository constitution: engagement protocol, orchestration, purpose, architecture, coding, naming, Azure, security, testing, documentation |
 | `.github/instructions/` | Scoped standards applied by glob — only the ones your stack needs |
-| `.github/prompts/` | `/create-adr`, `/review-architecture`, `/executive-summary`, `/security-review`, `/project-status`, `/new-component`, `/azure-cleanup`, `/environment-update`, `/release-readiness`, and skill help prompts |
+| `.github/prompts/` | `/create-adr`, `/project-blueprint`, `/review-architecture`, `/executive-summary`, `/security-review`, `/project-status`, `/new-component`, `/azure-cleanup`, `/environment-update`, `/release-readiness`, and skill help prompts |
 | `.github/agents/` | Azure Architect, Security Reviewer, Documentation Writer |
 | `.github/skills/` | The 39-skill catalog |
 | `.github/workflows/ci.yml` | Stack-aware pipeline, SHA-pinned actions (new projects only) |
