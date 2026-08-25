@@ -4,7 +4,7 @@ Turn any repository into a governed GitHub Copilot workspace: agent instructions
 
 | Item | Value |
 | --- | --- |
-| Runtime version | `1.0.2` |
+| Runtime version | `1.0.3` |
 | Framework version | `9.0.0` |
 | Skill catalog | 39 governed skills |
 | Supported Node.js | 22, 24, 26 |
@@ -103,14 +103,20 @@ Supported values: `typescript`, `javascript`, `csharp`, `python`, `powershell`, 
 `--open` launches Visual Studio Code on the generated workspace with the README showing. Without it the workspace path is printed for you to open manually.
 
 Every generated project is standalone: it receives its own copy of the complete governed skill
-catalog, schemas, workflows, prompts, agents, and Azure discovery scaffold. Stack-specific editor
-tasks, launch configurations, and extensions remain conditional so a Python project does not show
-misleading .NET or Terraform commands.
+catalog, schemas, workflows, prompts, agents, blueprint contract, and Azure discovery scaffold.
+The lifecycle entry points are `/project-start`, `/project-blueprint`, `/project-validate`, and
+`/project-status`; stack-specific editor tasks, launch configurations, and extensions remain
+conditional so a Python project does not show misleading .NET or Terraform commands.
 
 Start a new project with `/project-start`, which uses `/project-blueprint` before implementation. It records the confirmed
 purpose, project type, stack, delivery target, Azure cloud and region, quality requirements,
 assumptions, and acceptance criteria in a versioned blueprint that can be handed to setup,
 architecture review, and workflow planning.
+
+The generated project is a development foundation rather than a business application: it provides
+the governed workspace and empty `src/` and `tests/` boundaries for the user to build within. Use
+`/project-validate` to check the foundation and `/project-status` to identify authoritative blocked,
+stale, or pending work.
 
 Use `/linkedin-post` to analyze a project and prepare a reviewable draft for Microsoft employees
 and the technical community. Use `/linkedin-post --update` to compare against
@@ -145,6 +151,14 @@ node .\pso.mjs --help azure-cleanup
 The guide includes the skill's purpose, inputs, boundaries, validation, approval gates, and
 composition dependencies. Help is read-only; it never authorizes deployment, cleanup, commits,
 pushes, or other gated actions.
+
+### Demo prompt
+
+Run `/demo-create-project` for the normal reusable demo workspace. Use `/demo-create-project --Test`
+to create the same prepared demo under `C:\repos\skills-orchestrator-demo-test` without deleting
+it after the run. An optional `--demo-date YYYY-MM-DD` records the scheduled event, for example
+`/demo-create-project --demo-date 2026-09-17`. The date is metadata only and does not authorize
+deployment, cleanup, publication, commits, or pushes.
 
 ### Hand the first task over with `--intent`
 

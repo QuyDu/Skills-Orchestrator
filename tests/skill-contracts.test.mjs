@@ -221,6 +221,11 @@ test("every governed skill has deterministic help coverage", async () => {
   for (const prompt of ["azure-cleanup-help.prompt.md", "environment-update-help.prompt.md", "release-readiness.prompt.md"]) {
     assert.ok(existsSync(path.join(root, ".github", "prompts", prompt)), `missing repository prompt ${prompt}`);
   }
+  const demoPrompt = await readFile(path.join(root, ".github", "prompts", "demo-create-project.prompt.md"), "utf8");
+  assert.match(demoPrompt, /\/demo-create-project --Test/);
+  assert.match(demoPrompt, /--demo-date YYYY-MM-DD/);
+  assert.match(demoPrompt, /skills-orchestrator-demo-test/);
+  assert.match(demoPrompt, /Never delete an existing normal/);
   assert.ok(existsSync(path.join(root, ".github", "prompts", "project-blueprint.prompt.md")));
   for (const prompt of ["project-start.prompt.md", "project-validate.prompt.md", "project-status.prompt.md"]) {
     assert.ok(existsSync(path.join(root, ".github", "prompts", prompt)), `missing repository prompt ${prompt}`);
