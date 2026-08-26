@@ -33,6 +33,7 @@ const expectedSkillIds = [
   "project-memory",
   "project-setup",
   "project-skills-orchestrator",
+  "project-video",
   "regression-test-development",
   "security-review",
   "skill-create",
@@ -123,6 +124,182 @@ test("development environment readiness has a strict evidence contract", async (
   assert.equal(schema.properties.plannedActions.items.allOf[0].then.properties.requiresApproval.const, true);
 });
 
+test("project video is a portable narrated MP4 capability", async () => {
+  const skills = new Map((await loadSkills()).map((skill) => [skill.metadata.name, skill]));
+  const projectVideo = skills.get("project-video");
+  assert.match(projectVideo.metadata.description, /new or existing project/);
+  assert.match(projectVideo.source, /\.github\/skills\/project-video\/scripts\/project-video\.mjs/);
+  assert.match(projectVideo.source, /Never change narration providers silently/);
+  assert.ok(sectionItems(projectVideo.source, "Composition and Dependencies").includes("clarify-the-ask"));
+  assert.ok(sectionItems(projectVideo.source, "Composition and Dependencies").includes("azure-discovery"));
+
+  const helperPath = path.join(skillsRoot, "project-video", "scripts", "project-video.mjs");
+  assert.ok(existsSync(helperPath), "project-video helper must ship inside its skill package");
+  const helper = await readFile(helperPath, "utf8");
+  assert.match(helper, /const RENDERER_VERSION = "5\.3\.0"/);
+  assert.match(helper, /AZURE_SPEECH_KEY/);
+  assert.match(helper, /command === "azure-preflight"/);
+  assert.match(helper, /command === "discovery-status"/);
+  assert.match(helper, /command === "browser-preview"/);
+  assert.match(helper, /AZURE_DISCOVERY_MAX_AGE_DAYS = 14/);
+  assert.match(helper, /existingResourceQuerySucceeded/);
+  assert.match(helper, /function validateAzureDiscovery/);
+  assert.match(helper, /Azure discovery speech/);
+  assert.match(helper, /previousManifest\?\.azureDiscoverySha256 !== settings\.discoverySha256/);
+  assert.match(helper, /--approve-external/);
+  assert.match(helper, /--approve-local/);
+  assert.match(helper, /--accept-download/);
+  assert.match(helper, /--accept-gpl/);
+  assert.match(helper, /--accept-model-provenance/);
+  assert.match(helper, /--approve-render/);
+  assert.match(helper, /--ignore-scripts=false/);
+  assert.match(helper, /VOICE_AUDITION_PROFILES/);
+  assert.match(helper, /en-US-Ava:DragonHDLatestNeural/);
+  assert.match(helper, /en-US-Aria:DragonHDLatestNeural/);
+  assert.match(helper, /narration-professional/);
+  assert.match(helper, /command === "audition"/);
+  assert.match(helper, /command === "select-voice"/);
+  assert.match(helper, /command === "install-local-voice"/);
+  assert.match(helper, /--approve-selection/);
+  assert.match(helper, /audio-48khz-192kbitrate-mono-mp3/);
+  assert.match(helper, /voiceAuditionHtml/);
+  assert.match(helper, /"index\.html"/);
+  assert.match(helper, /command === "ssml"/);
+  assert.doesNotMatch(helper, /pitch=/);
+  assert.doesNotMatch(helper, /shell\s*:/);
+  assert.match(helper, /reports\/project-video\/audio/);
+  assert.match(helper, /const PIPER_VERSION = "1\.7\.0"/);
+  assert.match(helper, /const ONNX_RUNTIME_VERSION = "1\.23\.2"/);
+  assert.match(helper, /protobuf: "6\.33\.5"/);
+  assert.match(helper, /numpy: "2\.2\.6"/);
+  assert.match(helper, /pyreadline3: "3\.5\.4"/);
+  assert.match(helper, /requirementsSha256/);
+  assert.match(helper, /en_US-ljspeech-high/);
+  assert.match(helper, /5d4f08ba6a2a48c44592eed3ce56bf85e9de3dd4e20df90541ae68a8310c029a/);
+  assert.match(helper, /SpeechSynthesisUtterance/);
+  assert.match(helper, /defaultEnglishVoice/);
+  assert.match(helper, /height:100dvh/);
+  assert.doesNotMatch(helper, /SAPI\.SpVoice/);
+
+  const planSchema = JSON.parse(await readFile(path.join(root, "schemas", "project-video-plan.schema.json"), "utf8"));
+  assert.equal(planSchema.$schema, "https://json-schema.org/draft/2020-12/schema");
+  assert.equal(planSchema.additionalProperties, false);
+  assert.equal(planSchema.properties.schemaVersion.const, "1.0.0");
+  assert.equal(planSchema.properties.scenes.minItems, 6);
+  assert.equal(planSchema.properties.scenes.maxItems, 10);
+  assert.equal(planSchema.$defs.azureVoice.properties.provider.const, "azure-neural");
+  assert.ok(planSchema.$defs.azureVoice.required.includes("styleDegree"));
+  assert.ok(planSchema.$defs.azureVoice.required.includes("sentencePauseMs"));
+  assert.match(planSchema.$defs.azureVoice.properties.name.pattern, /\?:/);
+  assert.equal(planSchema.$defs.localVoice.properties.provider.const, "local-piper");
+  assert.equal(planSchema.$defs.localVoice.properties.name.const, "en_US-ljspeech-high");
+  assert.ok(planSchema.$defs.localVoice.required.includes("lengthScale"));
+  assert.ok(planSchema.$defs.localVoice.required.includes("sentenceSilenceSeconds"));
+  assert.equal(planSchema.$defs.browserVoice.properties.provider.const, "browser-preview");
+  assert.equal(planSchema.$defs.browserVoice.properties.name.const, "default-English");
+  assert.equal(planSchema.allOf[0].then.properties.output.properties.file.pattern, "^dist/project-video/[a-z0-9-]+\\.html$");
+
+  const manifestSchema = JSON.parse(await readFile(path.join(root, "schemas", "project-video-manifest.schema.json"), "utf8"));
+  assert.equal(manifestSchema.additionalProperties, false);
+  assert.equal(manifestSchema.properties.status.const, "complete");
+  assert.ok(manifestSchema.required.includes("planSha256"));
+  assert.equal(manifestSchema.$defs.azureAudio.properties.provider.const, "azure-neural");
+  assert.ok(manifestSchema.$defs.azureAudio.required.includes("styleDegree"));
+  assert.ok(manifestSchema.$defs.azureAudio.required.includes("sentencePauseMs"));
+  assert.ok(manifestSchema.$defs.azureAudio.required.includes("selectionSha256"));
+  assert.ok(manifestSchema.$defs.azureAudio.required.includes("azureDiscoverySha256"));
+  assert.ok(manifestSchema.$defs.azureAudio.required.includes("azureDiscoveryAt"));
+  assert.equal(manifestSchema.$defs.azureAudio.properties.azureDiscoverySha256.$ref, "#/$defs/sha256");
+  assert.equal(manifestSchema.$defs.localAudio.properties.provider.const, "local-piper");
+  assert.ok(manifestSchema.$defs.localAudio.required.includes("localVoiceInstallSha256"));
+  assert.ok(manifestSchema.$defs.localAudio.required.includes("engine"));
+  assert.ok(manifestSchema.$defs.localAudio.required.includes("model"));
+  assert.ok(manifestSchema.properties.renderer.properties.source.enum.includes("isolated-pinned"));
+
+  const sampleSchema = JSON.parse(await readFile(path.join(root, "schemas", "project-video-voice-samples.schema.json"), "utf8"));
+  assert.equal(sampleSchema.properties.recommended.const, "ava-hd-warm");
+  assert.equal(sampleSchema.$defs.voice.properties.provider.const, "azure-neural");
+  assert.equal(sampleSchema.properties.samples.minItems, 3);
+  assert.equal(sampleSchema.properties.samples.maxItems, 3);
+  assert.ok(sampleSchema.required.includes("auditionPageSha256"));
+  assert.equal(sampleSchema.properties.azureDiscoverySha256.$ref, "#/$defs/sha256");
+  const selectionSchema = JSON.parse(await readFile(path.join(root, "schemas", "project-video-voice-selection.schema.json"), "utf8"));
+  assert.equal(selectionSchema.additionalProperties, false);
+  assert.ok(selectionSchema.required.includes("auditionManifestSha256"));
+  const narrationSchema = JSON.parse(await readFile(path.join(root, "schemas", "project-video-narration-manifest.schema.json"), "utf8"));
+  assert.ok(narrationSchema.required.includes("provider"));
+  assert.equal(narrationSchema.properties.azureDiscoverySha256.$ref, "#/$defs/sha256");
+  assert.ok(narrationSchema.allOf[0].then.required.includes("azureDiscoverySha256"));
+  assert.ok(narrationSchema.allOf[0].then.required.includes("azureDiscoveryAt"));
+  assert.ok(narrationSchema.allOf[0].then.required.includes("voiceSelectionSha256"));
+  assert.ok(narrationSchema.allOf[1].then.required.includes("localVoiceInstallSha256"));
+  assert.equal(narrationSchema.$defs.localEngine.properties.version.const, "1.7.0");
+  assert.equal(narrationSchema.$defs.localModel.properties.datasetLicense.const, "public-domain");
+  const localVoiceSchema = JSON.parse(await readFile(path.join(root, "schemas", "project-video-local-voice-manifest.schema.json"), "utf8"));
+  assert.equal(localVoiceSchema.properties.engine.properties.version.const, "1.7.0");
+  assert.equal(localVoiceSchema.properties.dependencies.properties.protobuf.const, "6.33.5");
+  assert.equal(localVoiceSchema.properties.model.properties.datasetLicense.const, "public-domain");
+  assert.equal(localVoiceSchema.properties.wheels.minItems, 11);
+  assert.equal(localVoiceSchema.properties.wheels.maxItems, 12);
+  const browserPreviewSchema = JSON.parse(await readFile(path.join(root, "schemas", "project-video-browser-preview-manifest.schema.json"), "utf8"));
+  assert.equal(browserPreviewSchema.properties.provider.const, "browser-preview");
+  assert.equal(browserPreviewSchema.properties.voice.properties.name.const, "default-English");
+  assert.equal(browserPreviewSchema.properties.capabilities.properties.renderedAudio.const, false);
+  assert.equal(browserPreviewSchema.properties.capabilities.properties.portableMedia.const, false);
+  const discoverySchema = JSON.parse(await readFile(path.join(root, "schemas", "azure-discovery.schema.json"), "utf8"));
+  assert.equal(discoverySchema.properties.schemaVersion.const, "1.0.0");
+  assert.equal(discoverySchema.properties.speech.additionalProperties, false);
+  assert.ok(discoverySchema.properties.speech.required.includes("existingResourceQuerySucceeded"));
+  assert.ok(discoverySchema.properties.speech.required.includes("existingResourceRegions"));
+  assert.equal(discoverySchema.properties.speech.allOf[1].then.properties.existingResourceAvailable.const, false);
+
+  const demoNarration = JSON.parse(await readFile(path.join(root, "Demo", "audio", "narration", "scenes.json"), "utf8"));
+  assert.equal(demoNarration.voice.name, "en-US-Ava:DragonHDLatestNeural");
+  assert.equal(demoNarration.outputFormat, "audio-48khz-192kbitrate-mono-mp3");
+  const demoGenerator = await readFile(path.join(root, "scripts", "generate-demo-narration.ps1"), "utf8");
+  assert.match(demoGenerator, /ValidateSet\("ava-hd-warm", "aria-hd-warm", "aria-professional"\)/);
+  assert.match(demoGenerator, /\$selectedProfile\.style/);
+  assert.match(demoGenerator, /-ApproveExternal/);
+  assert.doesNotMatch(demoGenerator, /pitch=/);
+  const demoAnimation = await readFile(path.join(root, "Demo", "project-skills-orchestrator-animation.html"), "utf8");
+  assert.match(demoAnimation, /SpeechSynthesisUtterance/);
+  assert.match(demoAnimation, /defaultEnglishVoice/);
+  assert.match(demoAnimation, /Local browser voice/);
+  assert.match(demoAnimation, /utterance\.onend = \(\) =>/);
+  assert.match(demoAnimation, /scheduleAdvance\(token\)/);
+  const demoRunbook = await readFile(path.join(root, "Demo", "DEMO-DAY.md"), "utf8");
+  assert.match(demoRunbook, /\/project-video --proceed/);
+  assert.match(demoRunbook, /manifest-verified MP4/);
+  assert.match(demoRunbook, /azure-discovery -Commercial/);
+  assert.match(demoRunbook, /azure-preflight/);
+  assert.match(demoRunbook, /local FFmpeg renders the MP4/);
+  assert.match(demoRunbook, /never create an Azure resource/i);
+
+  const promptPath = path.join(root, "templates", "project", ".github", "prompts", "project-video.prompt.md");
+  assert.ok(existsSync(promptPath), "new and adopted projects need the project-video slash command");
+  const prompt = await readFile(promptPath, "utf8");
+  assert.match(prompt, /Run the `project-video` skill/);
+  assert.match(prompt, /A\/B\/C audition set/);
+  assert.match(prompt, /explicit voice-profile selection/);
+  assert.match(prompt, /azure-discovery/);
+  assert.match(prompt, /azure-preflight/);
+  assert.match(prompt, /discovery-status/);
+  assert.match(prompt, /If the answer is no, select `browser-preview`/);
+  assert.match(prompt, /interactive HTML/);
+  assert.match(prompt, /local FFmpeg renders the video/);
+  assert.match(prompt, /local-piper/);
+  assert.match(prompt, /must never be represented as Azure neural narration/);
+  const generatedInstructions = await readFile(path.join(root, "templates", "project", ".github", "copilot-instructions.md"), "utf8");
+  assert.match(generatedInstructions, /always runs its packaged `discovery-status` first/);
+  assert.match(generatedInstructions, /If the user declines, select the explicit/);
+  assert.match(generatedInstructions, /never label it rendered audio or MP4 media/);
+
+  const scaffold = JSON.parse(await readFile(path.join(root, "templates", "scaffold-manifest.json"), "utf8"));
+  const template = scaffold.templates.find((item) => item.path === ".github/prompts/project-video.prompt.md");
+  assert.equal(template?.requires, "always");
+  assert.notEqual(template?.createOnly, true);
+});
+
 test("clarification has a bounded portable evidence contract", async () => {
   const skills = new Map((await loadSkills()).map((skill) => [skill.metadata.name, skill]));
   const clarification = skills.get("clarify-the-ask");
@@ -203,12 +380,19 @@ test("every governed skill has deterministic help coverage", async () => {
 
   const discovery = skills.get("azure-discovery");
   assert.ok(discovery, "azure-discovery skill must be available to generated projects");
+  assert.match(discovery.source, /existing Speech-resource readiness/);
+  assert.match(discovery.source, /must not persist account names or resource identifiers/);
+  assert.match(discovery.source, /\.github\/skills\/azure-discovery\/scripts\/azure-discovery\.ps1/);
   assert.match(discovery.source, /1\. Commercial/);
   assert.match(discovery.source, /2\. Gov/);
   assert.match(discovery.source, /three attempts total/);
   assert.ok(existsSync(path.join(templateRoot, ".github", "prompts", "azure-discovery.prompt.md")));
   const discoveryScript = await readFile(path.join(templateRoot, "infra", "discover.ps1"), "utf8");
   assert.match(discoveryScript, /azure-discovery\.json/);
+  assert.match(discoveryScript, /Get-AzureSpeechResourceSummary/);
+  const packagedDiscoveryScript = await readFile(path.join(skillsRoot, "azure-discovery", "scripts", "azure-discovery.ps1"), "utf8");
+  const normalizedPowerShell = (value) => value.replace(/^\uFEFF/, "").replaceAll("\r\n", "\n").trimEnd();
+  assert.equal(normalizedPowerShell(packagedDiscoveryScript), normalizedPowerShell(discoveryScript), "skill-owned and infrastructure discovery implementations must stay synchronized");
   assert.match(discoveryScript, /ChangeExtension\(\$DiscoveryOutputPath, '\.md'\)/);
   assert.match(discoveryScript, /Azure cloud selection failed after 3 invalid responses/);
   const generatedInstructions = await readFile(path.join(templateRoot, ".github", "copilot-instructions.md"), "utf8");

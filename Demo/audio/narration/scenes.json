@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "1.0.0",
+  "voice": {
+    "name": "en-US-Ava:DragonHDLatestNeural",
+    "locale": "en-US",
+    "style": "friendly",
+    "styleDegree": 0.65,
+    "ratePercent": -2,
+    "sentencePauseMs": 180
+  },
+  "outputFormat": "audio-48khz-192kbitrate-mono-mp3",
+  "scenes": [
+    {
+      "id": 1,
+      "file": "scene-01.mp3",
+      "text": "Every software project needs more than code. It also needs a clear, shared way of working. Project Skills Orchestrator brings that structure into your repository. It gives GitHub Copilot the instructions, prompts, agents, and reusable skills it needs \u2014 all installed as one verified foundation."
+    },
+    {
+      "id": 2,
+      "file": "scene-02.mp3",
+      "text": "There are two parts. First, a registry-free command-line installer can create a new workspace, or carefully adopt an existing one. It runs entirely on the tools built into Node.js. Then, a catalog of forty governed skills gives Copilot focused capabilities \u2014 with clear inputs, outputs, checks, approval gates, and stop conditions."
+    },
+    {
+      "id": 3,
+      "file": "scene-03.mp3",
+      "text": "Begin by cloning the repository, then run the verify command. You will need Node.js version twenty-two, twenty-four, or twenty-six. Verification makes sure the distribution is complete. It also checks that the skill contracts, schemas, dependencies, and ownership claims all agree \u2014 before you use the installer anywhere else."
+    },
+    {
+      "id": 4,
+      "file": "scene-04.mp3",
+      "text": "When you are starting fresh, run create-project. Give the project a name and destination. Then choose a conformance profile and identify the technology stack. The durable profile is the default. You will get a standalone, governed workspace \u2014 with source and test boundaries, editor settings, continuous integration wiring, and the complete skill catalog. Your application code remains yours to build."
+    },
+    {
+      "id": 5,
+      "file": "scene-05.mp3",
+      "text": "For an existing repository, adoption happens in two stages. Start with a dry run. The plan shows the technologies it found, the files it would create, standards that are already covered, and any blocking conflicts. Review that plan first. Then apply it with explicit risk acceptance. Your project instructions and application code stay in place, while each managed change is journaled and verified."
+    },
+    {
+      "id": 6,
+      "file": "scene-06.mp3",
+      "text": "Once you are inside Visual Studio Code, begin with project start. Project blueprint captures the agreed purpose, technology stack, delivery target, quality requirements, assumptions, and acceptance criteria. From there, specialized skills can help plan, implement, review, test, and document the work. Project validate and project status keep blocked, stale, or pending work visible."
+    },
+    {
+      "id": 7,
+      "file": "scene-07.mp3",
+      "text": "Control is built into the system. Each new prompt begins with three clarifying questions, followed by your confirmation, before any files are changed. Risky operations need explicit approval. Dry runs show proposed changes in advance. Transaction journals support rollback and recovery. And machine-readable reports preserve the authoritative evidence of what happened."
+    },
+    {
+      "id": 8,
+      "file": "scene-08.mp3",
+      "text": "That is Project Skills Orchestrator \u2014 a repeatable way to make your engineering process part of the repository itself. Verify the distribution. Provision a workspace. Begin with a blueprint. Then let each important action leave evidence that both people and automation can inspect."
+    }
+  ]
+}

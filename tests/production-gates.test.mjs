@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import os from "node:os";
@@ -34,6 +34,7 @@ test("production scripts and release metadata are present", async () => {
   assert.match(manifest.scripts.check, /production-gates\.test\.mjs/);
   assert.match(manifest.scripts.check, /security-fuzz\.test\.mjs/);
   assert.match(manifest.scripts.check, /package-install\.test\.mjs/);
+  assert.match(manifest.scripts.check, /project-video\.test\.mjs/);
   assert.match(manifest.scripts.check, /release:verify:candidate/);
   assert.ok(existsSync(path.join(root, "scripts", "security-check.mjs")));
   assert.ok(existsSync(path.join(root, "scripts", "build-release.mjs")));
@@ -136,31 +137,39 @@ test("authoritative reports are not excluded from source control", async () => {
   assert.ok(!rules.some((rule) => /^!?reports\//.test(rule)), "reports/ must remain tracked because the framework declares it authoritative");
 });
 
+async function createSecurityScanFixture(prefix) {
+  const fixtureRoot = await mkdtemp(path.join(os.tmpdir(), prefix));
+  for (const relative of ["package.json", "package-lock.json", ".npmrc"]) {
+    await writeFile(path.join(fixtureRoot, relative), await readFile(path.join(root, relative)));
+  }
+  return fixtureRoot;
+}
+
 test("shipped templates may not resolve unpinned components at runtime", async () => {
-  const fixture = path.join(root, "templates", "project", "unpinned-fixture.json");
+  const fixtureRoot = await createSecurityScanFixture("pso-unpinned-template-");
+  const fixture = path.join(fixtureRoot, "templates", "project", "unpinned-fixture.json");
   try {
+    await mkdir(path.dirname(fixture), { recursive: true });
     await writeFile(fixture, `${JSON.stringify({ servers: { demo: { command: "npx", args: ["-y", "@example/server@latest"] } } }, null, 2)}\n`, "utf8");
-    const result = spawnSync(process.execPath, [path.join(root, "scripts", "security-check.mjs")], { cwd: root, encoding: "utf8" });
+    const result = spawnSync(process.execPath, [path.join(root, "scripts", "security-check.mjs"), "--root", fixtureRoot], { cwd: root, encoding: "utf8" });
     assert.notEqual(result.status, 0);
     assert.match(`${result.stdout}${result.stderr}`, /SEC-SUPPLY-006/);
   } finally {
-    await rm(fixture, { force: true });
-    const restore = spawnSync(process.execPath, [path.join(root, "scripts", "security-check.mjs")], { cwd: root, encoding: "utf8" });
-    assert.equal(restore.status, 0, `${restore.stdout}\n${restore.stderr}`);
+    await rm(fixtureRoot, { recursive: true, force: true });
   }
 });
 
-test("security scanner detects secrets regardless of file extension", async () => {  const fixture = path.join(root, "security-secret-fixture.pem");
+test("security scanner detects secrets regardless of file extension", async () => {
+  const fixtureRoot = await createSecurityScanFixture("pso-secret-scan-");
+  const fixture = path.join(fixtureRoot, "security-secret-fixture.pem");
   try {
     const marker = ["-----BEGIN ", "PRIVATE KEY-----"].join("");
     await writeFile(fixture, Buffer.concat([Buffer.from([0]), Buffer.from(`${marker}\nnot-a-real-key\n-----END PRIVATE KEY-----\n`, "utf8")]));
-    const result = spawnSync(process.execPath, [path.join(root, "scripts", "security-check.mjs")], { cwd: root, encoding: "utf8" });
+    const result = spawnSync(process.execPath, [path.join(root, "scripts", "security-check.mjs"), "--root", fixtureRoot], { cwd: root, encoding: "utf8" });
     assert.notEqual(result.status, 0);
     assert.match(`${result.stdout}${result.stderr}`, /SEC-SECRET-001/);
   } finally {
-    await rm(fixture, { force: true });
-    const restore = spawnSync(process.execPath, [path.join(root, "scripts", "security-check.mjs")], { cwd: root, encoding: "utf8" });
-    assert.equal(restore.status, 0, `${restore.stdout}\n${restore.stderr}`);
+    await rm(fixtureRoot, { recursive: true, force: true });
   }
 });
 

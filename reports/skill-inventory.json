@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "runtimeVersion": "1.0.3",
-  "generatedAt": "2026-08-25T09:22:16.788Z",
+  "generatedAt": "2026-08-26T16:40:07.217Z",
   "skills": [
     {
       "name": "architecture-review",
@@ -378,6 +378,30 @@
       "reports": [
         "reports/workflow-completion.json",
         "reports/workflow-completion.md"
+      ]
+    },
+    {
+      "name": "project-video",
+      "path": ".github/skills/project-video/SKILL.md",
+      "description": "Analyze a new or existing project and produce a project-specific animated walkthrough as an interactive browser preview or a validated MP4 with approved Azure neural or pinned local narration. Use after a project has meaningful verified content; do not use for generic documentation, live screen recording, or publication.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "clarify-the-ask",
+        "azure-discovery"
+      ],
+      "reports": [
+        "reports/project-video/project-evidence.json",
+        "reports/project-video/project-video-plan.json",
+        "reports/project-video/project-video-plan.md",
+        "reports/project-video/project-video-manifest.json",
+        "reports/project-video/voice-samples/voice-samples.json",
+        "reports/project-video/voice-samples/index.html",
+        "reports/project-video/voice-samples/",
+        "reports/project-video/voice-selection.json",
+        "reports/project-video/audio/narration-manifest.json",
+        "reports/project-video/audio/",
+        "reports/project-video/source/"
       ]
     },
     {

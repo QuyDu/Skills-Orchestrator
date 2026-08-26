@@ -750,7 +750,7 @@ async function detectProjectStack(root) {
       if (entry.isSymbolicLink()) continue;
       const name = entry.name.toLowerCase();
       if (entry.isDirectory()) {
-        if (SCAN_EXCLUDED_DIRECTORIES.has(name) || (name.startsWith(".") && name !== ".github")) continue;
+        if (SCAN_EXCLUDED_DIRECTORIES.has(name) || name.startsWith(".")) continue;
         if (name === "test" || name === "tests" || name === "spec") tags.add("tests");
         await scan(path.join(directory, entry.name), depth + 1);
         continue;

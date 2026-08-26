@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skills-orchestrator.local/schemas/project-video-plan.schema.json",
+  "title": "Project Video Plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "project", "audience", "targetDurationSeconds", "video", "voice", "output", "scenes"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "purpose", "evidence"],
+      "properties": {
+        "name": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,63}$" },
+        "purpose": { "type": "string", "minLength": 1, "maxLength": 2000 },
+        "evidence": { "$ref": "#/$defs/evidence" }
+      }
+    },
+    "audience": { "type": "string", "minLength": 1, "maxLength": 300 },
+    "targetDurationSeconds": { "type": "integer", "minimum": 60, "maximum": 600 },
+    "video": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["width", "height", "fps", "backgroundColor", "primaryColor", "accentColor"],
+      "properties": {
+        "width": { "type": "integer", "enum": [854, 1280, 1920] },
+        "height": { "type": "integer", "enum": [480, 720, 1080] },
+        "fps": { "type": "integer", "enum": [24, 30] },
+        "backgroundColor": { "$ref": "#/$defs/color" },
+        "primaryColor": { "$ref": "#/$defs/color" },
+        "accentColor": { "$ref": "#/$defs/color" }
+      },
+      "allOf": [
+        { "if": { "properties": { "width": { "const": 854 } } }, "then": { "properties": { "height": { "const": 480 } } } },
+        { "if": { "properties": { "width": { "const": 1280 } } }, "then": { "properties": { "height": { "const": 720 } } } },
+        { "if": { "properties": { "width": { "const": 1920 } } }, "then": { "properties": { "height": { "const": 1080 } } } }
+      ]
+    },
+    "voice": {
+      "oneOf": [
+        { "$ref": "#/$defs/azureVoice" },
+        { "$ref": "#/$defs/localVoice" },
+        { "$ref": "#/$defs/browserVoice" }
+      ]
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["file"],
+      "properties": {
+        "file": { "type": "string", "pattern": "^dist/project-video/[a-z0-9-]+\\.(mp4|html)$" }
+      }
+    },
+    "scenes": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "subtitle", "narration", "evidence"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^scene-[0-9]{2}$" },
+          "title": { "type": "string", "minLength": 1, "maxLength": 80 },
+          "subtitle": { "type": "string", "minLength": 1, "maxLength": 180 },
+          "narration": { "type": "string", "minLength": 20, "maxLength": 1600 },
+          "evidence": { "$ref": "#/$defs/evidence" }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "voice": {
+            "properties": { "provider": { "const": "browser-preview" } },
+            "required": ["provider"]
+          }
+        }
+      },
+      "then": { "properties": { "output": { "properties": { "file": { "pattern": "^dist/project-video/[a-z0-9-]+\\.html$" } } } } },
+      "else": { "properties": { "output": { "properties": { "file": { "pattern": "^dist/project-video/[a-z0-9-]+\\.mp4$" } } } } }
+    }
+  ],
+  "$defs": {
+    "color": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+    "azureVoice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "locale", "style", "styleDegree", "ratePercent", "sentencePauseMs"],
+      "properties": {
+        "provider": { "const": "azure-neural" },
+        "name": { "type": "string", "pattern": "^[A-Za-z0-9-]+(?::[A-Za-z0-9-]+)?Neural$" },
+        "locale": { "type": "string", "pattern": "^[a-z]{2}-[A-Z]{2}$" },
+        "style": { "type": "string", "pattern": "^(auto|[a-z][a-z0-9-]{0,39})$" },
+        "styleDegree": { "type": "number", "minimum": 0.01, "maximum": 2 },
+        "ratePercent": { "type": "integer", "minimum": -20, "maximum": 20 },
+        "sentencePauseMs": { "type": "integer", "minimum": 0, "maximum": 1000 }
+      }
+    },
+    "localVoice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "name", "locale", "lengthScale", "sentenceSilenceSeconds"],
+      "properties": {
+        "provider": { "const": "local-piper" },
+        "name": { "const": "en_US-ljspeech-high" },
+        "locale": { "const": "en-US" },
+        "lengthScale": { "type": "number", "minimum": 0.5, "maximum": 2 },
+        "sentenceSilenceSeconds": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "browserVoice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "name", "locale"],
+      "properties": {
+        "provider": { "const": "browser-preview" },
+        "name": { "const": "default-English" },
+        "locale": { "const": "en-US" }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500,
+        "pattern": "^(?![A-Za-z]:)(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+"
+      }
+    }
+  }
+}

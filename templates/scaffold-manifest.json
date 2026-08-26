@@ -141,6 +141,12 @@
       "requires": "always"
     },
     {
+      "path": ".github/prompts/project-video.prompt.md",
+      "kind": "prompt",
+      "purpose": "create a project-specific animated MP4 with approved Azure neural or pinned local narration",
+      "requires": "always"
+    },
+    {
       "path": ".github/prompts/azure-cleanup.prompt.md",
       "kind": "prompt",
       "purpose": "safe azure resource cleanup with confirmation",

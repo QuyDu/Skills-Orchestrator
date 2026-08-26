@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skills-orchestrator.local/schemas/azure-discovery.schema.json",
+  "title": "Azure Discovery",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "discoveredAt", "cloud", "location", "cognitiveAvailable", "cognitiveRegions", "openAIAvailable", "openAIModelName", "openAIModelVersion", "openAIModelSku", "openAIApiVersion", "speech"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "discoveredAt": { "type": "string", "format": "date-time" },
+    "cloud": { "enum": ["AzureCloud", "AzureUSGovernment"] },
+    "location": { "$ref": "#/$defs/region" },
+    "cognitiveAvailable": { "type": "boolean" },
+    "cognitiveRegions": { "$ref": "#/$defs/regions" },
+    "openAIAvailable": { "type": "boolean" },
+    "openAIModelName": { "type": "string", "maxLength": 120 },
+    "openAIModelVersion": { "type": "string", "maxLength": 80 },
+    "openAIModelSku": { "type": "string", "minLength": 1, "maxLength": 80 },
+    "openAIApiVersion": { "type": "string", "minLength": 1, "maxLength": 40 },
+    "speech": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["serviceAvailable", "serviceRegions", "existingResourceQuerySucceeded", "existingResourceAvailable", "existingResourceCount", "existingResourceRegions", "existingResourceKinds"],
+      "properties": {
+        "serviceAvailable": { "type": "boolean" },
+        "serviceRegions": { "$ref": "#/$defs/regions" },
+        "existingResourceQuerySucceeded": { "type": "boolean" },
+        "existingResourceAvailable": { "type": "boolean" },
+        "existingResourceCount": { "type": "integer", "minimum": 0 },
+        "existingResourceRegions": { "$ref": "#/$defs/regions" },
+        "existingResourceKinds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "enum": ["SpeechServices", "AIServices", "CognitiveServices"] }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "existingResourceAvailable": { "const": true } }, "required": ["existingResourceAvailable"] },
+          "then": {
+            "properties": {
+              "existingResourceCount": { "minimum": 1 },
+              "existingResourceRegions": { "minItems": 1 },
+              "existingResourceKinds": { "minItems": 1 }
+            }
+          },
+          "else": { "properties": { "existingResourceCount": { "const": 0 } } }
+        },
+        {
+          "if": { "properties": { "existingResourceQuerySucceeded": { "const": false } }, "required": ["existingResourceQuerySucceeded"] },
+          "then": {
+            "properties": {
+              "existingResourceAvailable": { "const": false },
+              "existingResourceCount": { "const": 0 },
+              "existingResourceRegions": { "maxItems": 0 },
+              "existingResourceKinds": { "maxItems": 0 }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "region": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "regions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/region" }
+    }
+  }
+}

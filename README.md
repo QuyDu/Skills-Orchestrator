@@ -1,12 +1,12 @@
 # Project Skills Orchestrator
 
-Turn any repository into a governed GitHub Copilot workspace: agent instructions, scoped standards, reusable prompts, specialist agents, and 39 governed skills — installed consistently, verified after every run, and safe to rerun.
+Turn any repository into a governed GitHub Copilot workspace: agent instructions, scoped standards, reusable prompts, specialist agents, and 40 governed skills — installed consistently, verified after every run, and safe to rerun.
 
 | Item | Value |
 | --- | --- |
 | Runtime version | `1.0.3` |
 | Framework version | `9.0.0` |
-| Skill catalog | 39 governed skills |
+| Skill catalog | 40 governed skills |
 | Supported Node.js | 22, 24, 26 |
 | Dependencies | None |
 | Distribution | Authorized internal use only |
@@ -23,7 +23,7 @@ It has two halves.
 
 **A command-line installer** (`pso.mjs`) that creates a new project or adopts an existing one. It runs entirely on Node.js built-ins — no packages to install, no registry access — and every change it makes is planned, journaled, and verified.
 
-**A catalog of 39 skills** installed into `.github/skills/`, invoked from GitHub Copilot Chat in Agent mode. Each skill is a bounded contract: what it owns, what it reads, what it writes, when it must stop and ask you.
+**A catalog of 40 skills** installed into `.github/skills/`, invoked from GitHub Copilot Chat in Agent mode. Each skill is a bounded contract: what it owns, what it reads, what it writes, when it must stop and ask you.
 
 ### What makes it different
 
@@ -274,9 +274,9 @@ Clones into an isolated staging directory, provisions, verifies, and only then p
 | --- | --- |
 | `.github/copilot-instructions.md` | Repository constitution: engagement protocol, orchestration, purpose, architecture, coding, naming, Azure, security, testing, documentation |
 | `.github/instructions/` | Scoped standards applied by glob — only the ones your stack needs |
-| `.github/prompts/` | `/create-adr`, `/project-blueprint`, `/review-architecture`, `/executive-summary`, `/security-review`, `/project-status`, `/new-component`, `/azure-cleanup`, `/environment-update`, `/release-readiness`, and skill help prompts |
+| `.github/prompts/` | `/create-adr`, `/project-blueprint`, `/project-video`, `/review-architecture`, `/executive-summary`, `/security-review`, `/project-status`, `/new-component`, `/azure-cleanup`, `/environment-update`, `/release-readiness`, and skill help prompts |
 | `.github/agents/` | Azure Architect, Security Reviewer, Documentation Writer |
-| `.github/skills/` | The 39-skill catalog |
+| `.github/skills/` | The 40-skill catalog |
 | `.github/workflows/ci.yml` | Stack-aware pipeline, SHA-pinned actions (new projects only) |
 | `.github/workflows/copilot-setup-steps.yml` | Preinstalls dependencies for Copilot cloud agent and Copilot code review (new projects with a stack) |
 | `.vscode/tasks.json` | Build and test tasks for the stack — `Ctrl+Shift+B` and Test Explorer work immediately |
@@ -354,6 +354,7 @@ Open the project in VS Code, start Copilot Chat in **Agent** mode, and invoke a 
 /architecture-review      Well-Architected assessment of the defined architecture
 /deployment-review        Is this release candidate deployable, and how do we roll back
 /documentation-builder    Rebuild README, deployment guide, operations runbook
+/project-video            Create a project-specific animated MP4 with approved narration
 /systematic-debugging     Reproduce, isolate root cause, verify the smallest fix
 /change-review            Review this diff before commit
 /project-handoff          Record continuity before you stop
@@ -377,6 +378,74 @@ The audit workflow is staged, and each stage validates the one before it:
 | `advanced` | Workflow simulation, skill registry |
 
 Every profile is dependency-closed and enforced by tests.
+
+### Project video
+
+Every created or adopted project receives `/project-video`, its schemas, and a self-contained Node.js helper inside the skill package. Run it after the project has enough blueprint or implementation evidence to explain accurately. It inspects the current repository rather than this source distribution, writes reviewable plans under `reports/project-video/`, and produces an interactive browser walkthrough or verified MP4 output under `dist/project-video/`.
+
+Every invocation first runs `discovery-status`. When Azure discovery is missing or unusable, the skill asks whether to run `/azure-discovery`. A yes refreshes discovery and continues through `azure-preflight`. A no explicitly selects `browser-preview` and generates project-specific HTML with browser-default English speech, responsive visuals, manual controls, and scene advancement on utterance completion. The browser or operating system controls voice processing, which may use an online service. This fallback is not rendered audio, portable video, or an MP4.
+
+The preferred MP4 path uses an approved existing Azure Speech resource configured through process environment variables. Discovery records only Speech account counts, kinds, and regions, never names, identifiers, or keys. Azure supplies narration; the MP4 is rendered locally with FFmpeg. Before synthesizing the full script, the skill generates the same short passage with Ava Dragon HD, Aria Dragon HD, and Aria professional narration so the user can listen and explicitly choose.
+
+The packaged helper enforces that sequence:
+
+```powershell
+node .\.github\skills\project-video\scripts\project-video.mjs discovery-status
+node .\.github\skills\project-video\scripts\project-video.mjs azure-preflight
+node .\.github\skills\project-video\scripts\project-video.mjs audition --approve-external
+# Open reports/project-video/voice-samples/index.html and listen to A, B, and C.
+node .\.github\skills\project-video\scripts\project-video.mjs select-voice --profile ava-hd-warm --approve-selection
+node .\.github\skills\project-video\scripts\project-video.mjs narrate --approve-external
+```
+
+The preflight fails closed when accepted discovery is incompatible, stale, uncertain, cloud-mismatched, or lacks an existing Speech resource in `AZURE_SPEECH_REGION`. It reports required environment variable names but never obtains or prints a key. Declining discovery avoids this Azure path and runs `browser-preview` instead. The selection command updates and revalidates Azure plans with canonical profile settings. Discovery, selected profile, style intensity, rate, sentence pause, sample digest, and narration digests remain bound to the final media manifest.
+
+Azure is not required for a preview or for an offline fallback MP4. A browser-preview plan uses this voice contract and an HTML output path:
+
+```json
+"voice": {
+  "provider": "browser-preview",
+  "name": "default-English",
+  "locale": "en-US"
+},
+"output": {
+  "file": "dist/project-video/my-project.html"
+}
+```
+
+Run `node .\.github\skills\project-video\scripts\project-video.mjs browser-preview` to generate it. Its strict manifest is written to `reports/project-video/browser-preview-manifest.json`. Browser speech is never recorded as final audio evidence; browser and operating-system voice services control whether speech remains on-device.
+
+For final offline narration, set the plan's voice provider to `local-piper` with the pinned `en_US-ljspeech-high` settings. Piper `1.7.0` requires an existing Python 3.10 through 3.13 runtime and supports Windows x64, Linux x64 or arm64, and macOS x64 or arm64 in this workflow. Its GPL-3.0-or-later engine, complete exact runtime dependency set, and 114 MB LJSpeech model are installed only under `.skills-orchestrator/tools/project-video/local-voice/` after separate approvals. The lock includes non-vulnerable protobuf `6.33.5`; the platform-bound installation manifest records and verifies every expected package, wheel, model file, approval, and requirements digest. The LJSpeech dataset provenance is public domain.
+
+```json
+"voice": {
+  "provider": "local-piper",
+  "name": "en_US-ljspeech-high",
+  "locale": "en-US",
+  "lengthScale": 1,
+  "sentenceSilenceSeconds": 0.18
+}
+```
+
+```powershell
+node .\.github\skills\project-video\scripts\project-video.mjs install-local-voice `
+  --accept-download --accept-gpl --accept-model-provenance
+node .\.github\skills\project-video\scripts\project-video.mjs narrate --approve-local
+```
+
+The installer does not install Python globally or modify the application dependency graph. It verifies the official Piper wheel digest for the current platform, retains and hashes the resolved wheel set, verifies the pinned model, and records an installation manifest. Local WAV narration and the final MP4 are labeled `local-piper`; switching later to Azure requires an explicit plan change and the normal Azure audition workflow.
+
+For the bundled animation under `Demo/`, generate its matching audition set and final Ava HD narration with:
+
+```powershell
+.\scripts\generate-demo-narration.ps1 -Audition -ApproveExternal
+# Listen at Demo/audio/narration/voice-samples/index.html.
+.\scripts\generate-demo-narration.ps1 -VoiceProfile ava-hd-warm -ApproveExternal -Force
+```
+
+Use [Demo/DEMO-DAY.md](Demo/DEMO-DAY.md) for the presentation sequence: show the existing guide, create and implement the new webapp, then invoke `/project-video` so fresh Azure discovery and `azure-preflight` gate the new narration before local FFmpeg rendering.
+
+The skill will not persist credentials or silently change narration providers. MP4 rendering uses an existing FFmpeg executable or, after explicit approval, installs the pinned `ffmpeg-static@5.3.0` dependency only under `.skills-orchestrator/tools/project-video/`. Azure processing, local engine/model downloads and licenses, narration, renderer downloads, lifecycle scripts, replacement, and publication remain approval-gated.
 
 ---
 

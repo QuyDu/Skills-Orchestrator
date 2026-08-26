@@ -11,7 +11,7 @@ Use a slash command with the skill name:
 
 ```text
 /security-review
-/Azure Discovery -Gov
+/azure-discovery -Gov
 /project-handoff
 ```
 
@@ -53,5 +53,5 @@ This token does not authorize deployment, destructive changes, privileged access
 
 1. Read `reports/project-handoff.json`, creating it through `/project-handoff` if missing.
 2. Read and understand `reports/azure-discovery.md` and `reports/azure-discovery.json` when present.
-3. If discovery is missing or older than 14 days, ask whether to run `/Azure Discovery`.
+3. If discovery is missing or older than 14 days, ask whether to run `/azure-discovery`.
 4. Read the relevant skill help prompt and then its complete `SKILL.md` before invoking it.

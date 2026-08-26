@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skills-orchestrator.local/schemas/project-video-manifest.schema.json",
+  "title": "Project Video Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "status", "renderedAt", "projectName", "plan", "planSha256", "output", "sha256", "bytes", "durationSeconds", "video", "audio", "renderer"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "status": { "const": "complete" },
+    "renderedAt": { "type": "string", "format": "date-time" },
+    "projectName": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,63}$" },
+    "plan": { "type": "string", "pattern": "^reports/project-video/.+\\.json$" },
+    "planSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "output": { "type": "string", "pattern": "^dist/project-video/[a-z0-9-]+\\.mp4$" },
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "bytes": { "type": "integer", "minimum": 51200 },
+    "durationSeconds": { "type": "number", "exclusiveMinimum": 0 },
+    "video": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["width", "height", "fps", "codec"],
+      "properties": {
+        "width": { "type": "integer", "enum": [854, 1280, 1920] },
+        "height": { "type": "integer", "enum": [480, 720, 1080] },
+        "fps": { "type": "integer", "enum": [24, 30] },
+        "codec": { "const": "h264" }
+      },
+      "allOf": [
+        { "if": { "properties": { "width": { "const": 854 } } }, "then": { "properties": { "height": { "const": 480 } } } },
+        { "if": { "properties": { "width": { "const": 1280 } } }, "then": { "properties": { "height": { "const": 720 } } } },
+        { "if": { "properties": { "width": { "const": 1920 } } }, "then": { "properties": { "height": { "const": 1080 } } } }
+      ]
+    },
+    "audio": {
+      "oneOf": [
+        { "$ref": "#/$defs/azureAudio" },
+        { "$ref": "#/$defs/localAudio" }
+      ]
+    },
+    "renderer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "name", "packageVersion", "ffmpeg", "binarySha256"],
+      "properties": {
+        "source": { "enum": ["explicit", "environment", "isolated-pinned", "system-path"] },
+        "name": { "enum": ["ffmpeg", "ffmpeg-static"] },
+        "packageVersion": { "type": ["string", "null"], "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+        "ffmpeg": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "binarySha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "audioScene": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "file", "durationSeconds", "sha256"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^scene-[0-9]{2}$" },
+        "file": { "type": "string" },
+        "durationSeconds": { "type": "number", "exclusiveMinimum": 0 },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "azureAudio": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["codec", "provider", "profile", "selectionSha256", "azureDiscoverySha256", "azureDiscoveryAt", "voice", "voiceSettingsSha256", "style", "styleDegree", "ratePercent", "sentencePauseMs", "scenes"],
+      "properties": {
+        "codec": { "const": "aac" },
+        "provider": { "const": "azure-neural" },
+        "profile": { "enum": ["ava-hd-warm", "aria-hd-warm", "aria-professional"] },
+        "selectionSha256": { "$ref": "#/$defs/sha256" },
+        "azureDiscoverySha256": { "$ref": "#/$defs/sha256" },
+        "azureDiscoveryAt": { "type": "string", "format": "date-time" },
+        "voice": { "type": "string", "pattern": "^[A-Za-z0-9-]+(?::[A-Za-z0-9-]+)?Neural$" },
+        "voiceSettingsSha256": { "$ref": "#/$defs/sha256" },
+        "style": { "type": "string", "pattern": "^(auto|[a-z][a-z0-9-]{0,39})$" },
+        "styleDegree": { "type": "number", "minimum": 0.01, "maximum": 2 },
+        "ratePercent": { "type": "integer", "minimum": -20, "maximum": 20 },
+        "sentencePauseMs": { "type": "integer", "minimum": 0, "maximum": 1000 },
+        "scenes": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 10,
+          "items": {
+            "allOf": [
+              { "$ref": "#/$defs/audioScene" },
+              { "properties": { "file": { "pattern": "^reports/project-video/audio/scene-[0-9]{2}\\.mp3$" } } }
+            ]
+          }
+        }
+      }
+    },
+    "localAudio": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["codec", "provider", "voice", "voiceSettingsSha256", "localVoiceInstallSha256", "lengthScale", "sentenceSilenceSeconds", "engine", "model", "scenes"],
+      "properties": {
+        "codec": { "const": "aac" },
+        "provider": { "const": "local-piper" },
+        "voice": { "const": "en_US-ljspeech-high" },
+        "voiceSettingsSha256": { "$ref": "#/$defs/sha256" },
+        "localVoiceInstallSha256": { "$ref": "#/$defs/sha256" },
+        "lengthScale": { "type": "number", "minimum": 0.5, "maximum": 2 },
+        "sentenceSilenceSeconds": { "type": "number", "minimum": 0, "maximum": 1 },
+        "engine": { "$ref": "project-video-narration-manifest.schema.json#/$defs/localEngine" },
+        "model": { "$ref": "project-video-narration-manifest.schema.json#/$defs/localModel" },
+        "scenes": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 10,
+          "items": {
+            "allOf": [
+              { "$ref": "#/$defs/audioScene" },
+              { "properties": { "file": { "pattern": "^reports/project-video/audio/scene-[0-9]{2}\\.wav$" } } }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

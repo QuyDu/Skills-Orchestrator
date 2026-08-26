@@ -12,6 +12,8 @@ Distribution is restricted to authorized internal use under [LICENSE](LICENSE). 
 - Do not bypass the runtime version check. Remove a major when it reaches end of life and validate new supported majors before adding them.
 - This registry-free edition has no third-party runtime packages. The exact npm toolchain, lockfile, and repository install policy are committed even while the dependency graph is empty.
 - Lifecycle scripts are disabled by default. Any exception requires review of the package source and scripts, explicit approval, and a narrowly scoped install command.
+- `project-video` is such an exception only when the user approves its isolated pinned `ffmpeg-static` installation. The helper writes a package lock and renderer manifest, verifies npm integrity metadata and the binary SHA-256 digest, and never adds the renderer to the application dependency graph.
+- The optional local project-video voice is another isolated exception. It requires separate network, GPL-3.0-or-later, and public-domain model-provenance approvals; pins Piper, its complete runtime dependency graph including protobuf `6.33.5`, and the LJSpeech model; verifies the official Piper wheel, requirements digest, exact installed package set, all resolved wheel hashes, platform and architecture, and model files; and does not install Python or packages globally.
 - Any future dependency requires a lockfile update, license review, vulnerability review, provenance review, and component-governance evidence. Dependabot monitors npm lockfile and GitHub Actions changes.
 
 ## Required Operating Practice
@@ -23,6 +25,8 @@ Distribution is restricted to authorized internal use under [LICENSE](LICENSE). 
 5. Preserve a separate repository backup and use version control. The transaction journal is recovery evidence, not a replacement for organizational backup policy.
 6. Do not remove an adoption lock manually. Use `recover` only after verifying the recorded process is no longer active.
 7. Review installed skills as executable instructions. Keep destructive, external, privileged, irreversible, deployment, commit, and push actions approval-gated.
+
+Project video generation adds opt-in trust boundaries. Every run checks Azure discovery first. When discovery is unavailable, the user may decline discovery and select a zero-install browser preview; generated HTML uses escaped plan data, prefers a local English voice when available, and records that browser or operating-system processing may use an online service. It is never labeled rendered audio or MP4 media. Before Azure narration, read-only discovery records only Speech-capable account count, kinds, and regions; it never retrieves keys or persists account names or resource identifiers. Voice auditions and neural narration send only approved text to the discovered Azure Speech regional endpoint; credentials remain process environment values and are never written to reports. The offline MP4 fallback downloads a GPL Piper wheel, pinned Python dependencies, and a public-domain LJSpeech model once, then synthesizes locally in an isolated environment. Rendering executes an approved local FFmpeg binary without shell command construction and writes only to skill-owned paths.
 
 Inspection and planning must not execute commands discovered in the target repository. Managed paths must remain inside the canonical repository root; symbolic links, traversal, reserved device names, stale destination hashes, and concurrent adoption are rejected.
 
