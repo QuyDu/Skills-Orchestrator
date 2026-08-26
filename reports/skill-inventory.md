@@ -1,6 +1,6 @@
 # Skill Inventory
 
-Generated: 2026-08-25T09:22:16.788Z
+Generated: 2026-08-26T16:40:07.217Z
 
 | Skill | Description |
 | --- | --- |
@@ -30,6 +30,7 @@ Generated: 2026-08-25T09:22:16.788Z
 | project-memory | Maintain operational experience and durable preferences while ensuring current instructions and repository evidence outrank saved memory. Use to record or recall durable working preferences across sessions; never use stored memory to override the current request or repository evidence. |
 | project-setup | Establish a new application's repository structure, agent customization layer, standards, and required skill set so development can start from a governed baseline. Use when starting a new application or bringing an unstructured repository up to the project baseline; do not use for feature implementation or dependency installation. |
 | project-skills-orchestrator | Coordinate project workflows by discovering capabilities, routing intent, enforcing ownership boundaries, and composing approved skills. Use to route any request that spans more than one skill or whose owner is unclear; do not use when a single owning skill clearly applies. |
+| project-video | Analyze a new or existing project and produce a project-specific animated walkthrough as an interactive browser preview or a validated MP4 with approved Azure neural or pinned local narration. Use after a project has meaningful verified content; do not use for generic documentation, live screen recording, or publication. |
 | regression-test-development | Create or strengthen focused automated tests that reproduce a bug or specify a requested behavior, then capture red-green validation evidence. Use when a change needs durable regression coverage; do not use only to execute an existing test suite. |
 | security-review | Review code, configuration, and infrastructure for exploitable weaknesses, secret exposure, identity and authorization defects, and OWASP Top 10 categories with severity-ranked evidence. Use before merging or releasing security-relevant change; use audit-code instead for whole-repository quality assessment. |
 | skill-create | Create or update concise, composable skill packages with valid metadata, bounded tools, ownership, validation, dependencies, and examples. Use to author or revise a skill contract; do not use to invoke an existing skill. |

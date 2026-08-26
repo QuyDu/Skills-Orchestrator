@@ -42,9 +42,12 @@ When neither `-Commercial` nor `-Gov` is supplied, the script asks:
 Only `1` or `2` is accepted. After three invalid responses, discovery exits with an error. The
 legacy `-AzureGov` switch remains supported as an alias for `-Gov`.
 
-The Copilot skill `/Azure Discovery` runs the same read-only probe and writes both
+The Copilot skill `/azure-discovery` runs the same read-only probe and writes both
 `reports/azure-discovery.json` and the readable `reports/azure-discovery.md`. Use
-`/Azure Discovery -Commercial` or `/Azure Discovery -Gov` to select a cloud without the menu.
+`/azure-discovery -Commercial` or `/azure-discovery -Gov` to select a cloud without the menu.
+The report also records whether the existing Speech-resource query succeeded plus only the count,
+kinds, and regions of compatible accounts. It never stores account names, resource identifiers, or
+keys. `/project-video` requires this evidence to be no older than 14 days before Azure narration.
 
 ## Cleanup
 

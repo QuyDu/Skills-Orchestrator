@@ -5,7 +5,6 @@ import os from "node:os";
 import path from "node:path";
 import { spawn, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { pathToFileURL } from "node:url";
 import test from "node:test";
 
 const root = path.resolve(import.meta.dirname, "..");
@@ -63,13 +62,15 @@ test("clone-setup clones a GitHub repository and publishes only after verified a
   const source = await mkdtemp(path.join(os.tmpdir(), "pso-clone-source-"));
   const destinationParent = await mkdtemp(path.join(os.tmpdir(), "pso-clone-target-"));
   const destination = path.join(destinationParent, "cloned-fixture");
+  const bundle = path.join(source, "fixture.bundle");
   const repository = "https://github.com/example/cloned-fixture.git";
   try {
     assert.equal(spawnSync("git", ["init", "--initial-branch=main"], { cwd: source }).status, 0);
     await writeFile(path.join(source, "package.json"), "{\"name\":\"cloned-fixture\"}\n", "utf8");
     assert.equal(spawnSync("git", ["add", "package.json"], { cwd: source }).status, 0);
     assert.equal(spawnSync("git", ["-c", "user.name=Fixture", "-c", "user.email=fixture@example.invalid", "commit", "-m", "fixture"], { cwd: source }).status, 0);
-    const sourceUrl = pathToFileURL(source).href;
+    assert.equal(spawnSync("git", ["bundle", "create", bundle, "--all"], { cwd: source }).status, 0);
+    const sourceUrl = bundle.replaceAll("\\", "/");
     const result = spawnSync(process.execPath, [runtime, "clone-setup", "--repository", repository, "--destination", destination, "--profile", "core", "--accept-risk"], {
       cwd: root,
       encoding: "utf8",
@@ -241,6 +242,26 @@ No approval is required for read-only work.
     assert.ok(!existsSync(legacyReview));
     assert.equal(await readFile(schemaPath, "utf8"), await readFile(path.join(root, "schemas", "code-audit-findings.schema.json"), "utf8"));
     assert.equal(await readFile(profilesPath, "utf8"), await readFile(path.join(root, "config", "profiles.yaml"), "utf8"));
+    assert.ok(existsSync(path.join(project, ".github", "skills", "project-video", "scripts", "project-video.mjs")));
+    assert.ok(existsSync(path.join(project, ".github", "skills", "azure-discovery", "scripts", "azure-discovery.ps1")));
+    assert.ok(existsSync(path.join(project, ".github", "prompts", "project-video.prompt.md")));
+    assert.ok(existsSync(path.join(project, "schemas", "project-video-plan.schema.json")));
+    assert.ok(existsSync(path.join(project, "schemas", "project-video-manifest.schema.json")));
+    assert.ok(existsSync(path.join(project, "schemas", "project-video-voice-samples.schema.json")));
+    assert.ok(existsSync(path.join(project, "schemas", "project-video-voice-selection.schema.json")));
+    assert.ok(existsSync(path.join(project, "schemas", "project-video-narration-manifest.schema.json")));
+    assert.ok(existsSync(path.join(project, "schemas", "project-video-local-voice-manifest.schema.json")));
+    assert.ok(existsSync(path.join(project, "schemas", "project-video-browser-preview-manifest.schema.json")));
+    assert.ok(existsSync(path.join(project, "schemas", "azure-discovery.schema.json")));
+    const adoptedVideoHelper = await readFile(path.join(project, ".github", "skills", "project-video", "scripts", "project-video.mjs"), "utf8");
+    assert.match(adoptedVideoHelper, /command === "install-local-voice"/);
+    assert.match(adoptedVideoHelper, /en_US-ljspeech-high/);
+    const adoptedVideoPrompt = await readFile(path.join(project, ".github", "prompts", "project-video.prompt.md"), "utf8");
+    assert.match(adoptedVideoPrompt, /local-piper/);
+    assert.match(adoptedVideoPrompt, /azure-preflight/);
+    assert.match(adoptedVideoPrompt, /browser-preview/);
+    const adoptedVideoSchema = JSON.parse(await readFile(path.join(project, "schemas", "project-video-plan.schema.json"), "utf8"));
+    assert.equal(adoptedVideoSchema.$defs.localVoice.properties.provider.const, "local-piper");
 
     const instructions = await readFile(path.join(project, ".github", "copilot-instructions.md"), "utf8");
     assert.match(instructions, /Keep this project-specific instruction\./);
@@ -559,6 +580,26 @@ test("accepted project creation records the risk acknowledgment", async () => {
     assert.equal(verification.checks.workspaceSupportPresent, true);
     const configuredProfile = JSON.parse(await readFile(path.join(created, "config", "skills-orchestrator.json"), "utf8")).profile;
     assert.equal(configuredProfile, "durable");
+    assert.ok(existsSync(path.join(created, ".github", "skills", "project-video", "scripts", "project-video.mjs")));
+    assert.ok(existsSync(path.join(created, ".github", "skills", "azure-discovery", "scripts", "azure-discovery.ps1")));
+    assert.ok(existsSync(path.join(created, ".github", "prompts", "project-video.prompt.md")));
+    assert.ok(existsSync(path.join(created, "schemas", "project-video-plan.schema.json")));
+    assert.ok(existsSync(path.join(created, "schemas", "project-video-manifest.schema.json")));
+    assert.ok(existsSync(path.join(created, "schemas", "project-video-voice-samples.schema.json")));
+    assert.ok(existsSync(path.join(created, "schemas", "project-video-voice-selection.schema.json")));
+    assert.ok(existsSync(path.join(created, "schemas", "project-video-narration-manifest.schema.json")));
+    assert.ok(existsSync(path.join(created, "schemas", "project-video-local-voice-manifest.schema.json")));
+    assert.ok(existsSync(path.join(created, "schemas", "project-video-browser-preview-manifest.schema.json")));
+    assert.ok(existsSync(path.join(created, "schemas", "azure-discovery.schema.json")));
+    const createdVideoHelper = await readFile(path.join(created, ".github", "skills", "project-video", "scripts", "project-video.mjs"), "utf8");
+    assert.match(createdVideoHelper, /command === "install-local-voice"/);
+    assert.match(createdVideoHelper, /en_US-ljspeech-high/);
+    const createdVideoPrompt = await readFile(path.join(created, ".github", "prompts", "project-video.prompt.md"), "utf8");
+    assert.match(createdVideoPrompt, /local-piper/);
+    assert.match(createdVideoPrompt, /azure-preflight/);
+    assert.match(createdVideoPrompt, /browser-preview/);
+    const createdVideoSchema = JSON.parse(await readFile(path.join(created, "schemas", "project-video-plan.schema.json"), "utf8"));
+    assert.equal(createdVideoSchema.$defs.localVoice.properties.provider.const, "local-piper");
   } finally {
     await rm(parent, { recursive: true, force: true });
   }
@@ -698,6 +739,26 @@ test("adoption evidence generator captures the initial plan and no-op rerun", as
     assert.match(markdown, /security\.instructions\.md/);
   } finally {
     await rm(output, { recursive: true, force: true });
+  }
+});
+
+test("framework customization code does not change the detected application stack", async () => {
+  const project = await mkdtemp(path.join(os.tmpdir(), "pso-framework-stack-isolation-"));
+  try {
+    await writeFile(path.join(project, "package.json"), "{\"name\":\"framework-stack-isolation\"}\n", "utf8");
+    await mkdir(path.join(project, ".github", "skills", "custom", "scripts"), { recursive: true });
+    await writeFile(path.join(project, ".github", "skills", "custom", "scripts", "helper.ps1"), "Write-Output 'framework helper'\n", "utf8");
+    const plan = spawnSync(process.execPath, [runtime, "adopt", "--project", project, "--profile", "core", "--dry-run", "--json"], {
+      cwd: root,
+      encoding: "utf8"
+    });
+    assert.equal(plan.status, 0, plan.stderr);
+    const output = JSON.parse(plan.stdout);
+    assert.ok(output.detectedStack.includes("javascript"));
+    assert.ok(!output.detectedStack.includes("powershell"));
+    assert.ok(!output.actions.some((action) => action.path === ".github/instructions/powershell.instructions.md" && action.action === "create"));
+  } finally {
+    await rm(project, { recursive: true, force: true });
   }
 });
 
@@ -1085,10 +1146,16 @@ test("the Azure baseline treats Key Vault as optional", async () => {
 
 test("discovery probes every region rather than only the target region", async () => {
   const discover = await readFile(path.join(root, "templates", "project", "infra", "discover.ps1"), "utf8");
+  assert.match(discover, /function Get-AzureDiscoveryProjectRoot/);
   assert.match(discover, /function Get-AzureCognitiveKindRegion/);
+  assert.match(discover, /function Get-AzureSpeechResourceSummary/);
   assert.match(discover, /function Invoke-AzureDiscovery/);
   // The all-region probe omits --location on purpose; pinning it reports false negatives.
   assert.match(discover, /az cognitiveservices account list-skus --kind \$Kind `\r?\n\s*--query "\[\]\.locations"/);
+  assert.match(discover, /az cognitiveservices account list `\r?\n\s*--query "\[\?kind=='SpeechServices'/);
+  assert.match(discover, /existingResourceQuerySucceeded/);
+  assert.match(discover, /existingResourceRegions/);
+  assert.doesNotMatch(discover, /\.\{name:name,/, "Speech discovery must not persist resource names");
   assert.match(discover, /'gpt-5\.1', 'gpt-4\.1'/, "the model preference ladder is present");
 });
 

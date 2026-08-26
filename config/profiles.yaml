@@ -11,6 +11,7 @@ profiles:
       - skill-create
       - framework-health-check
       - project-setup
+      - project-video
       - development-environment-readiness
       - environment-update
       - systematic-debugging

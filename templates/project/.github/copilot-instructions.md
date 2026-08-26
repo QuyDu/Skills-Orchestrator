@@ -36,11 +36,17 @@ Use `.github/skills/project-skills-orchestrator/SKILL.md` for project orchestrat
 At the beginning of work, read `reports/project-handoff.json` before planning or changing files. If
 it does not exist, create an initial handoff through `/project-handoff`. After understanding the
 handoff, read `reports/azure-discovery.md` and `reports/azure-discovery.json`. If discovery is
-missing, ask whether the user wants to run `/Azure Discovery`. If its recorded `discoveredAt`
+missing, ask whether the user wants to run `/azure-discovery`. If its recorded `discoveredAt`
 timestamp is more than 14 days old, ask whether the user wants to rerun it. Continue with a warning
 when the user declines and record that decision in the next handoff.
 
-`/Azure Discovery` accepts `-Commercial` or `-Gov`. If neither is supplied, ask the user to choose
+`/project-video` always runs its packaged `discovery-status` first. For missing, incompatible, or
+stale discovery, ask whether to run `/azure-discovery`. If the user declines, select the explicit
+`browser-preview` provider and generate interactive HTML with browser-default voice and visuals;
+never label it rendered audio or MP4 media. If the user accepts, refresh discovery and run
+`azure-preflight` before Azure narration. Discovery never creates a resource or retrieves its key.
+
+`/azure-discovery` accepts `-Commercial` or `-Gov`. If neither is supplied, ask the user to choose
 `1. Commercial` or `2. Gov`; accept only `1` or `2`, retry three invalid responses, then report an
 error and exit. To explicitly bypass the normal clarification round, append the exact token
 `--proceed` to the prompt. This is a user instruction to proceed with reasonable defaults,

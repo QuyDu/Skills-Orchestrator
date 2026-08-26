@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skills-orchestrator.local/schemas/project-video-local-voice-manifest.schema.json",
+  "title": "Project Video Local Voice Installation Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "status", "installedAt", "platform", "arch", "python", "engine", "dependencies", "requirementsSha256", "wheels", "model", "approvals"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "status": { "const": "complete" },
+    "installedAt": { "type": "string", "format": "date-time" },
+    "platform": { "enum": ["win32", "linux", "darwin"] },
+    "arch": { "enum": ["x64", "arm64"] },
+    "python": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "version", "isolatedExecutableSha256"],
+      "properties": {
+        "source": { "type": "string", "minLength": 1, "maxLength": 1000 },
+        "version": { "type": "string", "pattern": "^3\\.(10|11|12|13)\\.[0-9]+$" },
+        "isolatedExecutableSha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "engine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["package", "version", "license", "source", "release"],
+      "properties": {
+        "package": { "const": "piper-tts" },
+        "version": { "const": "1.7.0" },
+        "license": { "const": "GPL-3.0-or-later" },
+        "source": { "const": "https://github.com/OHF-Voice/piper1-gpl" },
+        "release": { "const": "https://github.com/OHF-Voice/piper1-gpl/releases/tag/v1.7.0" }
+      }
+    },
+    "dependencies": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["coloredlogs", "flatbuffers", "humanfriendly", "mpmath", "numpy", "onnxruntime", "packaging", "pathvalidate", "protobuf", "sympy"],
+      "properties": {
+        "coloredlogs": { "const": "15.0.1" },
+        "flatbuffers": { "const": "25.9.23" },
+        "humanfriendly": { "const": "10.0" },
+        "mpmath": { "const": "1.3.0" },
+        "numpy": { "const": "2.2.6" },
+        "onnxruntime": { "const": "1.23.2" },
+        "packaging": { "const": "25.0" },
+        "pathvalidate": { "const": "3.3.1" },
+        "protobuf": { "const": "6.33.5" },
+        "pyreadline3": { "const": "3.5.4" },
+        "sympy": { "const": "1.14.0" }
+      }
+    },
+    "requirementsSha256": { "$ref": "#/$defs/sha256" },
+    "wheels": {
+      "type": "array",
+      "minItems": 11,
+      "maxItems": 12,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["file", "bytes", "sha256"],
+        "properties": {
+          "file": { "type": "string", "pattern": "^wheels/[A-Za-z0-9_.+-]+\\.whl$" },
+          "bytes": { "type": "integer", "minimum": 1 },
+          "sha256": { "$ref": "#/$defs/sha256" }
+        }
+      }
+    },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "locale", "quality", "source", "sourceRevision", "dataset", "datasetLicense", "datasetLicenseUrl", "files"],
+      "properties": {
+        "id": { "const": "en_US-ljspeech-high" },
+        "locale": { "const": "en-US" },
+        "quality": { "const": "high" },
+        "source": { "const": "https://huggingface.co/rhasspy/piper-voices/tree/v1.0.0/en/en_US/ljspeech/high" },
+        "sourceRevision": { "const": "v1.0.0" },
+        "dataset": { "const": "LJSpeech" },
+        "datasetLicense": { "const": "public-domain" },
+        "datasetLicenseUrl": { "const": "https://keithito.com/LJ-Speech-Dataset/" },
+        "files": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["file", "bytes", "sha256", "md5"],
+            "properties": {
+              "file": { "type": "string", "pattern": "^models/en_US-ljspeech-high/(en_US-ljspeech-high\\.onnx|en_US-ljspeech-high\\.onnx\\.json|MODEL_CARD)$" },
+              "bytes": { "type": "integer", "minimum": 1 },
+              "sha256": { "$ref": "#/$defs/sha256" },
+              "md5": { "type": "string", "pattern": "^[a-f0-9]{32}$" }
+            }
+          }
+        }
+      }
+    },
+    "approvals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["download", "gpl", "modelProvenance"],
+      "properties": {
+        "download": { "const": true },
+        "gpl": { "const": true },
+        "modelProvenance": { "const": true }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "platform": { "const": "win32" } }, "required": ["platform"] },
+      "then": {
+        "properties": { "arch": { "const": "x64" } },
+        "required": ["dependencies"],
+        "allOf": [{ "properties": { "dependencies": { "required": ["pyreadline3"] } } }]
+      },
+      "else": { "properties": { "dependencies": { "not": { "required": ["pyreadline3"] } } } }
+    }
+  ],
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
+}

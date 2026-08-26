@@ -1,0 +1,1040 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Project Skills Orchestrator — Animated Guide</title>
+  <style>
+    :root {
+      --ink: #132129;
+      --paper: #f5f2ea;
+      --cyan: #00a4b4;
+      --blue: #1261a0;
+      --coral: #f05d3d;
+      --gold: #efb521;
+      --green: #2d8a62;
+      --white: #fffdf8;
+      --muted: #65747b;
+      --shadow: 0 18px 60px rgba(19, 33, 41, .16);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: var(--ink);
+    }
+
+    body {
+      color: var(--ink);
+      font-family: Aptos, "Segoe UI", sans-serif;
+    }
+
+    button { font: inherit; }
+
+    .stage {
+      position: relative;
+      width: 100vw;
+      height: 100dvh;
+      min-height: 520px;
+      overflow: hidden;
+      background:
+        linear-gradient(90deg, rgba(19, 33, 41, .035) 1px, transparent 1px),
+        linear-gradient(rgba(19, 33, 41, .035) 1px, transparent 1px),
+        var(--paper);
+      background-size: 32px 32px;
+    }
+
+    .stage::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(115deg, rgba(255,255,255,.65), transparent 42%);
+      z-index: 1;
+    }
+
+    .brand {
+      position: absolute;
+      top: 24px;
+      left: 30px;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: Bahnschrift, "Arial Narrow", sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 10px 14px;
+      background: var(--ink);
+      color: var(--white);
+    }
+
+    .brand-mark {
+      display: grid;
+      grid-template-columns: repeat(2, 8px);
+      gap: 3px;
+      transform: rotate(45deg);
+    }
+
+    .brand-mark span {
+      width: 8px;
+      height: 8px;
+      background: var(--cyan);
+    }
+
+    .brand-mark span:nth-child(2) { background: var(--gold); }
+    .brand-mark span:nth-child(3) { background: var(--coral); }
+    .brand-mark span:nth-child(4) { background: var(--blue); }
+
+    .scene {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      display: grid;
+      align-items: center;
+      padding: 78px 7vw 150px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(18px);
+      transition: opacity .7s ease, transform .7s ease, visibility .7s;
+    }
+
+    .scene.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .scene-grid {
+      display: grid;
+      grid-template-columns: minmax(0, .92fr) minmax(420px, 1.08fr);
+      gap: clamp(36px, 6vw, 100px);
+      align-items: center;
+      width: min(1380px, 100%);
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      margin: 0 0 18px;
+      color: var(--blue);
+      font-family: Bahnschrift, "Arial Narrow", sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    h1, h2 {
+      margin: 0;
+      max-width: 820px;
+      font-family: Bahnschrift, "Arial Narrow", sans-serif;
+      font-weight: 700;
+      letter-spacing: 0;
+      line-height: .96;
+    }
+
+    h1 { font-size: clamp(54px, 7vw, 108px); }
+    h2 { font-size: clamp(44px, 5vw, 78px); }
+
+    .lede {
+      max-width: 650px;
+      margin: 24px 0 0;
+      color: #42535b;
+      font-size: clamp(18px, 1.6vw, 25px);
+      line-height: 1.45;
+    }
+
+    .accent { color: var(--coral); }
+
+    .hero-scene {
+      padding-left: 9vw;
+      background:
+        linear-gradient(90deg, var(--ink) 0 52%, transparent 52%),
+        var(--paper);
+    }
+
+    .hero-scene .hero-copy {
+      position: relative;
+      z-index: 2;
+      width: min(650px, 40vw);
+      color: var(--white);
+    }
+
+    .hero-scene h1 { font-size: clamp(50px, 5.6vw, 88px); }
+
+    .hero-scene .eyebrow { color: var(--gold); }
+    .hero-scene .lede { color: #cad6d8; }
+
+    .orbit-system {
+      position: absolute;
+      right: 6vw;
+      top: 50%;
+      width: min(44vw, 680px);
+      aspect-ratio: 1;
+      transform: translateY(-50%);
+    }
+
+    .orbit {
+      position: absolute;
+      inset: 10%;
+      border: 1px solid rgba(19,33,41,.22);
+      border-radius: 50%;
+      animation: spin 18s linear infinite;
+    }
+
+    .orbit:nth-child(2) {
+      inset: 25%;
+      animation-direction: reverse;
+      animation-duration: 12s;
+    }
+
+    .orbit-dot {
+      position: absolute;
+      top: -9px;
+      left: 50%;
+      width: 18px;
+      height: 18px;
+      background: var(--coral);
+      border-radius: 50%;
+      box-shadow: 0 0 0 8px rgba(240,93,61,.15);
+    }
+
+    .orbit:nth-child(2) .orbit-dot { background: var(--cyan); }
+
+    .core {
+      position: absolute;
+      inset: 36%;
+      display: grid;
+      place-items: center;
+      background: var(--ink);
+      color: var(--white);
+      border-radius: 50%;
+      font-family: Bahnschrift, "Arial Narrow", sans-serif;
+      font-size: clamp(24px, 3vw, 46px);
+      font-weight: 700;
+      box-shadow: var(--shadow);
+      animation: breathe 3s ease-in-out infinite;
+    }
+
+    .skill-pill {
+      position: absolute;
+      padding: 10px 14px;
+      background: var(--white);
+      border: 1px solid rgba(19,33,41,.12);
+      box-shadow: 0 8px 24px rgba(19,33,41,.12);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .skill-pill:nth-of-type(1) { top: 7%; left: 14%; }
+    .skill-pill:nth-of-type(2) { top: 18%; right: 1%; }
+    .skill-pill:nth-of-type(3) { bottom: 13%; right: 4%; }
+    .skill-pill:nth-of-type(4) { bottom: 5%; left: 10%; }
+    .skill-pill:nth-of-type(5) { top: 46%; left: 0; }
+
+    .feature-stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    .feature-row {
+      display: grid;
+      grid-template-columns: 48px 1fr auto;
+      gap: 18px;
+      align-items: center;
+      min-height: 84px;
+      padding: 16px 18px;
+      background: rgba(255,253,248,.82);
+      border-left: 5px solid var(--cyan);
+      box-shadow: 0 10px 30px rgba(19,33,41,.09);
+      opacity: 0;
+      transform: translateX(30px);
+    }
+
+    .active .feature-row { animation: enter-right .55s ease forwards; }
+    .active .feature-row:nth-child(2) { animation-delay: .16s; border-color: var(--coral); }
+    .active .feature-row:nth-child(3) { animation-delay: .32s; border-color: var(--gold); }
+    .active .feature-row:nth-child(4) { animation-delay: .48s; border-color: var(--green); }
+
+    .feature-icon {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      background: var(--ink);
+      color: var(--white);
+      border-radius: 50%;
+      font-family: Consolas, monospace;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .feature-row strong { display: block; margin-bottom: 5px; font-size: 18px; }
+    .feature-row small { color: var(--muted); font-size: 14px; }
+    .feature-row b { color: var(--blue); font-size: 13px; }
+
+    .terminal {
+      overflow: hidden;
+      background: #101a20;
+      color: #d8e7e8;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,.1);
+    }
+
+    .terminal-bar {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      height: 42px;
+      padding: 0 16px;
+      background: #1d2b32;
+      color: #8fa5ad;
+      font-size: 12px;
+    }
+
+    .terminal-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--coral); }
+    .terminal-dot:nth-child(2) { background: var(--gold); }
+    .terminal-dot:nth-child(3) { background: var(--green); }
+
+    .terminal pre {
+      min-height: 310px;
+      margin: 0;
+      padding: 28px;
+      overflow: hidden;
+      font: 15px/1.75 Consolas, "Cascadia Code", monospace;
+      white-space: pre-wrap;
+    }
+
+    .prompt { color: #51d2d9; }
+    .success { color: #79d4a9; }
+    .warn { color: #ffd25e; }
+
+    .typed-line {
+      display: block;
+      width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .active .typed-line { animation: type 1.35s steps(46, end) forwards; }
+    .active .typed-line:nth-child(2) { animation-delay: 1.55s; }
+    .active .typed-line:nth-child(3) { animation-delay: 3.1s; }
+    .active .typed-line:nth-child(4) { animation-delay: 4.65s; }
+
+    .workflow {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .workflow-step {
+      position: relative;
+      display: grid;
+      align-content: space-between;
+      min-height: 250px;
+      padding: 24px 20px;
+      background: var(--white);
+      border-top: 6px solid var(--cyan);
+      box-shadow: 0 12px 36px rgba(19,33,41,.1);
+      opacity: 0;
+      transform: translateY(24px);
+    }
+
+    .active .workflow-step { animation: enter-up .5s ease forwards; }
+    .active .workflow-step:nth-child(2) { animation-delay: .18s; border-color: var(--blue); }
+    .active .workflow-step:nth-child(3) { animation-delay: .36s; border-color: var(--gold); }
+    .active .workflow-step:nth-child(4) { animation-delay: .54s; border-color: var(--coral); }
+
+    .step-number {
+      color: #d5dcd9;
+      font: 700 52px/1 Bahnschrift, sans-serif;
+    }
+
+    .workflow-step strong { font-size: 18px; }
+    .workflow-step code { color: var(--blue); font: 13px/1.5 Consolas, monospace; }
+
+    .shield {
+      position: relative;
+      width: min(460px, 36vw);
+      aspect-ratio: .86;
+      margin: auto;
+      clip-path: polygon(50% 0, 92% 14%, 85% 70%, 50% 100%, 15% 70%, 8% 14%);
+      background: var(--ink);
+      box-shadow: var(--shadow);
+    }
+
+    .shield::before {
+      content: "";
+      position: absolute;
+      inset: 12%;
+      clip-path: inherit;
+      background: var(--cyan);
+      animation: shield-pulse 2.6s ease-in-out infinite;
+    }
+
+    .shield::after {
+      content: "✓";
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: var(--white);
+      font: 700 100px/1 Bahnschrift, sans-serif;
+    }
+
+    .guardrails {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .guardrail {
+      padding: 15px 16px;
+      border: 1px solid rgba(19,33,41,.14);
+      background: rgba(255,253,248,.72);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .closing-scene {
+      place-items: center;
+      text-align: center;
+      overflow: hidden;
+      background: var(--ink);
+      color: var(--white);
+    }
+
+    .closing-scene::after {
+      content: "";
+      position: absolute;
+      width: 70vmax;
+      height: 70vmax;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 50%;
+      box-shadow: 0 0 0 12vmax rgba(0,164,180,.05), 0 0 0 24vmax rgba(239,181,33,.035);
+      animation: breathe 4s ease-in-out infinite;
+    }
+
+    .closing-content { position: relative; z-index: 2; max-width: 1000px; }
+    .closing-content .eyebrow { color: var(--gold); }
+    .closing-content .lede { margin-inline: auto; color: #c8d4d6; }
+
+    .command-chip {
+      display: inline-block;
+      margin-top: 28px;
+      padding: 16px 22px;
+      background: var(--white);
+      color: var(--ink);
+      font: 700 16px Consolas, monospace;
+      box-shadow: 10px 10px 0 var(--cyan);
+    }
+
+    .caption {
+      position: absolute;
+      left: 50%;
+      bottom: 72px;
+      z-index: 30;
+      width: min(900px, calc(100% - 48px));
+      min-height: 58px;
+      padding: 12px 18px;
+      transform: translateX(-50%);
+      background: rgba(19,33,41,.94);
+      color: var(--white);
+      font-size: clamp(15px, 1.3vw, 20px);
+      line-height: 1.45;
+      text-align: center;
+      box-shadow: 0 8px 30px rgba(0,0,0,.2);
+      transition: opacity .25s ease;
+    }
+
+    .caption.hidden { opacity: 0; pointer-events: none; }
+
+    .controls {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 40;
+      display: grid;
+      grid-template-columns: auto auto auto 1fr auto auto;
+      gap: 8px;
+      align-items: center;
+      min-height: 62px;
+      padding: 10px 24px;
+      background: rgba(255,253,248,.96);
+      border-top: 1px solid rgba(19,33,41,.12);
+      backdrop-filter: blur(12px);
+    }
+
+    .control-button {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--ink);
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .control-button:hover, .control-button:focus-visible { background: #e5e3dc; outline: none; }
+    .control-button[aria-pressed="false"] { color: #9aa4a8; }
+
+    .scene-nav {
+      display: flex;
+      justify-content: center;
+      gap: 9px;
+    }
+
+    .scene-dot {
+      width: 10px;
+      height: 10px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: #c2cac7;
+      cursor: pointer;
+      transition: width .25s ease, background .25s ease;
+    }
+
+    .scene-dot.active { width: 28px; border-radius: 5px; background: var(--cyan); }
+
+    .timecode {
+      min-width: 92px;
+      color: var(--muted);
+      font: 13px Consolas, monospace;
+      text-align: right;
+    }
+
+    .progress {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: -3px;
+      height: 3px;
+      background: rgba(19,33,41,.12);
+    }
+
+    .progress-bar { width: 0; height: 100%; background: var(--coral); transition: width .25s linear; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes breathe { 50% { transform: scale(1.045); } }
+    @keyframes shield-pulse { 50% { background: var(--green); } }
+    @keyframes enter-right { to { opacity: 1; transform: translateX(0); } }
+    @keyframes enter-up { to { opacity: 1; transform: translateY(0); } }
+    @keyframes type { to { width: 100%; } }
+
+    @media (max-width: 860px) {
+      .stage { min-height: 600px; }
+      .brand { top: 18px; left: 20px; }
+      .scene { align-items: start; padding: 76px 22px 132px; overflow-x: hidden; overflow-y: auto; }
+      .scene-grid { grid-template-columns: 1fr; gap: 28px; }
+      h1 { font-size: clamp(48px, 15vw, 76px); }
+      h2 { font-size: clamp(38px, 11vw, 58px); }
+      .lede { font-size: 17px; }
+      .hero-scene { background: var(--ink); padding-left: 24px; }
+      .hero-scene .hero-copy { width: 100%; margin-top: 6vh; }
+      .orbit-system { right: -18vw; top: 72%; width: 74vw; opacity: .4; }
+      .workflow { grid-template-columns: repeat(2, 1fr); }
+      .workflow-step { min-height: 165px; }
+      .shield { width: min(300px, 70vw); }
+      .terminal pre { min-height: 230px; padding: 20px; font-size: 12px; }
+      .caption { bottom: 68px; width: calc(100% - 24px); font-size: 14px; }
+      .controls { grid-template-columns: auto auto auto 1fr auto; padding: 8px 12px; }
+      .scene-nav { gap: 6px; }
+      .scene-dot { width: 8px; height: 8px; }
+      .scene-dot.active { width: 20px; }
+    }
+
+    @media (max-width: 520px) {
+      .scene-grid { gap: 18px; }
+      .lede { margin-top: 14px; line-height: 1.35; }
+      .feature-stack { gap: 8px; }
+      .feature-row { min-height: 62px; padding: 8px 10px; gap: 10px; }
+      .feature-row { grid-template-columns: 42px 1fr; }
+      .feature-row strong { margin-bottom: 2px; font-size: 15px; }
+      .feature-row small { font-size: 12px; }
+      .feature-row b { display: none; }
+      .workflow { grid-template-columns: 1fr 1fr; }
+      .workflow-step { min-height: 140px; padding: 16px; }
+      .step-number { font-size: 34px; }
+      .shield { width: min(180px, 48vw); }
+      .shield::after { font-size: 64px; }
+      .guardrails { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 16px; }
+      .guardrail { padding: 9px 10px; font-size: 12px; }
+      .skill-pill { display: none; }
+      .timecode { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage" aria-label="Project Skills Orchestrator animated guide">
+    <div class="brand" aria-label="Project Skills Orchestrator">
+      <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+      Project Skills Orchestrator
+    </div>
+
+    <section class="scene hero-scene active" data-title="Introduction">
+      <div class="hero-copy">
+        <p class="eyebrow">Governed Copilot workspaces</p>
+        <h1>Give every project a <span class="accent">way of working.</span></h1>
+        <p class="lede">Instructions, prompts, agents, and reusable skills — installed as one verified foundation.</p>
+      </div>
+      <div class="orbit-system" aria-hidden="true">
+        <div class="orbit"><span class="orbit-dot"></span></div>
+        <div class="orbit"><span class="orbit-dot"></span></div>
+        <div class="core">40</div>
+        <span class="skill-pill">security-review</span>
+        <span class="skill-pill">workflow-planner</span>
+        <span class="skill-pill">audit-code</span>
+        <span class="skill-pill">project-setup</span>
+        <span class="skill-pill">azure-discovery</span>
+      </div>
+    </section>
+
+    <section class="scene" data-title="What it installs">
+      <div class="scene-grid">
+        <div>
+          <p class="eyebrow">One installer · two jobs</p>
+          <h2>A workspace foundation, <span class="accent">not application code.</span></h2>
+          <p class="lede">The command-line tool provisions the rules and workflows. The skill catalog gives Copilot bounded, reusable capabilities.</p>
+        </div>
+        <div class="feature-stack">
+          <div class="feature-row"><span class="feature-icon">I</span><span><strong>Instructions</strong><small>Always-on and stack-specific standards</small></span><b>SCOPED</b></div>
+          <div class="feature-row"><span class="feature-icon">/</span><span><strong>Prompts & agents</strong><small>Repeatable entry points and specialist roles</small></span><b>DISCOVERED</b></div>
+          <div class="feature-row"><span class="feature-icon">S</span><span><strong>40 governed skills</strong><small>Explicit inputs, outputs, validation, and stop conditions</small></span><b>BOUNDED</b></div>
+          <div class="feature-row"><span class="feature-icon">✓</span><span><strong>Verification</strong><small>Machine-readable contracts and conformance checks</small></span><b>PROVABLE</b></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="scene" data-title="Verify the distribution">
+      <div class="scene-grid">
+        <div>
+          <p class="eyebrow">Step 1 · Trust, then use</p>
+          <h2>Verify the checkout <span class="accent">before provisioning.</span></h2>
+          <p class="lede">Skills Orchestrator uses Node.js built-ins and no runtime packages. Verification checks its complete distribution.</p>
+        </div>
+        <div class="terminal" aria-label="Terminal showing verification commands">
+          <div class="terminal-bar"><span class="terminal-dot"></span><span class="terminal-dot"></span><span class="terminal-dot"></span><span>PowerShell</span></div>
+          <pre><span class="typed-line"><span class="prompt">PS&gt;</span> git clone https://github.com/QuyDu/Skills-Orchestrator.git</span>
+<span class="typed-line"><span class="prompt">PS&gt;</span> cd Skills-Orchestrator</span>
+<span class="typed-line"><span class="prompt">PS&gt;</span> node .\pso.mjs verify</span>
+<span class="typed-line success">✓ Verified registry-free distribution</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="scene" data-title="Create a project">
+      <div class="scene-grid">
+        <div>
+          <p class="eyebrow">Step 2 · New repository</p>
+          <h2>Create a governed project <span class="accent">in one command.</span></h2>
+          <p class="lede">Choose a profile and technology stack. The generated workspace includes empty source boundaries, CI wiring, and the complete skill system.</p>
+        </div>
+        <div class="terminal" aria-label="Terminal showing project creation command">
+          <div class="terminal-bar"><span class="terminal-dot"></span><span class="terminal-dot"></span><span class="terminal-dot"></span><span>PowerShell</span></div>
+          <pre><span class="prompt">PS&gt;</span> node .\pso.mjs create-project `
+  --name "My Project" `
+  --destination "C:\Projects" `
+  --profile durable `
+  --stack typescript `
+  --open `
+  --accept-risk
+
+<span class="success">✓ Project foundation verified</span>
+<span class="success">✓ Workspace ready to open</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="scene" data-title="Adopt an existing project">
+      <div class="scene-grid">
+        <div>
+          <p class="eyebrow">Or · Existing repository</p>
+          <h2>Preview adoption. <span class="accent">Apply only what is missing.</span></h2>
+          <p class="lede">Detection finds the stack, preserves project-owned instructions, avoids duplicate standards, and journals every mutation.</p>
+        </div>
+        <div class="terminal" aria-label="Terminal showing adoption dry run and apply commands">
+          <div class="terminal-bar"><span class="terminal-dot"></span><span class="terminal-dot"></span><span class="terminal-dot"></span><span>PowerShell</span></div>
+          <pre><span class="prompt">PS&gt;</span> node .\pso.mjs adopt `
+  --project "C:\repos\ExistingProject" `
+  --profile core --dry-run
+
+<span class="warn">Detected stack:</span> python, tests
+Files to create: 24
+Blocking conflicts: 0
+
+<span class="prompt">PS&gt;</span> node .\pso.mjs adopt `
+  --project "C:\repos\ExistingProject" `
+  --profile core --apply --accept-risk</pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="scene" data-title="Use the workflow">
+      <div style="width:min(1380px,100%);margin:auto">
+        <p class="eyebrow">Step 3 · Inside VS Code</p>
+        <h2 style="margin-bottom:38px">Move from intent to evidence <span class="accent">with explicit gates.</span></h2>
+        <div class="workflow">
+          <div class="workflow-step"><span class="step-number">01</span><strong>Start</strong><code>/project-start</code></div>
+          <div class="workflow-step"><span class="step-number">02</span><strong>Blueprint</strong><code>/project-blueprint</code></div>
+          <div class="workflow-step"><span class="step-number">03</span><strong>Build with skills</strong><code>/workflow-planner</code></div>
+          <div class="workflow-step"><span class="step-number">04</span><strong>Validate status</strong><code>/project-validate<br>/project-status</code></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="scene" data-title="Safety model">
+      <div class="scene-grid">
+        <div>
+          <p class="eyebrow">Designed for control</p>
+          <h2>Safe defaults remain <span class="accent">visible and reversible.</span></h2>
+          <p class="lede">The agent clarifies before acting. Dry runs expose changes. Transactions preserve recovery paths. Reports hold authoritative evidence.</p>
+          <div class="guardrails">
+            <span class="guardrail">Three-question clarification</span>
+            <span class="guardrail">Explicit approval gates</span>
+            <span class="guardrail">Journaled mutations</span>
+            <span class="guardrail">Automatic verification</span>
+          </div>
+        </div>
+        <div class="shield" aria-label="Verified safety shield"></div>
+      </div>
+    </section>
+
+    <section class="scene closing-scene" data-title="Get started">
+      <div class="closing-content">
+        <p class="eyebrow">Project Skills Orchestrator · 1.0.3</p>
+        <h2>Make the way you build<br><span class="accent">part of the repository.</span></h2>
+        <p class="lede">Verify the distribution. Provision a workspace. Start with a blueprint. Let every important action leave evidence.</p>
+        <span class="command-chip">node .\pso.mjs verify</span>
+      </div>
+    </section>
+
+    <div id="caption" class="caption" aria-live="polite"></div>
+
+    <nav class="controls" aria-label="Animation controls">
+      <div class="progress"><div id="progressBar" class="progress-bar"></div></div>
+      <button id="playButton" class="control-button" type="button" title="Play" aria-label="Play">▶</button>
+      <button id="restartButton" class="control-button" type="button" title="Restart" aria-label="Restart">↻</button>
+      <button id="musicButton" class="control-button" type="button" title="Ambient audio" aria-label="Toggle ambient audio" aria-pressed="true">♫</button>
+      <div id="sceneNav" class="scene-nav" aria-label="Scenes"></div>
+      <button id="captionButton" class="control-button" type="button" title="Captions" aria-label="Toggle captions" aria-pressed="true">CC</button>
+      <span id="timecode" class="timecode">0:00 / 2:24</span>
+    </nav>
+  </main>
+
+  <script>
+    const sceneData = [
+      {
+        duration: 22,
+        audio: "audio/narration/scene-01.mp3",
+        narration: "Every software project needs more than code. It also needs a clear, shared way of working. Project Skills Orchestrator brings that structure into your repository. It gives GitHub Copilot the instructions, prompts, agents, and reusable skills it needs — all installed as one verified foundation."
+      },
+      {
+        duration: 24,
+        audio: "audio/narration/scene-02.mp3",
+        narration: "There are two parts. First, a registry-free command-line installer can create a new workspace, or carefully adopt an existing one. It runs entirely on the tools built into Node.js. Then, a catalog of forty governed skills gives Copilot focused capabilities — with clear inputs, outputs, checks, approval gates, and stop conditions."
+      },
+      {
+        duration: 21,
+        audio: "audio/narration/scene-03.mp3",
+        narration: "Begin by cloning the repository, then run the verify command. You will need Node.js version twenty-two, twenty-four, or twenty-six. Verification makes sure the distribution is complete. It also checks that the skill contracts, schemas, dependencies, and ownership claims all agree — before you use the installer anywhere else."
+      },
+      {
+        duration: 26,
+        audio: "audio/narration/scene-04.mp3",
+        narration: "When you are starting fresh, run create-project. Give the project a name and destination. Then choose a conformance profile and identify the technology stack. The durable profile is the default. You will get a standalone, governed workspace — with source and test boundaries, editor settings, continuous integration wiring, and the complete skill catalog. Your application code remains yours to build."
+      },
+      {
+        duration: 25,
+        audio: "audio/narration/scene-05.mp3",
+        narration: "For an existing repository, adoption happens in two stages. Start with a dry run. The plan shows the technologies it found, the files it would create, standards that are already covered, and any blocking conflicts. Review that plan first. Then apply it with explicit risk acceptance. Your project instructions and application code stay in place, while each managed change is journaled and verified."
+      },
+      {
+        duration: 25,
+        audio: "audio/narration/scene-06.mp3",
+        narration: "Once you are inside Visual Studio Code, begin with project start. Project blueprint captures the agreed purpose, technology stack, delivery target, quality requirements, assumptions, and acceptance criteria. From there, specialized skills can help plan, implement, review, test, and document the work. Project validate and project status keep blocked, stale, or pending work visible."
+      },
+      {
+        duration: 22,
+        audio: "audio/narration/scene-07.mp3",
+        narration: "Control is built into the system. Each new prompt begins with three clarifying questions, followed by your confirmation, before any files are changed. Risky operations need explicit approval. Dry runs show proposed changes in advance. Transaction journals support rollback and recovery. And machine-readable reports preserve the authoritative evidence of what happened."
+      },
+      {
+        duration: 20,
+        audio: "audio/narration/scene-08.mp3",
+        narration: "That is Project Skills Orchestrator — a repeatable way to make your engineering process part of the repository itself. Verify the distribution. Provision a workspace. Begin with a blueprint. Then let each important action leave evidence that both people and automation can inspect."
+      }
+    ];
+
+    const scenes = [...document.querySelectorAll(".scene")];
+    const playButton = document.getElementById("playButton");
+    const restartButton = document.getElementById("restartButton");
+    const musicButton = document.getElementById("musicButton");
+    const captionButton = document.getElementById("captionButton");
+    const caption = document.getElementById("caption");
+    const sceneNav = document.getElementById("sceneNav");
+    const progressBar = document.getElementById("progressBar");
+    const timecode = document.getElementById("timecode");
+    const narrationAudio = new Audio();
+    narrationAudio.preload = "auto";
+    let totalDuration = sceneData.reduce((sum, scene) => sum + scene.duration, 0);
+
+    let currentScene = 0;
+    let playing = false;
+    let sceneStartedAt = 0;
+    let elapsedBeforeScene = 0;
+    let timer = null;
+    let transitionTimeout = null;
+    let audioContext = null;
+    let musicGain = null;
+    let musicEnabled = true;
+    let narrationToken = 0;
+    let localUtterance = null;
+
+    const formatTime = (seconds) => {
+      const safeSeconds = Math.max(0, Math.round(seconds));
+      return `${Math.floor(safeSeconds / 60)}:${String(safeSeconds % 60).padStart(2, "0")}`;
+    };
+
+    sceneData.forEach((_, index) => {
+      const dot = document.createElement("button");
+      dot.className = `scene-dot${index === 0 ? " active" : ""}`;
+      dot.type = "button";
+      dot.title = scenes[index].dataset.title;
+      dot.setAttribute("aria-label", `Scene ${index + 1}: ${scenes[index].dataset.title}`);
+      dot.addEventListener("click", () => goToScene(index, playing));
+      sceneNav.append(dot);
+    });
+
+    const dots = [...document.querySelectorAll(".scene-dot")];
+
+    function ensureAudio() {
+      if (audioContext) return;
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+      audioContext = new AudioContext();
+      musicGain = audioContext.createGain();
+      musicGain.gain.value = 0;
+      musicGain.connect(audioContext.destination);
+
+      [110, 164.81, 220].forEach((frequency, index) => {
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        oscillator.type = index === 1 ? "triangle" : "sine";
+        oscillator.frequency.value = frequency;
+        gain.gain.value = index === 1 ? 0.24 : 0.15;
+        oscillator.connect(gain).connect(musicGain);
+        oscillator.start();
+      });
+    }
+
+    function scheduleAdvance(token) {
+      if (!playing || token !== narrationToken) return;
+      clearTimeout(transitionTimeout);
+      transitionTimeout = setTimeout(() => {
+        if (playing && token === narrationToken) advance();
+      }, 1000);
+    }
+
+    function defaultEnglishVoice() {
+      const voices = window.speechSynthesis?.getVoices?.() || [];
+      return voices.find((voice) => voice.default && /^en(?:-|_)/i.test(voice.lang))
+        || voices.find((voice) => voice.default)
+        || voices.find((voice) => /^en(?:-|_)/i.test(voice.lang))
+        || null;
+    }
+
+    function playCurrentNarration() {
+      const token = ++narrationToken;
+      let failureHandled = false;
+      const reportUnavailableNarration = () => {
+        if (!playing || token !== narrationToken) return;
+        localUtterance = null;
+        pause();
+        setTimeout(() => {
+          caption.textContent = "Narration is unavailable in this browser.";
+          playButton.title = "Narration unavailable";
+        }, 0);
+      };
+      const playLocalFallback = () => {
+        if (!playing || token !== narrationToken || failureHandled) return;
+        failureHandled = true;
+        narrationAudio.onerror = null;
+        narrationAudio.onended = null;
+        narrationAudio.pause();
+        if (!window.speechSynthesis || typeof window.SpeechSynthesisUtterance !== "function") {
+          reportUnavailableNarration();
+          return;
+        }
+        const utterance = new SpeechSynthesisUtterance(sceneData[currentScene].narration);
+        const voice = defaultEnglishVoice();
+        if (voice) utterance.voice = voice;
+        utterance.lang = voice?.lang || "en-US";
+        utterance.rate = 0.96;
+        utterance.pitch = 1;
+        utterance.volume = 0.92;
+        const startedAt = performance.now();
+        const wordCount = sceneData[currentScene].narration.split(/\s+/).filter(Boolean).length;
+        sceneData[currentScene].duration = Math.max(4, Math.ceil(wordCount / 2.5 + 1));
+        totalDuration = sceneData.reduce((sum, scene) => sum + scene.duration, 0);
+        utterance.onend = () => {
+          if (token !== narrationToken) return;
+          localUtterance = null;
+          sceneData[currentScene].duration = Math.max(1, Math.ceil((performance.now() - startedAt) / 1000 + 1));
+          totalDuration = sceneData.reduce((sum, scene) => sum + scene.duration, 0);
+          updateProgress();
+          scheduleAdvance(token);
+        };
+        utterance.onerror = reportUnavailableNarration;
+        localUtterance = utterance;
+        caption.textContent = `Local browser voice · ${sceneData[currentScene].narration}`;
+        playButton.title = "Pause local browser voice";
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utterance);
+      };
+
+      narrationAudio.onerror = playLocalFallback;
+      narrationAudio.onended = () => scheduleAdvance(token);
+      narrationAudio.onloadedmetadata = () => {
+        if (token !== narrationToken || !Number.isFinite(narrationAudio.duration)) return;
+        sceneData[currentScene].duration = Math.ceil(narrationAudio.duration + 1);
+        totalDuration = sceneData.reduce((sum, scene) => sum + scene.duration, 0);
+        updateProgress();
+      };
+      narrationAudio.src = sceneData[currentScene].audio;
+      narrationAudio.currentTime = 0;
+      narrationAudio.volume = 0.92;
+      const playback = narrationAudio.play();
+      playback?.catch(playLocalFallback);
+    }
+
+    function stopCurrentNarration() {
+      narrationToken += 1;
+      if (localUtterance) {
+        localUtterance.onend = null;
+        localUtterance.onerror = null;
+        localUtterance = null;
+      }
+      window.speechSynthesis?.cancel();
+      narrationAudio.onerror = null;
+      narrationAudio.onended = null;
+      narrationAudio.onloadedmetadata = null;
+      narrationAudio.pause();
+      narrationAudio.removeAttribute("src");
+      narrationAudio.load();
+    }
+
+    function advance() {
+      clearTimeout(transitionTimeout);
+      if (currentScene >= scenes.length - 1) {
+        pause();
+        elapsedBeforeScene = totalDuration;
+        updateProgress();
+        return;
+      }
+      goToScene(currentScene + 1, true);
+    }
+
+    function goToScene(index, shouldPlay = false) {
+      stopCurrentNarration();
+      clearTimeout(transitionTimeout);
+      currentScene = Math.max(0, Math.min(index, scenes.length - 1));
+      elapsedBeforeScene = sceneData.slice(0, currentScene).reduce((sum, scene) => sum + scene.duration, 0);
+      sceneStartedAt = performance.now();
+      scenes.forEach((scene, sceneIndex) => scene.classList.toggle("active", sceneIndex === currentScene));
+      dots.forEach((dot, dotIndex) => dot.classList.toggle("active", dotIndex === currentScene));
+      caption.textContent = sceneData[currentScene].narration;
+      updateProgress();
+      if (shouldPlay) {
+        playing = true;
+        playButton.textContent = "Ⅱ";
+        playButton.title = "Pause";
+        playButton.setAttribute("aria-label", "Pause");
+        playCurrentNarration();
+        startTimer();
+      }
+    }
+
+    function play() {
+      if (currentScene === scenes.length - 1 && elapsedBeforeScene >= totalDuration) goToScene(0, false);
+      ensureAudio();
+      if (audioContext?.state === "suspended") audioContext.resume();
+      playing = true;
+      if (musicGain) musicGain.gain.setTargetAtTime(musicEnabled ? 0.018 : 0, audioContext.currentTime, .25);
+      sceneStartedAt = performance.now();
+      playButton.textContent = "Ⅱ";
+      playButton.title = "Pause";
+      playButton.setAttribute("aria-label", "Pause");
+      playCurrentNarration();
+      startTimer();
+    }
+
+    function pause() {
+      if (playing) elapsedBeforeScene += Math.min((performance.now() - sceneStartedAt) / 1000, sceneData[currentScene].duration);
+      playing = false;
+      stopCurrentNarration();
+      clearTimeout(transitionTimeout);
+      clearInterval(timer);
+      if (musicGain) musicGain.gain.setTargetAtTime(0, audioContext.currentTime, .1);
+      playButton.textContent = "▶";
+      playButton.title = "Play";
+      playButton.setAttribute("aria-label", "Play");
+    }
+
+    function restart() {
+      pause();
+      goToScene(0, false);
+      elapsedBeforeScene = 0;
+      play();
+    }
+
+    function startTimer() {
+      clearInterval(timer);
+      timer = setInterval(updateProgress, 250);
+    }
+
+    function updateProgress() {
+      const sceneElapsed = playing ? Math.min((performance.now() - sceneStartedAt) / 1000, sceneData[currentScene].duration) : 0;
+      const elapsed = Math.min(elapsedBeforeScene + sceneElapsed, totalDuration);
+      progressBar.style.width = `${(elapsed / totalDuration) * 100}%`;
+      timecode.textContent = `${formatTime(elapsed)} / ${formatTime(totalDuration)}`;
+    }
+
+    playButton.addEventListener("click", () => playing ? pause() : play());
+    restartButton.addEventListener("click", restart);
+    musicButton.addEventListener("click", () => {
+      musicEnabled = !musicEnabled;
+      musicButton.setAttribute("aria-pressed", String(musicEnabled));
+      if (musicGain) musicGain.gain.setTargetAtTime(musicEnabled && playing ? 0.018 : 0, audioContext.currentTime, .25);
+    });
+    captionButton.addEventListener("click", () => {
+      const visible = caption.classList.toggle("hidden") === false;
+      captionButton.setAttribute("aria-pressed", String(visible));
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.code === "Space") {
+        event.preventDefault();
+        playing ? pause() : play();
+      }
+      if (event.code === "ArrowRight") goToScene(currentScene + 1, playing);
+      if (event.code === "ArrowLeft") goToScene(currentScene - 1, playing);
+    });
+    caption.textContent = sceneData[0].narration;
+    updateProgress();
+  </script>
+</body>
+</html>

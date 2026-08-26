@@ -1,6 +1,6 @@
 # Registry-Free Windows Setup
 
-This edition requires a maintained Node.js 22, 24, or 26 release but does not use npm or any package registry.
+The core setup requires a maintained Node.js 22, 24, or 26 release but does not use npm or a package registry. The optional project-video renderer and local voice are isolated, approval-gated dependency exceptions.
 
 ## Guided setup
 
@@ -25,7 +25,7 @@ node .\pso.mjs verify
 Expected result:
 
 ```text
-Verified registry-free distribution: 30 skills
+Verified registry-free distribution: 40 skills
 ```
 
 ## Create a project
@@ -89,6 +89,28 @@ node .\pso.mjs adopt --project "C:\repos\ExistingProject" --profile core --apply
 Before changing project files, Skills Orchestrator displays its security and risk acknowledgment. Interactive setup requires the exact phrase `I ACCEPT`; automated installation requires `--accept-risk`. Proceeding acknowledges that secure engineering reduces but cannot eliminate all defects, vulnerabilities, compatibility problems, or unintended outcomes. The user remains responsible for backups, review, validation, and non-production testing before any production use.
 
 The command is safe to rerun. Dry run identifies new or changed complete skill packages, schemas, profiles, wiring files, and legacy or duplicate skill directories. Apply mode journals every changed framework asset under `.skills-orchestrator/transactions/`, synchronizes the current distribution, preserves unrelated project skills and custom Copilot instruction text, and verifies inventory, dependencies, ownership, versions, configuration paths, profile selection, and orchestration routing. Invalid manifests or failed post-apply verification trigger automatic rollback with persistent recovery evidence.
+
+## Project video without Azure Speech
+
+Every created or adopted project includes the self-contained `project-video` helper. It checks `reports/azure-discovery.json` first and asks whether to run discovery when the report is missing or unusable. Declining generates a project-specific interactive HTML walkthrough using the default English browser voice and browser visuals:
+
+```powershell
+node .\.github\skills\project-video\scripts\project-video.mjs discovery-status
+node .\.github\skills\project-video\scripts\project-video.mjs browser-preview
+```
+
+The HTML preview is not a narrated MP4 and its voice may be processed by Windows or the browser's managed service. To create a final offline MP4 on Windows x64, explicitly select and install the pinned Piper fallback into the project's isolated tools directory. Python 3.10 through 3.13 must already be installed; this command does not install or alter Python globally. Windows ARM64 is not supported by the pinned Piper release used here.
+
+```powershell
+node .\.github\skills\project-video\scripts\project-video.mjs install-local-voice `
+  --accept-download `
+  --accept-gpl `
+  --accept-model-provenance
+
+node .\.github\skills\project-video\scripts\project-video.mjs narrate --approve-local
+```
+
+Review the network transfer, Piper GPL-3.0-or-later license, public-domain LJSpeech provenance, and isolated storage before supplying those flags. Use `--python "C:\Path\To\python.exe"` when the approved runtime is not on `PATH`. The generated narration and final manifest are labeled `local-piper`; Azure neural narration remains available later through an explicit plan-provider change and voice audition.
 
 For an interrupted transaction after confirming its recorded process is no longer active:
 

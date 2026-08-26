@@ -7,7 +7,11 @@ import { fileURLToPath } from "node:url";
 import { acquireReleaseLock } from "./release-lock.mjs";
 import { assertSafeRelativePath } from "./safe-path.mjs";
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const sourceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const args = process.argv.slice(2);
+if (args.length !== 0 && (args.length !== 2 || args[0] !== "--root" || !args[1])) throw new Error("Use --root PATH or no arguments");
+const root = args.length === 2 ? path.resolve(args[1]) : sourceRoot;
+if (!existsSync(root)) throw new Error(`Security scan root does not exist: ${root}`);
 const releaseLock = await acquireReleaseLock(root, "security-check");
 const excludedDirectories = new Set([".git", ".skills-orchestrator", "dist", "node_modules", "reports"]);
 const maximumScannedFileBytes = 10 * 1024 * 1024;

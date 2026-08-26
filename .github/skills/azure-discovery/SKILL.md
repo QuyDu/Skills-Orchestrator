@@ -9,7 +9,7 @@ confidence: medium
 
 ## Purpose
 
-Discover the services, regions, models, SKUs, and API version available to the project in Azure Commercial or Azure US Government, then persist the result for later agent sessions.
+Discover the services, regions, models, SKUs, API version, and nonsecret existing Speech-resource readiness available to the project in Azure Commercial or Azure US Government, then persist the result for later agent sessions.
 
 ## Preconditions
 
@@ -26,13 +26,13 @@ Discover the services, regions, models, SKUs, and API version available to the p
 
 ## Approved Tools and Resources
 
-- `infra/discover.ps1` and its `Invoke-AzureDiscovery` function.
+- The packaged `.github/skills/azure-discovery/scripts/azure-discovery.ps1` and its `Invoke-AzureDiscovery` function. `infra/discover.ps1` remains a compatible project-infrastructure copy when present.
 - Azure CLI read-only discovery commands.
 - Existing project reports and configuration.
 
 ## Read and Write Boundaries
 
-- Read Azure subscription metadata and service availability only.
+- Read Azure subscription metadata, service availability, and Speech-capable account kinds and regions only; must not persist account names or resource identifiers.
 - Write `reports/azure-discovery.json` and the readable `reports/azure-discovery.md`.
 - Never deploy resources, change Azure state, or write secrets.
 
@@ -42,13 +42,14 @@ Discover the services, regions, models, SKUs, and API version available to the p
 2. Accept only the number `1` or `2`; ask again for invalid input, up to three attempts total.
 3. After three invalid responses, report an error and exit the skill.
 4. Verify the active Azure CLI cloud matches the selected cloud.
-5. Dot-source `infra/discover.ps1` and invoke `Invoke-AzureDiscovery` with the selected cloud, location, and optional model preference.
-6. Persist the JSON result and readable Markdown report, including the UTC `discoveredAt` timestamp.
+5. Dot-source `.github/skills/azure-discovery/scripts/azure-discovery.ps1` and invoke `Invoke-AzureDiscovery` with the selected cloud, location, and optional model preference. Enumerate only the kind and region of existing `SpeechServices`, `AIServices`, or `CognitiveServices` accounts.
+6. Persist the JSON result and readable Markdown report, including the UTC `discoveredAt` timestamp, Speech query certainty, count, kinds, and regions.
 
 ## Validation
 
 - The selected cloud is `AzureCloud` or `AzureUSGovernment`.
 - Both report files exist and contain the same discovery timestamp and cloud.
+- The JSON report validates against `schemas/azure-discovery.schema.json` and contains no resource name, resource ID, subscription ID, tenant ID, key, or token.
 - Discovery failures are reported as unknown or unavailable according to the script output.
 - A report older than 14 days is identified as stale before relying on it.
 
@@ -74,6 +75,6 @@ Discovery is read-only and does not require deployment approval. Any deployment 
 
 ## Examples
 
-- `/Azure Discovery -Commercial`
-- `/Azure Discovery -Gov`
-- `/Azure Discovery` then choose `1` or `2` when prompted.
+- `/azure-discovery -Commercial`
+- `/azure-discovery -Gov`
+- `/azure-discovery` then choose `1` or `2` when prompted.

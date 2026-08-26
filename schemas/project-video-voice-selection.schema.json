@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skills-orchestrator.local/schemas/project-video-voice-selection.schema.json",
+  "title": "Project Video Voice Selection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "selectedAt", "auditionManifestSha256", "profile", "slot", "label", "voice", "sampleFile", "sampleSha256"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "selectedAt": { "type": "string", "format": "date-time" },
+    "auditionManifestSha256": { "$ref": "#/$defs/sha256" },
+    "profile": { "enum": ["ava-hd-warm", "aria-hd-warm", "aria-professional"] },
+    "slot": { "enum": ["A", "B", "C"] },
+    "label": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "voice": { "$ref": "project-video-voice-samples.schema.json#/$defs/voice" },
+    "sampleFile": { "type": "string", "pattern": "^reports/project-video/voice-samples/(ava-hd-warm|aria-hd-warm|aria-professional)\\.mp3$" },
+    "sampleSha256": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
+}

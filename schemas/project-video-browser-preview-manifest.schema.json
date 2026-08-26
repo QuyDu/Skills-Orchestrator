@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skills-orchestrator.local/schemas/project-video-browser-preview-manifest.schema.json",
+  "title": "Project Video Browser Preview Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "status", "generatedAt", "provider", "plan", "planSha256", "output", "sha256", "bytes", "voice", "capabilities", "scenes"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "status": { "const": "complete" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "provider": { "const": "browser-preview" },
+    "plan": { "type": "string", "pattern": "^reports/project-video/.+\\.json$" },
+    "planSha256": { "$ref": "#/$defs/sha256" },
+    "output": { "type": "string", "pattern": "^dist/project-video/[a-z0-9-]+\\.html$" },
+    "sha256": { "$ref": "#/$defs/sha256" },
+    "bytes": { "type": "integer", "minimum": 4096 },
+    "voice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "locale", "processing"],
+      "properties": {
+        "name": { "const": "default-English" },
+        "locale": { "const": "en-US" },
+        "processing": { "const": "browser-or-operating-system-controlled" }
+      }
+    },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["browserSpeech", "browserVisuals", "completionDrivenScenes", "renderedAudio", "portableMedia"],
+      "properties": {
+        "browserSpeech": { "const": true },
+        "browserVisuals": { "const": true },
+        "completionDrivenScenes": { "const": true },
+        "renderedAudio": { "const": false },
+        "portableMedia": { "const": false }
+      }
+    },
+    "scenes": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "narrationSha256", "evidence"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^scene-[0-9]{2}$" },
+          "narrationSha256": { "$ref": "#/$defs/sha256" },
+          "evidence": { "$ref": "project-video-plan.schema.json#/$defs/evidence" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
+}

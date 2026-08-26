@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-08-25T09:22:16.788Z",
+  "generatedAt": "2026-08-26T16:40:07.217Z",
   "artifacts": [
     {
       "report": "reports/architecture-review.json",
@@ -213,6 +213,50 @@
     {
       "report": "reports/workflow-completion.md",
       "producer": "project-skills-orchestrator"
+    },
+    {
+      "report": "reports/project-video/project-evidence.json",
+      "producer": "project-video"
+    },
+    {
+      "report": "reports/project-video/project-video-plan.json",
+      "producer": "project-video"
+    },
+    {
+      "report": "reports/project-video/project-video-plan.md",
+      "producer": "project-video"
+    },
+    {
+      "report": "reports/project-video/project-video-manifest.json",
+      "producer": "project-video"
+    },
+    {
+      "report": "reports/project-video/voice-samples/voice-samples.json",
+      "producer": "project-video"
+    },
+    {
+      "report": "reports/project-video/voice-samples/index.html",
+      "producer": "project-video"
+    },
+    {
+      "report": "reports/project-video/voice-samples/",
+      "producer": "project-video"
+    },
+    {
+      "report": "reports/project-video/voice-selection.json",
+      "producer": "project-video"
+    },
+    {
+      "report": "reports/project-video/audio/narration-manifest.json",
+      "producer": "project-video"
+    },
+    {
+      "report": "reports/project-video/audio/",
+      "producer": "project-video"
+    },
+    {
+      "report": "reports/project-video/source/",
+      "producer": "project-video"
     },
     {
       "report": "reports/regression-test-result.json",

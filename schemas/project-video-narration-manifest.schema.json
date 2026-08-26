@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skills-orchestrator.local/schemas/project-video-narration-manifest.schema.json",
+  "title": "Project Video Narration Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "generatedAt", "provider", "planSha256", "voice", "voiceSettings", "voiceSettingsSha256", "scenes"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "provider": { "enum": ["azure-neural", "local-piper"] },
+    "planSha256": { "$ref": "#/$defs/sha256" },
+    "voice": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "voiceSettings": { "$ref": "project-video-plan.schema.json#/properties/voice" },
+    "voiceSettingsSha256": { "$ref": "#/$defs/sha256" },
+    "voiceSelectionProfile": { "enum": ["ava-hd-warm", "aria-hd-warm", "aria-professional"] },
+    "voiceSelectionSha256": { "$ref": "#/$defs/sha256" },
+    "cloud": { "enum": ["AzureCloud", "AzureUSGovernment"] },
+    "region": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "azureDiscoverySha256": { "$ref": "#/$defs/sha256" },
+    "azureDiscoveryAt": { "type": "string", "format": "date-time" },
+    "localVoiceInstallSha256": { "$ref": "#/$defs/sha256" },
+    "engine": { "$ref": "#/$defs/localEngine" },
+    "model": { "$ref": "#/$defs/localModel" },
+    "scenes": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "file", "narrationSha256", "audioSha256"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^scene-[0-9]{2}$" },
+          "file": { "type": "string", "pattern": "^reports/project-video/audio/scene-[0-9]{2}\\.(mp3|wav)$" },
+          "narrationSha256": { "$ref": "#/$defs/sha256" },
+          "audioSha256": { "$ref": "#/$defs/sha256" }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "provider": { "const": "azure-neural" } }, "required": ["provider"] },
+      "then": {
+        "required": ["voiceSelectionProfile", "voiceSelectionSha256", "cloud", "region", "azureDiscoverySha256", "azureDiscoveryAt"],
+        "properties": {
+          "voice": { "pattern": "^[A-Za-z0-9-]+(?::[A-Za-z0-9-]+)?Neural$" },
+          "scenes": { "items": { "properties": { "file": { "pattern": "^reports/project-video/audio/scene-[0-9]{2}\\.mp3$" } } } }
+        },
+        "not": { "anyOf": [{ "required": ["localVoiceInstallSha256"] }, { "required": ["engine"] }, { "required": ["model"] }] }
+      }
+    },
+    {
+      "if": { "properties": { "provider": { "const": "local-piper" } }, "required": ["provider"] },
+      "then": {
+        "required": ["localVoiceInstallSha256", "engine", "model"],
+        "properties": {
+          "voice": { "const": "en_US-ljspeech-high" },
+          "scenes": { "items": { "properties": { "file": { "pattern": "^reports/project-video/audio/scene-[0-9]{2}\\.wav$" } } } }
+        },
+        "not": { "anyOf": [{ "required": ["voiceSelectionProfile"] }, { "required": ["voiceSelectionSha256"] }, { "required": ["cloud"] }, { "required": ["region"] }] }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "localEngine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["package", "version", "license"],
+      "properties": {
+        "package": { "const": "piper-tts" },
+        "version": { "const": "1.7.0" },
+        "license": { "const": "GPL-3.0-or-later" }
+      }
+    },
+    "localModel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "quality", "sourceRevision", "dataset", "datasetLicense", "onnxSha256"],
+      "properties": {
+        "id": { "const": "en_US-ljspeech-high" },
+        "quality": { "const": "high" },
+        "sourceRevision": { "const": "v1.0.0" },
+        "dataset": { "const": "LJSpeech" },
+        "datasetLicense": { "const": "public-domain" },
+        "onnxSha256": { "const": "5d4f08ba6a2a48c44592eed3ce56bf85e9de3dd4e20df90541ae68a8310c029a" }
+      }
+    }
+  }
+}
