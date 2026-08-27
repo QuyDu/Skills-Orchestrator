@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skills-orchestrator.dev/schemas/azure-environment/1.0.0",
+  "title": "Local Azure Environment Profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "updatedAt", "cloud", "location", "environmentName", "deploymentTool", "authentication", "subscription", "mcp", "mutationPolicy"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "cloud": { "enum": ["AzureCloud", "AzureUSGovernment"] },
+    "location": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "environmentName": { "type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-]{0,39}$" },
+    "deploymentTool": { "enum": ["azure-cli", "azd", "bicep", "terraform"] },
+    "authentication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method"],
+      "properties": {
+        "method": { "enum": ["interactive", "managed-identity"] }
+      }
+    },
+    "subscription": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tenantId", "subscriptionId", "subscriptionName"],
+      "properties": {
+        "tenantId": { "type": "string", "maxLength": 100 },
+        "subscriptionId": { "type": "string", "maxLength": 100 },
+        "subscriptionName": { "type": "string", "maxLength": 200 }
+      }
+    },
+    "mcp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "services", "foundryExtensions"],
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "services": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" }
+        },
+        "foundryExtensions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["requested", "enabled", "clientId"],
+          "properties": {
+            "requested": { "type": "boolean" },
+            "enabled": { "type": "boolean" },
+            "clientId": { "type": "string", "maxLength": 100 }
+          }
+        }
+      }
+    },
+    "mutationPolicy": { "enum": ["read-only", "approval-required"] }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "mcp": {
+            "properties": {
+              "foundryExtensions": {
+                "properties": { "enabled": { "const": true } },
+                "required": ["enabled"]
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "mcp": {
+            "properties": {
+              "enabled": { "const": true },
+              "services": { "contains": { "const": "foundryextensions" } },
+              "foundryExtensions": {
+                "properties": { "clientId": { "minLength": 1 } }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 ---
 name: project-video
-description: Analyze a new or existing project and produce a project-specific animated walkthrough as an interactive browser preview or a validated MP4 with approved Azure neural or pinned local narration. Use after a project has meaningful verified content; do not use for generic documentation, live screen recording, or publication.
+description: Analyze a new or existing project with meaningful verified content and produce an evidence-grounded browser preview or narrated MP4 entirely from VS Code using optional Azure OpenAI, Speech, Speech Avatar, local Piper, and FFmpeg stages. Do not use for empty baselines, generic documentation, live recording, or publication.
 lifecycle: draft
 confidence: low
 ---
@@ -9,28 +9,33 @@ confidence: low
 
 ## Purpose
 
-Create a factual, project-specific animated walkthrough from the repository being built or adopted, using browser-default voice and visuals when Azure discovery is declined or a validated MP4 when approved Azure or local narration is selected.
+Create a factual, project-specific animated walkthrough from the repository being built or adopted. Select the smallest valid production path: zero-install browser preview, narrated MP4, or an executive-demo pipeline assembled locally with FFmpeg. The entire production workflow remains executable from VS Code.
 
 ## Preconditions
 
-- Read repository instructions, the confirmed project blueprint when present, and authoritative project documentation before drafting narration.
+- Run `project-understanding` as a complete rebuild and read `reports/project-understanding.json` plus its bound Markdown view before drafting narration.
 - Require enough verified project content to explain purpose, architecture or stack, setup, primary workflows, and safety or operational constraints.
 - Run from the target project root using the packaged helper at `.github/skills/project-video/scripts/project-video.mjs`.
-- Before selecting `azure-neural`, require a compatible `reports/azure-discovery.json` no older than 14 days with a successful existing Speech-resource query; run `azure-discovery` when it is missing or stale.
-- Keep Azure Speech credentials in process environment variables only; never request, print, persist, or copy a key into project artifacts.
+- Before selecting `azure-neural`, require a compatible `reports/azure-discovery.json` no older than 14 days with a successful existing Speech-resource query; run `azure-discovery` when it is missing or stale. When the project uses Azure AI Foundry, reuse its project-scoped `AIServices` Speech capability instead of requiring or provisioning a duplicate standalone `SpeechServices` resource.
+- Resolve `AzureSpeechKey` from the project Key Vault through the authenticated Azure CLI identity. Copy it only into the synthesis process environment when required; never request, print, or persist it in project artifacts.
 - Treat browser-default speech and visuals as a zero-install interactive HTML preview only; they never constitute rendered audio or a narrated MP4.
+- Start every invocation with `discovery-status`, then inspect the repository. A newly provisioned but still empty baseline is blocked and must never be narrated as a completed application.
+- Before selecting `azure-openai`, verify an existing compatible deployment and record its actual deployment and model identifiers. Never assume a deployment is named `GPT-5`.
+- Before selecting `azure-speech-avatar`, verify that the configured Speech resource and region support avatar generation.
 
 ## Inputs
 
+- A newly rebuilt, complete `reports/project-understanding.json` and `reports/project-understanding.md`, including their repository and content digests.
 - Verified repository evidence such as `README.md`, `docs/PROJECT-BLUEPRINT.json`, manifests, source boundaries, configuration, tests, and current project reports.
 - Fresh Azure discovery evidence containing the selected cloud and nonsecret existing Speech resource kinds and regions when `azure-neural` is selected.
 - An explicit answer to the discovery question when discovery evidence is missing or unusable. Declining discovery selects `browser-preview` without another provider prompt.
 - Audience, target duration, aspect ratio, visual direction, narration provider and voice profile, and output name confirmed through clarification.
-- `AZURE_SPEECH_KEY`, `AZURE_SPEECH_REGION`, and optional `AZURE_SPEECH_CLOUD` configured locally only when approved neural narration is generated.
+- The persisted `.azure/environment.json` cloud and subscription profile, plus project Key Vault access, when approved neural narration is generated.
 - An approved Python 3.10 through 3.13 runtime when the pinned local Piper fallback is selected.
 - A supported local Piper host: Windows x64, Linux x64 or arm64, or macOS x64 or arm64.
 - An existing FFmpeg executable or approval to install the pinned isolated renderer dependency.
 - The npm CLI bundled with the approved Node.js runtime, or its absolute `NPM_CLI_JS` path, when renderer installation is approved.
+- For schema `1.1.0` or later plans, an evidence-grounded claims ledger, approved script, explicit production-path providers, discovered capability records, preflight results, approvals, selected voice and avatar profiles, and asset/output paths.
 
 ## Approved Tools and Resources
 
@@ -38,6 +43,8 @@ Create a factual, project-specific animated walkthrough from the repository bein
 - Use the packaged Node.js helper to validate plans, generate Azure neural or local Piper narration, install isolated dependencies, render MP4 output, and verify media integrity.
 - Use `discovery-status` at the start of every invocation. Use `browser-preview` to generate project-specific HTML with browser speech and completion-driven visual scenes when discovery is declined.
 - Use `azure-preflight` to verify discovery freshness, cloud, region, and existing resource readiness before contacting Azure Speech. Azure provides narration only; final video rendering remains local FFmpeg work.
+- Use `production-preflight` to verify that every selected Azure stage has an exact `ready` capability record. Azure OpenAI requires actual deployment and model identifiers; Speech and Avatar require their configured region and resource identifier.
+- Use the current agent for evidence-grounded scripts by default. Select `azure-openai` only for an explicitly requested executive-demo path or after the user chooses it following successful preflight and separately approves Azure processing and cost.
 - Contact only the configured Azure Speech regional endpoint after the user approves the narration text, external processing, and expected cost.
 - Download only the complete pinned Piper runtime set after the separate download, GPL, and model-provenance approvals: Piper `1.7.0`, ONNX Runtime `1.23.2`, pathvalidate `3.3.1`, coloredlogs `15.0.1`, humanfriendly `10.0`, flatbuffers `25.9.23`, NumPy `2.2.6`, packaging `25.0`, protobuf `6.33.5`, SymPy `1.14.0`, mpmath `1.3.0`, Windows-only pyreadline3 `3.5.4`, and the `en_US-ljspeech-high` model.
 - Install only the renderer version pinned by the packaged helper, only after explicit approval, and only under `.skills-orchestrator/tools/project-video/`.
@@ -52,26 +59,31 @@ Create a factual, project-specific animated walkthrough from the repository bein
 
 ## Procedure
 
-1. Run `node .github/skills/project-video/scripts/project-video.mjs discovery-status`. This check is local and read-only.
-2. When status is `missing` or `unusable`, ask: `Azure Discovery is not ready. Would you like to run /azure-discovery now?` If yes, run the discovery skill for the confirmed cloud and check status again. If no, record `browser-preview` as the explicit provider choice and continue without Azure, Piper, FFmpeg, or package installation.
-3. Inspect the target repository and classify every proposed statement as verified, inferred, or unsupported; omit unsupported claims from the walkthrough.
-4. Stop as `blocked` when a newly provisioned project still contains only the empty governed baseline; explain which blueprint or implementation evidence is missing.
-5. Confirm audience, duration, aspect ratio, visual direction, output name, and whether existing owned output may be replaced.
-6. Create `reports/project-video/project-video-plan.json` with six to ten concise scenes grounded in repository evidence, plus matching `project-video-plan.md` for review. For a declined discovery, use voice provider `browser-preview`, name `default-English`, locale `en-US`, and an HTML output under `dist/project-video/`.
-7. Validate the plan with `node .github/skills/project-video/scripts/project-video.mjs validate --plan reports/project-video/project-video-plan.json` and resolve every reported defect.
-8. For `browser-preview`, state that voice processing is controlled by the browser or operating system and may use an online service. Run `browser-preview`, preserve `reports/project-video/browser-preview-manifest.json`, and report the interactive HTML path. Scene advancement must wait for each utterance `onend`; do not create or claim MP3, WAV, or MP4 output.
-9. For `azure-neural`, run `azure-preflight`. Use Azure only when discovery confirms an existing Speech-capable resource in the configured region. Show the discovered cloud and resource regions, state that `AZURE_SPEECH_KEY` remains environment-only, and distinguish Azure narration from local FFmpeg video rendering. Present the common audition passage, external data boundary, and cost warning; wait for approval, run `audition`, and require explicit A/B/C selection with `select-voice`.
-10. For an explicitly requested offline MP4 fallback, offer `local-piper`; present the Python requirement, approximately 115 MB model, package and model sources, GPL-3.0-or-later engine license, public-domain LJSpeech provenance, and isolated install path. Wait for the three separate approvals before installation.
-11. For MP4 providers, present the exact full narration and delivery settings, then wait for explicit synthesis approval. Generate one audio file per scene and bind provider evidence, narration text, file paths, and audio digests to `reports/project-video/audio/narration-manifest.json`.
-12. For MP4 providers, detect FFmpeg. If unavailable, present the pinned package, install location, network and lifecycle-script implications, then wait for explicit approval before installation.
-13. Present the final MP4 path and selected FFmpeg source, wait for render approval, render, and verify audio/video decoding, scene count, duration, resolution, provider label, and SHA-256 digest.
-14. Preserve the plan, provider evidence, verification evidence, and editable generated source; report the HTML or MP4 path without publishing or uploading it.
+1. Dispatch `project-understanding` to perform a complete repository rescan and atomically rebuild its JSON and Markdown outputs. Stop when it is blocked or invalid.
+2. Run `node .github/skills/project-video/scripts/project-video.mjs discovery-status`. This check is local and read-only.
+3. Read the rebuilt understanding and classify every proposed statement as verified, inferred, planned, mock, unverified-runtime, or unsupported. Omit unsupported claims and label every non-verified statement.
+4. When status is `missing` or `unusable`, ask whether to run `azure-discovery`. If declined, select `browser-preview` automatically without another provider prompt, record the HTML path, and continue without Azure, Piper, FFmpeg, or package installation. If approved, run discovery only for the confirmed cloud, recheck status, and run the appropriate preflight before selecting an Azure stage.
+5. Stop as `blocked` when a newly provisioned project still contains only the empty governed baseline; explain which blueprint or implementation evidence is missing.
+6. Confirm audience, duration, aspect ratio, visual direction, output name, and whether existing owned output may be replaced.
+7. Run `plan-from-understanding` to create the evidence-bound presentation baseline. It produces eight project-specific pages covering purpose, architecture, technology, features, use, customizations, workflows, and validation or limits.
+8. Prefer Azure Speech when a compatible resource exists in the configured region and the user approves processing and cost. If unavailable there, present discovered compatible regions in the same cloud and require explicit cross-region approval. Otherwise preserve the same pages and dialogue in `browser-preview`; offer local Piper only when a portable offline narrated MP4 is required.
+9. Recommend and record the smallest valid production path: `zero-install-preview` uses agent-grounded script, browser speech/visuals, and interactive HTML; `narrated-mp4` uses agent-grounded or explicitly selected Azure OpenAI script, approved Azure Speech or local Piper narration, and local FFmpeg; `executive-demo` uses approved Azure OpenAI, Azure Speech, optional short Speech Avatar presenter segments, and local FFmpeg assembly. Availability is never authorization to activate a stage.
+10. Build `reports/project-video/claims-ledger.json` before drafting narration. Trace every feature, workflow, architecture statement, and outcome to verified evidence; Azure OpenAI may improve verified prose but must not invent capabilities, readiness, outcomes, metrics, security claims, or benchmarks. Save the reviewable script under `reports/project-video/` and obtain script approval before narration or avatar work.
+11. Create schema `1.2.0` `reports/project-video/project-video-plan.json` plus its Markdown view. Bind both understanding artifacts and their digests, and record providers, capabilities, approvals, profiles, assets, validation, and final-output paths. Legacy `1.0.0` and `1.1.0` plans remain compatible.
+12. Validate the plan and run `production-preflight`; resolve every defect before any selected Azure stage.
+13. For `browser-preview`, state that voice processing is browser/OS controlled and may use an online service. Run `browser-preview`; report interactive HTML only. Scene advancement waits for `onend`; never claim MP3, WAV, or MP4.
+14. For `azure-neural`, run `azure-preflight`. Use only a discovered project-scoped Speech capability in the configured or explicitly approved same-cloud region. Treat a Foundry `AIServices` resource as the Speech provider when that is the established project architecture. Azure supplies narration; local FFmpeg renders MP4. Present the shared audition, require explicit A/B/C selection, and recommend Ava Dragon HD with restrained, friendly styling when available, but never manipulate pitch or select silently. Require audition approval and record the selected voice profile.
+15. For `local-piper`, disclose runtime, download, license, provenance, and install path; obtain all separate approvals before installation or synthesis.
+16. For `azure-speech-avatar`, prefer short intro, chapter-break, or closing presenter segments unless full-time presentation is explicitly requested. Confirm capability, character, voice, language, layout, background, and segments; then obtain separate synthetic-presenter and billable-generation approvals. Record generated assets as presenter clips, never final video.
+17. For MP4 narration, present the full approved script and settings, obtain synthesis approval, and bind per-scene audio and digests to the narration manifest. Detect FFmpeg and obtain separate install and render approvals as needed before producing and verifying a local MP4.
+18. Assemble all approved visual, narration, caption, branding, and optional Avatar assets with local FFmpeg. For selected Avatar scenes, map one generated presenter asset to each segment and composite it as the approved picture-in-picture or full-frame layout while using the approved narration track. Independently verify the resulting portable MP4 under `dist/project-video/`, distinguish it from presenter clips, and preserve all evidence without publishing or uploading.
 
 ## Validation
 
 - Every narration claim cites at least one repository-relative evidence path in the plan.
 - Narration is written for listening with natural transitions, no spoken bullet lists, and no sentence longer than 36 words.
-- The plan validates against `schemas/project-video-plan.schema.json` and contains six to ten scenes with unique IDs and nonempty narration.
+- New plans use schema `1.2.0`, validate against `schemas/project-video-plan.schema.json`, bind the current Project Understanding JSON and Markdown digests, contain six to ten scenes, and explicitly distinguish every production provider, delivery kind, capability, approval, selected profile, and owned path. Existing `1.0.0` and `1.1.0` plans remain valid for backward compatibility.
+- `production-preflight` fails closed unless selected Azure capabilities are exact and ready. Azure OpenAI records deployment/model IDs; Speech and Avatar record resource/region evidence.
 - Browser preview evidence validates against `schemas/project-video-browser-preview-manifest.schema.json`, identifies `browser-preview`, records no rendered audio or portable media, and binds every scene narration digest to the plan.
 - The final manifest validates against `schemas/project-video-manifest.schema.json` and identifies the actual renderer source and binary digest.
 - Azure output records the auditioned, explicitly selected profile and delivery settings. Local installation evidence validates against `schemas/project-video-local-voice-manifest.schema.json` and records the verified Piper engine, complete dependency lock, model provenance, platform, architecture, and approvals.
@@ -79,13 +91,16 @@ Create a factual, project-specific animated walkthrough from the repository bein
 - Audition evidence validates against `schemas/project-video-voice-samples.schema.json`, selection against `schemas/project-video-voice-selection.schema.json`, and synthesized audio evidence against `schemas/project-video-narration-manifest.schema.json`.
 - Provider-matching audio exists for every MP4 scene. Browser speech is never represented as rendered audio, and local Piper output is labeled `local-piper` rather than neural Azure output.
 - The MP4 decodes without errors, includes both video and audio, matches the requested dimensions, and has a recorded SHA-256 digest.
-- Creation and adoption verification confirm that the skill package, helper, schema, and `/project-video` prompt are installed independently in the target repository.
+- Creation and adoption verification confirm that the canonical skill package, helper, and schemas are installed in the target repository without a duplicate prompt command.
+- Executive-demo plans select `ffmpeg` assembly and `portable-mp4` delivery; validation rejects external editor providers and handoff-only outputs.
 
 ## Outputs
 
 - `reports/project-video/project-evidence.json`
 - `reports/project-video/project-video-plan.json`
 - `reports/project-video/project-video-plan.md`
+- `reports/project-video/claims-ledger.json`
+- `reports/project-video/script.md`
 - `reports/project-video/project-video-manifest.json`
 - `reports/project-video/browser-preview-manifest.json` when browser fallback is selected
 - `reports/project-video/voice-samples/voice-samples.json`
@@ -105,11 +120,14 @@ Create a factual, project-specific animated walkthrough from the repository bein
 - Delete incomplete `.partial` media and preserve the last valid plan and diagnostics.
 - Never change narration providers silently, fabricate project facts, install tools without approval, label browser speech as final audio, or claim success from an unverified MP4.
 - Never label the browser preview as a rendered video, portable media file, or narrated MP4.
+- Never label Avatar presenter clips as final video.
 - Preserve existing owned output unless replacement was explicitly approved.
 
 ## Approval Gates
 
 - Require explicit approval before sending narration text to Azure Speech, incurring cloud cost, or using a non-default Azure region.
+- Require separate approval before contacting Azure OpenAI and before sending verified claims/script content to it.
+- Require separate approvals before Azure Speech Avatar generation and its billable synthetic-presenter step.
 - Require explicit approval before generating audition samples and separate explicit selection before generating full narration.
 - Require separate explicit approvals for local network downloads, Piper's GPL-3.0-or-later license, and the LJSpeech model provenance, plus narration approval before local synthesis.
 - Require explicit approval before downloading or installing the pinned renderer and its lifecycle scripts.
@@ -121,6 +139,7 @@ Create a factual, project-specific animated walkthrough from the repository bein
 ## Composition and Dependencies
 
 - clarify-the-ask
+- project-understanding
 - azure-discovery
 
 ## Examples
@@ -129,3 +148,4 @@ Create a factual, project-specific animated walkthrough from the repository bein
 - Show a prebuilt project video, create and implement a demo webapp, then invoke `/project-video`; it refreshes Azure discovery when needed, verifies an existing Speech resource, and uses local FFmpeg for the new app's MP4.
 - Analyze an adopted application from its existing README, manifests, source, tests, and operations docs, then create a factual project-specific MP4 without changing application files.
 - Run `/project-video`, decline the offered Azure discovery, and receive a project-specific interactive HTML walkthrough using the browser's default English voice and completion-driven visual scenes.
+- Prepare an executive-demo plan that records an actual compatible Azure OpenAI deployment/model, approved Azure narration, optional short Avatar segments, and deterministic local FFmpeg assembly into a verified portable MP4.

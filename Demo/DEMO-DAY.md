@@ -24,14 +24,15 @@ When the webapp has meaningful source, tests, and documentation, ask:
 
 The installed project-video workflow must then:
 
-1. Inspect the new project and reject unsupported narration claims.
-2. Run `discovery-status`. When discovery is missing or unusable, ask whether to invoke `/azure-discovery -Commercial`.
-3. Confirm the read-only discovery query found an existing Speech-capable resource and recorded only its kind and region, never its name, identifier, or key.
-4. Run the packaged `azure-preflight` command. Select one of the reported existing resource regions for `AZURE_SPEECH_REGION`; use `AzureCloud` for `AZURE_SPEECH_CLOUD`.
-5. Explain that Azure Speech supplies the neural narration and local FFmpeg renders the MP4. There is no Azure video API or Azure resource deployment in this workflow.
-6. Create the reviewable project-video plan, present the external-processing and cost boundary, and wait for approval before auditioning voices.
-7. Generate the A/B/C audition, let the presenter choose a voice, present the full narration, and wait for synthesis approval.
-8. Wait for render approval, generate the MP4 under `dist/project-video/`, and verify its audio, video, dimensions, duration, and digest.
+1. Run `/project-understanding --proceed` as a complete rescan and rebuild the authoritative JSON and Markdown project guide.
+2. Build the presentation pages and dialogue from that guide, then reject unsupported narration claims.
+3. Run `discovery-status`. When discovery is missing or unusable, ask whether to invoke `/azure-discovery -Commercial`.
+4. Confirm the read-only discovery query found an existing Speech-capable resource and recorded only its kind and region, never its name, identifier, or key.
+5. Run the packaged `azure-preflight` command. Prefer the configured region; require approval before using another compatible region in the same Azure cloud.
+6. Explain that Azure Speech supplies the neural narration and local FFmpeg renders the MP4. There is no Azure video API or Azure resource deployment in this workflow.
+7. Create the digest-bound project-video plan, present the external-processing and cost boundary, and wait for approval before auditioning voices.
+8. Generate the A/B/C audition, let the presenter choose a voice, present the full narration, and wait for synthesis approval.
+9. Wait for render approval, generate the MP4 under `dist/project-video/`, and verify its audio, video, dimensions, duration, and digest.
 
 The direct preflight command is:
 
@@ -39,4 +40,4 @@ The direct preflight command is:
 node .\.github\skills\project-video\scripts\project-video.mjs azure-preflight
 ```
 
-If discovery is declined, generate the browser preview automatically and present its HTML output. If discovery runs but remains unusable, ask again; declining follows the same browser path. Offer Piper only when the presenter explicitly requires a narrated offline MP4. Never create an Azure resource or silently relabel browser speech.
+If discovery or cross-region processing is declined, generate the same pages and dialogue as a browser-default-voice presentation and report its HTML output. Offer Piper only when the presenter explicitly requires a narrated offline MP4. Never create an Azure resource or silently relabel browser speech.

@@ -1,35 +1,35 @@
 {
   "schemaVersion": "1.0.0",
   "product": "project-skills-orchestrator",
-  "version": "1.0.2",
-  "evaluatedAt": "2026-08-24T17:33:00.757Z",
-  "commit": "85c3551d07422e0dbec34f436abaf246de78c17b",
-  "candidateSha256": "ddeb96fefe50e7e7ff8729dcdff5f9541a4cda23e1f83cf4ad1f15a4d8e2de98",
+  "version": "1.1.0",
+  "evaluatedAt": "2026-08-27T21:18:14.934Z",
+  "commit": "e46727121582e534f683eb49a0c937832db9928d",
+  "candidateSha256": "e45a455056e19c12fd300b119b9e7fa7044b12a7e27281a6e5540adfc6ae522d",
   "status": "blocked",
   "checks": [
     {
       "id": "source-revision",
       "status": "passed",
       "blocking": true,
-      "evidence": "85c3551d07422e0dbec34f436abaf246de78c17b"
+      "evidence": "e46727121582e534f683eb49a0c937832db9928d"
     },
     {
       "id": "clean-worktree",
       "status": "blocked",
       "blocking": true,
-      "evidence": "M README.md\n M config/profiles.yaml\n M pso.mjs\n M reports/artifact-ownership.json\n M reports/security-check.json\n M reports/skill-details.json\n M reports/skill-details.md\n M reports/skill-inventory.json\n M reports/skill-inventory.md\n M templates/project/infra/README.md\n M templates/scaffold-manifest.json\n M tests/skill-contracts.test.mjs\n?? .github/prompts/azure-cleanup-help.prompt.md\n?? .github/prompts/azure-cleanup.prompt.md\n?? .github/prompts/environment-update-help.prompt.md\n?? .github/prompts/environment-update.prompt.md\n?? .github/prompts/release-readiness.prompt.md\n?? .github/prompts/skills-help.prompt.md\n?? .github/skills/azure-cleanup/\n?? .github/skills/environment-update/\n?? reports/release-readiness.json\n?? templates/project/.github/prompts/azure-cleanup.prompt.md\n?? templates/project/.github/prompts/environment-update.prompt.md\n?? templates/project/infra/cleanup.ps1"
+      "evidence": "M .github/copilot-instructions.md\n M .github/prompts/azure-cleanup-help.prompt.md\n D .github/prompts/azure-cleanup.prompt.md\n D .github/prompts/environment-update.prompt.md\n D .github/prompts/project-video.prompt.md\n M .github/skills/azure-cleanup/SKILL.md\n M .github/skills/azure-discovery/SKILL.md\n M .github/skills/azure-discovery/scripts/azure-discovery.ps1\n M .github/skills/project-setup/SKILL.md\n M .github/skills/project-video/SKILL.md\n M .github/skills/project-video/scripts/project-video.mjs\n M .gitignore\nMM .vscode/settings.json\n M AGENTS.md\n M Demo/DEMO-DAY.md\n M Demo/project-skills-orchestrator-animation.html\n M README.md\n M config/orchestrator.yaml\n M config/profiles.yaml\n M package-lock.json\n M package.json\nMM pso.mjs\n M reports/adoption-rerun-evidence.json\n M reports/adoption-rerun-evidence.md\nMM reports/artifact-ownership.json\nMM reports/security-check.json\nMM reports/skill-details.json\nMM reports/skill-details.md\nMM reports/skill-inventory.json\nMM reports/skill-inventory.md\n M schemas/project-video-manifest.schema.json\n M schemas/project-video-plan.schema.json\n M templates/project/.github/copilot-instructions.md\n M templates/project/.github/instructions/azure-deployment.instructions.md\n D templates/project/.github/prompts/azure-cleanup.prompt.md\n D templates/project/.github/prompts/azure-discovery.prompt.md\n D templates/project/.github/prompts/environment-update.prompt.md\n D templates/project/.github/prompts/linkedin-post.prompt.md\n M templates/project/.github/prompts/project-start.prompt.md\n D templates/project/.github/prompts/project-video.prompt.md\n D templates/project/.github/prompts/security-review.prompt.md\n M templates/project/infra/README.md\n M templates/project/infra/cleanup.ps1\n M templates/project/infra/deploy-infra.ps1\n M templates/project/infra/deploy.ps1\n M templates/project/infra/discover.ps1\n M templates/project/infra/main.bicep\n M templates/scaffold-manifest.json\nMM tests/adoption-rerun.test.mjs\n M tests/project-video.test.mjs\n M tests/skill-contracts.test.mjs\n?? .github/prompts/project-mermaid-architecture.prompt.md\n?? .github/skills/azure-discovery/scripts/azure-environment.ps1\n?? .github/skills/project-understanding/\n?? .vscode/extensions.json\n?? docs/PROJECT-ARCHITECTURE.md\n?? reports/azure-discovery.json\n?? reports/azure-discovery.md\n?? reports/current-work-state.json\n?? reports/project-handoff.json\n?? reports/project-handoff.md\n?? reports/project-understanding.json\n?? reports/project-understanding.md\n?? schemas/azure-environment.schema.json\n?? schemas/project-understanding.schema.json\n?? templates/project/infra/azure-environment.ps1\n?? tests/project-understanding.test.mjs"
     },
     {
       "id": "security-scan",
       "status": "passed",
       "blocking": true,
-      "evidence": "146 files; digest 67a942199132731e342b415c3d8a7b7b26371974bbe0357411df62ab56d9fe06"
+      "evidence": "173 files; digest b0b09746ae7e9e85fffca854b5e34b113860cea9676a8961ffe94ff7dfde3e1e"
     },
     {
       "id": "release-candidate-integrity",
       "status": "passed",
       "blocking": true,
-      "evidence": "Verified unsigned release candidate: 117 checksum-covered files"
+      "evidence": "Verified unsigned release candidate: 134 checksum-covered files"
     },
     {
       "id": "cross-platform-ci",

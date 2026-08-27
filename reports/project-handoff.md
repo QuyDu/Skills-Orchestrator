@@ -1,0 +1,65 @@
+# Project Handoff
+
+Generated: 2026-08-27T21:18:27.416Z  
+Project: project-skills-orchestrator 1.1.0  
+Branch: `main` at `e46727121582e534f683eb49a0c937832db9928d`  
+Status: **Ready for local commit**
+
+## Milestone
+
+The complete 1.1.0 change set is locally validated. It combines canonical Project Understanding, evidence-bound Project Video, Azure environment automation, consolidated command ownership, and production hardening while keeping external release gates fail-closed.
+
+## Last Completed Work
+
+- Added `project-understanding` as the exclusive full-repository rescan owner, separate from durable knowledge capture.
+- Added a strict schema, sensitive-file exclusions, complete inventories, atomic report-pair publication, and stale-view validation.
+- Added Project Video schema 1.2 with understanding JSON, Markdown, repository, and content digest bindings while retaining 1.0 and 1.1 compatibility.
+- Added an eight-page, understanding-driven presentation baseline and generic evidence-driven browser and FFmpeg visuals.
+- Preferred Azure Speech in the configured region, approval-gated cross-region use, identical browser fallback pages and dialogue, and optional Piper for offline MP4 requirements.
+- Updated profiles, setup routing, generated instructions, adoption coverage, README guidance, demo instructions, and regression tests.
+- Updated runtime versioning to 1.1.0 and repaired workspace configuration and report-tracking policy defects.
+- Completed a bounded no-findings change review and refreshed release-readiness evidence.
+
+## Validation
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| `npm run check` | Passed | 87 tests, zero failures |
+| Security scan | Passed | 173 files scanned; zero package dependencies |
+| Release candidate | Passed | 134 checksum-covered files verified |
+| Skill verification | Passed | 41/41 skills |
+| Project Understanding | Passed | Full rebuild, secret exclusion, schema, digest, and presentation-binding regressions |
+| Command ownership | Passed | Prompt/skill basename collisions are rejected |
+| Adoption migration | Passed | Framework duplicates are removed safely; unknown collisions block |
+| Executive path | Passed | Exact capability preflight, FFmpeg assembly, Avatar asset mapping, and portable MP4 regression coverage |
+
+## Key Decisions
+
+- Cloud precedence is explicit `-Gov` or `-Commercial`, then saved profile, then Azure Commercial.
+- Valid saved cloud, subscription, authentication, and MCP choices are not asked again.
+- The portable automation supports interactive device-code and managed-identity login; it does not construct secret-based service-principal commands.
+- Azure MCP is opt-in, and `foundryextensions` remains disabled without a stored client ID.
+- Skills own skill-named slash actions; prompt files provide only distinct prompt workflows and generated help.
+- Existing schema 1.0 and 1.1 plans remain valid; new understanding-bound plans use schema 1.2.
+- Azure Speech is preferred only after discovery and approval; browser fallback preserves content but remains interactive HTML rather than rendered media.
+- Availability never authorizes Azure activity; every external or billable stage keeps a separate approval.
+- Avatar files remain presenter clips until local FFmpeg assembly produces an independently verified MP4.
+
+## Worktree
+
+The complete coherent working-tree scope is approved for one local 1.1.0 commit. No unmerged paths or unrelated generated Project Video media are present.
+
+## Limitations
+
+- No Azure OpenAI, Speech, Speech Avatar, FFmpeg rendering, installation, Azure mutation, deployment, or push occurred.
+- The ignored local environment profile will be created only when Azure work first needs it.
+- Live cloud behavior remains intentionally untested in this local validation pass.
+- Production distribution remains blocked on current-commit cross-platform CI, trusted signature, and independent-review evidence.
+
+## Pending Approvals
+
+- Separate approval for push, merge, publication, upload, deployment, or Azure mutation.
+
+## Next Action
+
+Create the approved local 1.1.0 commit, verify the worktree is clean, and retain all external production-release gates.

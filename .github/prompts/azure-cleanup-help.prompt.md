@@ -16,7 +16,8 @@ Run the skill with `/azure-cleanup`. It discovers first and is read-only by defa
 - `-ResourceGroup "name"` targets a named resource group.
 - `-Commercial` selects Azure Commercial.
 - `-Gov` selects Azure Government.
-- No cloud parameter displays `1. Commercial` and `2. Gov`; only `1` or `2` is accepted, with three attempts.
+- No cloud parameter uses `.azure/environment.json`; when no saved profile exists, Azure Commercial is the default.
+- The recorded cloud, subscription, and authentication method are selected automatically. If login is required, the skill starts that flow directly.
 - `-WhatIf` lists targets and findings without deleting anything.
 - `-Apply` enables deletion only after review and explicit `DELETE` confirmation.
 

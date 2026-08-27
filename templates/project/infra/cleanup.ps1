@@ -19,38 +19,32 @@ $ErrorActionPreference = 'Stop'
 
 if ($Gov -and $Commercial) { throw 'Choose only one Azure cloud: -Gov or -Commercial.' }
 if ($Apply -and $WhatIf) { throw 'Choose either -Apply or -WhatIf, not both.' }
-if (-not (Get-Command az -ErrorAction SilentlyContinue)) { throw "The Azure CLI is required. Install it and run 'az login'." }
 
-function Resolve-Cloud {
-    if ($Gov) { return 'AzureUSGovernment' }
-    if ($Commercial) { return 'AzureCloud' }
-    for ($attempt = 1; $attempt -le 3; $attempt++) {
-        Write-Host "`nChoose the Azure cloud:" -ForegroundColor Cyan
-        Write-Host '1. Commercial'
-        Write-Host '2. Gov'
-        $choice = Read-Host 'Enter 1 or 2'
-        if ($choice -eq '1') { return 'AzureCloud' }
-        if ($choice -eq '2') { return 'AzureUSGovernment' }
-        Write-Host 'Invalid response. Enter only 1 or 2.' -ForegroundColor Yellow
-    }
-    throw 'Azure cloud selection failed after 3 invalid responses. Exiting cleanup.'
+. (Join-Path $PSScriptRoot 'azure-environment.ps1')
+
+function ConvertTo-AzureProjectToken {
+    param([Parameter(Mandatory)][string]$ProjectName)
+    $token = $ProjectName.Trim().ToLowerInvariant() -replace '[^a-z0-9]+', '-'
+    $token = $token.Trim('-')
+    if (-not $token) { throw 'Project name must contain at least one letter or number.' }
+    return $token
 }
 
-$cloud = Resolve-Cloud
-$activeCloud = az cloud show --query name -o tsv 2>$null
-if ($activeCloud -and $activeCloud -ne $cloud) { throw "Signed in to '$activeCloud' but '$cloud' was requested." }
-$account = az account show -o json 2>$null | ConvertFrom-Json
-if (-not $account) { throw "Not signed in. Run 'az login' first." }
+$profilePath = Get-AzureEnvironmentProfilePath
+$environmentProfile = Initialize-AzureEnvironmentProfile -Gov:$Gov -Commercial:$Commercial `
+    -InteractiveSetup:(-not (Test-Path $profilePath)) -ProfilePath $profilePath
+$cloud = [string]$environmentProfile.cloud
+$account = Connect-AzureEnvironment -AzureContext $environmentProfile -ProfilePath $profilePath
 
-$targetGroup = if ($All) { "rg-$SiteName" } elseif ($ResourceGroup) { $ResourceGroup } else { $RG }
+$targetGroup = if ($All) { "rg-$(ConvertTo-AzureProjectToken $SiteName)" } elseif ($ResourceGroup) { $ResourceGroup } else { $RG }
 if (-not $targetGroup) { throw 'Specify -All -ResourceGroup <name>, -Resource <name> -RG <name>, or -ResourceGroup <name>.' }
 
 $resources = @(az resource list --resource-group $targetGroup -o json 2>$null | ConvertFrom-Json)
 if (-not $resources) { throw "Resource group '$targetGroup' was not found or contains no resources." }
 if ($Resource) {
-    $matches = @($resources | Where-Object { $_.name -eq $Resource -or $_.id -eq $Resource })
-    if ($matches.Count -ne 1) { throw "Expected exactly one resource named '$Resource' in '$targetGroup'; found $($matches.Count)." }
-    $resources = $matches
+    $resourceMatches = @($resources | Where-Object { $_.name -eq $Resource -or $_.id -eq $Resource })
+    if ($resourceMatches.Count -ne 1) { throw "Expected exactly one resource named '$Resource' in '$targetGroup'; found $($resourceMatches.Count)." }
+    $resources = $resourceMatches
 }
 
 $targetDescription = if ($All) { "resource group '$targetGroup' and all $($resources.Count) resources" } elseif ($Resource) { "resource '$($resources[0].name)'" } else { "resource group '$targetGroup'" }

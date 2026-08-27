@@ -1,16 +1,16 @@
 # Adoption Rerun Evidence
 
-- Generated: 2026-08-21T13:03:14.743Z
+- Generated: 2026-08-27T09:20:27.118Z
 - Profile: `core`
 - Fixture: `adoption-evidence-fixture`
-- Runtime: `1.0.0`
+- Runtime: `1.0.3`
 
 The evidence was generated from a disposable local project. The initial dry run was compared with the persisted applied plan, and a second dry run verified the no-op state.
 
 | Stage | Planned writes | Covered assets | Conflicts | Already current |
 | --- | ---: | ---: | ---: | ---: |
-| Before apply | 86 | 1 | 0 | 0 |
-| No-op rerun | 0 | 1 | 0 | 86 |
+| Before apply | 149 | 1 | 0 | 0 |
+| No-op rerun | 0 | 1 | 0 | 149 |
 
 ## Before Apply
 
@@ -24,7 +24,7 @@ The evidence was generated from a disposable local project. The initial dry run 
 
 | Action | Count | Example paths |
 | --- | ---: | --- |
-| `create` | 86 | `.github/skills/architecture-review`, `.github/skills/artifact-upgrade`, `.github/skills/audit-azure-environment` |
+| `create` | 149 | `.github/skills/architecture-review`, `.github/skills/artifact-upgrade`, `.github/skills/audit-azure-environment` |
 
 ### Conflicts
 

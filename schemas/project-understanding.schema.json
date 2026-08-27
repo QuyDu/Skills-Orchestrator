@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skills-orchestrator.local/schemas/project-understanding.schema.json",
+  "title": "Project Understanding",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "status", "generatedAt", "generator", "project", "scan", "architecture", "technology", "usage", "features", "workflows", "customizations", "validation", "limitations", "markdown", "markdownSha256"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "status": { "enum": ["complete", "blocked"] },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "generator": { "const": "project-understanding" },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "displayName", "purpose", "evidence"],
+      "properties": {
+        "name": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,63}$" },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "purpose": { "type": "string", "minLength": 1, "maxLength": 2000 },
+        "evidence": { "$ref": "#/$defs/evidence" }
+      }
+    },
+    "scan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "repositoryDigestSha256", "fileCount", "sourceFileCount", "testFileCount", "excludedDirectories", "excludedSensitivePatterns", "files"],
+      "properties": {
+        "mode": { "const": "full-rebuild" },
+        "repositoryDigestSha256": { "$ref": "#/$defs/sha256" },
+        "fileCount": { "type": "integer", "minimum": 1 },
+        "sourceFileCount": { "type": "integer", "minimum": 0 },
+        "testFileCount": { "type": "integer", "minimum": 0 },
+        "excludedDirectories": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 100 } },
+        "excludedSensitivePatterns": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 200 } },
+        "files": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "bytes", "sha256"],
+            "properties": {
+              "path": { "$ref": "#/$defs/path" },
+              "bytes": { "type": "integer", "minimum": 0 },
+              "sha256": { "$ref": "#/$defs/sha256" }
+            }
+          }
+        }
+      }
+    },
+    "architecture": { "$ref": "#/$defs/items" },
+    "technology": { "$ref": "#/$defs/items" },
+    "usage": { "$ref": "#/$defs/items" },
+    "features": { "$ref": "#/$defs/items" },
+    "workflows": { "$ref": "#/$defs/items" },
+    "customizations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["skills", "prompts", "agents", "schemas"],
+      "properties": {
+        "skills": { "$ref": "#/$defs/customizationItems" },
+        "prompts": { "$ref": "#/$defs/customizationItems" },
+        "agents": { "$ref": "#/$defs/items" },
+        "schemas": { "$ref": "#/$defs/items" }
+      }
+    },
+    "validation": { "$ref": "#/$defs/items" },
+    "limitations": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 2000 } },
+    "markdown": { "const": "reports/project-understanding.md" },
+    "markdownSha256": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "path": { "type": "string", "minLength": 1, "maxLength": 500, "pattern": "^(?![A-Za-z]:)(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\).+" },
+    "evidence": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/path" } },
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "description", "evidence", "status"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "description": { "type": "string", "minLength": 1, "maxLength": 2000 },
+        "evidence": { "$ref": "#/$defs/evidence" },
+        "status": { "enum": ["verified", "inferred", "planned", "unknown"] }
+      }
+    },
+    "customizationItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "description", "evidence", "status", "invocation"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "description": { "type": "string", "minLength": 1, "maxLength": 2000 },
+        "evidence": { "$ref": "#/$defs/evidence" },
+        "status": { "enum": ["verified", "inferred", "planned", "unknown"] },
+        "invocation": { "type": "string", "pattern": "^/[a-z][a-z0-9-]*$", "maxLength": 100 }
+      }
+    },
+    "items": { "type": "array", "items": { "$ref": "#/$defs/item" } },
+    "customizationItems": { "type": "array", "items": { "$ref": "#/$defs/customizationItem" } }
+  }
+}

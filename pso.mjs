@@ -8,7 +8,7 @@ import { createHash, randomUUID } from "node:crypto";
 import { spawn, spawnSync } from "node:child_process";
 import { setTimeout as delay } from "node:timers/promises";
 
-const VERSION = "1.0.3";
+const VERSION = "1.1.0";
 const FRAMEWORK_VERSION = "9.0.0";
 const RISK_ACCEPTANCE_VERSION = "1.0.0";
 const SCRIPT_ROOT = path.dirname(fileURLToPath(import.meta.url));
@@ -93,7 +93,7 @@ const DEFAULT_CONFIGURATION = Object.freeze({
   }
 });
 const APPROVAL_CLASSES = new Set(["external", "privileged", "destructive", "irreversible", "production-data-mutation", "commit", "push"]);
-const MUTATING_ADOPTION_ACTIONS = new Set(["create", "update-skill", "update-skill-references", "update-framework-file", "update-wiring-file", "replace-duplicate"]);
+const MUTATING_ADOPTION_ACTIONS = new Set(["create", "update-skill", "update-skill-references", "update-framework-file", "update-wiring-file", "replace-duplicate", "remove-duplicate-command"]);
 const ADOPTION_REPORT_PATHS = [
   "reports/adoption-plan.json",
   "reports/adoption-plan.md",
@@ -108,6 +108,14 @@ const LEGACY_SKILL_IDS = new Map([
   ["create-skill", "skill-create"],
   ["plan-audit-remediation", "audit-plan-remediation"],
   ["review-audit-findings", "audit-review-findings"]
+]);
+const DEPRECATED_DUPLICATE_PROMPTS = new Set([
+  "azure-cleanup",
+  "azure-discovery",
+  "environment-update",
+  "linkedin-post",
+  "project-video",
+  "security-review"
 ]);
 const COPILOT_INSTRUCTION = "Use `.github/skills/project-skills-orchestrator/SKILL.md` for project orchestration. Audit existing project state, inventory available skills, plan before execution, preserve repository-owned skills, and stop at approval gates.";
 const ORCHESTRATION_ROUTE = ".github/skills/project-skills-orchestrator/SKILL.md";
@@ -136,14 +144,22 @@ const AGENT_INSTRUCTION = `## Project Skills Orchestrator
 - Treat machine-readable artifacts under \`reports/\` as authoritative.
 - Plan and validate before modifying files.
 - Require approval for destructive, external, privileged, or irreversible actions.`;
+const AZURE_ENVIRONMENT_INSTRUCTION = `## Azure environment automation
+
+- Read \`.azure/environment.json\` before Azure work. Explicit \`-Gov\` or \`-Commercial\` overrides the saved cloud; otherwise use the saved profile, then Azure Commercial as the default.
+- If the profile is missing, collect its nonsecret environment choices once and persist them. Never repeat cloud, subscription, MCP, or login questions while the profile remains valid.
+- Select the recorded Azure CLI cloud and subscription automatically. If authentication is absent or stale, start the recorded login flow instead of asking whether to log in.
+- Azure MCP is opt-in. Do not invoke it when disabled, and never invoke \`foundryextensions\` unless the profile already enables it with a client ID.`;
 const CLARIFICATION_ANCHOR = "Ask exactly three clarifying questions.";
 const COPILOT_INSTRUCTION_BLOCKS = [
   { id: "clarification-protocol", version: 1, content: CLARIFICATION_PROTOCOL, anchor: CLARIFICATION_ANCHOR },
-  { id: "orchestration-routing", version: 1, content: COPILOT_ORCHESTRATION_INSTRUCTION, anchor: ORCHESTRATION_ROUTE }
+  { id: "orchestration-routing", version: 1, content: COPILOT_ORCHESTRATION_INSTRUCTION, anchor: ORCHESTRATION_ROUTE },
+  { id: "azure-environment-automation", version: 1, content: AZURE_ENVIRONMENT_INSTRUCTION, anchor: ".azure/environment.json" }
 ];
 const AGENT_INSTRUCTION_BLOCKS = [
   { id: "clarification-protocol", version: 1, content: CLARIFICATION_PROTOCOL, anchor: CLARIFICATION_ANCHOR },
-  { id: "agent-orchestration-routing", version: 1, content: AGENT_INSTRUCTION, anchor: ORCHESTRATION_ROUTE }
+  { id: "agent-orchestration-routing", version: 1, content: AGENT_INSTRUCTION, anchor: ORCHESTRATION_ROUTE },
+  { id: "azure-environment-automation", version: 1, content: AZURE_ENVIRONMENT_INSTRUCTION, anchor: ".azure/environment.json" }
 ];
 const RISK_ACCEPTANCE_NOTICE = `SECURITY AND RISK ACKNOWLEDGMENT
 
@@ -1008,7 +1024,7 @@ ${steps.join("\n")}
 `;
 }
 
-const BASE_EXTENSIONS = ["github.copilot", "github.copilot-chat", "editorconfig.editorconfig"];
+const BASE_EXTENSIONS = ["github.copilot", "github.copilot-chat", "bierner.markdown-mermaid", "editorconfig.editorconfig"];
 const STACK_EXTENSIONS = new Map([
   ["javascript", ["dbaeumer.vscode-eslint"]],
   ["typescript", ["dbaeumer.vscode-eslint"]],
@@ -1118,7 +1134,12 @@ const WORKSPACE_SETTINGS = Object.freeze({
   "chat.useAgentsMdFile": true,
   "chat.includeApplyingInstructions": true,
   "chat.includeReferencedInstructions": true,
-  "chat.promptFilesRecommendations": true
+  "chat.promptFilesRecommendations": true,
+  "chat.mcp.serverSampling": {
+    "Azure MCP Server Provider: Azure MCP": {
+      "allowedDuringChat": false
+    }
+  }
 });
 
 function workspaceIdentitySettings({ displayName, color }) {
@@ -1362,6 +1383,19 @@ function findEquivalentAsset(template, assets) {
   return null;
 }
 
+function findOverlappingAsset(template, assets) {
+  const templateTokens = significantTokens(template.purpose);
+  const templateGlobs = globSet(template.applyTo);
+  for (const asset of assets) {
+    if (asset.kind !== template.kind || asset.path === template.path) continue;
+    const sharedTokens = [...templateTokens].filter((token) => asset.tokens.has(token)).length;
+    if (template.kind !== "scoped-instructions" || sharedTokens < 1) continue;
+    const sharedGlobs = [...templateGlobs].some((glob) => asset.applyTo.has(glob));
+    if (sharedGlobs && asset.sourceLength < 80) return asset;
+  }
+  return null;
+}
+
 async function ensureEmptyTarget(root) {
   if (!existsSync(root)) return;
   const details = await lstat(root);
@@ -1431,7 +1465,7 @@ async function createProject({ name: enteredName, destination, profile = DEFAULT
     const files = new Map([
       ["README.md", `# ${displayName}\n\nProvisioned with Project Skills Orchestrator ${VERSION} using the ${profile} profile${declaredStack.size ? ` for the ${[...declaredStack].sort().join(", ")} stack` : ""}.\n\n## What this repository currently contains\n\nThis is a governed development baseline: agent instructions, scoped standards, reusable prompts, specialist agents, the skill catalog, editor configuration, and a continuous-integration workflow. **It does not yet contain application code.** Add your application under \`src/\` and its tests under \`tests/\`.\n\n## First steps\n\n1. Open \`${name}.code-workspace\` in Visual Studio Code.\n2. Select **Yes, I trust the authors** when Visual Studio Code asks about workspace trust. Tasks, debugging, and MCP servers stay disabled until you do.\n3. Select **Install** when Visual Studio Code offers the recommended extensions.\n4. Read \`.github/copilot-instructions.md\`. Every agent prompt in this project begins with the mandatory clarification protocol defined there.\n5. Open GitHub Copilot Chat in Agent mode and run \`/development-environment-readiness\` to validate tools, runtimes, authentication, debugging, and security gates.\n\nThe agent customization layer needs no configuration. Visual Studio Code discovers it automatically:\n\n| Location | What it provides |\n| --- | --- |\n| \`.github/copilot-instructions.md\` and \`AGENTS.md\` | Always-on project instructions |\n| \`.github/instructions/\` | Standards applied by file pattern |\n| \`.github/prompts/\` | Slash commands such as \`/create-adr\` and \`/security-review\` |\n| \`.github/agents/\` | Specialist agents in the agent picker |\n| \`.github/skills/\` | The governed skill catalog |\n\n${declaredStack.size ? "## Build, test, and debug\n\n`Ctrl+Shift+B` runs the build task and the Test Explorer runs the test task, both defined in `.vscode/tasks.json`. Debug configurations are in `.vscode/launch.json`; any value containing `REPLACE_WITH_` is a placeholder that needs your entry point before `F5` will work.\n\nThe continuous-integration workflow runs real build and test commands for the declared stack. Confirm they match this project before relying on the result.\n\n## Copilot cloud agent\n\n`.github/workflows/copilot-setup-steps.yml` preinstalls this project's dependencies in the ephemeral environment used by Copilot cloud agent and Copilot code review, so the agent can build and test instead of guessing at dependencies. It only takes effect once it is on the default branch." : "## Build, test, and debug\n\nNo stack was declared, so no build task, debug configuration, Copilot setup steps, or continuous-integration command was generated. The pipeline in `.github/workflows/ci.yml` fails until you configure one. That is deliberate: a pipeline that passes without testing anything is worse than no pipeline.\n\nRerun setup with `--stack` to generate tasks, debug configurations, Copilot cloud agent setup steps, and real CI commands."}\n`],
       ["AGENTS.md", mergedInstructionContent("# Project Agent Instructions", AGENT_INSTRUCTION_BLOCKS)],
-      [".gitignore", "dist/\nnode_modules/\n.env\n.skills-orchestrator/\n"],
+      [".gitignore", "dist/\nnode_modules/\n.env\n.azure/environment.json\n.skills-orchestrator/\n"],
       [".github/workflows/ci.yml", continuousIntegrationWorkflow(declaredStack)],
       [".vscode/extensions.json", workspaceExtensions(declaredStack)],
       [".vscode/settings.json", workspaceSettings(workspaceIdentity)],
@@ -1701,6 +1735,29 @@ async function buildAdoptionPlan(projectRoot, profileOverride, projectNameOverri
     else actions.push({ action: "update-wiring-file", kind: "help", path: helpPath, content, reason: "Regenerate help from the current skill contract" });
   }
 
+  for (const skillName of DEPRECATED_DUPLICATE_PROMPTS) {
+    const promptPath = `.github/prompts/${skillName}.prompt.md`;
+    const destination = path.join(root, promptPath);
+    if (!existsSync(destination)) continue;
+    const source = await readFile(destination, "utf8");
+    if (source.includes(`Run the \`${skillName}\` skill`)) {
+      actions.push({
+        action: "remove-duplicate-command",
+        kind: "prompt",
+        path: promptPath,
+        canonicalPath: `.github/skills/${skillName}/SKILL.md`,
+        reason: `Remove obsolete prompt command that duplicates the ${skillName} skill`
+      });
+    } else {
+      actions.push({
+        action: "conflict",
+        kind: "prompt",
+        path: promptPath,
+        reason: `Prompt name duplicates the ${skillName} skill but is not recognized as framework-owned`
+      });
+    }
+  }
+
   const scaffoldTemplates = await loadScaffoldManifest();
   const detectedResult = await detectProjectStack(root);
   const detectedStack = detectedResult.tags;
@@ -1734,6 +1791,16 @@ async function buildAdoptionPlan(projectRoot, profileOverride, projectNameOverri
         reason: `Existing ${template.kind} already covers ${template.purpose}; use --force-templates to install anyway`
       });
       continue;
+    }
+    const overlap = template.mandatory || forceTemplates ? null : findOverlappingAsset(template, customizationAssets);
+    if (overlap) {
+      actions.push({
+        action: "overlap",
+        kind: "scaffold",
+        path: projectRelative,
+        overlapsWith: overlap.path,
+        reason: `Existing ${template.kind} overlaps ${template.purpose} but is too small to suppress the framework standard`
+      });
     }
     actions.push({
       action: "create",
@@ -1847,7 +1914,7 @@ async function buildAdoptionPlan(projectRoot, profileOverride, projectNameOverri
   }
 
   const counts = Object.fromEntries(
-    ["create", "update-skill", "update-skill-references", "update-framework-file", "update-wiring-file", "replace-duplicate", "already-current", "skipped", "covered", "conflict"]
+    ["create", "update-skill", "update-skill-references", "update-framework-file", "update-wiring-file", "replace-duplicate", "remove-duplicate-command", "already-current", "skipped", "covered", "overlap", "conflict"]
       .map((action) => [action, actions.filter((item) => item.action === action).length])
   );
   await assertSafeAdoptionPaths(root, actions);
@@ -1882,12 +1949,17 @@ function printAdoptionPlan(plan) {
   console.log(`Framework files to update: ${plan.counts["update-framework-file"]}`);
   console.log(`Wiring files to update: ${plan.counts["update-wiring-file"]}`);
   console.log(`Duplicate skills to replace: ${plan.counts["replace-duplicate"]}`);
+  console.log(`Duplicate prompt commands to remove: ${plan.counts["remove-duplicate-command"]}`);
   console.log(`Templates skipped as not applicable: ${plan.counts.skipped}`);
   console.log(`Templates covered by existing files: ${plan.counts.covered}`);
+  console.log(`Templates overlapping existing files: ${plan.counts.overlap}`);
   console.log(`Already current: ${plan.counts["already-current"]}`);
   console.log(`Blocking conflicts: ${plan.counts.conflict}`);
   for (const item of plan.actions.filter((action) => action.action === "covered")) {
     console.log(`  covered: ${item.path} by ${item.coveredBy}`);
+  }
+  for (const item of plan.actions.filter((action) => action.action === "overlap")) {
+    console.log(`  overlap: ${item.path} with ${item.overlapsWith}`);
   }
   if (plan.counts.conflict) {
     console.log("\nConflicts:");
@@ -2096,6 +2168,9 @@ async function updateProject(projectRoot, options) {
 }
 
 async function applyAdoptionLocked(plan) {
+  for (const item of plan.actions.filter((action) => action.action === "remove-duplicate-command")) {
+    await rm(path.join(plan.projectRoot, item.path), { force: true });
+  }
   for (const item of plan.actions.filter((action) => action.action === "replace-duplicate")) {
     await rm(path.join(plan.projectRoot, item.path), { recursive: true, force: true });
   }

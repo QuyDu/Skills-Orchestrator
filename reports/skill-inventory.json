@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
-  "runtimeVersion": "1.0.3",
-  "generatedAt": "2026-08-26T16:40:07.217Z",
+  "runtimeVersion": "1.1.0",
+  "generatedAt": "2026-08-27T21:22:23.854Z",
   "skills": [
     {
       "name": "architecture-review",
@@ -381,19 +381,36 @@
       ]
     },
     {
+      "name": "project-understanding",
+      "path": ".github/skills/project-understanding/SKILL.md",
+      "description": "Perform a complete evidence-grounded scan of the current repository and rebuild authoritative project understanding covering purpose, architecture, setup, usage, features, skills, prompts, workflows, validation, and limitations. Use before project-video or whenever the project guide must reflect current code.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "clarify-the-ask"
+      ],
+      "reports": [
+        "reports/project-understanding.json",
+        "reports/project-understanding.md"
+      ]
+    },
+    {
       "name": "project-video",
       "path": ".github/skills/project-video/SKILL.md",
-      "description": "Analyze a new or existing project and produce a project-specific animated walkthrough as an interactive browser preview or a validated MP4 with approved Azure neural or pinned local narration. Use after a project has meaningful verified content; do not use for generic documentation, live screen recording, or publication.",
+      "description": "Analyze a new or existing project with meaningful verified content and produce an evidence-grounded browser preview or narrated MP4 entirely from VS Code using optional Azure OpenAI, Speech, Speech Avatar, local Piper, and FFmpeg stages. Do not use for empty baselines, generic documentation, live recording, or publication.",
       "lifecycle": "draft",
       "confidence": "low",
       "dependencies": [
         "clarify-the-ask",
+        "project-understanding",
         "azure-discovery"
       ],
       "reports": [
         "reports/project-video/project-evidence.json",
         "reports/project-video/project-video-plan.json",
         "reports/project-video/project-video-plan.md",
+        "reports/project-video/claims-ledger.json",
+        "reports/project-video/script.md",
         "reports/project-video/project-video-manifest.json",
         "reports/project-video/voice-samples/voice-samples.json",
         "reports/project-video/voice-samples/index.html",

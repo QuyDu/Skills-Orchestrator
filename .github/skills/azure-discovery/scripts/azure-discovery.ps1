@@ -4,6 +4,8 @@
 
 Set-StrictMode -Version Latest
 
+. (Join-Path $PSScriptRoot 'azure-environment.ps1')
+
 function Get-AzureDiscoveryProjectRoot {
     $directoryName = Split-Path -Leaf $PSScriptRoot
     $relativeRoot = if ($directoryName -eq 'infra') { '..' } else { '..\..\..\..' }
@@ -93,31 +95,6 @@ function Resolve-AzureOpenAIApiVersion {
     }
 }
 
-function Resolve-AzureCloudSelection {
-    param(
-        [switch]$Gov,
-        [switch]$Commercial
-    )
-
-    if ($Gov -and $Commercial) {
-        throw 'Choose only one Azure cloud: -Gov or -Commercial.'
-    }
-    if ($Gov) { return 'AzureUSGovernment' }
-    if ($Commercial) { return 'AzureCloud' }
-
-    for ($attempt = 1; $attempt -le 3; $attempt++) {
-        Write-Host "`nChoose the Azure cloud:" -ForegroundColor Cyan
-        Write-Host '1. Commercial'
-        Write-Host '2. Gov'
-        $choice = Read-Host 'Enter 1 or 2'
-        if ($choice -eq '1') { return 'AzureCloud' }
-        if ($choice -eq '2') { return 'AzureUSGovernment' }
-        Write-Host 'Invalid response. Enter only 1 or 2.' -ForegroundColor Yellow
-    }
-
-    throw 'Azure cloud selection failed after 3 invalid responses. Exiting discovery.'
-}
-
 function Invoke-AzureDiscovery {
     <#
     .SYNOPSIS  Probe a region for available services and the best available OpenAI model.
@@ -132,14 +109,18 @@ function Invoke-AzureDiscovery {
         openAIAvailable, openAIModelName, openAIModelVersion, openAIModelSku, openAIApiVersion.
     #>
     param(
-        [Parameter(Mandatory)][string]$Location,
+        [string]$Location,
         [Alias('AzureGov')][switch]$Gov,
         [switch]$Commercial,
         [string]$PreferModel,
+        [switch]$InteractiveSetup,
         [string]$DiscoveryOutputPath = (Join-Path (Get-AzureDiscoveryProjectRoot) 'reports\azure-discovery.json')
     )
 
-    $cloud = Resolve-AzureCloudSelection -Gov:$Gov -Commercial:$Commercial
+    $environmentProfile = Initialize-AzureEnvironmentProfile -Gov:$Gov -Commercial:$Commercial -Location $Location -InteractiveSetup:$InteractiveSetup
+    Connect-AzureEnvironment -AzureContext $environmentProfile | Out-Null
+    $cloud = [string]$environmentProfile.cloud
+    $Location = [string]$environmentProfile.location
     Write-Host "`n=== Azure discovery ($Location, $cloud) ===" -ForegroundColor Cyan
 
     $cognitiveAvailable = Test-AzureCognitiveKind -Kind 'AIServices' -Location $Location

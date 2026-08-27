@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-08-21T13:03:14.743Z",
-  "runtimeVersion": "1.0.0",
+  "generatedAt": "2026-08-27T09:20:27.118Z",
+  "runtimeVersion": "1.0.3",
   "profile": "core",
   "fixture": {
     "name": "adoption-evidence-fixture",
@@ -18,14 +18,14 @@
   },
   "before": {
     "summary": {
-      "plannedWrites": 86,
+      "plannedWrites": 149,
       "coveredAssets": 1,
       "conflicts": 0,
       "alreadyCurrent": 0,
       "skipped": 4
     },
     "counts": {
-      "create": 86,
+      "create": 149,
       "update-skill": 0,
       "update-skill-references": 0,
       "update-framework-file": 0,
@@ -34,6 +34,7 @@
       "already-current": 0,
       "skipped": 4,
       "covered": 1,
+      "overlap": 0,
       "conflict": 0
     },
     "plannedWrites": [
@@ -66,6 +67,16 @@
         "action": "create",
         "kind": "skill",
         "path": ".github/skills/audit-review-findings"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/azure-cleanup"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/azure-discovery"
       },
       {
         "action": "create",
@@ -105,7 +116,17 @@
       {
         "action": "create",
         "kind": "skill",
+        "path": ".github/skills/environment-update"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
         "path": ".github/skills/framework-health-check"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/linkedin-post"
       },
       {
         "action": "create",
@@ -146,6 +167,11 @@
         "action": "create",
         "kind": "skill",
         "path": ".github/skills/project-skills-orchestrator"
+      },
+      {
+        "action": "create",
+        "kind": "skill",
+        "path": ".github/skills/project-video"
       },
       {
         "action": "create",
@@ -235,6 +261,11 @@
       {
         "action": "create",
         "kind": "schema",
+        "path": "schemas/azure-discovery.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
         "path": "schemas/clarification-result.schema.json"
       },
       {
@@ -275,12 +306,52 @@
       {
         "action": "create",
         "kind": "schema",
+        "path": "schemas/project-blueprint.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
         "path": "schemas/project-installation-verification.schema.json"
       },
       {
         "action": "create",
         "kind": "schema",
         "path": "schemas/project-setup-plan.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/project-video-browser-preview-manifest.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/project-video-local-voice-manifest.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/project-video-manifest.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/project-video-narration-manifest.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/project-video-plan.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/project-video-voice-samples.schema.json"
+      },
+      {
+        "action": "create",
+        "kind": "schema",
+        "path": "schemas/project-video-voice-selection.schema.json"
       },
       {
         "action": "create",
@@ -339,6 +410,206 @@
       },
       {
         "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/architecture-review-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/artifact-upgrade-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/audit-azure-environment-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/audit-code-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/audit-plan-remediation-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/audit-review-findings-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/azure-cleanup-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/azure-discovery-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/change-review-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/ci-failure-triage-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/clarify-the-ask-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/dependency-maintenance-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/deployment-review-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/development-environment-readiness-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/documentation-builder-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/environment-update-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/framework-health-check-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/linkedin-post-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/multi-agent-coordinator-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/policy-engine-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/prepare-commit-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/project-handoff-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/project-knowledge-capture-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/project-memory-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/project-setup-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/project-skills-orchestrator-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/project-video-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/regression-test-development-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/security-review-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/skill-create-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/skill-dependency-manager-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/skill-inventory-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/skill-registry-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/systematic-debugging-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/workflow-planner-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/workflow-recovery-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/workflow-scheduler-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/workflow-simulator-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/workflow-state-manager-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "help",
+        "path": ".github/prompts/workflow-telemetry-help.prompt.md"
+      },
+      {
+        "action": "create",
         "kind": "scaffold",
         "path": ".editorconfig"
       },
@@ -376,6 +647,51 @@
         "action": "create",
         "kind": "scaffold",
         "path": ".github/instructions/azure-deployment.instructions.md"
+      },
+      {
+        "action": "create",
+        "kind": "scaffold",
+        "path": ".github/prompts/azure-discovery.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "scaffold",
+        "path": ".github/prompts/skills-help.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "scaffold",
+        "path": ".github/prompts/project-blueprint.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "scaffold",
+        "path": ".github/prompts/project-start.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "scaffold",
+        "path": ".github/prompts/project-validate.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "scaffold",
+        "path": ".github/prompts/linkedin-post.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "scaffold",
+        "path": ".github/prompts/project-video.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "scaffold",
+        "path": ".github/prompts/azure-cleanup.prompt.md"
+      },
+      {
+        "action": "create",
+        "kind": "scaffold",
+        "path": ".github/prompts/environment-update.prompt.md"
       },
       {
         "action": "create",
@@ -484,7 +800,7 @@
       "plannedWrites": 0,
       "coveredAssets": 1,
       "conflicts": 0,
-      "alreadyCurrent": 86,
+      "alreadyCurrent": 149,
       "skipped": 4
     },
     "counts": {
@@ -494,9 +810,10 @@
       "update-framework-file": 0,
       "update-wiring-file": 0,
       "replace-duplicate": 0,
-      "already-current": 86,
+      "already-current": 149,
       "skipped": 4,
       "covered": 1,
+      "overlap": 0,
       "conflict": 0
     },
     "plannedWrites": [],

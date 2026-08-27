@@ -1,0 +1,2196 @@
+{
+  "schemaVersion": "1.0.0",
+  "status": "complete",
+  "generatedAt": "2026-08-27T21:19:14.583Z",
+  "generator": "project-understanding",
+  "project": {
+    "name": "project-skills-orchestrator",
+    "displayName": "Project Skills Orchestrator",
+    "purpose": "Turn any repository into a governed GitHub Copilot workspace: agent instructions, scoped standards, reusable prompts, specialist agents, and 41 governed skills — installed consistently, verified after every run, and safe to rerun.",
+    "evidence": [
+      "README.md"
+    ]
+  },
+  "scan": {
+    "mode": "full-rebuild",
+    "repositoryDigestSha256": "93c9dfbfaadfd82234060d79f3da9de5891db4df71d6c8f73793ae9c7838b81f",
+    "fileCount": 196,
+    "sourceFileCount": 18,
+    "testFileCount": 7,
+    "excludedDirectories": [
+      ".git",
+      ".skills-orchestrator",
+      ".venv",
+      "__pycache__",
+      "bin",
+      "build",
+      "coverage",
+      "dist",
+      "node_modules",
+      "obj",
+      "out",
+      "vendor",
+      "venv"
+    ],
+    "excludedSensitivePatterns": [
+      ".env and .env.*",
+      "private key and certificate files",
+      "credential and secret manifests",
+      "SSH private keys"
+    ],
+    "files": [
+      {
+        "path": ".gitattributes",
+        "bytes": 527,
+        "sha256": "c63d80aee13e6990e327cc45b350697b1dd55d69e4db49535b0db92eb624d29d"
+      },
+      {
+        "path": ".github/copilot-instructions.md",
+        "bytes": 3141,
+        "sha256": "70d84573bff187924dcd003bd1fea8dbb1ed6ca9a913190fd8c16633b07c5b7b"
+      },
+      {
+        "path": ".github/dependabot.yml",
+        "bytes": 321,
+        "sha256": "22aa5906dcdd7a7c4fbe797c9fef9d935fe2d721dadef9b681670ac53c3fb3ef"
+      },
+      {
+        "path": ".github/prompts/azure-cleanup-help.prompt.md",
+        "bytes": 1242,
+        "sha256": "07ba1bbf4ef32754617a1a39cd4913b8bff2fdea1ec7c0ae2620516b803086d2"
+      },
+      {
+        "path": ".github/prompts/demo-create-project.prompt.md",
+        "bytes": 5892,
+        "sha256": "f3edfb4c2c64f6e419cdc9fb9832f77644f0b639f24bd116674249889fa67808"
+      },
+      {
+        "path": ".github/prompts/demo-web-app.prompt.md",
+        "bytes": 6388,
+        "sha256": "610206af2a15e7d9acddcc0f0a9b16f6fbf962fdda262c240781b28a7c9e77ff"
+      },
+      {
+        "path": ".github/prompts/environment-update-help.prompt.md",
+        "bytes": 1035,
+        "sha256": "5230f6db06f94db9ecd139daaee17f8fc371c66450d887e938dfa08ee54f3b1b"
+      },
+      {
+        "path": ".github/prompts/project-blueprint.prompt.md",
+        "bytes": 1724,
+        "sha256": "9fb4789962429a753d693b27f22d39ee51943fe25e6942ce7b942e7b8751db9e"
+      },
+      {
+        "path": ".github/prompts/project-mermaid-architecture.prompt.md",
+        "bytes": 5569,
+        "sha256": "a7c069fedc282dea917b29751ca0cf18fa7f1ab49166121b6f5baa41e520f129"
+      },
+      {
+        "path": ".github/prompts/project-start.prompt.md",
+        "bytes": 1507,
+        "sha256": "e6e721eca59c0ca02202b010df9845218ff8d238caf3553ff8a69610484f828b"
+      },
+      {
+        "path": ".github/prompts/project-status.prompt.md",
+        "bytes": 1212,
+        "sha256": "ce9ead40bc91eb653fc0151868ce5bb45f1db2f0e5956f601729b4578bf0ad6a"
+      },
+      {
+        "path": ".github/prompts/project-validate.prompt.md",
+        "bytes": 1520,
+        "sha256": "d8c554e36c5cccff3d6da0387ac28107c0040717c885cf187263274c4ce2c5e6"
+      },
+      {
+        "path": ".github/prompts/release-readiness.prompt.md",
+        "bytes": 1242,
+        "sha256": "72e58c3071b09bc67e4d18370fe39bdfb4e627888a07d9e64cd077764108cbed"
+      },
+      {
+        "path": ".github/prompts/skills-help.prompt.md",
+        "bytes": 2112,
+        "sha256": "1407e49cb83aadd3efddcf41d64982b3f758d860a351a037dbe1acad2d1934ad"
+      },
+      {
+        "path": ".github/skills/architecture-review/SKILL.md",
+        "bytes": 4720,
+        "sha256": "e989ed7f3b6d07f5b9a08d1c65cb4a0721cdc4d0f2a9bb45fc2e55cce2b41919"
+      },
+      {
+        "path": ".github/skills/artifact-upgrade/SKILL.md",
+        "bytes": 3374,
+        "sha256": "7a57ffff85bed1f233049405cf25e178a359aa6cf674b7da5e50ca69d60c3962"
+      },
+      {
+        "path": ".github/skills/audit-azure-environment/SKILL.md",
+        "bytes": 3303,
+        "sha256": "48f95d09cc794e75ab7c0daaf3f19ed7dacd5658219dcec167e7cd21eec6a688"
+      },
+      {
+        "path": ".github/skills/audit-code/SKILL.md",
+        "bytes": 7307,
+        "sha256": "657b463e728b22033d8b6af63158b7b05b951b308ed6f8bf49f7dbc29d28eaa8"
+      },
+      {
+        "path": ".github/skills/audit-plan-remediation/SKILL.md",
+        "bytes": 4305,
+        "sha256": "0fe3cf4a0fbb680ed0a18aa093ade3e0b54c70531ff33a360214f21d2cb3705a"
+      },
+      {
+        "path": ".github/skills/audit-review-findings/SKILL.md",
+        "bytes": 4361,
+        "sha256": "1f7b7f056910b4f202c37c46e9d9c79a1bbc1c09d2cdd2be22ae3b028d1ae21d"
+      },
+      {
+        "path": ".github/skills/azure-cleanup/SKILL.md",
+        "bytes": 4327,
+        "sha256": "5f14d4abd25c254b9bec2ec5b8ac50d5c4be5f540e9ced2eff80fef045276720"
+      },
+      {
+        "path": ".github/skills/azure-discovery/scripts/azure-discovery.ps1",
+        "bytes": 11679,
+        "sha256": "629d647593e8d72b4dea41db7f3796fa3856306d8ef39beb937adc8c9cb22c0d"
+      },
+      {
+        "path": ".github/skills/azure-discovery/scripts/azure-environment.ps1",
+        "bytes": 12281,
+        "sha256": "59fc17960d684a25cd59db5154ffb4aa46958ab27d73a83d57e25101e58ae599"
+      },
+      {
+        "path": ".github/skills/azure-discovery/SKILL.md",
+        "bytes": 5655,
+        "sha256": "35dd6cb64d63788c9b5228021fafb45689c4e6af611e11de4334fd9c8af94a6a"
+      },
+      {
+        "path": ".github/skills/change-review/SKILL.md",
+        "bytes": 3441,
+        "sha256": "f286d235916b1ee83d9e33c8dbb110685edc982edd544f3ee153d8456f9d8c0e"
+      },
+      {
+        "path": ".github/skills/ci-failure-triage/SKILL.md",
+        "bytes": 3750,
+        "sha256": "f24382bbcb7d4fc68e5728aa1d3085129ea3963f818daece80d539468a726f93"
+      },
+      {
+        "path": ".github/skills/clarify-the-ask/SKILL.md",
+        "bytes": 6461,
+        "sha256": "d9329a1157b3bcc18d12a5ff0565c55df0dc71f1180e760bd3c05a60601e3c4a"
+      },
+      {
+        "path": ".github/skills/dependency-maintenance/SKILL.md",
+        "bytes": 4045,
+        "sha256": "3f011cc2a872c4f4c688d5452b16f00c3c1f254342d53418f9c98ef10b30cd3a"
+      },
+      {
+        "path": ".github/skills/deployment-review/SKILL.md",
+        "bytes": 4847,
+        "sha256": "26c74a856b0eb1bea94ad12e79509b64f55196b13bded3811fb06f7a1f40d86d"
+      },
+      {
+        "path": ".github/skills/development-environment-readiness/SKILL.md",
+        "bytes": 6729,
+        "sha256": "f382eb7a63d5d0c2d346791b9a122ebf14c5963eb078c6f80a616a305e6e9871"
+      },
+      {
+        "path": ".github/skills/documentation-builder/SKILL.md",
+        "bytes": 4338,
+        "sha256": "13c6ca9d17d12833589dac86d23c2f7d1f080a74eb93b2db35c7211dc399c04e"
+      },
+      {
+        "path": ".github/skills/environment-update/SKILL.md",
+        "bytes": 4149,
+        "sha256": "1ab2c8e20277f103e8f38a9748cf7214462a4bf6d509ce455104d2f352f5e6be"
+      },
+      {
+        "path": ".github/skills/framework-health-check/SKILL.md",
+        "bytes": 3242,
+        "sha256": "91b1d7401140d518914dc687a31f311369b5649988d26f464f0f07d0f9b26945"
+      },
+      {
+        "path": ".github/skills/linkedin-post/SKILL.md",
+        "bytes": 4322,
+        "sha256": "323f92eefc58c86a308ea52ae2c74be9ea63045cdbfe7436b7f8c0cda20e637a"
+      },
+      {
+        "path": ".github/skills/multi-agent-coordinator/SKILL.md",
+        "bytes": 2982,
+        "sha256": "bf43fc45705d656fa28804d43f702eee48453f9f901ae11dabcd5bde142bd620"
+      },
+      {
+        "path": ".github/skills/policy-engine/SKILL.md",
+        "bytes": 2827,
+        "sha256": "39a6c2895f23d654dcafd59a230851bd05f9a9c9168b4e34b2ffca81aa751c82"
+      },
+      {
+        "path": ".github/skills/prepare-commit/SKILL.md",
+        "bytes": 2845,
+        "sha256": "3f9d8ed72859a7a8d3a3f8fe757358dc4c400849e2c66d73dac4d63ab64f5125"
+      },
+      {
+        "path": ".github/skills/project-handoff/SKILL.md",
+        "bytes": 2953,
+        "sha256": "29dc7c4aaca3c740c62404a8e8949b1a53039eb206fbbfaf26ce4c727e9f1021"
+      },
+      {
+        "path": ".github/skills/project-knowledge-capture/SKILL.md",
+        "bytes": 2894,
+        "sha256": "ec99a2f5bfdc0accadd086b464e2d498d45511eb5243541c73ca1767a358130b"
+      },
+      {
+        "path": ".github/skills/project-memory/SKILL.md",
+        "bytes": 2901,
+        "sha256": "61b2cee3ae4bff0fffebc0b0792a9a0ffd7df3afcd91bd5749fe606c1f1cd4da"
+      },
+      {
+        "path": ".github/skills/project-setup/SKILL.md",
+        "bytes": 5893,
+        "sha256": "d12defdebd0679eb3d803f82ab9bdae1d315c68307d096627c5a488fa3000210"
+      },
+      {
+        "path": ".github/skills/project-skills-orchestrator/SKILL.md",
+        "bytes": 3663,
+        "sha256": "6c42e76cd8e0c8e35a4e5acfcff5d2bda829003504e3ab29d14113662e980898"
+      },
+      {
+        "path": ".github/skills/project-understanding/scripts/project-understanding.mjs",
+        "bytes": 19268,
+        "sha256": "ddef1f3ed678a7c68674344cbb88889369bbd340abc2d774bd083d5e45c7d720"
+      },
+      {
+        "path": ".github/skills/project-understanding/SKILL.md",
+        "bytes": 5774,
+        "sha256": "57cda61242718cf485d5e75ea404f2c9a233ad83060e84879e338564c50d2d3c"
+      },
+      {
+        "path": ".github/skills/project-video/scripts/project-video.mjs",
+        "bytes": 137260,
+        "sha256": "7d47d2da187e8a4985c31030c22a51187f8a4b53b5021e095ac04ef0e661cdd4"
+      },
+      {
+        "path": ".github/skills/project-video/SKILL.md",
+        "bytes": 18480,
+        "sha256": "90ffec4b911df86595bd357d113de7a5db3a39a94e461e83386e3187c222d116"
+      },
+      {
+        "path": ".github/skills/regression-test-development/SKILL.md",
+        "bytes": 3615,
+        "sha256": "38a57dc009eb527aecf3054a1cbe24c7f83eeba1214e56f6359092a949689239"
+      },
+      {
+        "path": ".github/skills/security-review/SKILL.md",
+        "bytes": 5218,
+        "sha256": "3e41314595179d172acc0de36702d9edef457f02f77e325b39b8d955e85bb8c0"
+      },
+      {
+        "path": ".github/skills/skill-create/SKILL.md",
+        "bytes": 3215,
+        "sha256": "e671828dbb5f5f864e96614bbd4a709573ceba7c6f6025531c3cf0407db44109"
+      },
+      {
+        "path": ".github/skills/skill-dependency-manager/SKILL.md",
+        "bytes": 2997,
+        "sha256": "757a902a3813ffead731b347a36385ec3c91984d3a2cc0010cd4be08ada09ae7"
+      },
+      {
+        "path": ".github/skills/skill-inventory/SKILL.md",
+        "bytes": 3125,
+        "sha256": "b6d9e633c97e6b3889bade1f8531f543816ffc402948f4fbc9567e1495c469e2"
+      },
+      {
+        "path": ".github/skills/skill-registry/SKILL.md",
+        "bytes": 3040,
+        "sha256": "7111fd686c4aa95773f598c0859afc8e1424645f0531f493a0a69a47a2180b91"
+      },
+      {
+        "path": ".github/skills/systematic-debugging/SKILL.md",
+        "bytes": 3792,
+        "sha256": "66d0cbe5b4f5fd6de5c8c01464741778d1f38265df17e139565ff0010f314073"
+      },
+      {
+        "path": ".github/skills/workflow-planner/SKILL.md",
+        "bytes": 3202,
+        "sha256": "5b380eb3ddafa8c4d292db46958a82ed34159a5cae439e236f9506809b68a676"
+      },
+      {
+        "path": ".github/skills/workflow-recovery/SKILL.md",
+        "bytes": 3033,
+        "sha256": "ac43a2b744305c94d3096af34b5782527520bb9c9342a75e828e08571123a723"
+      },
+      {
+        "path": ".github/skills/workflow-scheduler/SKILL.md",
+        "bytes": 2902,
+        "sha256": "c3a1ad49654fd5e635f4c75ee709fe0c9c409ae0551db5908bf860904c7fad8d"
+      },
+      {
+        "path": ".github/skills/workflow-simulator/SKILL.md",
+        "bytes": 2855,
+        "sha256": "5ce4bce5f811c91d72a24f28b69707dfb4d766fa643cad6e5b3f26421436dbc1"
+      },
+      {
+        "path": ".github/skills/workflow-state-manager/SKILL.md",
+        "bytes": 2910,
+        "sha256": "dd69fdbcde0fba389acf02c2f722a4abfb65b0c5944435cdbe4ff75dbb6d0815"
+      },
+      {
+        "path": ".github/skills/workflow-telemetry/SKILL.md",
+        "bytes": 2787,
+        "sha256": "e8f1b395d73a61b2d0ccb6667e71a771de3c96bfce04a69fae3ed4a7aa25255e"
+      },
+      {
+        "path": ".github/workflows/codeql.yml",
+        "bytes": 1330,
+        "sha256": "cdee15483210806d777639e4e9ff715a15d094ee3b659589dce1516524a208d3"
+      },
+      {
+        "path": ".github/workflows/security-validation.yml",
+        "bytes": 2873,
+        "sha256": "3c1e0d21dafb0853e415fcbfdd47022afb00c0ecf93fcc063c5ecfc73f026126"
+      },
+      {
+        "path": ".gitignore",
+        "bytes": 115,
+        "sha256": "a5e5bfb5fb00966be5d6dafc70cfc6c47f3ac7c5502ce3ba7ef8f3938d4d8533"
+      },
+      {
+        "path": ".npmrc",
+        "bytes": 99,
+        "sha256": "1588cea02dd1414370563972cf96981c73eaededb4acef2ad7d921f2954cf575"
+      },
+      {
+        "path": ".vscode/extensions.json",
+        "bytes": 205,
+        "sha256": "8e51cef1a8a963c93c62869d075c20d87c13775a3a662ea0d08d365b8a7269b8"
+      },
+      {
+        "path": ".vscode/settings.json",
+        "bytes": 380,
+        "sha256": "dbcd007f73ac7aaa984386b0885c50905a58cf53214cdbae308d0f4ade6b08b0"
+      },
+      {
+        "path": "AGENTS.md",
+        "bytes": 2297,
+        "sha256": "28c6af8d6fcdc8c1c6a81faa642c61d27607eabac16a7b9531be14e7446ebd57"
+      },
+      {
+        "path": "config/orchestrator.yaml",
+        "bytes": 456,
+        "sha256": "407b0b210f291fb04b4ba58f15942b02aaee9d7eca282900fb0ce0c8dbf11d90"
+      },
+      {
+        "path": "config/profiles.yaml",
+        "bytes": 1366,
+        "sha256": "5c8c1c66078a01440051421de1978970d1b541b3a72e4789969b37ea69a318a9"
+      },
+      {
+        "path": "config/skills-orchestrator.json",
+        "bytes": 582,
+        "sha256": "5bc58804ca66e7029394711aaeda6ffe6726b39f96b3c3f93ea44cf4a90389c5"
+      },
+      {
+        "path": "Demo/audio/narration/scenes.json",
+        "bytes": 3697,
+        "sha256": "fb960d6b167afe731d08e72bef80fc07b9a3800e5b23b50dfe37f3d5750e0565"
+      },
+      {
+        "path": "Demo/DEMO-DAY.md",
+        "bytes": 3195,
+        "sha256": "f3614594b312df92d28be858a3ea00c54a5e7e58669b3f1f2a32cc6fa6ee854d"
+      },
+      {
+        "path": "Demo/project-skills-orchestrator-animation.html",
+        "bytes": 39034,
+        "sha256": "9fec1a46c94c935691eade80f3be64c68894c68ebdaf14fdde7a77d05f02bdb2"
+      },
+      {
+        "path": "docs/INTERNAL-RELEASE.md",
+        "bytes": 3843,
+        "sha256": "a9126d6f57faff323c191c2fb161504c14d1af6f7926794f401edf1a666cdd78"
+      },
+      {
+        "path": "docs/PROJECT-ARCHITECTURE.md",
+        "bytes": 4970,
+        "sha256": "b4e8e7f28638b226a4b432841c9a50c482d5b18a4b1fd1395691729f4291bc33"
+      },
+      {
+        "path": "docs/SKILL-ECOSYSTEM-AUDIT.md",
+        "bytes": 6325,
+        "sha256": "72b4f0e52b035e43868994bb7d55f060b74ceab236bca10618fc325eb536bf88"
+      },
+      {
+        "path": "docs/THREAT-MODEL.md",
+        "bytes": 9458,
+        "sha256": "4d951ebe77e46886a0b29faefdf623f9fab9c29d34dd84a21e3032a106508ea2"
+      },
+      {
+        "path": "LICENSE",
+        "bytes": 1396,
+        "sha256": "4aab1260417e02b469bbccc6e80dd3ccc5ea226929db8155febfad6cbe7ceef1"
+      },
+      {
+        "path": "package-lock.json",
+        "bytes": 408,
+        "sha256": "f6549a4951f76a8eef84dbe7b31e1b9981a763e9e637ec6a6230e4a3e95a47b4"
+      },
+      {
+        "path": "package.json",
+        "bytes": 1727,
+        "sha256": "3ce5d2914f71b1c579655cebcd9492ec4571e52d6711019e18f62b76e5db4559"
+      },
+      {
+        "path": "pso.mjs",
+        "bytes": 133110,
+        "sha256": "9f6c57639e8873422b2310d8b9604dd4cef068d1d213ea9d9999f295e527f9a3"
+      },
+      {
+        "path": "pso.ps1",
+        "bytes": 314,
+        "sha256": "90d4c00feda8bf35e095affe8f3b801a0fa19ba42b321471b7b89f45a849f381"
+      },
+      {
+        "path": "README.md",
+        "bytes": 30069,
+        "sha256": "50c4dd7747597ea8f0b38b4b57e68214bdf1f805098b2335ae3a6c6ebb5b3a20"
+      },
+      {
+        "path": "release/release-manifest.json",
+        "bytes": 646,
+        "sha256": "8ba3c469eef4d13c6e96bbcf23a6c8ca5cf52477225ad13b4ea9d041f535c866"
+      },
+      {
+        "path": "reports/adoption-rerun-evidence.json",
+        "bytes": 21517,
+        "sha256": "fa564b5f4b87bd4318476ae61a809725e0df2b7f07368e36bb770409653ad7f7"
+      },
+      {
+        "path": "reports/adoption-rerun-evidence.md",
+        "bytes": 1095,
+        "sha256": "f8aa40b6817c0e811bfd2aee7f3b5843fbfae9abb12b28f2a02b30eb717c5d09"
+      },
+      {
+        "path": "reports/artifact-ownership.json",
+        "bytes": 10002,
+        "sha256": "ac0c08da1c1e68cc599f90881c3c865c31ae4f0feede14780deec900e3e00604"
+      },
+      {
+        "path": "reports/audit-remediation-plan.json",
+        "bytes": 12387,
+        "sha256": "3dea85045ee561bb758677256093c5f746402d5ac1e6c8773bb75204f6ea0c82"
+      },
+      {
+        "path": "reports/audit-remediation-plan.md",
+        "bytes": 7571,
+        "sha256": "4c1eb9d7ccc6942a47238b66afe802c6c5d81a78bf146305d7f9ad7c9b413625"
+      },
+      {
+        "path": "reports/azure-discovery.json",
+        "bytes": 837,
+        "sha256": "4dbffd8b5c0f314146e8e3222dadd2beba72f66cbcc732422ddf6a49067d8f15"
+      },
+      {
+        "path": "reports/azure-discovery.md",
+        "bytes": 681,
+        "sha256": "d2e1ed7fb5f2714b3b6b4a5bdfcc7688e3004d8a6d2905253dff33bddfb04e3b"
+      },
+      {
+        "path": "reports/change-review.json",
+        "bytes": 1383,
+        "sha256": "7f5dc807e8ceb767de88f37068833568cac498a15fd9f522e294ab1b750971a9"
+      },
+      {
+        "path": "reports/change-review.md",
+        "bytes": 1178,
+        "sha256": "9bc1af6ac85712fc830ab028e813df61620255fed988315f1d65d477946b7d22"
+      },
+      {
+        "path": "reports/code-audit-findings.json",
+        "bytes": 25655,
+        "sha256": "f3184323789293794481595b33ee167be734235f62128b38a5b1137a669cd2cf"
+      },
+      {
+        "path": "reports/code-audit-review.json",
+        "bytes": 16582,
+        "sha256": "d4a47368605ab7dbf4e03752c5c8128698f2c148516297fd36ce796e641c385c"
+      },
+      {
+        "path": "reports/code-audit-review.md",
+        "bytes": 8739,
+        "sha256": "90593a75203811758bbd5d5d4f0f8b15d5890e53d0354039ff587ae64bf63d3a"
+      },
+      {
+        "path": "reports/cross-platform-ci-evidence.json",
+        "bytes": 2116,
+        "sha256": "9b3efcce0fed302f434b2abb8872846c9842bbe1de05a3dae08070489f05c3fc"
+      },
+      {
+        "path": "reports/current-work-state.json",
+        "bytes": 2084,
+        "sha256": "c92665226aa798f9d90fd5ff123c8183afbb44c5f551e8948828217b44b12ad7"
+      },
+      {
+        "path": "reports/deployment-review.json",
+        "bytes": 5249,
+        "sha256": "749a1e9a0420e59e99ded3b6ad65610ed80e9533480f19fd46b03edd77a3ab8d"
+      },
+      {
+        "path": "reports/deployment-review.md",
+        "bytes": 2004,
+        "sha256": "1ddcbfcf609b670774ab20c120195aef04f10cd5cfdbf82a8fc02211a3fbc513"
+      },
+      {
+        "path": "reports/project-handoff.json",
+        "bytes": 9912,
+        "sha256": "4c0cc14b8b98f57c3d3c69d9a0555bba6c313324afe83a5877caafa344e012d4"
+      },
+      {
+        "path": "reports/project-handoff.md",
+        "bytes": 4246,
+        "sha256": "7c055f02ef06c69ec930ed00d4e287e358c6f273eda593f48b4cf37b36b3cd57"
+      },
+      {
+        "path": "reports/release-readiness.json",
+        "bytes": 4810,
+        "sha256": "faf4db67f26760bc6307bc8dc7d9b59c58971fd9c34de424bce4c18e69ef8128"
+      },
+      {
+        "path": "reports/security-check.json",
+        "bytes": 342,
+        "sha256": "3674fd6cbf45abf5844a7d5dd50ea1a88475ab3d46a1925fd12e72c71004ca2d"
+      },
+      {
+        "path": "reports/skill-details.json",
+        "bytes": 35661,
+        "sha256": "dd2b8ef127c1db85debc142a33b1921113c9c226afff57fe341878b9312886b1"
+      },
+      {
+        "path": "reports/skill-details.md",
+        "bytes": 3490,
+        "sha256": "06a0bf1a48a0d5a0c016b83a1017072eca0a7f2f08b08d65021d9d03f4a26618"
+      },
+      {
+        "path": "reports/skill-inventory.json",
+        "bytes": 27051,
+        "sha256": "69a4a7ed2084dc6df539d91852b600206c065619d496446ea050b192638e36a9"
+      },
+      {
+        "path": "reports/skill-inventory.md",
+        "bytes": 11765,
+        "sha256": "8556552906100d886e30037894dee4cdd7b72356ee843b7a5a3e081ccd31373e"
+      },
+      {
+        "path": "schemas/adoption-transaction.schema.json",
+        "bytes": 2060,
+        "sha256": "020a9dfb7a7f6e191eab911e8a8cf7221188dc3da4bf4a6c379865ea0064472a"
+      },
+      {
+        "path": "schemas/architecture-review.schema.json",
+        "bytes": 3115,
+        "sha256": "f5e3cf00c1c02ecca9205536524055d8ddc865e2284b9fad52845d9d45943bcc"
+      },
+      {
+        "path": "schemas/audit-findings-review.schema.json",
+        "bytes": 3185,
+        "sha256": "8373f0e8ccb91c22db2920c81c795bbb4ce544b16a48277c6cae1bdd64afd697"
+      },
+      {
+        "path": "schemas/audit-remediation-plan.schema.json",
+        "bytes": 3295,
+        "sha256": "b36abf2e18bb26db625733341642c89a6898960857b142d2de2b00c5f5c436ea"
+      },
+      {
+        "path": "schemas/azure-discovery.schema.json",
+        "bytes": 3161,
+        "sha256": "eab72b142efa0fb85e0c9b210fcd7baacedb54f0e7c5c33a0f2c8a3b5bd2ec98"
+      },
+      {
+        "path": "schemas/azure-environment.schema.json",
+        "bytes": 3014,
+        "sha256": "acb7dd15a84b737d34e55aba4c86afee8dc08d5387d6b8fc4836c79cfca506fa"
+      },
+      {
+        "path": "schemas/clarification-result.schema.json",
+        "bytes": 2719,
+        "sha256": "91aec6fc3ef14585a09853308ee74d7fa19a6a471848571738fba5d05222e3ad"
+      },
+      {
+        "path": "schemas/code-audit-findings.schema.json",
+        "bytes": 6840,
+        "sha256": "2e408c5139f528f3a8fb3f58c383c995b38ab3f1ebd2345d9e7e855776866a2b"
+      },
+      {
+        "path": "schemas/cross-platform-ci-evidence.schema.json",
+        "bytes": 1153,
+        "sha256": "fb0aaae37f1ff5ee9efac17a7ae846c90dfd2b974eb02fe482392734dc74d0cc"
+      },
+      {
+        "path": "schemas/current-execution-state.schema.json",
+        "bytes": 996,
+        "sha256": "2b8673e544d01084120cd0fed3f2fdd6b8462dc55c1f504036ca526f69a764eb"
+      },
+      {
+        "path": "schemas/deployment-review.schema.json",
+        "bytes": 3220,
+        "sha256": "f14b58d70fbd2bb1cf92c74ba22a9fc737183ec3ae8dcb0b3ae38cc38302510f"
+      },
+      {
+        "path": "schemas/development-environment-readiness.schema.json",
+        "bytes": 3882,
+        "sha256": "cf20ba595eb30a6ed267fd8404efacd8694c552d8194dcacbca4f0284c5c3bec"
+      },
+      {
+        "path": "schemas/documentation-plan.schema.json",
+        "bytes": 2182,
+        "sha256": "6e1d552ace664381304757d1becf0cafb0071b4e73364f17c79e60bd4dc2f303"
+      },
+      {
+        "path": "schemas/independent-review.schema.json",
+        "bytes": 1427,
+        "sha256": "2b914ca373432f79c4048aaa67d97329d7f48e459026f83c31aec5730e373d7a"
+      },
+      {
+        "path": "schemas/project-blueprint.schema.json",
+        "bytes": 2985,
+        "sha256": "eb93af3a0182dcdeeff5c819e5dd05c644a9c9a84bade28a0d0a1c2c3e5499fb"
+      },
+      {
+        "path": "schemas/project-installation-verification.schema.json",
+        "bytes": 1966,
+        "sha256": "85845e52682d4746861e8ffd8f5db2d98d9e6ea32fcb62daa87ffa0878553f45"
+      },
+      {
+        "path": "schemas/project-setup-plan.schema.json",
+        "bytes": 3142,
+        "sha256": "f129f7dc320f0a739c1fb7f2e60e7e1346fc3e1f24adb34f6a2b7ce0334302d4"
+      },
+      {
+        "path": "schemas/project-understanding.schema.json",
+        "bytes": 5040,
+        "sha256": "1f5d48f4075ea04642b713bb76fef47dbe06bef6c7994a1da890cc24044a5c05"
+      },
+      {
+        "path": "schemas/project-video-browser-preview-manifest.schema.json",
+        "bytes": 2322,
+        "sha256": "4cfddc71a4b8db13dc8dba488760d17598125aedefaf14d46e147a9f4c653248"
+      },
+      {
+        "path": "schemas/project-video-local-voice-manifest.schema.json",
+        "bytes": 5087,
+        "sha256": "c741e129c88c8b06e5fae79519fa3004fd5e936fe175d81a675567f5a8af1867"
+      },
+      {
+        "path": "schemas/project-video-manifest.schema.json",
+        "bytes": 6824,
+        "sha256": "ffd080eb59ecfb06a9270b7aa7d82bf8e189c7f376e3b06f0326b6556c0ac20a"
+      },
+      {
+        "path": "schemas/project-video-narration-manifest.schema.json",
+        "bytes": 4187,
+        "sha256": "1ac08fae562b97d65e109e31eaa0e7f62798f6f5464f8c2465375bfa52987e3f"
+      },
+      {
+        "path": "schemas/project-video-plan.schema.json",
+        "bytes": 12306,
+        "sha256": "991802c9c8240a24574a0d2a5e82e5932ea5c04172bcc6b30ad8c149c66bf0e4"
+      },
+      {
+        "path": "schemas/project-video-voice-samples.schema.json",
+        "bytes": 2626,
+        "sha256": "2d7376b537bb19ab00cff7f43dc76784a0a900c26a26abc4a7ed0af4e53e53e4"
+      },
+      {
+        "path": "schemas/project-video-voice-selection.schema.json",
+        "bytes": 1131,
+        "sha256": "f5ccaeae0f80fa1ca91d5f50a65fd8318f921d266702806704acc75dd7f852b3"
+      },
+      {
+        "path": "schemas/release-manifest.schema.json",
+        "bytes": 1400,
+        "sha256": "8a4ff96f621c9d8ea38511ac4566d3d865131f2460887c2006c55c1e5337bb9d"
+      },
+      {
+        "path": "schemas/release-readiness.schema.json",
+        "bytes": 1246,
+        "sha256": "e8e68970b02eb60e7a529123140e12192b60d967bea8bfe7b55f991714ffaff2"
+      },
+      {
+        "path": "schemas/release-signature.schema.json",
+        "bytes": 737,
+        "sha256": "6c675a7663e65c491458c8df9d69a90d2bb965e3d832990cbe23320289cbfeeb"
+      },
+      {
+        "path": "schemas/resolved-configuration.schema.json",
+        "bytes": 2455,
+        "sha256": "5050a512b67eb7a22d7fa2a4d06b4c52494d2fc11b91b264439a13253df1c242"
+      },
+      {
+        "path": "schemas/security-check.schema.json",
+        "bytes": 1364,
+        "sha256": "00568532b2b490d3e34dca47d226eb4b353575f342cfd01053f2926e6db251ec"
+      },
+      {
+        "path": "schemas/security-review.schema.json",
+        "bytes": 3229,
+        "sha256": "3e6c89cddd97d15f5648fff4288109c63c0ac67675f2fa90931020aab636836d"
+      },
+      {
+        "path": "schemas/skill-details.schema.json",
+        "bytes": 1627,
+        "sha256": "a052062d4ad0f801fe38692ca16c1ad5a8665062c4d32d6f0d8e84a9e5b56d6f"
+      },
+      {
+        "path": "schemas/skill-inventory.schema.json",
+        "bytes": 1083,
+        "sha256": "817821aaae4cf7f0d67ab945fd1b5ef27f9452c3ceddc5ded6ad2924b6858961"
+      },
+      {
+        "path": "schemas/workflow-event.schema.json",
+        "bytes": 905,
+        "sha256": "d34d893fa91c094327c87a78b67b117033b0228cb3ebb37b127580121570122d"
+      },
+      {
+        "path": "schemas/workflow-plan.schema.json",
+        "bytes": 1259,
+        "sha256": "7dc0764d602c6df484c5f3a8260536c7be2d8060ecc8a20835a1d59ba71d5757"
+      },
+      {
+        "path": "scripts/adoption-evidence.mjs",
+        "bytes": 7962,
+        "sha256": "e31f0326e462b04086c6bd3f6f162250c5bca61f197a387e07229309320d4123"
+      },
+      {
+        "path": "scripts/build-release.mjs",
+        "bytes": 7305,
+        "sha256": "e218eea252402bc9e8f1117639b18d86f797a7a6014030d63295942042506e98"
+      },
+      {
+        "path": "scripts/ci-evidence.mjs",
+        "bytes": 2700,
+        "sha256": "f613c9b2e31f8e9bcb4c2864def1a42b2dc184e58bcbb0827f5fc7620246af14"
+      },
+      {
+        "path": "scripts/generate-demo-narration.ps1",
+        "bytes": 9828,
+        "sha256": "55044217d377ef0c3f78dc3db569cd6566e9bee436fe76ca91b9bb418c7edc20"
+      },
+      {
+        "path": "scripts/release-lock.mjs",
+        "bytes": 1004,
+        "sha256": "ffe72be3c4ee6e7567ecf0c1eb5d2552ff1a6e2b3e3bf0ba99da7f618d6d6227"
+      },
+      {
+        "path": "scripts/release-status.mjs",
+        "bytes": 5312,
+        "sha256": "0e3429f66a23f269bfa29ae6ad793c34ef12b3be028e1410ccd1cc41abdfa711"
+      },
+      {
+        "path": "scripts/safe-path.mjs",
+        "bytes": 1284,
+        "sha256": "a29f4e4ac59ce8bc71070ee8f5afd57b04fe942c2b0b61b605587fea8d302825"
+      },
+      {
+        "path": "scripts/security-check.mjs",
+        "bytes": 8365,
+        "sha256": "767f5365075f2b896c3200d61d80e3df999dfe141a6b5f4947beda61561c360a"
+      },
+      {
+        "path": "scripts/trust.mjs",
+        "bytes": 1173,
+        "sha256": "7dc2c86e41fc3359e25afdfc9b09ebb913a4d2b22d8726a9089fe2a699ad6a19"
+      },
+      {
+        "path": "scripts/verify-release.mjs",
+        "bytes": 6343,
+        "sha256": "e6c0b921e899988a0df58b1e8a909f1771d2d0a78cc3dfb4a39d6494e4f46729"
+      },
+      {
+        "path": "SECURITY.md",
+        "bytes": 9132,
+        "sha256": "2824bd83f73c6dee185a1046e68e734886ec8d340caa9972ec5fcaaf02cd8853"
+      },
+      {
+        "path": "STANDALONE-WINDOWS.md",
+        "bytes": 5690,
+        "sha256": "0416e00c1c175781c7737c39c082086313efcb70a1a530198e07e6364f510a54"
+      },
+      {
+        "path": "templates/project/.editorconfig",
+        "bytes": 347,
+        "sha256": "80322023a38f14fc1af6ab84342666feac8d0574712eb252d2f6ebe9ed2cda33"
+      },
+      {
+        "path": "templates/project/.gitattributes",
+        "bytes": 724,
+        "sha256": "d9f889811b2dbabb654208c3e9074f26cfd55071e7d2cf45ea402dfdfd068d5a"
+      },
+      {
+        "path": "templates/project/.github/agents/azure-architect.agent.md",
+        "bytes": 2001,
+        "sha256": "183a2d3c2fea751d3be20c76462c0ef6f120558d5951cb0332856e0148a1aa9d"
+      },
+      {
+        "path": "templates/project/.github/agents/documentation-writer.agent.md",
+        "bytes": 1687,
+        "sha256": "634ae2346162ae6f40d343bf53a7e2bd2786da8cfd65c1f2ed3c1ab865c0fe2c"
+      },
+      {
+        "path": "templates/project/.github/agents/security-reviewer.agent.md",
+        "bytes": 2012,
+        "sha256": "9a1a3d1fd5142fc569c9bd6186eadfb604c9bcfe87a1827c7bdaf8b6e23b15a1"
+      },
+      {
+        "path": "templates/project/.github/copilot-instructions.md",
+        "bytes": 7894,
+        "sha256": "ce6a94191a97fbf7a86574b16dadc3d10ff57691d9537099755967bb826c7155"
+      },
+      {
+        "path": "templates/project/.github/instructions/azure-deployment.instructions.md",
+        "bytes": 2696,
+        "sha256": "1f2331c5e284d45bd48a003efa263f9c88fdac86234694ffa75f99de71645a6d"
+      },
+      {
+        "path": "templates/project/.github/instructions/bicep.instructions.md",
+        "bytes": 1534,
+        "sha256": "ac9cdb4e6bbb5390996dc28fc5f9e1cbddc8d8780b4abb2eea1003d69f84dfbd"
+      },
+      {
+        "path": "templates/project/.github/instructions/clarification.instructions.md",
+        "bytes": 2030,
+        "sha256": "e1ba26e2376c4deb757ae845d772c4b70a1bda71df46a935a12e6abc09ad87ea"
+      },
+      {
+        "path": "templates/project/.github/instructions/csharp.instructions.md",
+        "bytes": 1053,
+        "sha256": "5254190b90487761e2e1646e83036c7200916662a351287ac72a8d56b5de8be9"
+      },
+      {
+        "path": "templates/project/.github/instructions/markdown.instructions.md",
+        "bytes": 779,
+        "sha256": "cfc674b1c84a7d849670b4f1674e525174a88884b002e27dee483f7789abcb51"
+      },
+      {
+        "path": "templates/project/.github/instructions/powershell.instructions.md",
+        "bytes": 1206,
+        "sha256": "ca5fe9c9b58d36669253cc858848bec49d6fa982a9ff4444dc8bf499257b7d02"
+      },
+      {
+        "path": "templates/project/.github/instructions/security.instructions.md",
+        "bytes": 2012,
+        "sha256": "55889c2221de50d8e415404a92aec3d63b2ff19f364fc711dbec0e5cf5213864"
+      },
+      {
+        "path": "templates/project/.github/instructions/tests.instructions.md",
+        "bytes": 984,
+        "sha256": "a249f9f153516a66c317e880ce3c5f7f03c27be2ce91ee24049b3ec6b478e853"
+      },
+      {
+        "path": "templates/project/.github/instructions/typescript.instructions.md",
+        "bytes": 1061,
+        "sha256": "c804500b38ee9116f9af9173020e50a11063abc85e9cd86c674854e9659286fe"
+      },
+      {
+        "path": "templates/project/.github/prompts/create-adr.prompt.md",
+        "bytes": 990,
+        "sha256": "8b9c61b76aecf0d740123fb1fd2f54cc60ef1dafe1a44aa35ed41a4108cca5bb"
+      },
+      {
+        "path": "templates/project/.github/prompts/executive-summary.prompt.md",
+        "bytes": 1021,
+        "sha256": "828b1a05c18a520f1e12aba2f682cf6893f997ee2659815a4d6ccdec00d3eb5e"
+      },
+      {
+        "path": "templates/project/.github/prompts/new-component.prompt.md",
+        "bytes": 1073,
+        "sha256": "766c2669672908bd991c5a4288954d93b6866e09c7dd1571e692892ebf925082"
+      },
+      {
+        "path": "templates/project/.github/prompts/project-blueprint.prompt.md",
+        "bytes": 1722,
+        "sha256": "15e518a526e27d8e541be201e2311d6db1abc7e633ace95e953cfafe308eda39"
+      },
+      {
+        "path": "templates/project/.github/prompts/project-start.prompt.md",
+        "bytes": 2006,
+        "sha256": "53a238c19ea0645a6b1b3b7799855ec17ca0b31ceb179870de4e6e7f15e713b8"
+      },
+      {
+        "path": "templates/project/.github/prompts/project-status.prompt.md",
+        "bytes": 946,
+        "sha256": "58d3504323fe84d2e04bce8f710dce7388e9c1efc8e8a8bfe4909914cac5f13e"
+      },
+      {
+        "path": "templates/project/.github/prompts/project-validate.prompt.md",
+        "bytes": 1520,
+        "sha256": "d8c554e36c5cccff3d6da0387ac28107c0040717c885cf187263274c4ce2c5e6"
+      },
+      {
+        "path": "templates/project/.github/prompts/review-architecture.prompt.md",
+        "bytes": 1001,
+        "sha256": "caffb17d5499a3e13240c16844e3365a13fa1fb23e8597dad98f90d2630d814e"
+      },
+      {
+        "path": "templates/project/.github/prompts/skills-help.prompt.md",
+        "bytes": 1842,
+        "sha256": "bd8ff0dc1514ce4d127f191392ee286d9f2d7c30e396dd534612c7e4c1e9aa48"
+      },
+      {
+        "path": "templates/project/.vscode/mcp.json",
+        "bytes": 1555,
+        "sha256": "5669250c1edc64ebc19e128d0e11f56b5d3df481a33356be60da21a38b471605"
+      },
+      {
+        "path": "templates/project/docs/adr/0000-template.md",
+        "bytes": 1118,
+        "sha256": "d9de9d8ef4a7e3abb8ea2f0d3e17e3b24fed6e42cfa7f590c1248d234a486168"
+      },
+      {
+        "path": "templates/project/docs/README.md",
+        "bytes": 761,
+        "sha256": "8225850b7c26469a9924226d82d52b6dcd4283670790d32d5c1bf19af2a4b34d"
+      },
+      {
+        "path": "templates/project/infra/azure-environment.ps1",
+        "bytes": 12281,
+        "sha256": "59fc17960d684a25cd59db5154ffb4aa46958ab27d73a83d57e25101e58ae599"
+      },
+      {
+        "path": "templates/project/infra/cleanup.ps1",
+        "bytes": 3597,
+        "sha256": "316bc449a37fc68c151632655407a1f45f1b83a5260e357b145b88c78304ca03"
+      },
+      {
+        "path": "templates/project/infra/deploy-infra.ps1",
+        "bytes": 6364,
+        "sha256": "4f33abca3587b62035490ca01cb9e8b9820899952caf93f3e00dca07da36195a"
+      },
+      {
+        "path": "templates/project/infra/deploy.ps1",
+        "bytes": 8244,
+        "sha256": "7d0ee585118f5ba85d9b31974954ae9f2f3b281253b5a7abf88fb1cbe2d19a9b"
+      },
+      {
+        "path": "templates/project/infra/discover.ps1",
+        "bytes": 11681,
+        "sha256": "edfb4144780b77061f036b4c884f9d708597aa21d571f3aec6f8f82255fe577e"
+      },
+      {
+        "path": "templates/project/infra/main.bicep",
+        "bytes": 8819,
+        "sha256": "c3f537dcf9b593c2972836a31ad603fbf6a2671269eb5f55214a728fedfd10c4"
+      },
+      {
+        "path": "templates/project/infra/README.md",
+        "bytes": 7283,
+        "sha256": "0357c8bbb8be861183de0b550962b9ee1a4c65714931c4505d289602d959bf47"
+      },
+      {
+        "path": "templates/scaffold-manifest.json",
+        "bytes": 7218,
+        "sha256": "b56be7454dc6af143cce712e6cfb42dd76473ed5c218c07540048266b27d3b98"
+      },
+      {
+        "path": "tests/adoption-rerun.test.mjs",
+        "bytes": 75604,
+        "sha256": "1c7a1ea2ff3434d7bd37c976ea58a347278b69225814da2b5b59910f1a99d94d"
+      },
+      {
+        "path": "tests/package-install.test.mjs",
+        "bytes": 3066,
+        "sha256": "0dc705e9b1b8c09deb098c1388b6209cda10ce8dca5e7c5b3bdc187b0443a4b1"
+      },
+      {
+        "path": "tests/production-gates.test.mjs",
+        "bytes": 12910,
+        "sha256": "04e59869019ae9a07f7a93ad3409cc930f883f6e77deb46c336fb4b45a0e81b5"
+      },
+      {
+        "path": "tests/project-understanding.test.mjs",
+        "bytes": 5998,
+        "sha256": "bf52c401a00e362e670a61b68a39c5c4736c491987409f4aa3d93b71baca8e00"
+      },
+      {
+        "path": "tests/project-video.test.mjs",
+        "bytes": 37204,
+        "sha256": "568227fd6e25e61df3e52214420439538b532a03f5ba216d3cdc54f75bf58099"
+      },
+      {
+        "path": "tests/security-fuzz.test.mjs",
+        "bytes": 7467,
+        "sha256": "c3f5afd87438d391e27901d0197af0df6cffff6ecb50dbf1dd829262a36d69a7"
+      },
+      {
+        "path": "tests/skill-contracts.test.mjs",
+        "bytes": 45525,
+        "sha256": "8af43e551837752d8466ae500f5500d9b0097acc9c489abc8845b194b0899de5"
+      }
+    ]
+  },
+  "architecture": [
+    {
+      "name": ".github",
+      "description": "Top-level project boundary containing 60 scanned files.",
+      "evidence": [
+        ".github/copilot-instructions.md"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": ".vscode",
+      "description": "Top-level project boundary containing 2 scanned files.",
+      "evidence": [
+        ".vscode/extensions.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "Demo",
+      "description": "Top-level project boundary containing 3 scanned files.",
+      "evidence": [
+        "Demo/audio/narration/scenes.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "config",
+      "description": "Top-level project boundary containing 3 scanned files.",
+      "evidence": [
+        "config/orchestrator.yaml"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "docs",
+      "description": "Top-level project boundary containing 4 scanned files.",
+      "evidence": [
+        "docs/INTERNAL-RELEASE.md"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "release",
+      "description": "Top-level project boundary containing 1 scanned files.",
+      "evidence": [
+        "release/release-manifest.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "reports",
+      "description": "Top-level project boundary containing 24 scanned files.",
+      "evidence": [
+        "reports/adoption-rerun-evidence.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "schemas",
+      "description": "Top-level project boundary containing 35 scanned files.",
+      "evidence": [
+        "schemas/adoption-transaction.schema.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "scripts",
+      "description": "Top-level project boundary containing 10 scanned files.",
+      "evidence": [
+        "scripts/adoption-evidence.mjs"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "templates",
+      "description": "Top-level project boundary containing 35 scanned files.",
+      "evidence": [
+        "templates/project/.editorconfig"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "tests",
+      "description": "Top-level project boundary containing 7 scanned files.",
+      "evidence": [
+        "tests/adoption-rerun.test.mjs"
+      ],
+      "status": "verified"
+    }
+  ],
+  "technology": [
+    {
+      "name": ".md",
+      "description": "96 scanned files use this extension.",
+      "evidence": [
+        ".github/copilot-instructions.md"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": ".json",
+      "description": "59 scanned files use this extension.",
+      "evidence": [
+        ".vscode/extensions.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": ".mjs",
+      "description": "19 scanned files use this extension.",
+      "evidence": [
+        ".github/skills/project-understanding/scripts/project-understanding.mjs"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": ".ps1",
+      "description": "9 scanned files use this extension.",
+      "evidence": [
+        ".github/skills/azure-discovery/scripts/azure-discovery.ps1"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": ".yml",
+      "description": "3 scanned files use this extension.",
+      "evidence": [
+        ".github/dependabot.yml"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": ".yaml",
+      "description": "2 scanned files use this extension.",
+      "evidence": [
+        "config/orchestrator.yaml"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": ".html",
+      "description": "1 scanned files use this extension.",
+      "evidence": [
+        "Demo/project-skills-orchestrator-animation.html"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": ".bicep",
+      "description": "1 scanned files use this extension.",
+      "evidence": [
+        "templates/project/infra/main.bicep"
+      ],
+      "status": "verified"
+    }
+  ],
+  "usage": [
+    {
+      "name": "npm run check",
+      "description": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "npm run evidence:adoption",
+      "description": "node scripts/adoption-evidence.mjs",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "npm run inventory",
+      "description": "node pso.mjs inventory --root .",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "npm run release",
+      "description": "node scripts/build-release.mjs",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "npm run release:status",
+      "description": "node scripts/release-status.mjs",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "npm run release:verify",
+      "description": "node scripts/verify-release.mjs",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "npm run release:verify:candidate",
+      "description": "node scripts/verify-release.mjs --candidate",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "npm run security",
+      "description": "node scripts/security-check.mjs",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "npm run test",
+      "description": "node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/project-video.test.mjs",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "npm run verify",
+      "description": "node pso.mjs verify",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    }
+  ],
+  "features": [
+    {
+      "name": "Governed skill workflows",
+      "description": "41 installed skills provide bounded project actions.",
+      "evidence": [
+        ".github/skills/architecture-review/SKILL.md",
+        ".github/skills/artifact-upgrade/SKILL.md",
+        ".github/skills/audit-azure-environment/SKILL.md",
+        ".github/skills/audit-code/SKILL.md",
+        ".github/skills/audit-plan-remediation/SKILL.md"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "Reusable prompt workflows",
+      "description": "11 prompt files provide user-invoked workflows.",
+      "evidence": [
+        ".github/prompts/azure-cleanup-help.prompt.md",
+        ".github/prompts/demo-create-project.prompt.md",
+        ".github/prompts/demo-web-app.prompt.md",
+        ".github/prompts/environment-update-help.prompt.md",
+        ".github/prompts/project-blueprint.prompt.md"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "Machine-readable contracts",
+      "description": "Schemas validate governed plans, reports, and runtime evidence.",
+      "evidence": [
+        "schemas/adoption-transaction.schema.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "Automated validation",
+      "description": "Repository tests protect contracts and implementation behavior.",
+      "evidence": [
+        "tests/adoption-rerun.test.mjs"
+      ],
+      "status": "verified"
+    }
+  ],
+  "workflows": [
+    {
+      "name": "npm run check",
+      "description": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "npm run evidence:adoption",
+      "description": "node scripts/adoption-evidence.mjs",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "npm run inventory",
+      "description": "node pso.mjs inventory --root .",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "npm run release",
+      "description": "node scripts/build-release.mjs",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "npm run release:status",
+      "description": "node scripts/release-status.mjs",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "npm run release:verify",
+      "description": "node scripts/verify-release.mjs",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "npm run release:verify:candidate",
+      "description": "node scripts/verify-release.mjs --candidate",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "npm run security",
+      "description": "node scripts/security-check.mjs",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "npm run test",
+      "description": "node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/project-video.test.mjs",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "npm run verify",
+      "description": "node pso.mjs verify",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    }
+  ],
+  "customizations": {
+    "skills": [
+      {
+        "name": "architecture-review",
+        "description": "Assess a repository's designed architecture against reliability, security, cost, operational, and performance criteria using infrastructure-as-code, configuration, and decision records. Use for design-time review of the architecture a repository defines; use audit-azure-environment instead to assess a deployed cloud tenant.",
+        "evidence": [
+          ".github/skills/architecture-review/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/architecture-review"
+      },
+      {
+        "name": "artifact-upgrade",
+        "description": "Plan and validate schema and artifact migrations with compatibility checks, backups, rollback routes, and migration evidence. Use when a schema or artifact version changes and existing records must migrate; use dependency-maintenance instead for application package upgrades.",
+        "evidence": [
+          ".github/skills/artifact-upgrade/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/artifact-upgrade"
+      },
+      {
+        "name": "audit-azure-environment",
+        "description": "Perform an evidence-based, read-only Azure security, reliability, governance, cost, and configuration assessment. Use to assess a deployed tenant, subscription, or resource group; use architecture-review instead for design-time review of infrastructure code in the repository.",
+        "evidence": [
+          ".github/skills/audit-azure-environment/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/audit-azure-environment"
+      },
+      {
+        "name": "audit-code",
+        "description": "Perform a complete, read-only repository audit for security, correctness, resource management, performance, dependencies, tests, architecture, and maintainability with structured evidence. Use for a whole-repository assessment; use change-review for a bounded diff and security-review for a security-only pass.",
+        "evidence": [
+          ".github/skills/audit-code/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/audit-code"
+      },
+      {
+        "name": "audit-plan-remediation",
+        "description": "Convert validated audit findings into prioritized remediation work with owners, dependencies, verification, rollout, and rollback guidance. Use after findings are reviewed and confirmed; do not use to generate findings or to execute the remediation work.",
+        "evidence": [
+          ".github/skills/audit-plan-remediation/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/audit-plan-remediation"
+      },
+      {
+        "name": "audit-review-findings",
+        "description": "Transform structured audit findings into a traceable mixed-audience review while preserving IDs, severity, confidence, evidence, and limitations. Use between audit-code and remediation planning; do not use to discover new findings.",
+        "evidence": [
+          ".github/skills/audit-review-findings/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/audit-review-findings"
+      },
+      {
+        "name": "azure-cleanup",
+        "description": "Safely inspect and, after explicit confirmation, remove Azure resources associated with a project using resource-group, resource, or all-project cleanup scopes.",
+        "evidence": [
+          ".github/skills/azure-cleanup/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/azure-cleanup"
+      },
+      {
+        "name": "azure-discovery",
+        "description": "Discover Azure Commercial or Azure US Government service and model availability for the current project, persist dated results, and identify when a refresh is needed.",
+        "evidence": [
+          ".github/skills/azure-discovery/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/azure-discovery"
+      },
+      {
+        "name": "change-review",
+        "description": "Review a bounded working-tree, commit, or pull-request diff for defects, security regressions, requirement gaps, and missing tests, with severity-ranked evidence. Use before commit or merge; use audit-code instead for repository-wide assessment.",
+        "evidence": [
+          ".github/skills/change-review/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/change-review"
+      },
+      {
+        "name": "ci-failure-triage",
+        "description": "Resolve a specific CI run or pull request, extract actionable failing checks and logs, diagnose the local cause, and verify a scoped repair. Use for failing hosted pipelines; do not use for local-only test failures or general workflow design.",
+        "evidence": [
+          ".github/skills/ci-failure-triage/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/ci-failure-triage"
+      },
+      {
+        "name": "clarify-the-ask",
+        "description": "Determine whether a development request is sufficiently defined, inspect available project evidence, surface conflicts and assumptions, and ask only material clarifying questions before planning or implementation. Use for ambiguous, conflicting, high-impact, or underspecified requests; skip questions when repository evidence and safe defaults are sufficient.",
+        "evidence": [
+          ".github/skills/clarify-the-ask/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/clarify-the-ask"
+      },
+      {
+        "name": "dependency-maintenance",
+        "description": "Assess and update application package dependencies with provenance, advisory, compatibility, lockfile, and test evidence. Use for package upgrades or vulnerability remediation; do not use for Agent Skill graph dependencies or schema migrations.",
+        "evidence": [
+          ".github/skills/dependency-maintenance/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/dependency-maintenance"
+      },
+      {
+        "name": "deployment-review",
+        "description": "Validate that a release candidate is deployable by checking build reproducibility, configuration completeness, environment parity, verification steps, and rollback readiness. Use before requesting deployment approval; this skill never performs a deployment.",
+        "evidence": [
+          ".github/skills/deployment-review/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/deployment-review"
+      },
+      {
+        "name": "development-environment-readiness",
+        "description": "Assess, plan, configure, and validate a project's pre-coding development environment, including access, editor, source control, runtimes, authentication, isolation, debugging, testing, automation, and security gates. Use when onboarding a repository or preparing a new project; do not use for feature implementation.",
+        "evidence": [
+          ".github/skills/development-environment-readiness/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/development-environment-readiness"
+      },
+      {
+        "name": "documentation-builder",
+        "description": "Generate and maintain README files, decision records, deployment guides, and operations runbooks that are verified against repository evidence. Use when documentation is missing, stale, or contradicts the code; do not use to narrate changes an agent just made.",
+        "evidence": [
+          ".github/skills/documentation-builder/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/documentation-builder"
+      },
+      {
+        "name": "environment-update",
+        "description": "Inventory installed development tools and present available updates, then update only existing tools selected by the user with complete findings and error reporting.",
+        "evidence": [
+          ".github/skills/environment-update/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/environment-update"
+      },
+      {
+        "name": "framework-health-check",
+        "description": "Validate framework structure, skill contracts, schemas, ownership, profiles, fixtures, configuration, and conformance evidence. Use to verify the installed orchestrator framework itself; use audit-code instead to assess application code.",
+        "evidence": [
+          ".github/skills/framework-health-check/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/framework-health-check"
+      },
+      {
+        "name": "linkedin-post",
+        "description": "Analyze the current project and prepare a reviewable LinkedIn post draft for Microsoft employees and the technical community, including update posts based on project history.",
+        "evidence": [
+          ".github/skills/linkedin-post/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/linkedin-post"
+      },
+      {
+        "name": "multi-agent-coordinator",
+        "description": "Coordinate concurrent agents with leases, fencing tokens, ownership transfer, conflict detection, and shared-read or exclusive-write semantics. Use when more than one agent may write the same artifacts concurrently; do not use for single-agent sequential work.",
+        "evidence": [
+          ".github/skills/multi-agent-coordinator/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/multi-agent-coordinator"
+      },
+      {
+        "name": "policy-engine",
+        "description": "Evaluate centralized authorization, risk, compliance, escalation, and approval policies without executing the governed action. Use to decide whether an action is allowed, denied, or approval-gated; never use it to perform the action.",
+        "evidence": [
+          ".github/skills/policy-engine/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/policy-engine"
+      },
+      {
+        "name": "prepare-commit",
+        "description": "Prepare a minimal, validated change set and commit summary after bounded change review, without committing, pushing, deploying, or bypassing protections. Use when changes are ready for a pre-commit decision.",
+        "evidence": [
+          ".github/skills/prepare-commit/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/prepare-commit"
+      },
+      {
+        "name": "project-handoff",
+        "description": "Record verified project continuity, milestone status, key decisions, blockers, last completed work, and the next approved action. Use at the end of a work session or before transferring ownership so the next agent or person can resume; do not use as a change log.",
+        "evidence": [
+          ".github/skills/project-handoff/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/project-handoff"
+      },
+      {
+        "name": "project-knowledge-capture",
+        "description": "Transform verified decisions, lessons, patterns, anti-patterns, and architecture discoveries into reusable project knowledge. Use when an insight should outlive the current task; use project-handoff instead for current status and next actions.",
+        "evidence": [
+          ".github/skills/project-knowledge-capture/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/project-knowledge-capture"
+      },
+      {
+        "name": "project-memory",
+        "description": "Maintain operational experience and durable preferences while ensuring current instructions and repository evidence outrank saved memory. Use to record or recall durable working preferences across sessions; never use stored memory to override the current request or repository evidence.",
+        "evidence": [
+          ".github/skills/project-memory/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/project-memory"
+      },
+      {
+        "name": "project-setup",
+        "description": "Establish a new application's repository structure, agent customization layer, standards, and required skill set so development can start from a governed baseline. Use when starting a new application or bringing an unstructured repository up to the project baseline; do not use for feature implementation or dependency installation.",
+        "evidence": [
+          ".github/skills/project-setup/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/project-setup"
+      },
+      {
+        "name": "project-skills-orchestrator",
+        "description": "Coordinate project workflows by discovering capabilities, routing intent, enforcing ownership boundaries, and composing approved skills. Use to route any request that spans more than one skill or whose owner is unclear; do not use when a single owning skill clearly applies.",
+        "evidence": [
+          ".github/skills/project-skills-orchestrator/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/project-skills-orchestrator"
+      },
+      {
+        "name": "project-understanding",
+        "description": "Perform a complete evidence-grounded scan of the current repository and rebuild authoritative project understanding covering purpose, architecture, setup, usage, features, skills, prompts, workflows, validation, and limitations. Use before project-video or whenever the project guide must reflect current code.",
+        "evidence": [
+          ".github/skills/project-understanding/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/project-understanding"
+      },
+      {
+        "name": "project-video",
+        "description": "Analyze a new or existing project with meaningful verified content and produce an evidence-grounded browser preview or narrated MP4 entirely from VS Code using optional Azure OpenAI, Speech, Speech Avatar, local Piper, and FFmpeg stages. Do not use for empty baselines, generic documentation, live recording, or publication.",
+        "evidence": [
+          ".github/skills/project-video/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/project-video"
+      },
+      {
+        "name": "regression-test-development",
+        "description": "Create or strengthen focused automated tests that reproduce a bug or specify a requested behavior, then capture red-green validation evidence. Use when a change needs durable regression coverage; do not use only to execute an existing test suite.",
+        "evidence": [
+          ".github/skills/regression-test-development/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/regression-test-development"
+      },
+      {
+        "name": "security-review",
+        "description": "Review code, configuration, and infrastructure for exploitable weaknesses, secret exposure, identity and authorization defects, and OWASP Top 10 categories with severity-ranked evidence. Use before merging or releasing security-relevant change; use audit-code instead for whole-repository quality assessment.",
+        "evidence": [
+          ".github/skills/security-review/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/security-review"
+      },
+      {
+        "name": "skill-create",
+        "description": "Create or update concise, composable skill packages with valid metadata, bounded tools, ownership, validation, dependencies, and examples. Use to author or revise a skill contract; do not use to invoke an existing skill.",
+        "evidence": [
+          ".github/skills/skill-create/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/skill-create"
+      },
+      {
+        "name": "skill-dependency-manager",
+        "description": "Resolve skill and artifact dependencies, validate compatible versions, detect cycles, assess upgrade impact, and generate dependency graphs. Use for the skill and artifact graph; use dependency-maintenance instead for application package dependencies.",
+        "evidence": [
+          ".github/skills/skill-dependency-manager/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/skill-dependency-manager"
+      },
+      {
+        "name": "skill-inventory",
+        "description": "Discover and inventory skills, reports, add-ins, integrations, schemas, templates, adapters, migrations, runtime components, and configuration extensions. Use to establish what capabilities and artifacts a project actually has before planning; do not use to execute them.",
+        "evidence": [
+          ".github/skills/skill-inventory/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/skill-inventory"
+      },
+      {
+        "name": "skill-registry",
+        "description": "Manage governed skill package metadata, discovery, provenance, integrity, lifecycle promotion, deprecation, retirement, and revocation proposals. Use to promote, deprecate, retire, or verify the provenance of a skill package; use skill-create instead to author its content.",
+        "evidence": [
+          ".github/skills/skill-registry/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/skill-registry"
+      },
+      {
+        "name": "systematic-debugging",
+        "description": "Reproduce an observed software failure, gather diagnostic evidence, isolate its root cause, and verify the smallest safe fix. Use for failing behavior, crashes, incorrect output, flaky tests, or regressions; do not use for broad repository audits.",
+        "evidence": [
+          ".github/skills/systematic-debugging/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/systematic-debugging"
+      },
+      {
+        "name": "workflow-planner",
+        "description": "Convert user intent into an ordered, validated workflow plan with inputs, outputs, approvals, checkpoints, rollback points, and recovery routes. Use after clarification to turn a confirmed request into an executable sequence; do not use to execute the plan.",
+        "evidence": [
+          ".github/skills/workflow-planner/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/workflow-planner"
+      },
+      {
+        "name": "workflow-recovery",
+        "description": "Analyze interrupted or partially failed workflows and produce a safe recovery plan from events, checkpoints, artifacts, and handoffs. Use when a workflow was interrupted, crashed, or partially applied and must resume safely; do not use for normal planning.",
+        "evidence": [
+          ".github/skills/workflow-recovery/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/workflow-recovery"
+      },
+      {
+        "name": "workflow-scheduler",
+        "description": "Own admission, prioritization, fairness, budgets, deadlines, throttling, capacity, and starvation prevention for eligible workflows. Use when multiple eligible workflows compete for limited capacity or budget; do not use for a single sequential workflow.",
+        "evidence": [
+          ".github/skills/workflow-scheduler/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/workflow-scheduler"
+      },
+      {
+        "name": "workflow-simulator",
+        "description": "Predict workflow behavior, failure paths, approval rejection, conflicts, migrations, interruptions, and budget outcomes without real mutations. Use to dry-run a plan and expose failure and approval paths before committing to it; this skill never mutates real state.",
+        "evidence": [
+          ".github/skills/workflow-simulator/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/workflow-simulator"
+      },
+      {
+        "name": "workflow-state-manager",
+        "description": "Maintain live event-sourced execution state and deterministic pause, resume, approval-wait, checkpoint, and terminal-state behavior. Use to read or advance authoritative execution state; use policy-engine for approval decisions and project-skills-orchestrator for routing.",
+        "evidence": [
+          ".github/skills/workflow-state-manager/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/workflow-state-manager"
+      },
+      {
+        "name": "workflow-telemetry",
+        "description": "Derive operational metrics, resource usage, retries, failures, approvals, artifacts, and skill performance from authoritative runtime events. Use to analyze recorded workflow events after execution; do not use as a live monitoring or alerting system.",
+        "evidence": [
+          ".github/skills/workflow-telemetry/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/workflow-telemetry"
+      }
+    ],
+    "prompts": [
+      {
+        "name": "azure-cleanup-help",
+        "description": "Explain how to use the Azure Cleanup Skill safely.",
+        "evidence": [
+          ".github/prompts/azure-cleanup-help.prompt.md"
+        ],
+        "status": "verified",
+        "invocation": "/azure-cleanup-help"
+      },
+      {
+        "name": "demo-create-project",
+        "description": "Demo step 1 - provision the Skills Orchestrator Demo project and prepare it for automated follow-up prompts.",
+        "evidence": [
+          ".github/prompts/demo-create-project.prompt.md"
+        ],
+        "status": "verified",
+        "invocation": "/demo-create-project"
+      },
+      {
+        "name": "demo-web-app",
+        "description": "Demo step 2 - build the session countdown web app inside the generated demo project.",
+        "evidence": [
+          ".github/prompts/demo-web-app.prompt.md"
+        ],
+        "status": "verified",
+        "invocation": "/demo-web-app"
+      },
+      {
+        "name": "environment-update-help",
+        "description": "Explain how to inventory and update existing development tools safely.",
+        "evidence": [
+          ".github/prompts/environment-update-help.prompt.md"
+        ],
+        "status": "verified",
+        "invocation": "/environment-update-help"
+      },
+      {
+        "name": "project-blueprint",
+        "description": "Create or review the versioned project blueprint before implementation.",
+        "evidence": [
+          ".github/prompts/project-blueprint.prompt.md"
+        ],
+        "status": "verified",
+        "invocation": "/project-blueprint"
+      },
+      {
+        "name": "project-mermaid-architecture",
+        "description": "Create an executive Mermaid architecture diagram for the current project grounded in repository evidence and business value.",
+        "evidence": [
+          ".github/prompts/project-mermaid-architecture.prompt.md"
+        ],
+        "status": "verified",
+        "invocation": "/project-mermaid-architecture"
+      },
+      {
+        "name": "project-start",
+        "description": "Start a new project by turning its confirmed blueprint into an ordered, governed development plan.",
+        "evidence": [
+          ".github/prompts/project-start.prompt.md"
+        ],
+        "status": "verified",
+        "invocation": "/project-start"
+      },
+      {
+        "name": "project-status",
+        "description": "Summarize the authoritative project state and identify the next governed action.",
+        "evidence": [
+          ".github/prompts/project-status.prompt.md"
+        ],
+        "status": "verified",
+        "invocation": "/project-status"
+      },
+      {
+        "name": "project-validate",
+        "description": "Validate that a project foundation is ready for governed implementation.",
+        "evidence": [
+          ".github/prompts/project-validate.prompt.md"
+        ],
+        "status": "verified",
+        "invocation": "/project-validate"
+      },
+      {
+        "name": "release-readiness",
+        "description": "Assess whether the current Skills Orchestrator candidate is ready for internal release or a live demo.",
+        "evidence": [
+          ".github/prompts/release-readiness.prompt.md"
+        ],
+        "status": "verified",
+        "invocation": "/release-readiness"
+      },
+      {
+        "name": "skills-help",
+        "description": "Find and understand any governed project skill before invoking it.",
+        "evidence": [
+          ".github/prompts/skills-help.prompt.md"
+        ],
+        "status": "verified",
+        "invocation": "/skills-help"
+      }
+    ],
+    "agents": [],
+    "schemas": [
+      {
+        "name": "adoption-transaction.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/adoption-transaction.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "architecture-review.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/architecture-review.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "audit-findings-review.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/audit-findings-review.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "audit-remediation-plan.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/audit-remediation-plan.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "azure-discovery.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/azure-discovery.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "azure-environment.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/azure-environment.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "clarification-result.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/clarification-result.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "code-audit-findings.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/code-audit-findings.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "cross-platform-ci-evidence.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/cross-platform-ci-evidence.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "current-execution-state.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/current-execution-state.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "deployment-review.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/deployment-review.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "development-environment-readiness.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/development-environment-readiness.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "documentation-plan.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/documentation-plan.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "independent-review.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/independent-review.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "project-blueprint.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/project-blueprint.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "project-installation-verification.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/project-installation-verification.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "project-setup-plan.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/project-setup-plan.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "project-understanding.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/project-understanding.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "project-video-browser-preview-manifest.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/project-video-browser-preview-manifest.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "project-video-local-voice-manifest.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/project-video-local-voice-manifest.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "project-video-manifest.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/project-video-manifest.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "project-video-narration-manifest.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/project-video-narration-manifest.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "project-video-plan.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/project-video-plan.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "project-video-voice-samples.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/project-video-voice-samples.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "project-video-voice-selection.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/project-video-voice-selection.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "release-manifest.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/release-manifest.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "release-readiness.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/release-readiness.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "release-signature.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/release-signature.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "resolved-configuration.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/resolved-configuration.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "security-check.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/security-check.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "security-review.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/security-review.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "skill-details.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/skill-details.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "skill-inventory.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/skill-inventory.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "workflow-event.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/workflow-event.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "workflow-plan.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/workflow-plan.schema.json"
+        ],
+        "status": "verified"
+      }
+    ]
+  },
+  "validation": [
+    {
+      "name": "npm run check",
+      "description": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "npm run release:verify",
+      "description": "node scripts/verify-release.mjs",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "npm run release:verify:candidate",
+      "description": "node scripts/verify-release.mjs --candidate",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "npm run security",
+      "description": "node scripts/security-check.mjs",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "npm run test",
+      "description": "node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/project-video.test.mjs",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "npm run verify",
+      "description": "node pso.mjs verify",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    }
+  ],
+  "limitations": [],
+  "markdown": "reports/project-understanding.md",
+  "markdownSha256": "764734abbea19c6dd39479dbf2bb685e42cbea11fc077215d67dc236d4e24c27"
+}

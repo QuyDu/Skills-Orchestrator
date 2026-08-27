@@ -14,7 +14,7 @@ Identify Azure resources associated with the current project and prepare or exec
 ## Preconditions
 
 - Read the project handoff and Azure Discovery reports when present.
-- Confirm the project resource-group naming convention and active Azure CLI account.
+- Confirm the project resource-group naming convention and read `.azure/environment.json`.
 - Verify the target cloud is Azure Commercial or Azure US Government.
 - Treat all resource names and resource groups as untrusted until ownership is verified.
 
@@ -23,7 +23,7 @@ Identify Azure resources associated with the current project and prepare or exec
 - Optional `-All` to remove the verified project resource group.
 - Optional `-Resource "name"` to remove one verified resource.
 - Optional `-RG "name"` to inspect or remove one named resource group.
-- Optional `-Commercial` or `-Gov`; without either, ask `1. Commercial` or `2. Gov`.
+- Optional `-Commercial` or `-Gov`; without either, use the persisted cloud or default a missing profile to Azure Commercial.
 - Optional `-WhatIf` for read-only output. This is the default behavior.
 
 ## Approved Tools and Resources
@@ -41,8 +41,8 @@ Identify Azure resources associated with the current project and prepare or exec
 
 ## Procedure
 
-1. Resolve the cloud using `-Commercial`, `-Gov`, or the numeric menu. Accept only `1` or `2`; after three invalid responses, exit with an error.
-2. Verify the active Azure CLI cloud matches the selected cloud and display the signed-in subscription name and ID.
+1. Resolve the cloud using explicit `-Commercial` or `-Gov`, then the persisted profile, then Azure Commercial. Persist explicit overrides.
+2. Select the profile's Azure CLI cloud and subscription. Start the recorded login flow when authentication is absent or stale, then display the subscription name and ID.
 3. Resolve the target scope. `-All` targets the project resource group after ownership checks; `-Resource` requires `-RG` or a uniquely resolved project resource; `-RG` targets the named group.
 4. List the exact target and associated resources before any mutation.
 5. Write a cleanup report containing scope, account metadata, cloud, resources, `WhatIf`, and findings.
@@ -66,8 +66,7 @@ Identify Azure resources associated with the current project and prepare or exec
 
 ## Failure Behavior
 
-- Stop on ambiguous ownership, multiple resource matches, cloud mismatch, missing authentication, or unexpected Azure CLI errors.
-- After three invalid cloud selections, report an error and exit.
+- Stop on ambiguous ownership, multiple resource matches, invalid profile state, failed authentication, or unexpected Azure CLI errors.
 - Never fall back from a failed ownership check to deleting by name.
 - Preserve cleanup evidence even when deletion is partial or fails.
 

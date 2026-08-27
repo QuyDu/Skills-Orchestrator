@@ -25,6 +25,13 @@ Use `.github/skills/project-skills-orchestrator/SKILL.md` for project orchestrat
 - Treat machine-readable artifacts in `reports/` as authoritative.
 - Never rewrite accepted records in `reports/execution-log.jsonl`.
 
+## Azure environment automation
+
+- Read `.azure/environment.json` before Azure work. Explicit `-Gov` or `-Commercial` overrides the saved cloud; otherwise use the saved profile, then Azure Commercial as the default.
+- If the profile is missing, collect its nonsecret environment choices once and persist them. Never repeat cloud, subscription, MCP, or login questions while the profile remains valid.
+- Select the recorded Azure CLI cloud and subscription automatically. If authentication is absent or stale, start the recorded login flow instead of asking whether to log in.
+- Azure MCP is opt-in. Do not invoke it when disabled, and never invoke `foundryextensions` unless the profile already enables it with a client ID.
+
 ## Repository standards
 
 - The skill catalog, `config/profiles.yaml`, `schemas/`, and `templates/project/` are contract surfaces. Changing any of them requires updating `tests/skill-contracts.test.mjs`.

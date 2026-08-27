@@ -28,27 +28,44 @@ Apply this to every new user prompt, without exception, before any analysis, too
 Use `.github/skills/project-skills-orchestrator/SKILL.md` for project orchestration. Audit existing project state, inventory available skills, plan before execution, preserve repository-owned skills, and stop at approval gates.
 <!-- pso:end id=orchestration-routing -->
 
+<!-- pso:begin id=azure-environment-automation version=1 -->
+## Azure environment automation
+
+- Read `.azure/environment.json` before Azure work. Explicit `-Gov` or `-Commercial` overrides the saved cloud; otherwise use the saved profile, then Azure Commercial as the default.
+- If the profile is missing, collect its nonsecret environment choices once and persist them. Never repeat cloud, subscription, MCP, or login questions while the profile remains valid.
+- Select the recorded Azure CLI cloud and subscription automatically. If authentication is absent or stale, start the recorded login flow instead of asking whether to log in.
+- Azure MCP is opt-in. Do not invoke it when disabled, and never invoke `foundryextensions` unless the profile already enables it with a client ID.
+<!-- pso:end id=azure-environment-automation -->
+
 - Machine-readable artifacts under `reports/` are authoritative. Markdown views are derived.
 - Never rewrite accepted records in `reports/execution-log.jsonl`.
 
-## Startup continuity and Azure discovery
+## Startup continuity
 
 At the beginning of work, read `reports/project-handoff.json` before planning or changing files. If
 it does not exist, create an initial handoff through `/project-handoff`. After understanding the
-handoff, read `reports/azure-discovery.md` and `reports/azure-discovery.json`. If discovery is
-missing, ask whether the user wants to run `/azure-discovery`. If its recorded `discoveredAt`
-timestamp is more than 14 days old, ask whether the user wants to rerun it. Continue with a warning
-when the user declines and record that decision in the next handoff.
+handoff, read the Azure environment profile and discovery reports before Azure-dependent planning.
 
-`/project-video` always runs its packaged `discovery-status` first. For missing, incompatible, or
-stale discovery, ask whether to run `/azure-discovery`. If the user declines, select the explicit
-`browser-preview` provider and generate interactive HTML with browser-default voice and visuals;
-never label it rendered audio or MP4 media. If the user accepts, refresh discovery and run
-`azure-preflight` before Azure narration. Discovery never creates a resource or retrieves its key.
+`/project-understanding` performs a complete repository rescan and atomically rebuilds
+`reports/project-understanding.json` and `reports/project-understanding.md`; it never appends an
+incremental summary. `/project-video` refreshes and validates those files before it builds pages or
+dialogue, so the repository where the command runs is always the presentation subject.
 
-`/azure-discovery` accepts `-Commercial` or `-Gov`. If neither is supplied, ask the user to choose
-`1. Commercial` or `2. Gov`; accept only `1` or `2`, retry three invalid responses, then report an
-error and exit. To explicitly bypass the normal clarification round, append the exact token
+After refreshing Project Understanding, `/project-video` runs its packaged `discovery-status`. When Azure narration is selected
+and discovery is missing, incompatible, or stale, refresh it using the environment profile and run
+`azure-preflight`. Use `browser-preview` when the project does not select Azure narration. Discovery
+never creates a resource or retrieves its key.
+
+Select the smallest valid video production path. Prefer Azure Speech in the configured region when
+available and approved. Require approval before same-cloud cross-region processing. Otherwise retain
+the same pages and dialogue in an interactive browser-default-voice presentation. Offer local Piper
+only when a portable offline narrated MP4 is required, and use local FFmpeg for approved MP4 output.
+Azure OpenAI, Azure Speech, Speech Avatar, downloads, and FFmpeg rendering each retain their separate
+approvals. The entire production workflow remains executable from VS Code. Browser speech is HTML,
+not rendered media, and an Avatar presenter clip is never a completed project or final MP4.
+
+`/azure-discovery` accepts `-Commercial` or `-Gov`. Without a flag it uses the saved environment or
+defaults a new profile to Commercial Azure. To explicitly bypass the normal clarification round, append the exact token
 `--proceed` to the prompt. This is a user instruction to proceed with reasonable defaults,
 not permission for destructive, external, privileged, irreversible, commit, or push actions.
 

@@ -24,3 +24,10 @@ Apply this to every new user prompt, without exception, before any analysis, too
 - Never rewrite accepted records in `reports/execution-log.jsonl`.
 - Require explicit approval before destructive changes, external publication, deployment, or remote mutation.
 - Run `npm run check` before declaring implementation work complete.
+
+## Azure environment automation
+
+- Read `.azure/environment.json` before Azure work. Explicit `-Gov` or `-Commercial` overrides the saved cloud; otherwise use the saved profile, then Azure Commercial as the default.
+- Collect missing nonsecret Azure environment choices once, persist them, and do not repeat cloud, subscription, MCP, or login questions while the profile remains valid.
+- Select the recorded Azure CLI cloud and subscription automatically. Start the recorded login flow when authentication is absent or stale.
+- Azure MCP is opt-in. Do not invoke it when disabled, and never invoke `foundryextensions` unless the profile already enables it with a client ID.

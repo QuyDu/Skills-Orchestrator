@@ -163,6 +163,8 @@ test("rerun adoption synchronizes updates, wiring, and legacy skill IDs", async 
     await writeFile(profilesPath, `${await readFile(profilesPath, "utf8")}\n# stale profile copy\n`, "utf8");
     await writeFile(path.join(project, "config", "orchestrator.yaml"), "frameworkVersion: stale\nprofile: wrong\n", "utf8");
     await writeFile(path.join(project, ".github", "copilot-instructions.md"), "Keep this project-specific instruction.\n", "utf8");
+    const obsoletePrompt = path.join(project, ".github", "prompts", "project-video.prompt.md");
+    await writeFile(obsoletePrompt, "Run the `project-video` skill and follow its contract.\n", "utf8");
     const customSkillDirectory = path.join(project, ".github", "skills", "custom-consumer");
     await mkdir(customSkillDirectory, { recursive: true });
     const customSkillPath = path.join(customSkillDirectory, "SKILL.md");
@@ -230,11 +232,13 @@ No approval is required for read-only work.
     assert.match(dryRun, /Framework files to update: [1-9]/);
     assert.match(dryRun, /Wiring files to update: [1-9]/);
     assert.match(dryRun, /Duplicate skills to replace: 1/);
+    assert.match(dryRun, /Duplicate prompt commands to remove: 1/);
 
     runAdoption(project, "--apply");
 
     assert.equal(await readFile(auditPath, "utf8"), await readFile(path.join(root, ".github", "skills", "audit-code", "SKILL.md"), "utf8"));
     assert.ok(!existsSync(obsoletePackageFile));
+    assert.ok(!existsSync(obsoletePrompt));
     const migratedCustomSkill = await readFile(customSkillPath, "utf8");
     assert.match(migratedCustomSkill, /audit-review-findings/);
     assert.doesNotMatch(migratedCustomSkill, /review-audit-findings/);
@@ -243,9 +247,12 @@ No approval is required for read-only work.
     assert.equal(await readFile(schemaPath, "utf8"), await readFile(path.join(root, "schemas", "code-audit-findings.schema.json"), "utf8"));
     assert.equal(await readFile(profilesPath, "utf8"), await readFile(path.join(root, "config", "profiles.yaml"), "utf8"));
     assert.ok(existsSync(path.join(project, ".github", "skills", "project-video", "scripts", "project-video.mjs")));
+    assert.ok(existsSync(path.join(project, ".github", "skills", "project-understanding", "scripts", "project-understanding.mjs")));
     assert.ok(existsSync(path.join(project, ".github", "skills", "azure-discovery", "scripts", "azure-discovery.ps1")));
-    assert.ok(existsSync(path.join(project, ".github", "prompts", "project-video.prompt.md")));
+    assert.ok(existsSync(path.join(project, ".github", "skills", "azure-discovery", "scripts", "azure-environment.ps1")));
+    assert.ok(!existsSync(path.join(project, ".github", "prompts", "project-video.prompt.md")));
     assert.ok(existsSync(path.join(project, "schemas", "project-video-plan.schema.json")));
+    assert.ok(existsSync(path.join(project, "schemas", "project-understanding.schema.json")));
     assert.ok(existsSync(path.join(project, "schemas", "project-video-manifest.schema.json")));
     assert.ok(existsSync(path.join(project, "schemas", "project-video-voice-samples.schema.json")));
     assert.ok(existsSync(path.join(project, "schemas", "project-video-voice-selection.schema.json")));
@@ -253,22 +260,26 @@ No approval is required for read-only work.
     assert.ok(existsSync(path.join(project, "schemas", "project-video-local-voice-manifest.schema.json")));
     assert.ok(existsSync(path.join(project, "schemas", "project-video-browser-preview-manifest.schema.json")));
     assert.ok(existsSync(path.join(project, "schemas", "azure-discovery.schema.json")));
+    assert.ok(existsSync(path.join(project, "schemas", "azure-environment.schema.json")));
     const adoptedVideoHelper = await readFile(path.join(project, ".github", "skills", "project-video", "scripts", "project-video.mjs"), "utf8");
     assert.match(adoptedVideoHelper, /command === "install-local-voice"/);
     assert.match(adoptedVideoHelper, /en_US-ljspeech-high/);
-    const adoptedVideoPrompt = await readFile(path.join(project, ".github", "prompts", "project-video.prompt.md"), "utf8");
-    assert.match(adoptedVideoPrompt, /local-piper/);
-    assert.match(adoptedVideoPrompt, /azure-preflight/);
-    assert.match(adoptedVideoPrompt, /browser-preview/);
+    const adoptedVideoSkill = await readFile(path.join(project, ".github", "skills", "project-video", "SKILL.md"), "utf8");
+    assert.match(adoptedVideoSkill, /local-piper/);
+    assert.match(adoptedVideoSkill, /azure-preflight/);
+    assert.match(adoptedVideoSkill, /browser-preview/);
     const adoptedVideoSchema = JSON.parse(await readFile(path.join(project, "schemas", "project-video-plan.schema.json"), "utf8"));
     assert.equal(adoptedVideoSchema.$defs.localVoice.properties.provider.const, "local-piper");
 
     const instructions = await readFile(path.join(project, ".github", "copilot-instructions.md"), "utf8");
     assert.match(instructions, /Keep this project-specific instruction\./);
     assert.match(instructions, /\.github\/skills\/project-skills-orchestrator\/SKILL\.md/);
+    assert.match(instructions, /\.azure\/environment\.json/);
+    assert.match(instructions, /Azure MCP is opt-in/);
     const agentInstructions = await readFile(path.join(project, "AGENTS.md"), "utf8");
     assert.match(agentInstructions, /Keep this project-specific agent instruction\./);
     assert.match(agentInstructions, /\.github\/skills\/project-skills-orchestrator\/SKILL\.md/);
+    assert.match(agentInstructions, /\.azure\/environment\.json/);
     assert.ok(existsSync(path.join(project, ".vscode", "extensions.json")));
     assert.ok(existsSync(path.join(project, ".vscode", "settings.json")));
     const adoptedSettings = JSON.parse(await readFile(path.join(project, ".vscode", "settings.json"), "utf8"));
@@ -277,7 +288,7 @@ No approval is required for read-only work.
 
     const manifest = JSON.parse(await readFile(path.join(project, "project-orchestrator.json"), "utf8"));
     assert.equal(manifest.frameworkVersion, "9.0.0");
-    assert.equal(manifest.runtimeVersion, "1.0.3");
+    assert.equal(manifest.runtimeVersion, "1.1.0");
     assert.equal(manifest.conformanceProfile, "core");
     assert.equal(manifest.riskAcceptance.noticeVersion, "1.0.0");
     assert.equal(manifest.riskAcceptance.method, "cli-flag");
@@ -581,9 +592,13 @@ test("accepted project creation records the risk acknowledgment", async () => {
     const configuredProfile = JSON.parse(await readFile(path.join(created, "config", "skills-orchestrator.json"), "utf8")).profile;
     assert.equal(configuredProfile, "durable");
     assert.ok(existsSync(path.join(created, ".github", "skills", "project-video", "scripts", "project-video.mjs")));
+    assert.ok(existsSync(path.join(created, ".github", "skills", "project-understanding", "scripts", "project-understanding.mjs")));
     assert.ok(existsSync(path.join(created, ".github", "skills", "azure-discovery", "scripts", "azure-discovery.ps1")));
-    assert.ok(existsSync(path.join(created, ".github", "prompts", "project-video.prompt.md")));
+    assert.ok(existsSync(path.join(created, ".github", "skills", "azure-discovery", "scripts", "azure-environment.ps1")));
+    assert.ok(existsSync(path.join(created, "infra", "azure-environment.ps1")));
+    assert.ok(!existsSync(path.join(created, ".github", "prompts", "project-video.prompt.md")));
     assert.ok(existsSync(path.join(created, "schemas", "project-video-plan.schema.json")));
+    assert.ok(existsSync(path.join(created, "schemas", "project-understanding.schema.json")));
     assert.ok(existsSync(path.join(created, "schemas", "project-video-manifest.schema.json")));
     assert.ok(existsSync(path.join(created, "schemas", "project-video-voice-samples.schema.json")));
     assert.ok(existsSync(path.join(created, "schemas", "project-video-voice-selection.schema.json")));
@@ -591,13 +606,14 @@ test("accepted project creation records the risk acknowledgment", async () => {
     assert.ok(existsSync(path.join(created, "schemas", "project-video-local-voice-manifest.schema.json")));
     assert.ok(existsSync(path.join(created, "schemas", "project-video-browser-preview-manifest.schema.json")));
     assert.ok(existsSync(path.join(created, "schemas", "azure-discovery.schema.json")));
+    assert.ok(existsSync(path.join(created, "schemas", "azure-environment.schema.json")));
     const createdVideoHelper = await readFile(path.join(created, ".github", "skills", "project-video", "scripts", "project-video.mjs"), "utf8");
     assert.match(createdVideoHelper, /command === "install-local-voice"/);
     assert.match(createdVideoHelper, /en_US-ljspeech-high/);
-    const createdVideoPrompt = await readFile(path.join(created, ".github", "prompts", "project-video.prompt.md"), "utf8");
-    assert.match(createdVideoPrompt, /local-piper/);
-    assert.match(createdVideoPrompt, /azure-preflight/);
-    assert.match(createdVideoPrompt, /browser-preview/);
+    const createdVideoSkill = await readFile(path.join(created, ".github", "skills", "project-video", "SKILL.md"), "utf8");
+    assert.match(createdVideoSkill, /local-piper/);
+    assert.match(createdVideoSkill, /azure-preflight/);
+    assert.match(createdVideoSkill, /browser-preview/);
     const createdVideoSchema = JSON.parse(await readFile(path.join(created, "schemas", "project-video-plan.schema.json"), "utf8"));
     assert.equal(createdVideoSchema.$defs.localVoice.properties.provider.const, "local-piper");
   } finally {
@@ -661,6 +677,31 @@ description: Application security rules
     const forced = spawnSync(process.execPath, [runtime, "adopt", "--project", project, "--profile", "core", "--force-templates", "--dry-run"], { cwd: root, encoding: "utf8" });
     assert.equal(forced.status, 0, forced.stderr);
     assert.match(`${forced.stdout}`, /Templates covered by existing files: 0/);
+  } finally {
+    await rm(project, { recursive: true, force: true });
+  }
+});
+
+test("adoption reports thin guidance as overlap and still installs the framework standard", async () => {
+  const project = await mkdtemp(path.join(os.tmpdir(), "pso-overlap-"));
+  try {
+    await writeFile(path.join(project, "package.json"), "{\"name\":\"overlap-fixture\"}\n", "utf8");
+    await mkdir(path.join(project, ".github", "instructions"), { recursive: true });
+    await writeFile(path.join(project, ".github", "instructions", "appsec.instructions.md"), `---
+applyTo: "**"
+description: security
+---
+
+Secure input.
+`, "utf8");
+
+    const dryRun = runAdoption(project, "--dry-run");
+    assert.match(dryRun, /Templates overlapping existing files: 1/);
+    assert.match(dryRun, /overlap: \.github\/instructions\/security\.instructions\.md with \.github\/instructions\/appsec\.instructions\.md/);
+
+    runAdoption(project, "--apply");
+    const instructions = await readdir(path.join(project, ".github", "instructions"));
+    assert.ok(instructions.includes("security.instructions.md"), "thin overlapping guidance must not suppress the framework standard");
   } finally {
     await rm(project, { recursive: true, force: true });
   }
@@ -1088,7 +1129,7 @@ test("standalone project update refreshes framework skills without replacing pro
       cwd: root, encoding: "utf8"
     });
     assert.equal(updated.status, 0, updated.stderr);
-    assert.match(await readFile(skillPath, "utf8"), /Discover the services, regions, models/);
+    assert.match(await readFile(skillPath, "utf8"), /discover services, regions, models, SKUs/);
     assert.equal(await readFile(projectFile, "utf8"), "preserve me\n");
     assert.equal(await readFile(report, "utf8"), "preserve report\n");
   } finally {
@@ -1238,7 +1279,7 @@ test("a project with no declared stack gets no misleading build or debug configu
     assert.ok(existsSync(path.join(project, ".gitattributes")), "line ending normalization always applies");
 
     const extensions = JSON.parse(await readFile(path.join(project, ".vscode", "extensions.json"), "utf8"));
-    assert.deepEqual(extensions.recommendations, ["github.copilot", "github.copilot-chat", "editorconfig.editorconfig"]);
+    assert.deepEqual(extensions.recommendations, ["github.copilot", "github.copilot-chat", "bierner.markdown-mermaid", "editorconfig.editorconfig"]);
 
     const readme = await readFile(path.join(project, "README.md"), "utf8");
     assert.match(readme, /Rerun setup with `--stack`/);

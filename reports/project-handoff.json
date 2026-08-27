@@ -1,0 +1,184 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-27T21:18:27.416Z",
+  "project": {
+    "name": "project-skills-orchestrator",
+    "version": "1.1.0",
+    "branch": "main",
+    "commit": "e46727121582e534f683eb49a0c937832db9928d"
+  },
+  "status": "ready-for-local-commit",
+  "milestone": {
+    "name": "Production-candidate hardening and version 1.1.0",
+    "status": "locally-validated",
+    "objective": "Commit the complete locally validated 1.1.0 change set while preserving strict external production-release gates."
+  },
+  "lastCompletedWork": {
+    "summary": "Completed Project Understanding, understanding-bound Project Video, Azure environment automation, command ownership consolidation, runtime 1.1.0 versioning, production hardening, and a no-findings bounded change review.",
+    "completedAt": "2026-08-27T21:18:27.416Z",
+    "evidence": [
+      ".github/skills/project-understanding/SKILL.md",
+      ".github/skills/project-understanding/scripts/project-understanding.mjs",
+      "schemas/project-understanding.schema.json",
+      "reports/project-understanding.json",
+      "reports/project-understanding.md",
+      ".github/skills/project-video/SKILL.md",
+      ".github/skills/project-video/scripts/project-video.mjs",
+      ".github/skills/project-setup/SKILL.md",
+      "schemas/project-video-plan.schema.json",
+      "templates/project/.github/copilot-instructions.md",
+      "tests/project-understanding.test.mjs",
+      "tests/project-video.test.mjs",
+      "tests/skill-contracts.test.mjs",
+      "reports/current-work-state.json",
+      "reports/change-review.json",
+      "reports/release-readiness.json"
+    ]
+  },
+  "decisions": [
+    {
+      "decision": "Give project-understanding exclusive ownership of complete repository rescans and its authoritative JSON and Markdown pair.",
+      "rationale": "Current-project documentation is distinct from durable lessons and handoff continuity, and exclusive report ownership prevents conflicting producers."
+    },
+    {
+      "decision": "Require new Project Video plans to use schema 1.2 and bind current Project Understanding artifacts and digests.",
+      "rationale": "Presentation content remains traceable to the exact repository scan while legacy 1.0 and 1.1 plans remain compatible."
+    },
+    {
+      "decision": "Prefer Azure Speech in the configured region, approval-gate same-cloud cross-region processing, and preserve identical pages and dialogue in browser fallback.",
+      "rationale": "Azure neural narration is preferred without making regional availability or external processing mandatory; browser output remains truthfully labeled interactive HTML."
+    },
+    {
+      "decision": "Keep project-video as the exclusive production workflow owner and project-setup as the provisioning and routing owner.",
+      "rationale": "This avoids duplicate action ownership while making the capability available to new and adopted projects."
+    },
+    {
+      "decision": "Accept legacy 1.0.0 plans and use schema 1.1.0 for explicit production providers, capabilities, approvals, profiles, and paths.",
+      "rationale": "Existing automation remains compatible while new plans carry complete output-truth evidence."
+    },
+    {
+      "decision": "Assemble every narrated and executive video locally with FFmpeg from the VS Code workflow.",
+      "rationale": "The production workflow must not depend on a separately licensed interactive video editor or leave VS Code for finishing."
+    },
+    {
+      "decision": "Make production preflight local and fail closed on missing exact capability records.",
+      "rationale": "Azure availability records do not authorize external calls or costs; Azure OpenAI records real deployment/model IDs and Speech/Avatar records resource/region evidence."
+    },
+    {
+      "decision": "Resolve Azure cloud in the order explicit -Gov or -Commercial, saved profile, then Azure Commercial.",
+      "rationale": "This preserves an explicit sovereign-cloud choice while providing a deterministic product default."
+    },
+    {
+      "decision": "Persist nonsecret Azure environment choices in ignored .azure/environment.json and reuse them without repeated questions.",
+      "rationale": "Cloud, subscription, region, authentication method, and MCP policy are environment state rather than per-operation prompts."
+    },
+    {
+      "decision": "Support interactive device-code and managed-identity authentication only in the distributable automation.",
+      "rationale": "Secret-based service-principal command construction would violate the credential-free scaffold security contract."
+    },
+    {
+      "decision": "Keep Azure MCP disabled by default and gate foundryextensions on an already-recorded client ID.",
+      "rationale": "Unconfigured optional namespaces must not open recurring OAuth registration dialogs."
+    },
+    {
+      "decision": "Skills own skill-named slash actions; prompt files retain only prompt-specific and help commands.",
+      "rationale": "One action owner removes duplicate names and ambiguous command routing."
+    }
+  ],
+  "validation": [
+    {
+      "check": "npm run check",
+      "status": "passed",
+      "evidence": "87 tests passed, 0 failed; syntax, security scan, release build, release-candidate checksum verification, and repository verification all passed."
+    },
+    {
+      "check": "Skill verification",
+      "status": "passed",
+      "evidence": "41 of 41 skills passed registry-free distribution verification."
+    },
+    {
+      "check": "Project Understanding and presentation binding",
+      "status": "passed",
+      "evidence": "Regression coverage validates complete atomic rescans, secret-file exclusion, inventories, schema strictness, eight understanding-derived pages, digest binding, browser parity, and stale-artifact rejection."
+    },
+    {
+      "check": "Command ownership contract",
+      "status": "passed",
+      "evidence": "Contract tests reject prompt basenames that collide with canonical skill names."
+    },
+    {
+      "check": "Adoption migration",
+      "status": "passed",
+      "evidence": "Recognized framework-owned duplicate prompts are removed transactionally; unrecognized project-owned collisions fail as conflicts."
+    },
+    {
+      "check": "Credential-free Azure scaffold",
+      "status": "passed",
+      "evidence": "The scaffold contains no tenant, subscription, client-secret, password, or service-principal credential material."
+    },
+    {
+      "check": "Executive production path",
+      "status": "passed",
+      "evidence": "Regression coverage validates exact Azure capability identifiers, externalWorkAuthorized false, FFmpeg assembly, portable MP4 delivery, and complete Avatar segment-to-asset mappings."
+    }
+  ],
+  "worktree": {
+    "clean": false,
+    "unmergedPaths": 0,
+    "otherChangesPresent": true,
+    "attribution": "This handoff attributes the Azure environment automation, duplicate-command consolidation, related tests and documentation, and synchronized reports. Preexisting project-video, architecture, discovery-report, and other staged or unstaged changes remain preserved without blanket attribution.",
+    "boundedPaths": [
+      ".github/copilot-instructions.md",
+      ".github/prompts/azure-cleanup-help.prompt.md",
+      ".github/skills/azure-cleanup/SKILL.md",
+      ".github/skills/azure-discovery/SKILL.md",
+      ".github/skills/azure-discovery/scripts/azure-discovery.ps1",
+      ".github/skills/azure-discovery/scripts/azure-environment.ps1",
+      ".gitignore",
+      ".vscode/settings.json",
+      "AGENTS.md",
+      "README.md",
+      "pso.mjs",
+      "schemas/azure-environment.schema.json",
+      "templates/project/.github/copilot-instructions.md",
+      "templates/project/.github/instructions/azure-deployment.instructions.md",
+      "templates/project/infra/README.md",
+      "templates/project/infra/azure-environment.ps1",
+      "templates/project/infra/cleanup.ps1",
+      "templates/project/infra/deploy-infra.ps1",
+      "templates/project/infra/deploy.ps1",
+      "templates/project/infra/discover.ps1",
+      "templates/scaffold-manifest.json",
+      "tests/adoption-rerun.test.mjs",
+      "tests/skill-contracts.test.mjs",
+      ".github/skills/project-setup/SKILL.md",
+      ".github/skills/project-video/SKILL.md",
+      ".github/skills/project-video/scripts/project-video.mjs",
+      "schemas/project-video-plan.schema.json",
+      "schemas/project-video-manifest.schema.json",
+      "templates/project/.github/copilot-instructions.md",
+      "tests/project-video.test.mjs"
+    ]
+  },
+  "blockers": [
+    "Production distribution requires current-commit Windows, Linux, and macOS evidence for Node 22, 24, and 26.",
+    "Production distribution requires trusted signature and independent-review evidence."
+  ],
+  "pendingApprovals": [
+    "Separate approval before push, merge, publication, upload, deployment, or any Azure mutation."
+  ],
+  "limitations": [
+    "No Azure OpenAI, Speech, Speech Avatar, FFmpeg rendering, package installation, login, or cloud operation was executed; behavior was validated locally.",
+    "The local Azure environment file is intentionally ignored and is created only when Azure work first requires it.",
+    "The unsigned candidate is suitable for local testing only and is not approved for production distribution."
+  ],
+  "nextAction": {
+    "skill": "prepare-commit",
+    "status": "approved",
+    "action": "Create the approved local version 1.1.0 commit and verify a clean worktree.",
+    "prerequisites": [
+      "Keep push, tag, publication, deployment, and Azure mutation out of scope.",
+      "Preserve the blocked production-release status until external evidence is available."
+    ]
+  }
+}

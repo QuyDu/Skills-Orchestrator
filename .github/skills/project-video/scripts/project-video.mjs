@@ -17,7 +17,11 @@ const BROWSER_NARRATION_PROVIDER = "browser-preview";
 const BROWSER_VOICE_NAME = "default-English";
 const AZURE_DISCOVERY_MAX_AGE_DAYS = 14;
 const AZURE_DISCOVERY_PATH = "reports/azure-discovery.json";
+const PROJECT_UNDERSTANDING_PATH = "reports/project-understanding.json";
+const PROJECT_UNDERSTANDING_MARKDOWN_PATH = "reports/project-understanding.md";
 const LOCAL_NARRATION_PROVIDER = "local-piper";
+const AZURE_SCRIPT_PROVIDER = "azure-openai";
+const AZURE_AVATAR_PROVIDER = "azure-speech-avatar";
 const LOCAL_VOICE_NAME = "en_US-ljspeech-high";
 const PIPER_PACKAGE = "piper-tts";
 const PIPER_VERSION = "1.7.0";
@@ -81,20 +85,20 @@ const VOICE_AUDITION_PROFILES = [
   {
     id: "ava-hd-warm",
     slot: "A",
-    label: "A - Ava Dragon HD - warm conversational",
-    voice: { provider: AZURE_NARRATION_PROVIDER, name: "en-US-Ava:DragonHDLatestNeural", locale: "en-US", style: "friendly", styleDegree: 0.65, ratePercent: -2, sentencePauseMs: 180 }
+    label: "A - Ava Neural - natural conversational",
+    voice: { provider: AZURE_NARRATION_PROVIDER, name: "en-US-AvaNeural", locale: "en-US", style: "auto", styleDegree: 0.65, ratePercent: -2, sentencePauseMs: 180 }
   },
   {
     id: "aria-hd-warm",
     slot: "B",
-    label: "B - Aria Dragon HD - warm presenter",
-    voice: { provider: AZURE_NARRATION_PROVIDER, name: "en-US-Aria:DragonHDLatestNeural", locale: "en-US", style: "friendly", styleDegree: 0.65, ratePercent: -2, sentencePauseMs: 180 }
+    label: "B - Aria Neural - warm presenter",
+    voice: { provider: AZURE_NARRATION_PROVIDER, name: "en-US-AriaNeural", locale: "en-US", style: "friendly", styleDegree: 0.65, ratePercent: -2, sentencePauseMs: 180 }
   },
   {
-    id: "aria-professional",
+    id: "jenny-professional",
     slot: "C",
-    label: "C - Aria Neural - professional narration",
-    voice: { provider: AZURE_NARRATION_PROVIDER, name: "en-US-AriaNeural", locale: "en-US", style: "narration-professional", styleDegree: 0.75, ratePercent: -3, sentencePauseMs: 200 }
+    label: "C - Jenny Neural - professional narration",
+    voice: { provider: AZURE_NARRATION_PROVIDER, name: "en-US-JennyNeural", locale: "en-US", style: "narration-professional", styleDegree: 0.75, ratePercent: -3, sentencePauseMs: 200 }
   }
 ];
 
@@ -236,11 +240,110 @@ function sortedObject(value) {
   return Object.fromEntries(Object.entries(value || {}).sort(([left], [right]) => left.localeCompare(right)));
 }
 
+function capabilityFor(production, capability) {
+  return production?.capabilities?.find((item) => item.capability === capability);
+}
+
+function validateProduction(production, errors) {
+  if (!production || typeof production !== "object" || Array.isArray(production)) {
+    errors.push("production is required for schemaVersion 1.1.0");
+    return;
+  }
+  rejectUnknownFields(production, ["production_path", "script_provider", "narration_provider", "presenter_provider", "assembly_provider", "delivery_kind", "capabilities", "evidence", "approvals", "selection", "paths"], "production", errors);
+  const allowed = {
+    production_path: ["zero-install-preview", "narrated-mp4", "executive-demo"],
+    script_provider: ["agent-grounded", AZURE_SCRIPT_PROVIDER],
+    narration_provider: [BROWSER_NARRATION_PROVIDER, AZURE_NARRATION_PROVIDER, LOCAL_NARRATION_PROVIDER],
+    presenter_provider: ["none", AZURE_AVATAR_PROVIDER],
+    assembly_provider: [BROWSER_NARRATION_PROVIDER, "ffmpeg"],
+    delivery_kind: ["interactive-html", "portable-mp4"]
+  };
+  for (const [field, values] of Object.entries(allowed)) {
+    if (!values.includes(production[field])) errors.push(`production.${field} must be one of: ${values.join(", ")}`);
+  }
+  const combinations = {
+    "zero-install-preview": ["agent-grounded", BROWSER_NARRATION_PROVIDER, "none", BROWSER_NARRATION_PROVIDER, "interactive-html"],
+    "narrated-mp4": [null, null, "none", "ffmpeg", "portable-mp4"],
+    "executive-demo": [AZURE_SCRIPT_PROVIDER, AZURE_NARRATION_PROVIDER, null, "ffmpeg", "portable-mp4"]
+  };
+  const expected = combinations[production.production_path];
+  if (expected) {
+    const fields = ["script_provider", "narration_provider", "presenter_provider", "assembly_provider", "delivery_kind"];
+    expected.forEach((value, index) => {
+      if (value !== null && production[fields[index]] !== value) errors.push(`production.${fields[index]} must be ${value} for ${production.production_path}`);
+    });
+    if (production.production_path === "executive-demo" && !["none", AZURE_AVATAR_PROVIDER].includes(production.presenter_provider)) errors.push("executive-demo presenter must be none or azure-speech-avatar");
+  }
+  if (!Array.isArray(production.capabilities)) errors.push("production.capabilities must be an array");
+  else {
+    const seen = new Set();
+    for (const [index, capability] of production.capabilities.entries()) {
+      const label = `production.capabilities[${index}]`;
+      rejectUnknownFields(capability, ["capability", "status", "region", "resource_id", "deployment_id", "model_id", "evidence"], label, errors);
+      if (!["azure-openai", AZURE_NARRATION_PROVIDER, AZURE_AVATAR_PROVIDER].includes(capability.capability)) errors.push(`${label}.capability is unsupported`);
+      if (seen.has(capability.capability)) errors.push(`${label}.capability must be unique`);
+      seen.add(capability.capability);
+      if (!["ready", "unavailable", "unknown"].includes(capability.status)) errors.push(`${label}.status is invalid`);
+      if (!isPortableEvidencePath(capability.evidence)) errors.push(`${label}.evidence must be a safe repository-relative path`);
+    }
+  }
+  if (!production.evidence || typeof production.evidence !== "object") errors.push("production.evidence is required");
+  else {
+    rejectUnknownFields(production.evidence, ["claims_ledger", "script", "project_understanding", "project_understanding_markdown"], "production.evidence", errors);
+    for (const field of ["claims_ledger", "script"]) if (!isPortableEvidencePath(production.evidence[field])) errors.push(`production.evidence.${field} must be a safe repository-relative path`);
+    if (production.project_understanding !== undefined) errors.push("production.project_understanding must be recorded under production.evidence");
+    if (production.evidence.project_understanding !== undefined && !isPortableEvidencePath(production.evidence.project_understanding)) errors.push("production.evidence.project_understanding must be a safe repository-relative path");
+    if (production.evidence.project_understanding_markdown !== undefined && !isPortableEvidencePath(production.evidence.project_understanding_markdown)) errors.push("production.evidence.project_understanding_markdown must be a safe repository-relative path");
+  }
+  if (!production.approvals || typeof production.approvals !== "object") errors.push("production.approvals is required");
+  else {
+    rejectUnknownFields(production.approvals, ["required", "completed"], "production.approvals", errors);
+    for (const field of ["required", "completed"]) {
+      if (!Array.isArray(production.approvals[field]) || new Set(production.approvals[field]).size !== production.approvals[field].length) errors.push(`production.approvals.${field} must be a unique array`);
+    }
+  }
+  if (!production.selection || typeof production.selection !== "object") errors.push("production.selection is required");
+  else {
+    rejectUnknownFields(production.selection, ["voice_profile", "avatar_profile"], "production.selection", errors);
+    if (production.presenter_provider === AZURE_AVATAR_PROVIDER && (!production.selection.avatar_profile || typeof production.selection.avatar_profile !== "object")) errors.push("production.selection.avatar_profile is required for azure-speech-avatar");
+    if (production.presenter_provider === "none" && production.selection.avatar_profile !== null) errors.push("production.selection.avatar_profile must be null when presenter_provider is none");
+    const avatar = production.selection.avatar_profile;
+    if (avatar && ["generated", "validated"].includes(avatar.generation_status) && avatar.assets.length !== avatar.segments.length) {
+      errors.push("production.selection.avatar_profile must map one generated asset to each selected segment");
+    }
+  }
+  if (!production.paths || typeof production.paths !== "object") errors.push("production.paths is required");
+  else {
+    rejectUnknownFields(production.paths, ["assets", "validation", "final_output"], "production.paths", errors);
+    for (const field of ["assets", "validation"]) {
+      if (!Array.isArray(production.paths[field])) errors.push(`production.paths.${field} must be an array`);
+      else for (const value of production.paths[field]) if (!isPortableEvidencePath(value)) errors.push(`production.paths.${field} contains an unsafe path: ${value}`);
+    }
+    if (production.paths.final_output !== null && !isPortableEvidencePath(production.paths.final_output)) errors.push("production.paths.final_output must be null or a safe repository-relative path");
+  }
+}
+
 function validatePlan(plan) {
   const errors = [];
   if (!plan || typeof plan !== "object" || Array.isArray(plan)) return ["plan must be an object"];
-  rejectUnknownFields(plan, ["schemaVersion", "project", "audience", "targetDurationSeconds", "video", "voice", "output", "scenes"], "plan", errors);
-  if (plan.schemaVersion !== "1.0.0") errors.push("schemaVersion must be 1.0.0");
+  rejectUnknownFields(plan, ["schemaVersion", "project", "understanding", "audience", "targetDurationSeconds", "production", "video", "voice", "output", "scenes"], "plan", errors);
+  if (!["1.0.0", "1.1.0", "1.2.0"].includes(plan.schemaVersion)) errors.push("schemaVersion must be 1.0.0, 1.1.0, or 1.2.0");
+  if (["1.1.0", "1.2.0"].includes(plan.schemaVersion)) validateProduction(plan.production, errors);
+  else if (plan.production !== undefined) validateProduction(plan.production, errors);
+  if (plan.schemaVersion === "1.2.0") {
+    if (!plan.understanding || typeof plan.understanding !== "object" || Array.isArray(plan.understanding)) errors.push("understanding is required for schemaVersion 1.2.0");
+    else {
+      rejectUnknownFields(plan.understanding, ["json", "jsonSha256", "markdown", "markdownSha256", "repositoryDigestSha256", "generatedAt"], "understanding", errors);
+      for (const field of ["json", "markdown"]) if (!isPortableEvidencePath(plan.understanding[field])) errors.push(`understanding.${field} must be a safe repository-relative path`);
+      for (const field of ["jsonSha256", "markdownSha256", "repositoryDigestSha256"]) if (!/^[a-f0-9]{64}$/.test(plan.understanding[field] || "")) errors.push(`understanding.${field} must be a SHA-256 digest`);
+      if (typeof plan.understanding.generatedAt !== "string" || !Number.isFinite(Date.parse(plan.understanding.generatedAt))) errors.push("understanding.generatedAt must be an ISO timestamp");
+    }
+    if (plan.production?.evidence?.project_understanding !== plan.understanding?.json) errors.push("production evidence must bind the Project Understanding JSON");
+    if (plan.production?.evidence?.project_understanding_markdown !== plan.understanding?.markdown) errors.push("production evidence must bind the Project Understanding Markdown");
+  } else if (plan.understanding !== undefined) errors.push("understanding requires schemaVersion 1.2.0");
+  if (plan.production?.narration_provider && plan.voice && plan.production.narration_provider !== voiceProvider(plan.voice)) {
+    errors.push("production.narration_provider must match voice.provider");
+  }
   if (!plan.project || typeof plan.project !== "object") errors.push("project is required");
   else {
     rejectUnknownFields(plan.project, ["name", "purpose", "evidence"], "project", errors);
@@ -292,8 +395,12 @@ function validatePlan(plan) {
   else {
     rejectUnknownFields(plan.output, ["file"], "output", errors);
     const browserPreview = voiceProvider(plan.voice) === BROWSER_NARRATION_PROVIDER;
-    const outputPattern = browserPreview ? /^dist\/project-video\/[a-z0-9-]+\.html$/ : /^dist\/project-video\/[a-z0-9-]+\.mp4$/;
-    if (!outputPattern.test(plan.output.file || "")) errors.push(`output.file must match dist/project-video/<name>.${browserPreview ? "html" : "mp4"}`);
+    const delivery = plan.production?.delivery_kind;
+    const outputPattern = (delivery === "interactive-html" || (!delivery && browserPreview))
+      ? /^dist\/project-video\/[a-z0-9-]+\.html$/
+      : /^dist\/project-video\/[a-z0-9-]+\.mp4$/;
+    const expectedOutput = `dist/project-video/<name>.${(delivery === "interactive-html" || (!delivery && browserPreview)) ? "html" : "mp4"}`;
+    if (!outputPattern.test(plan.output.file || "")) errors.push(`output.file must match ${expectedOutput}`);
   }
   if (!Array.isArray(plan.scenes) || plan.scenes.length < 6 || plan.scenes.length > 10) {
     errors.push("scenes must contain 6 through 10 items");
@@ -334,7 +441,21 @@ async function loadPlan(root, options) {
   const plan = await readJson(file);
   const errors = validatePlan(plan);
   if (errors.length) throw new Error(`Project video plan is invalid:\n- ${errors.join("\n- ")}`);
-  const evidence = new Set([...(plan.project.evidence || []), ...plan.scenes.flatMap((scene) => scene.evidence || [])]);
+  if (plan.schemaVersion === "1.2.0") {
+    const understandingFile = resolveInside(root, plan.understanding.json, "Project Understanding JSON");
+    const understandingMarkdown = resolveInside(root, plan.understanding.markdown, "Project Understanding Markdown");
+    if (!existsSync(understandingFile) || !existsSync(understandingMarkdown)) throw new Error("Project Understanding outputs are missing; rebuild them before Project Video");
+    const understanding = await readJson(understandingFile);
+    if (understanding.status !== "complete") throw new Error("Project Understanding is blocked and cannot drive Project Video");
+    if (await fileDigest(understandingFile) !== plan.understanding.jsonSha256) throw new Error("Project Understanding JSON changed after the video plan was created");
+    if (await fileDigest(understandingMarkdown) !== plan.understanding.markdownSha256 || understanding.markdownSha256 !== plan.understanding.markdownSha256) throw new Error("Project Understanding Markdown binding is invalid");
+    if (understanding.scan?.repositoryDigestSha256 !== plan.understanding.repositoryDigestSha256 || understanding.generatedAt !== plan.understanding.generatedAt) throw new Error("Project Understanding provenance does not match the video plan");
+  }
+  const evidence = new Set([
+    ...(plan.project.evidence || []),
+    ...plan.scenes.flatMap((scene) => scene.evidence || []),
+    ...(plan.production ? [plan.production.evidence.claims_ledger, plan.production.evidence.script, plan.production.evidence.project_understanding, plan.production.evidence.project_understanding_markdown, ...plan.production.capabilities.map((item) => item.evidence)].filter(Boolean) : [])
+  ]);
   for (const item of evidence) {
     const evidenceFile = resolveInside(root, item, "evidence path");
     if (!existsSync(evidenceFile)) throw new Error(`Project video evidence does not exist: ${item}`);
@@ -344,6 +465,97 @@ async function loadPlan(root, options) {
     if (canonical !== root && !canonical.startsWith(`${root}${path.sep}`)) throw new Error(`Project video evidence escapes the project root: ${item}`);
   }
   return { plan, file, relative, sha256: await fileDigest(file) };
+}
+
+function words(value, maximum = 24) {
+  return String(value || "").replace(/[`*_#<>]/g, "").replace(/\s+/g, " ").trim().split(" ").filter(Boolean).slice(0, maximum).join(" ");
+}
+
+function sceneFromUnderstanding(index, title, subtitle, entries, fallbackEvidence, narrationLead) {
+  const selected = entries.slice(0, 3);
+  const names = selected.map((entry) => words(entry.name, 5)).filter(Boolean);
+  const details = selected[0]?.description ? words(selected[0].description, 18) : "the repository records this area as part of the current project";
+  const narration = `${narrationLead} ${details}. ${names.length ? `Key verified examples include ${names.join(", ")}.` : "The report records no additional verified examples."}`;
+  return {
+    id: `scene-${String(index).padStart(2, "0")}`,
+    title,
+    subtitle,
+    narration,
+    evidence: [...new Set(selected.flatMap((entry) => entry.evidence || []))].slice(0, 8).length
+      ? [...new Set(selected.flatMap((entry) => entry.evidence || []))].slice(0, 8)
+      : fallbackEvidence
+  };
+}
+
+async function generatePlanFromUnderstanding(root, options) {
+  const understandingHelper = resolveInside(root, ".github/skills/project-understanding/scripts/project-understanding.mjs", "Project Understanding helper");
+  if (!existsSync(understandingHelper)) throw new Error("Project Understanding helper is missing from this project");
+  const scan = spawnSync(process.execPath, [understandingHelper, "scan", "--root", root], { cwd: root, encoding: "utf8", windowsHide: true });
+  if (scan.status !== 0) throw new Error(`Project Understanding rebuild failed:\n${scan.stderr || scan.stdout}`);
+  const understandingFile = resolveInside(root, PROJECT_UNDERSTANDING_PATH, "Project Understanding JSON");
+  const understandingMarkdown = resolveInside(root, PROJECT_UNDERSTANDING_MARKDOWN_PATH, "Project Understanding Markdown");
+  const understanding = await readJson(understandingFile);
+  if (understanding.status !== "complete") throw new Error("Project Understanding is blocked and cannot drive Project Video");
+  const outputName = String(options.name || `${understanding.project.name}-walkthrough`).toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 64);
+  if (!outputName) throw new Error("Project Video output name is invalid");
+  const reportsDirectory = resolveInside(root, "reports/project-video", "Project Video reports");
+  const planFile = path.join(reportsDirectory, "project-video-plan.json");
+  const claimsFile = path.join(reportsDirectory, "claims-ledger.json");
+  const scriptFile = path.join(reportsDirectory, "script.md");
+  if ([planFile, claimsFile, scriptFile].some(existsSync) && options.force !== true) throw new Error("Project Video planning output already exists; use --force only after replacement approval");
+  const fallbackEvidence = understanding.project.evidence;
+  const scenes = [
+    sceneFromUnderstanding(1, "Project purpose", "What the project does and who it serves", [{ name: understanding.project.displayName, description: understanding.project.purpose, evidence: understanding.project.evidence }], fallbackEvidence, "This presentation begins with the verified project purpose."),
+    sceneFromUnderstanding(2, "Architecture", "The major boundaries and how the repository is organized", understanding.architecture, fallbackEvidence, "The architecture view follows the scanned repository boundaries."),
+    sceneFromUnderstanding(3, "Technology", "Languages, formats, and implementation foundations", understanding.technology, fallbackEvidence, "The technology view is derived from files found in the complete scan."),
+    sceneFromUnderstanding(4, "Key features", "The capabilities supported by current evidence", understanding.features, fallbackEvidence, "The feature summary includes only evidence-backed capabilities."),
+    sceneFromUnderstanding(5, "Setup and use", "The verified commands and contributor entry points", understanding.usage, fallbackEvidence, "The usage path follows commands recorded by the project."),
+    sceneFromUnderstanding(6, "Skills and prompts", "How users invoke governed project capabilities", [...understanding.customizations.skills, ...understanding.customizations.prompts], fallbackEvidence, "The customization layer exposes reusable skills and prompts."),
+    sceneFromUnderstanding(7, "Workflows", "The operational sequence and approval boundaries", understanding.workflows, fallbackEvidence, "The workflow view explains the actions exposed by current project automation."),
+    sceneFromUnderstanding(8, "Validation and limits", "How confidence is established and uncertainty remains visible", understanding.validation, fallbackEvidence, "The final view summarizes the repository validation paths and recorded limitations.")
+  ];
+  const understandingBinding = {
+    json: PROJECT_UNDERSTANDING_PATH,
+    jsonSha256: await fileDigest(understandingFile),
+    markdown: PROJECT_UNDERSTANDING_MARKDOWN_PATH,
+    markdownSha256: await fileDigest(understandingMarkdown),
+    repositoryDigestSha256: understanding.scan.repositoryDigestSha256,
+    generatedAt: understanding.generatedAt
+  };
+  const plan = {
+    schemaVersion: "1.2.0",
+    project: { name: understanding.project.name, purpose: understanding.project.purpose, evidence: understanding.project.evidence },
+    understanding: understandingBinding,
+    audience: String(options.audience || "Project contributors and technical stakeholders").slice(0, 300),
+    targetDurationSeconds: 180,
+    production: {
+      production_path: "zero-install-preview",
+      script_provider: "agent-grounded",
+      narration_provider: BROWSER_NARRATION_PROVIDER,
+      presenter_provider: "none",
+      assembly_provider: BROWSER_NARRATION_PROVIDER,
+      delivery_kind: "interactive-html",
+      capabilities: [],
+      evidence: { claims_ledger: "reports/project-video/claims-ledger.json", script: "reports/project-video/script.md", project_understanding: PROJECT_UNDERSTANDING_PATH, project_understanding_markdown: PROJECT_UNDERSTANDING_MARKDOWN_PATH },
+      approvals: { required: [], completed: [] },
+      selection: { voice_profile: BROWSER_VOICE_NAME, avatar_profile: null },
+      paths: { assets: [PROJECT_UNDERSTANDING_PATH, PROJECT_UNDERSTANDING_MARKDOWN_PATH], validation: ["schemas/project-understanding.schema.json", "schemas/project-video-plan.schema.json"], final_output: `dist/project-video/${outputName}.html` }
+    },
+    video: { width: 1280, height: 720, fps: 30, backgroundColor: "#132129", primaryColor: "#1261A0", accentColor: "#F05D3D" },
+    voice: { provider: BROWSER_NARRATION_PROVIDER, name: BROWSER_VOICE_NAME, locale: "en-US" },
+    output: { file: `dist/project-video/${outputName}.html` },
+    scenes
+  };
+  const errors = validatePlan(plan);
+  if (errors.length) throw new Error(`Generated Project Video plan is invalid:\n- ${errors.join("\n- ")}`);
+  await mkdir(reportsDirectory, { recursive: true });
+  await writeJsonAtomic(claimsFile, { schemaVersion: "1.0.0", generatedAt: new Date().toISOString(), projectUnderstandingSha256: understandingBinding.jsonSha256, claims: scenes.map((scene) => ({ scene: scene.id, claim: scene.subtitle, evidence: scene.evidence })) });
+  await writeFile(scriptFile, `# Project Video Script\n\n${scenes.map((scene) => `## ${scene.title}\n\n${scene.narration}`).join("\n\n")}\n`, "utf8");
+  await writeJsonAtomic(planFile, plan);
+  console.log(`Project Understanding rebuilt: ${PROJECT_UNDERSTANDING_PATH}`);
+  console.log("Project Video plan: reports/project-video/project-video-plan.json");
+  console.log("Narration provider: browser-preview (Azure Speech can be selected later after discovery and approval)");
+  return 0;
 }
 
 async function walk(root, relative = "", files = []) {
@@ -459,9 +671,9 @@ function buildSpeechSsml(voice, text) {
 
 function requestedSpeechContext() {
   const region = process.env.AZURE_SPEECH_REGION || process.env.SPEECH_REGION;
-  const cloud = process.env.AZURE_SPEECH_CLOUD || "AzureCloud";
+  const cloud = process.env.AZURE_SPEECH_CLOUD?.trim() || null;
   const speechDomains = new Map([["AzureCloud", "tts.speech.microsoft.com"], ["AzureUSGovernment", "tts.speech.azure.us"]]);
-  if (!speechDomains.has(cloud)) throw new Error("AZURE_SPEECH_CLOUD must be AzureCloud or AzureUSGovernment");
+  if (cloud && !speechDomains.has(cloud)) throw new Error("AZURE_SPEECH_CLOUD must be AzureCloud or AzureUSGovernment");
   if (region && !/^[a-z0-9-]+$/.test(region)) throw new Error("AZURE_SPEECH_REGION must be a lowercase Azure region");
   return { region, cloud, speechDomains };
 }
@@ -537,11 +749,50 @@ async function loadAzureSpeechDiscovery(root, expected = {}) {
   return { discovery, file, sha256: await fileDigest(file), regions };
 }
 
-async function speechServiceSettings(root, options) {
-  const { region, cloud, speechDomains } = requestedSpeechContext();
-  const discovery = await loadAzureSpeechDiscovery(root, { cloud, region });
-  const key = process.env.AZURE_SPEECH_KEY || process.env.SPEECH_KEY;
-  if (!key) throw new Error("Set AZURE_SPEECH_KEY in the current process; never place the key in project files or command arguments");
+function azureProjectToken(projectName) {
+  const token = String(projectName || "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  if (!token) throw new Error("Project name must contain at least one letter or number");
+  return token;
+}
+
+function queryAzureCli(args) {
+  if (process.platform !== "win32") {
+    const result = spawnSync("az", args, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
+    if (result.error || result.status !== 0) return null;
+    return result.stdout.trim();
+  }
+  const quote = (value) => String(value).includes(" ") ? `"${String(value).replaceAll('"', '\\"')}"` : String(value);
+  const result = spawnSync(process.env.ComSpec || "cmd.exe", ["/d", "/c", ["az.cmd", ...args].map(quote).join(" ")], {
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"]
+  });
+  if (result.error || result.status !== 0) return null;
+  return result.stdout.trim();
+}
+
+function projectKeyVaultName(projectName) {
+  const token = azureProjectToken(projectName);
+  const hash = createHash("sha256").update(token, "utf8").digest("hex").slice(0, 6);
+  return `kv-${token.slice(0, 14).replace(/-+$/g, "")}-${hash}`.slice(0, 24);
+}
+
+async function keyFromProjectKeyVault(plan) {
+  const resourceGroup = `rg-${azureProjectToken(plan.project?.name)}`.slice(0, 90);
+  const vaults = queryAzureCli(["keyvault", "list", "--resource-group", resourceGroup, "--query", "[].name", "-o", "json"]);
+  if (!vaults) return null;
+  let names;
+  try { names = JSON.parse(vaults); } catch { return null; }
+  const expectedVault = projectKeyVaultName(plan.project?.name);
+  if (!Array.isArray(names) || !names.includes(expectedVault)) return null;
+  return queryAzureCli(["keyvault", "secret", "show", "--vault-name", expectedVault, "--name", "AzureSpeechKey", "--query", "value", "-o", "tsv"]);
+}
+
+async function speechServiceSettings(root, options, plan) {
+  const { region, cloud: configuredCloud, speechDomains } = requestedSpeechContext();
+  const discovery = await loadAzureSpeechDiscovery(root, { cloud: configuredCloud, region });
+  const cloud = configuredCloud || discovery.discovery.cloud;
+  const key = process.env.AZURE_SPEECH_KEY || process.env.SPEECH_KEY || await keyFromProjectKeyVault(plan);
+  if (!key) throw new Error("Set AZURE_SPEECH_KEY in the current process or store AzureSpeechKey in the project Key Vault; never place the key in project files or command arguments");
   if (!region) throw new Error(`Set AZURE_SPEECH_REGION to one of the discovered resource regions: ${discovery.regions.join(", ")}`);
   if (options["approve-external"] !== true) throw new Error("Speech generation requires --approve-external after explicit user approval of Azure processing and cost");
   return {
@@ -565,10 +816,12 @@ async function azurePreflight(root) {
     discoveredAt: result.discovery.discoveredAt,
     discoverySha256: result.sha256,
     existingResourceCount: result.discovery.speech.existingResourceCount,
+    existingResourceKinds: result.discovery.speech.existingResourceKinds,
     existingResourceRegions: result.regions,
     selectedRegion: region || null,
     credentialConfigured: Boolean(process.env.AZURE_SPEECH_KEY || process.env.SPEECH_KEY),
-    requiredEnvironment: ["AZURE_SPEECH_KEY", "AZURE_SPEECH_REGION", "AZURE_SPEECH_CLOUD"],
+    requiredEnvironment: ["AZURE_SPEECH_KEY", "AZURE_SPEECH_REGION"],
+    optionalEnvironment: ["AZURE_SPEECH_CLOUD"],
     videoRenderer: "local-ffmpeg"
   };
   console.log(JSON.stringify(readiness, null, 2));
@@ -586,6 +839,7 @@ async function discoveryStatus(root) {
       status: "ready",
       discoveryFile: AZURE_DISCOVERY_PATH,
       cloud: result.discovery.cloud,
+      resourceKinds: result.discovery.speech.existingResourceKinds,
       regions: result.regions,
       selectedRegion: region || null,
       nextAction: "continue-azure-preflight",
@@ -743,7 +997,7 @@ async function previewSsml(root, options) {
 
 async function auditionVoices(root, options) {
   const { plan, sha256: planSha256 } = await loadPlan(root, options);
-  const settings = await speechServiceSettings(root, options);
+  const settings = await speechServiceSettings(root, options, plan);
   const sceneId = String(options.scene || plan.scenes[0].id);
   const scene = plan.scenes.find((item) => item.id === sceneId);
   if (!scene) throw new Error(`Unknown audition scene: ${sceneId}`);
@@ -857,7 +1111,7 @@ async function verifyVoiceSelection(root, plan) {
 async function synthesizeAzureNarration(root, options, { plan, sha256: planSha256 }) {
   if (voiceProvider(plan.voice) !== AZURE_NARRATION_PROVIDER) throw new Error("Azure narration requires an azure-neural plan");
   const selection = await verifyVoiceSelection(root, plan);
-  const settings = await speechServiceSettings(root, options);
+  const settings = await speechServiceSettings(root, options, plan);
   const voiceSettingsSha256 = digest(Buffer.from(JSON.stringify(plan.voice), "utf8"));
   const outputDirectory = await resolveSafeTarget(root, "reports/project-video/audio", "audio output");
   await mkdir(outputDirectory, { recursive: true });
@@ -1526,33 +1780,82 @@ function drawText(buffer, width, height, x, y, value, scale, rgb) {
   }
 }
 
+function drawLine(buffer, width, height, x1, y1, x2, y2, thickness, rgb) {
+  const distance = Math.max(Math.abs(x2 - x1), Math.abs(y2 - y1));
+  for (let step = 0; step <= distance; step += 1) {
+    const progress = distance ? step / distance : 0;
+    fillRectangle(buffer, width, height, x1 + (x2 - x1) * progress - thickness / 2, y1 + (y2 - y1) * progress - thickness / 2, thickness, thickness, rgb);
+  }
+}
+
+function drawCircle(buffer, width, height, centerX, centerY, radius, rgb) {
+  for (let y = -radius; y <= radius; y += 1) {
+    const span = Math.floor(Math.sqrt(Math.max(0, radius * radius - y * y)));
+    fillRectangle(buffer, width, height, centerX - span, centerY + y, span * 2 + 1, 1, rgb);
+  }
+}
+
+function drawPanel(buffer, width, height, x, y, panelWidth, panelHeight, fill, border) {
+  fillRectangle(buffer, width, height, x, y, panelWidth, panelHeight, fill);
+  fillRectangle(buffer, width, height, x, y, panelWidth, 2, border);
+  fillRectangle(buffer, width, height, x, y + panelHeight - 2, panelWidth, 2, border);
+  fillRectangle(buffer, width, height, x, y, 2, panelHeight, border);
+  fillRectangle(buffer, width, height, x + panelWidth - 2, y, 2, panelHeight, border);
+}
+
+function sceneVisual(buffer, width, height, plan, scene, index, colors) {
+  const { primary, accent, white, muted, panel, green, coral } = colors;
+  const left = 72;
+  const contentTop = 182;
+  const right = 1230;
+  drawText(buffer, width, height, left, 58, plan.project.name, 3, accent);
+  drawText(buffer, width, height, left, 94, `00${index + 1}`.slice(-2), 3, muted);
+  drawText(buffer, width, height, 1110, 62, `0${index + 1} / 0${plan.scenes.length}`, 3, accent);
+  drawLine(buffer, width, height, left, 142, right, 142, 2, [62, 88, 103]);
+
+  const titleLines = wrapText(scene.title, 17).slice(0, 3);
+  titleLines.forEach((line, lineIndex) => drawText(buffer, width, height, left, 172 + lineIndex * 48, line, 4, white));
+  const subtitleLines = wrapText(scene.subtitle, 26).slice(0, 3);
+  subtitleLines.forEach((line, lineIndex) => drawText(buffer, width, height, left, 330 + lineIndex * 26, line, 2, muted));
+
+  const diagramX = 570;
+  const diagramY = contentTop;
+  drawPanel(buffer, width, height, diagramX, diagramY, 610, 400, panel, [58, 105, 132]);
+  drawText(buffer, width, height, diagramX + 28, diagramY + 28, "EVIDENCE-GROUNDED PROJECT VIEW", 2, accent);
+  const evidence = scene.evidence.slice(0, 4);
+  const fills = [primary, accent, green, coral];
+  evidence.forEach((value, evidenceIndex) => {
+    const x = diagramX + 34 + (evidenceIndex % 2) * 286;
+    const y = diagramY + 82 + Math.floor(evidenceIndex / 2) * 122;
+    drawPanel(buffer, width, height, x, y, 252, 92, [20, 42, 56], fills[evidenceIndex]);
+    const label = path.posix.basename(value).replace(/\.[^.]+$/, "");
+    wrapText(label, 17).slice(0, 2).forEach((line, lineIndex) => drawText(buffer, width, height, x + 18, y + 24 + lineIndex * 27, line, 2, white));
+  });
+  const barWidth = Math.max(80, Math.min(500, 100 + evidence.length * 90));
+  fillRectangle(buffer, width, height, diagramX + 34, diagramY + 344, barWidth, 12, accent);
+  drawText(buffer, width, height, diagramX + 34, diagramY + 370, `${evidence.length} VERIFIED SOURCES`, 2, muted);
+}
+
 async function writeScenePpm(file, plan, scene, index) {
   const { width, height, backgroundColor, primaryColor, accentColor } = plan.video;
   const background = color(backgroundColor);
   const primary = color(primaryColor);
   const accent = color(accentColor);
   const white = [248, 250, 250];
-  const muted = [190, 205, 209];
+  const muted = [174, 195, 202];
+  const panel = [18, 40, 54];
+  const green = [74, 198, 145];
+  const coral = [240, 93, 61];
   const pixels = Buffer.alloc(width * height * 3);
   for (let row = 0; row < height; row += 1) {
-    const blend = row / height * 0.16;
+    const blend = row / height * 0.22;
     const mixed = background.map((channel, offset) => Math.round(channel * (1 - blend) + primary[offset] * blend));
     fillRectangle(pixels, width, height, 0, row, width, 1, mixed);
   }
-  const unit = width / 1280;
-  fillRectangle(pixels, width, height, 0, 0, Math.round(18 * unit), height, accent);
-  fillRectangle(pixels, width, height, Math.round(width * 0.69), 0, Math.round(width * 0.31), height, primary);
-  fillRectangle(pixels, width, height, Math.round(width * 0.72), Math.round(height * 0.12), Math.round(width * 0.22), Math.round(height * 0.76), background);
-  const small = Math.max(2, Math.round(2 * unit));
-  const medium = Math.max(3, Math.round(3 * unit));
-  const large = Math.max(4, Math.round(5 * unit));
-  drawText(pixels, width, height, Math.round(72 * unit), Math.round(58 * unit), plan.project.name, small, accent);
-  const titleLines = wrapText(scene.title, 30).slice(0, 3);
-  titleLines.forEach((line, lineIndex) => drawText(pixels, width, height, Math.round(72 * unit), Math.round((180 + lineIndex * 58) * unit), line, large, white));
-  const subtitleLines = wrapText(scene.subtitle, 48).slice(0, 4);
-  subtitleLines.forEach((line, lineIndex) => drawText(pixels, width, height, Math.round(76 * unit), Math.round((410 + lineIndex * 36) * unit), line, medium, muted));
-  drawText(pixels, width, height, Math.round(width * 0.765), Math.round(height * 0.39), String(index + 1).padStart(2, "0"), large, accent);
-  drawText(pixels, width, height, Math.round(width * 0.735), Math.round(height * 0.68), `SCENE ${index + 1} OF ${plan.scenes.length}`, small, white);
+  for (let x = 0; x < width; x += 64) drawLine(pixels, width, height, x, 0, x, height, 1, [28, 55, 70]);
+  for (let y = 0; y < height; y += 64) drawLine(pixels, width, height, 0, y, width, y, 1, [28, 55, 70]);
+  fillRectangle(pixels, width, height, 0, 0, 12, height, accent);
+  sceneVisual(pixels, width, height, plan, scene, index, { background, primary, accent, white, muted, panel, green, coral });
   await writeFile(file, Buffer.concat([Buffer.from(`P6\n${width} ${height}\n255\n`, "ascii"), pixels]));
 }
 
@@ -1606,6 +1909,22 @@ async function renderVideo(root, options) {
   await Promise.all([mkdir(path.dirname(output), { recursive: true }), mkdir(stagedSourceDirectory, { recursive: true }), mkdir(cache, { recursive: true })]);
   const clips = [];
   const audioEvidence = [];
+  const presenterEvidence = [];
+  const avatarProfile = plan.production?.presenter_provider === AZURE_AVATAR_PROVIDER ? plan.production.selection.avatar_profile : null;
+  const presenterAssets = new Map();
+  if (avatarProfile) {
+    if (!['generated', 'validated'].includes(avatarProfile.generation_status)) throw new Error("Azure Speech Avatar assets must be generated before FFmpeg rendering");
+    if (avatarProfile.assets.length !== avatarProfile.segments.length) throw new Error("Azure Speech Avatar rendering requires one asset for each selected segment");
+    for (const [index, sceneId] of avatarProfile.segments.entries()) {
+      const relative = avatarProfile.assets[index];
+      const file = resolveInside(root, relative, "Avatar presenter asset");
+      if (!existsSync(file)) throw new Error(`Avatar presenter asset does not exist: ${relative}`);
+      const details = await lstat(file);
+      if (details.isSymbolicLink() || !details.isFile() || details.size < 1024) throw new Error(`Avatar presenter asset must be a complete regular file: ${relative}`);
+      presenterAssets.set(sceneId, file);
+      presenterEvidence.push({ id: sceneId, file: relative, sha256: await fileDigest(file) });
+    }
+  }
   try {
     for (const [index, scene] of plan.scenes.entries()) {
       const narrationRecord = narrationManifest.scenes.find((item) => item.id === scene.id);
@@ -1618,7 +1937,16 @@ async function renderVideo(root, options) {
       await Promise.all([writeScenePpm(ppm, plan, scene, index), writeSceneSvg(svg, plan, scene, index)]);
       const frames = Math.ceil((duration + 1) * plan.video.fps);
       const filter = `scale=${plan.video.width}:${plan.video.height},zoompan=z='min(zoom+0.00035,1.035)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=${frames}:s=${plan.video.width}x${plan.video.height}:fps=${plan.video.fps},fade=t=in:st=0:d=0.4,format=yuv420p`;
-      runChecked(ffmpeg, ["-y", "-loop", "1", "-framerate", String(plan.video.fps), "-i", ppm, "-i", audio, "-vf", filter, "-map", "0:v:0", "-map", "1:a:0", "-c:v", "libx264", "-preset", "medium", "-crf", "20", "-tune", "stillimage", "-c:a", "aac", "-b:a", "160k", "-shortest", "-movflags", "+faststart", clip]);
+      const presenter = presenterAssets.get(scene.id);
+      if (presenter) {
+        const base = `[0:v]${filter}[base]`;
+        const composition = avatarProfile.layout === "full-frame"
+          ? `[1:v]scale=${plan.video.width}:${plan.video.height}:force_original_aspect_ratio=increase,crop=${plan.video.width}:${plan.video.height},fps=${plan.video.fps},format=yuv420p[v]`
+          : `${base};[1:v]scale=${Math.floor(plan.video.width * 0.32)}:-2,format=rgba[presenter];[base][presenter]overlay=W-w-48:H-h-48:shortest=1,format=yuv420p[v]`;
+        runChecked(ffmpeg, ["-y", "-loop", "1", "-framerate", String(plan.video.fps), "-i", ppm, "-stream_loop", "-1", "-i", presenter, "-i", audio, "-filter_complex", composition, "-map", "[v]", "-map", "2:a:0", "-c:v", "libx264", "-preset", "medium", "-crf", "20", "-c:a", "aac", "-b:a", "160k", "-shortest", "-movflags", "+faststart", clip]);
+      } else {
+        runChecked(ffmpeg, ["-y", "-loop", "1", "-framerate", String(plan.video.fps), "-i", ppm, "-i", audio, "-vf", filter, "-map", "0:v:0", "-map", "1:a:0", "-c:v", "libx264", "-preset", "medium", "-crf", "20", "-tune", "stillimage", "-c:a", "aac", "-b:a", "160k", "-shortest", "-movflags", "+faststart", clip]);
+      }
       clips.push(clip);
       audioEvidence.push({ id: scene.id, file: narrationRecord.file, durationSeconds: duration, sha256: await fileDigest(audio) });
     }
@@ -1680,7 +2008,8 @@ async function renderVideo(root, options) {
         packageVersion: renderer.packageVersion,
         ffmpeg: version,
         binarySha256: renderer.binarySha256
-      }
+      },
+      presenter: avatarProfile ? { provider: AZURE_AVATAR_PROVIDER, layout: avatarProfile.layout, scenes: presenterEvidence } : null
     };
     await writeJsonAtomic(videoManifest, manifest);
     console.log(`Rendered ${plan.output.file}`);
@@ -1692,13 +2021,62 @@ async function renderVideo(root, options) {
   }
 }
 
+function requireReadyCapability(production, capabilityName, fields = []) {
+  const capability = capabilityFor(production, capabilityName);
+  if (!capability) throw new Error(`Production preflight requires a recorded ${capabilityName} capability`);
+  if (capability.status !== "ready") throw new Error(`${capabilityName} capability is ${capability.status}; select only a valid alternative`);
+  if (!capability.region) throw new Error(`${capabilityName} capability must record its configured region`);
+  for (const field of fields) {
+    if (!capability[field]) throw new Error(`${capabilityName} capability must record ${field}`);
+  }
+  return capability;
+}
+
+async function productionPreflight(root, options) {
+  const { plan, relative, sha256 } = await loadPlan(root, options);
+  if (!plan.production) throw new Error("Production preflight requires a schemaVersion 1.1.0 plan with production selections");
+  const production = plan.production;
+  const verified = [];
+  if (production.script_provider === AZURE_SCRIPT_PROVIDER) {
+    verified.push(requireReadyCapability(production, "azure-openai", ["deployment_id", "model_id"]));
+  }
+  if (production.narration_provider === AZURE_NARRATION_PROVIDER) {
+    verified.push(requireReadyCapability(production, AZURE_NARRATION_PROVIDER, ["resource_id"]));
+  }
+  if (production.presenter_provider === AZURE_AVATAR_PROVIDER) {
+    verified.push(requireReadyCapability(production, AZURE_AVATAR_PROVIDER, ["resource_id"]));
+    if (!production.selection.avatar_profile) throw new Error("Azure Speech Avatar requires an explicit avatar profile and segment list");
+  }
+  console.log(JSON.stringify({
+    schemaVersion: "1.0.0",
+    status: "ready",
+    plan: relative,
+    planSha256: sha256,
+    productionPath: production.production_path,
+    selectedProviders: {
+      script: production.script_provider,
+      narration: production.narration_provider,
+      presenter: production.presenter_provider,
+      assembly: production.assembly_provider,
+      delivery: production.delivery_kind
+    },
+    verifiedCapabilities: verified,
+    approvals: production.approvals,
+    externalWorkAuthorized: false,
+    nextAction: "obtain-stage-specific-approvals"
+  }, null, 2));
+  return 0;
+}
+
 function printHelp() {
   console.log(`Project video helper
 
 Commands:
   inspect [--root PATH] [--output reports/project-video/project-evidence.json]
+  plan-from-understanding [--root PATH] [--name OUTPUT-NAME] [--audience TEXT] [--force]
   discovery-status [--root PATH]
   azure-preflight [--root PATH]
+  production-preflight [--root PATH] [--plan PATH]
   validate [--root PATH] [--plan reports/project-video/project-video-plan.json]
   ssml [--root PATH] [--plan PATH] [--scene scene-01]
   audition [--root PATH] [--plan PATH] [--scene scene-01] --approve-external [--force]
@@ -1719,8 +2097,10 @@ async function main() {
   if (!existsSync(requestedRoot)) throw new Error(`Project root does not exist: ${requestedRoot}`);
   const root = await realpath(requestedRoot);
   if (command === "inspect") return inspectProject(root, options);
+  if (command === "plan-from-understanding") return generatePlanFromUnderstanding(root, options);
   if (command === "discovery-status") return discoveryStatus(root);
   if (command === "azure-preflight") return azurePreflight(root);
+  if (command === "production-preflight") return productionPreflight(root, options);
   if (command === "validate") {
     const { relative } = await loadPlan(root, options);
     console.log(`Valid project video plan: ${relative}`);

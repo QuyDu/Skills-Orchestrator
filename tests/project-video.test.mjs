@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
@@ -9,7 +9,7 @@ import test from "node:test";
 
 const root = path.resolve(import.meta.dirname, "..");
 const helper = path.join(root, ".github", "skills", "project-video", "scripts", "project-video.mjs");
-const avaHdVoice = { provider: "azure-neural", name: "en-US-Ava:DragonHDLatestNeural", locale: "en-US", style: "friendly", styleDegree: 0.65, ratePercent: -2, sentencePauseMs: 180 };
+const avaHdVoice = { provider: "azure-neural", name: "en-US-AvaNeural", locale: "en-US", style: "auto", styleDegree: 0.65, ratePercent: -2, sentencePauseMs: 180 };
 const localPiperVoice = { provider: "local-piper", name: "en_US-ljspeech-high", locale: "en-US", lengthScale: 1, sentenceSilenceSeconds: 0.18 };
 const browserPreviewVoice = { provider: "browser-preview", name: "default-English", locale: "en-US" };
 
@@ -87,14 +87,59 @@ function validPlan(name, voice = avaHdVoice) {
   };
 }
 
+function executivePlan(name) {
+  const plan = validPlan(name, avaHdVoice);
+  plan.schemaVersion = "1.1.0";
+  plan.production = {
+    production_path: "executive-demo",
+    script_provider: "azure-openai",
+    narration_provider: "azure-neural",
+    presenter_provider: "azure-speech-avatar",
+    assembly_provider: "ffmpeg",
+    delivery_kind: "portable-mp4",
+    capabilities: [
+      { capability: "azure-openai", status: "ready", region: "eastus", resource_id: null, deployment_id: "executive-script-deployment", model_id: "gpt-5-2026-08", evidence: "reports/azure-discovery.json" },
+      { capability: "azure-neural", status: "ready", region: "eastus", resource_id: "speech-project-resource", deployment_id: null, model_id: null, evidence: "reports/azure-discovery.json" },
+      { capability: "azure-speech-avatar", status: "ready", region: "eastus", resource_id: "speech-project-resource", deployment_id: null, model_id: null, evidence: "reports/avatar-preflight.json" }
+    ],
+    evidence: {
+      claims_ledger: "reports/project-video/claims-ledger.json",
+      script: "reports/project-video/script.md"
+    },
+    approvals: {
+      required: ["script", "azure-openai", "azure-narration", "synthetic-presenter", "avatar-generation", "ffmpeg-render"],
+      completed: ["script"]
+    },
+    selection: {
+      voice_profile: "ava-hd-warm",
+      avatar_profile: {
+        character: "approved-presenter",
+        voice: "en-US-AvaNeural",
+        language: "en-US",
+        layout: "picture-in-picture",
+        background: "transparent",
+        segments: ["scene-01", "scene-06"],
+        generation_status: "planned",
+        assets: []
+      }
+    },
+    paths: {
+      assets: ["reports/project-video/script.md", "README.md"],
+      validation: ["reports/avatar-preflight.json"],
+      final_output: `dist/project-video/${name}.mp4`
+    }
+  };
+  return plan;
+}
+
 async function seedApprovedVoiceSelection(project) {
   const sampleDirectory = path.join(project, "reports", "project-video", "voice-samples");
   await mkdir(sampleDirectory, { recursive: true });
   const sampleText = "This is a shared audition passage for selecting the approved project narration voice.";
   const profiles = [
-    { id: "ava-hd-warm", slot: "A", label: "A - Ava Dragon HD - warm conversational", voice: avaHdVoice },
-    { id: "aria-hd-warm", slot: "B", label: "B - Aria Dragon HD - warm presenter", voice: { ...avaHdVoice, name: "en-US-Aria:DragonHDLatestNeural" } },
-    { id: "aria-professional", slot: "C", label: "C - Aria Neural - professional narration", voice: { provider: "azure-neural", name: "en-US-AriaNeural", locale: "en-US", style: "narration-professional", styleDegree: 0.75, ratePercent: -3, sentencePauseMs: 200 } }
+    { id: "ava-hd-warm", slot: "A", label: "A - Ava Neural - natural conversational", voice: avaHdVoice },
+    { id: "aria-hd-warm", slot: "B", label: "B - Aria Neural - warm presenter", voice: { ...avaHdVoice, name: "en-US-AriaNeural", style: "friendly" } },
+    { id: "jenny-professional", slot: "C", label: "C - Jenny Neural - professional narration", voice: { provider: "azure-neural", name: "en-US-JennyNeural", locale: "en-US", style: "narration-professional", styleDegree: 0.75, ratePercent: -3, sentencePauseMs: 200 } }
   ];
   const samples = [];
   for (const [index, profile] of profiles.entries()) {
@@ -132,9 +177,9 @@ async function seedLegacyVoiceSelection(project) {
   await mkdir(sampleDirectory, { recursive: true });
   const sampleText = "This is a shared audition passage for selecting the approved project narration voice.";
   const profiles = [
-    { id: "ava-hd-warm", slot: "A", label: "A - Ava Dragon HD - warm conversational", voice: currentVoice },
-    { id: "aria-hd-warm", slot: "B", label: "B - Aria Dragon HD - warm presenter", voice: { ...currentVoice, name: "en-US-Aria:DragonHDLatestNeural" } },
-    { id: "aria-professional", slot: "C", label: "C - Aria Neural - professional narration", voice: { name: "en-US-AriaNeural", locale: "en-US", style: "narration-professional", styleDegree: 0.75, ratePercent: -3, sentencePauseMs: 200 } }
+    { id: "ava-hd-warm", slot: "A", label: "A - Ava Neural - natural conversational", voice: currentVoice },
+    { id: "aria-hd-warm", slot: "B", label: "B - Aria Neural - warm presenter", voice: { ...currentVoice, name: "en-US-AriaNeural", style: "friendly" } },
+    { id: "jenny-professional", slot: "C", label: "C - Jenny Neural - professional narration", voice: { name: "en-US-JennyNeural", locale: "en-US", style: "narration-professional", styleDegree: 0.75, ratePercent: -3, sentencePauseMs: 200 } }
   ];
   const samples = [];
   for (const [index, profile] of profiles.entries()) {
@@ -202,9 +247,9 @@ test("project-video validates grounded plans and rejects escaping evidence", asy
 
     const ssml = run(project, "ssml", ["--scene", "scene-01"]);
     assert.equal(ssml.status, 0, `${ssml.stdout}\n${ssml.stderr}`);
-    assert.match(ssml.stdout, /en-US-Ava:DragonHDLatestNeural/);
+    assert.match(ssml.stdout, /en-US-AvaNeural/);
     assert.match(ssml.stdout, /xmlns:mstts="https:\/\/www\.w3\.org\/2001\/mstts"/);
-    assert.match(ssml.stdout, /style="friendly" styledegree="0\.65"/);
+    assert.match(ssml.stdout, /<voice name="en-US-AvaNeural"><prosody rate="-2%">/);
     assert.match(ssml.stdout, /rate="-2%"/);
     assert.match(ssml.stdout, /<s>U\.S\. projects can use Node\.js safely\.<\/s><break time="180ms"\/>/);
     assert.match(ssml.stdout, /<break time="180ms"\/>/);
@@ -264,6 +309,51 @@ test("project-video validates grounded plans and rejects escaping evidence", asy
   }
 });
 
+test("project-video validates an executive production path assembled locally with FFmpeg", async () => {
+  const project = await mkdtemp(path.join(os.tmpdir(), "pso-project-video-executive-"));
+  try {
+    await mkdir(path.join(project, "src"), { recursive: true });
+    await mkdir(path.join(project, "reports", "project-video"), { recursive: true });
+    await writeFile(path.join(project, "README.md"), "# Executive demo fixture\n", "utf8");
+    await writeFile(path.join(project, "src", "app.mjs"), "export const ready = true;\n", "utf8");
+    await seedAzureDiscovery(project, { openAIAvailable: true, openAIModelName: "gpt-5", openAIModelVersion: "2026-08" });
+    await writeFile(path.join(project, "reports", "avatar-preflight.json"), "{\"status\":\"ready\"}\n", "utf8");
+    await writeFile(path.join(project, "reports", "project-video", "claims-ledger.json"), "{\"claims\":[]}\n", "utf8");
+    await writeFile(path.join(project, "reports", "project-video", "script.md"), "# Approved evidence-grounded script\n", "utf8");
+    const planPath = path.join(project, "reports", "project-video", "project-video-plan.json");
+    const plan = executivePlan("executive-fixture");
+    await writeFile(planPath, `${JSON.stringify(plan, null, 2)}\n`, "utf8");
+
+    const valid = run(project, "validate");
+    assert.equal(valid.status, 0, `${valid.stdout}\n${valid.stderr}`);
+    const preflight = run(project, "production-preflight");
+    assert.equal(preflight.status, 0, `${preflight.stdout}\n${preflight.stderr}`);
+    const readiness = JSON.parse(preflight.stdout);
+    assert.equal(readiness.status, "ready");
+    assert.equal(readiness.externalWorkAuthorized, false);
+    assert.equal(readiness.verifiedCapabilities[0].deployment_id, "executive-script-deployment");
+    assert.equal(readiness.verifiedCapabilities[0].model_id, "gpt-5-2026-08");
+
+    assert.equal(readiness.selectedProviders.assembly, "ffmpeg");
+    assert.equal(readiness.selectedProviders.delivery, "portable-mp4");
+
+    plan.production.selection.avatar_profile.generation_status = "generated";
+    await writeFile(planPath, `${JSON.stringify(plan, null, 2)}\n`, "utf8");
+    const incompleteAvatar = run(project, "validate");
+    assert.notEqual(incompleteAvatar.status, 0);
+    assert.match(`${incompleteAvatar.stdout}${incompleteAvatar.stderr}`, /one generated asset to each selected segment/);
+    plan.production.selection.avatar_profile.generation_status = "planned";
+
+    plan.production.capabilities[0].deployment_id = null;
+    await writeFile(planPath, `${JSON.stringify(plan, null, 2)}\n`, "utf8");
+    const missingDeployment = run(project, "production-preflight");
+    assert.notEqual(missingDeployment.status, 0);
+    assert.match(`${missingDeployment.stdout}${missingDeployment.stderr}`, /must record deployment_id/);
+  } finally {
+    await rm(project, { recursive: true, force: true });
+  }
+});
+
 test("project-video generates a browser voice and visual fallback without Azure discovery", async () => {
   const project = await mkdtemp(path.join(os.tmpdir(), "pso-project-video-browser-"));
   try {
@@ -314,6 +404,52 @@ test("project-video generates a browser voice and visual fallback without Azure 
   }
 });
 
+test("project-video rebuilds and binds current Project Understanding before planning pages", async () => {
+  const project = await mkdtemp(path.join(os.tmpdir(), "pso-project-video-understanding-"));
+  try {
+    await mkdir(path.join(project, "src"), { recursive: true });
+    await mkdir(path.join(project, ".github", "skills", "project-understanding", "scripts"), { recursive: true });
+    await mkdir(path.join(project, "schemas"), { recursive: true });
+    await writeFile(path.join(project, "README.md"), "# Current Repository Subject\n\nBuilds a verified current-project presentation from repository evidence.\n", "utf8");
+    await writeFile(path.join(project, "package.json"), "{\"name\":\"current-repository-subject\",\"scripts\":{\"start\":\"node src/app.mjs\",\"check\":\"node --check src/app.mjs\"}}\n", "utf8");
+    await writeFile(path.join(project, "src", "app.mjs"), "export const projectFeature = 'current-subject';\n", "utf8");
+    await copyFile(path.join(root, ".github", "skills", "project-understanding", "scripts", "project-understanding.mjs"), path.join(project, ".github", "skills", "project-understanding", "scripts", "project-understanding.mjs"));
+    await copyFile(path.join(root, "schemas", "project-understanding.schema.json"), path.join(project, "schemas", "project-understanding.schema.json"));
+    await copyFile(path.join(root, "schemas", "project-video-plan.schema.json"), path.join(project, "schemas", "project-video-plan.schema.json"));
+
+    const generated = run(project, "plan-from-understanding", ["--name", "current-project"]);
+    assert.equal(generated.status, 0, `${generated.stdout}\n${generated.stderr}`);
+    const understandingFile = path.join(project, "reports", "project-understanding.json");
+    const understandingMarkdown = path.join(project, "reports", "project-understanding.md");
+    const planFile = path.join(project, "reports", "project-video", "project-video-plan.json");
+    const plan = JSON.parse(await readFile(planFile, "utf8"));
+    assert.equal(plan.schemaVersion, "1.2.0");
+    assert.equal(plan.project.name, "current-repository-subject");
+    assert.equal(plan.scenes.length, 8);
+    assert.deepEqual(plan.scenes.map((scene) => scene.title), ["Project purpose", "Architecture", "Technology", "Key features", "Setup and use", "Skills and prompts", "Workflows", "Validation and limits"]);
+    assert.equal(plan.understanding.jsonSha256, sha256(await readFile(understandingFile)));
+    assert.equal(plan.understanding.markdownSha256, sha256(await readFile(understandingMarkdown)));
+    assert.equal(plan.production.narration_provider, "browser-preview");
+    assert.equal(plan.production.delivery_kind, "interactive-html");
+
+    const valid = run(project, "validate");
+    assert.equal(valid.status, 0, `${valid.stdout}\n${valid.stderr}`);
+    const preview = run(project, "browser-preview");
+    assert.equal(preview.status, 0, `${preview.stdout}\n${preview.stderr}`);
+    const html = await readFile(path.join(project, "dist", "project-video", "current-project.html"), "utf8");
+    for (const scene of plan.scenes) assert.match(html, new RegExp(scene.title));
+
+    const understanding = JSON.parse(await readFile(understandingFile, "utf8"));
+    understanding.project.purpose = "Changed after planning";
+    await writeFile(understandingFile, `${JSON.stringify(understanding, null, 2)}\n`, "utf8");
+    const stale = run(project, "validate");
+    assert.notEqual(stale.status, 0);
+    assert.match(`${stale.stdout}${stale.stderr}`, /Project Understanding JSON changed/);
+  } finally {
+    await rm(project, { recursive: true, force: true });
+  }
+});
+
 test("project-video fails before external work without credentials or approval", async () => {
   const project = await mkdtemp(path.join(os.tmpdir(), "pso-project-video-gates-"));
   try {
@@ -356,6 +492,32 @@ test("project-video fails before external work without credentials or approval",
     assert.match(preflight.stdout, /"status": "ready"/);
     assert.match(preflight.stdout, /"videoRenderer": "local-ffmpeg"/);
     assert.match(preflight.stdout, /never paste or persist it/);
+
+    await seedAzureDiscovery(project, {
+      cloud: "AzureUSGovernment",
+      location: "usgovarizona",
+      cognitiveRegions: ["usgovarizona"],
+      speech: {
+        serviceRegions: ["usgovarizona"],
+        existingResourceRegions: ["usgovarizona"],
+        existingResourceKinds: ["AIServices"]
+      }
+    });
+    const governmentDiscovery = run(project, "discovery-status");
+    assert.equal(governmentDiscovery.status, 0, `${governmentDiscovery.stdout}\n${governmentDiscovery.stderr}`);
+    const governmentDiscoveryResult = JSON.parse(governmentDiscovery.stdout);
+    assert.equal(governmentDiscoveryResult.status, "ready");
+    assert.equal(governmentDiscoveryResult.cloud, "AzureUSGovernment");
+    assert.deepEqual(governmentDiscoveryResult.resourceKinds, ["AIServices"]);
+    assert.deepEqual(governmentDiscoveryResult.regions, ["usgovarizona"]);
+    const governmentPreflight = run(project, "azure-preflight");
+    assert.equal(governmentPreflight.status, 0, `${governmentPreflight.stdout}\n${governmentPreflight.stderr}`);
+    assert.match(governmentPreflight.stdout, /"cloud": "AzureUSGovernment"/);
+    assert.match(governmentPreflight.stdout, /"existingResourceKinds": \[\s*"AIServices"/);
+    assert.match(governmentPreflight.stdout, /"optionalEnvironment": \[\s*"AZURE_SPEECH_CLOUD"/);
+    const explicitCloudMismatch = run(project, "azure-preflight", [], { AZURE_SPEECH_CLOUD: "AzureCloud" });
+    assert.notEqual(explicitCloudMismatch.status, 0);
+    assert.match(`${explicitCloudMismatch.stdout}${explicitCloudMismatch.stderr}`, /does not match AZURE_SPEECH_CLOUD AzureCloud/);
 
     const narration = run(project, "narrate", ["--approve-external"]);
     assert.notEqual(narration.status, 0);

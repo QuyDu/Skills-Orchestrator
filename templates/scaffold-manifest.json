@@ -105,12 +105,6 @@
       "requires": "always"
     },
     {
-      "path": ".github/prompts/azure-discovery.prompt.md",
-      "kind": "prompt",
-      "purpose": "azure commercial and government discovery",
-      "requires": "always"
-    },
-    {
       "path": ".github/prompts/skills-help.prompt.md",
       "kind": "prompt",
       "purpose": "skill usage and VS Code chat syntax guide",
@@ -135,30 +129,6 @@
       "requires": "always"
     },
     {
-      "path": ".github/prompts/linkedin-post.prompt.md",
-      "kind": "prompt",
-      "purpose": "draft project LinkedIn posts and updates",
-      "requires": "always"
-    },
-    {
-      "path": ".github/prompts/project-video.prompt.md",
-      "kind": "prompt",
-      "purpose": "create a project-specific animated MP4 with approved Azure neural or pinned local narration",
-      "requires": "always"
-    },
-    {
-      "path": ".github/prompts/azure-cleanup.prompt.md",
-      "kind": "prompt",
-      "purpose": "safe azure resource cleanup with confirmation",
-      "requires": "always"
-    },
-    {
-      "path": ".github/prompts/environment-update.prompt.md",
-      "kind": "prompt",
-      "purpose": "inventory and update existing development tools",
-      "requires": "always"
-    },
-    {
       "path": "infra/deploy.ps1",
       "kind": "deployment",
       "purpose": "azure deployment orchestrator entry point",
@@ -169,6 +139,13 @@
       "path": "infra/discover.ps1",
       "kind": "deployment",
       "purpose": "azure region service and model discovery",
+      "requires": "always",
+      "createOnly": true
+    },
+    {
+      "path": "infra/azure-environment.ps1",
+      "kind": "deployment",
+      "purpose": "persisted azure cloud subscription authentication and mcp profile",
       "requires": "always",
       "createOnly": true
     },
@@ -228,12 +205,6 @@
       "path": ".github/prompts/review-architecture.prompt.md",
       "kind": "prompt",
       "purpose": "review architecture well-architected pillars",
-      "requires": "always"
-    },
-    {
-      "path": ".github/prompts/security-review.prompt.md",
-      "kind": "prompt",
-      "purpose": "security review findings severity",
       "requires": "always"
     },
     {

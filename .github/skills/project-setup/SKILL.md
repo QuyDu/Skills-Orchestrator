@@ -46,6 +46,8 @@ Turn a new or unstructured repository into a governed development baseline with 
 2. Resolve the project's purpose, stack, constraints, and cloud target; route material ambiguity through `clarify-the-ask` before proposing structure.
 3. Determine the required baseline: repository instructions, scoped instruction files matching the detected languages, specialist agents, reusable prompts, decision-record location, reports directory, and workspace support files.
 4. Select required and suggested skills from the installed catalog against the project's actual shape, and record why each suggested skill is or is not applicable.
+	- Provision and route `project-video` when a future evidence-grounded browser preview, narrated MP4, or executive demo is requested. Setup owns only availability and routing; `project-video` exclusively owns inspection, production-path selection, provider preflight, media planning, Avatar, and FFmpeg behavior.
+	- Provision and route `project-understanding` as the full-repository rescan owner. Keep it distinct from durable knowledge capture, and require Project Video to rebuild and consume its authoritative report pair.
 5. Classify every planned artifact as `create`, `already-present`, or `conflict`, and never plan a silent replacement.
 6. Populate the repository instruction file with the project's real purpose, architecture summary, coding, naming, testing, security, and documentation standards rather than placeholder text.
 7. Confirm that continuity artifacts under `reports/` are tracked by source control and are not excluded by ignore rules.

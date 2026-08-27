@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "1.0.0",
+  "updatedAt": "2026-08-27T21:18:27.416Z",
+  "project": {
+    "name": "project-skills-orchestrator",
+    "version": "1.1.0",
+    "branch": "main",
+    "commit": "e46727121582e534f683eb49a0c937832db9928d"
+  },
+  "status": "ready-for-local-commit",
+  "activeMilestone": {
+    "name": "Production-candidate hardening and version 1.1.0",
+    "status": "locally-validated"
+  },
+  "lastCompletedAction": {
+    "action": "Harden and validate the complete 1.1.0 production-candidate change set",
+    "status": "completed",
+    "completedAt": "2026-08-27T21:18:27.416Z",
+    "evidence": [
+      ".github/skills/project-understanding/SKILL.md",
+      ".github/skills/project-understanding/scripts/project-understanding.mjs",
+      "schemas/project-understanding.schema.json",
+      "reports/project-understanding.json",
+      "reports/project-understanding.md",
+      ".github/skills/project-video/SKILL.md",
+      ".github/skills/project-video/scripts/project-video.mjs",
+      "schemas/project-video-plan.schema.json",
+      "tests/project-understanding.test.mjs",
+      "tests/project-video.test.mjs",
+      "tests/skill-contracts.test.mjs",
+      "config/profiles.yaml",
+      "reports/change-review.json",
+      "reports/release-readiness.json"
+    ]
+  },
+  "validationStatus": {
+    "repositoryCheck": "passed",
+    "testsPassed": 87,
+    "testsFailed": 0,
+    "skillsVerified": 41,
+    "securityCheck": "passed",
+    "releaseCandidateVerification": "passed"
+  },
+  "blockers": [
+    "Production distribution requires current-commit cross-platform CI evidence.",
+    "Production distribution requires a trusted release signature and independent review."
+  ],
+  "pendingApprovals": [
+    "Remote mutation, publication, deployment, and Azure operations remain unapproved."
+  ],
+  "nextAction": {
+    "skill": "prepare-commit",
+    "status": "approved",
+    "action": "Create the approved local version 1.1.0 commit, then verify the worktree is clean."
+  },
+  "handoff": "reports/project-handoff.json"
+}

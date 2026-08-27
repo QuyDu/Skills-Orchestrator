@@ -12,11 +12,12 @@ subscription**. Run it with `-WhatIf` first and read the plan before you trust i
 | File | Role |
 | --- | --- |
 | `deploy.ps1` | The entry point. Dot-sources the modules below and runs them in order. |
+| `azure-environment.ps1` | Persists nonsecret Azure choices, configures MCP opt-in, and establishes the Azure CLI context. |
 | `discover.ps1` | Library. Probes the region for available services and picks the best OpenAI model. |
 | `deploy-infra.ps1` | Library. Runs `az deployment group create` against `main.bicep`. |
 | `main.bicep` | App Service with a system-assigned identity, Key Vault with RBAC, optional Azure OpenAI. |
 
-`discover.ps1` and `deploy-infra.ps1` are **libraries, not entry points**. Running one directly
+`azure-environment.ps1`, `discover.ps1`, and `deploy-infra.ps1` are **libraries, not entry points**. Running one directly
 defines its functions and exits without doing anything. Only `deploy.ps1` does work.
 
 ## Usage
@@ -32,19 +33,15 @@ defines its functions and exits without doing anything. Only `deploy.ps1` does w
 ./deploy.ps1 -SiteName contoso-api -AzureGov -Location usgovvirginia
 ```
 
-When neither `-Commercial` nor `-Gov` is supplied, the script asks:
-
-```text
-1. Commercial
-2. Gov
-```
-
-Only `1` or `2` is accepted. After three invalid responses, discovery exits with an error. The
-legacy `-AzureGov` switch remains supported as an alias for `-Gov`.
+The first Azure action creates the ignored local profile `.azure/environment.json`. It records the
+cloud, region, environment, authentication method, public tenant/subscription identifiers, and Azure
+MCP service selection. Explicit `-Commercial` or `-Gov` overrides and updates the profile; otherwise
+the saved cloud is used, with Azure Commercial as the final default. The legacy `-AzureGov` switch
+remains supported as an alias for `-Gov`.
 
 The Copilot skill `/azure-discovery` runs the same read-only probe and writes both
 `reports/azure-discovery.json` and the readable `reports/azure-discovery.md`. Use
-`/azure-discovery -Commercial` or `/azure-discovery -Gov` to select a cloud without the menu.
+`/azure-discovery -Commercial` or `/azure-discovery -Gov` to update the saved cloud.
 The report also records whether the existing Speech-resource query succeeded plus only the count,
 kinds, and regions of compatible accounts. It never stores account names, resource identifiers, or
 keys. `/project-video` requires this evidence to be no older than 14 days before Azure narration.
@@ -71,30 +68,35 @@ Use `/environment-update` to inventory already-installed development tools and l
 updates. It reports all findings first, supports `-WhatIf` by default, and requires selection and
 confirmation before updating a tool.
 
-`-SiteName` drives every resource name and is capped at 12 characters so the derived names stay
-inside Azure's limits:
+The entered project name drives every resource name. It is normalized once, and the repeatable
+`Get-AzureResourceName` function applies each Azure service's naming limit:
 
 | Resource | Pattern | Worst case |
 | --- | --- | --- |
-| Resource group | `rg-<name>` | 15 |
-| App Service plan | `asp-<name>-<hash>` | 23 of 40 |
-| Web app | `app-<name>-<hash>` | 23 of 60 |
-| Key Vault | `kv<name><hash>` | 20 of 24 |
-| Azure OpenAI | `oai-<name>-<hash>` | 23 of 64 |
+| Resource group | `rg-<normalized-project-name>` | 90 |
+| App Service plan | `asp-<short-name>-<hash>` | 40 |
+| Web app | `app-<short-name>-<hash>` | 60 |
+| Key Vault | `kv-<short-name>-<hash>` | 24 |
+| Azure OpenAI | `oai-<short-name>-<hash>` | 64 |
+| Azure Speech | `speech-<short-name>-<hash>` | 64 |
 
-`<hash>` is six characters of `uniqueString(resourceGroup().id)`. The Key Vault name drops hyphens
-because Key Vault rejects consecutive and trailing hyphens, and it is never truncated, so the
-uniqueness suffix always survives in that globally unique namespace. Separate site names stay fully
-isolated and the same repository deploys into a fresh subscription unchanged.
+`<hash>` is six characters derived from the normalized project name. Names are stable across reruns,
+and the full project name remains visible on the resource group and resource tags. Existing deployed
+resources are not renamed by adoption or update operations.
 
 ## Authentication
 
-Deployment uses your `az login` context and targets whatever subscription the CLI is scoped to.
-Confirm with `az account show` before running without `-WhatIf`.
+Deployment selects the cloud and subscription from `.azure/environment.json`. If authentication is
+missing or stale, the scripts start the recorded login flow automatically. Interactive login uses a
+device code only after selecting the recorded cloud, preventing Government work from opening a
+Commercial authority.
 
-No subscription id, tenant id, service principal, or secret belongs in this directory. If you find
-yourself wanting to add one, that is the signal to use a managed identity or a federated credential
-instead.
+The local profile is excluded from source control. It may contain public tenant, subscription, and
+OAuth client IDs, but never passwords, keys, access tokens, refresh tokens, or client secrets.
+
+Azure MCP is disabled until the profile opts in. Workspace sampling and enabled namespaces then
+follow the profile. `foundryextensions` stays disabled unless a client ID was explicitly recorded,
+so VS Code does not repeatedly request unsupported dynamic client registration.
 
 ## How the application authenticates
 
@@ -131,8 +133,8 @@ often all a stateless service needs.
 
 `main.bicep` sets `AZURE_CLOUD` to `AzureUSGovernment` or `AzureCloud`. Read that setting at
 startup to choose the right authority host and service endpoints, so one build works against both
-`.com` and `.us` without a rebuild. `deploy.ps1` refuses to run if your active `az cloud` does not
-match the requested one.
+`.com` and `.us` without a rebuild. The environment module switches the Azure CLI to the requested
+cloud and starts its login flow when the saved account is unavailable.
 
 ## Region availability
 

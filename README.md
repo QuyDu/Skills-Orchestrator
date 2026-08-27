@@ -1,12 +1,12 @@
 # Project Skills Orchestrator
 
-Turn any repository into a governed GitHub Copilot workspace: agent instructions, scoped standards, reusable prompts, specialist agents, and 40 governed skills — installed consistently, verified after every run, and safe to rerun.
+Turn any repository into a governed GitHub Copilot workspace: agent instructions, scoped standards, reusable prompts, specialist agents, and 41 governed skills — installed consistently, verified after every run, and safe to rerun.
 
 | Item | Value |
 | --- | --- |
-| Runtime version | `1.0.3` |
+| Runtime version | `1.1.0` |
 | Framework version | `9.0.0` |
-| Skill catalog | 40 governed skills |
+| Skill catalog | 41 governed skills |
 | Supported Node.js | 22, 24, 26 |
 | Dependencies | None |
 | Distribution | Authorized internal use only |
@@ -23,7 +23,7 @@ It has two halves.
 
 **A command-line installer** (`pso.mjs`) that creates a new project or adopts an existing one. It runs entirely on Node.js built-ins — no packages to install, no registry access — and every change it makes is planned, journaled, and verified.
 
-**A catalog of 40 skills** installed into `.github/skills/`, invoked from GitHub Copilot Chat in Agent mode. Each skill is a bounded contract: what it owns, what it reads, what it writes, when it must stop and ask you.
+**A catalog of 41 skills** installed into `.github/skills/`, invoked from GitHub Copilot Chat in Agent mode. Each skill is a bounded contract: what it owns, what it reads, what it writes, when it must stop and ask you.
 
 ### What makes it different
 
@@ -274,7 +274,7 @@ Clones into an isolated staging directory, provisions, verifies, and only then p
 | --- | --- |
 | `.github/copilot-instructions.md` | Repository constitution: engagement protocol, orchestration, purpose, architecture, coding, naming, Azure, security, testing, documentation |
 | `.github/instructions/` | Scoped standards applied by glob — only the ones your stack needs |
-| `.github/prompts/` | `/create-adr`, `/project-blueprint`, `/project-video`, `/review-architecture`, `/executive-summary`, `/security-review`, `/project-status`, `/new-component`, `/azure-cleanup`, `/environment-update`, `/release-readiness`, and skill help prompts |
+| `.github/prompts/` | Prompt-only commands such as `/create-adr`, `/project-blueprint`, `/review-architecture`, `/executive-summary`, `/project-status`, `/new-component`, and skill help prompts; skill-owned names are not duplicated here |
 | `.github/agents/` | Azure Architect, Security Reviewer, Documentation Writer |
 | `.github/skills/` | The 40-skill catalog |
 | `.github/workflows/ci.yml` | Stack-aware pipeline, SHA-pinned actions (new projects only) |
@@ -283,6 +283,7 @@ Clones into an isolated staging directory, provisions, verifies, and only then p
 | `.vscode/launch.json` | Debug configurations for the stack |
 | `.vscode/extensions.json` | Copilot, EditorConfig, plus the language extensions your stack needs |
 | `.vscode/mcp.json` | GitHub and Microsoft Learn MCP servers; registry-dependent servers documented but disabled |
+| `.azure/environment.json` | Ignored local Azure cloud, subscription, authentication-method, region, and MCP preferences created on first Azure use |
 | `.editorconfig` / `.gitattributes` | Shared formatting and line-ending normalization |
 | `docs/adr/` | Architecture Decision Record template |
 | `schemas/` | Report contracts |
@@ -354,6 +355,7 @@ Open the project in VS Code, start Copilot Chat in **Agent** mode, and invoke a 
 /architecture-review      Well-Architected assessment of the defined architecture
 /deployment-review        Is this release candidate deployable, and how do we roll back
 /documentation-builder    Rebuild README, deployment guide, operations runbook
+/project-understanding   Completely rescan and rebuild the current project guide
 /project-video            Create a project-specific animated MP4 with approved narration
 /systematic-debugging     Reproduce, isolate root cause, verify the smallest fix
 /change-review            Review this diff before commit
@@ -381,15 +383,16 @@ Every profile is dependency-closed and enforced by tests.
 
 ### Project video
 
-Every created or adopted project receives `/project-video`, its schemas, and a self-contained Node.js helper inside the skill package. Run it after the project has enough blueprint or implementation evidence to explain accurately. It inspects the current repository rather than this source distribution, writes reviewable plans under `reports/project-video/`, and produces an interactive browser walkthrough or verified MP4 output under `dist/project-video/`.
+Every created or adopted project receives `/project-understanding`, `/project-video`, their schemas, and self-contained Node.js helpers. Project Understanding performs a complete rescan on every run and atomically rebuilds `reports/project-understanding.json` and its Markdown view. Project Video refreshes that evidence first, binds its digests into a schema `1.2.0` plan, and derives eight presentation pages and their dialogue from the repository where it runs.
 
-Every invocation first runs `discovery-status`. When Azure discovery is missing or unusable, the skill asks whether to run `/azure-discovery`. A yes refreshes discovery and continues through `azure-preflight`. A no explicitly selects `browser-preview` and generates project-specific HTML with browser-default English speech, responsive visuals, manual controls, and scene advancement on utterance completion. The browser or operating system controls voice processing, which may use an online service. This fallback is not rendered audio, portable video, or an MP4.
+After rebuilding Project Understanding, every invocation runs `discovery-status`. When Azure discovery is missing or unusable, the skill asks whether to run `/azure-discovery`. A yes refreshes discovery and continues through `azure-preflight`. A no explicitly selects `browser-preview` and generates project-specific HTML with browser-default English speech, responsive visuals, manual controls, and scene advancement on utterance completion. The browser or operating system controls voice processing, which may use an online service. This fallback preserves the same pages and dialogue but is not rendered audio, portable video, or an MP4.
 
-The preferred MP4 path uses an approved existing Azure Speech resource configured through process environment variables. Discovery records only Speech account counts, kinds, and regions, never names, identifiers, or keys. Azure supplies narration; the MP4 is rendered locally with FFmpeg. Before synthesizing the full script, the skill generates the same short passage with Ava Dragon HD, Aria Dragon HD, and Aria professional narration so the user can listen and explicitly choose.
+The preferred MP4 path uses an approved existing Azure Speech resource configured through process environment variables. The configured region is preferred; another compatible region in the same Azure cloud requires explicit cross-region approval. Discovery records only Speech account counts, kinds, and regions, never names, identifiers, or keys. Azure supplies narration; the MP4 is rendered locally with FFmpeg. Before synthesizing the full script, the skill generates the same short passage with Ava Neural, Aria Neural, and Jenny professional narration so the user can listen and explicitly choose.
 
 The packaged helper enforces that sequence:
 
 ```powershell
+node .\.github\skills\project-video\scripts\project-video.mjs plan-from-understanding
 node .\.github\skills\project-video\scripts\project-video.mjs discovery-status
 node .\.github\skills\project-video\scripts\project-video.mjs azure-preflight
 node .\.github\skills\project-video\scripts\project-video.mjs audition --approve-external

@@ -12,7 +12,8 @@ description: Azure discovery and deployment standards for the infra pipeline.
 
 ## Authentication
 
-- Deployment authenticates with the operator's `az login` context. Never read a subscription id, tenant id, client secret, or certificate from source or from a checked-in file.
+- Deployment reads the ignored `.azure/environment.json`, selects its cloud and subscription, and starts its recorded login method when needed. Never store a client secret, certificate, or token in source or a checked-in file.
+- Collect cloud, subscription, authentication-method, and MCP preferences only when the profile is missing; do not ask for them repeatedly while it remains valid.
 - Verify the active cloud and subscription before any mutating command, and fail closed on mismatch.
 - The application authenticates with a managed identity and `DefaultAzureCredential`. Never write a service key into app settings; grant an RBAC role assignment instead.
 - The baseline ships `publicNetworkAccess` as `Enabled` so a new project deploys to a working state. Identity-based authentication is not a substitute for network isolation: before the deployment carries real data, set it to `Disabled`, add private endpoints and private DNS, and record the decision in an ADR.

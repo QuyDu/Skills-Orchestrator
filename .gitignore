@@ -1,6 +1,7 @@
 dist/
 node_modules/
 .skills-orchestrator/
+.azure/environment.json
 .pso-release.lock
 *.pem
 *.key
