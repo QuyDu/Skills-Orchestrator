@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "1.0.0",
+  "selectedAt": "2026-08-28T01:26:37.045Z",
+  "auditionManifestSha256": "f8e60924563abdcb743f5abeddfc71ff5f9227cc8ef39d4e4769c71d0c8b28cd",
+  "profile": "aria-hd-warm",
+  "slot": "B",
+  "label": "B - Aria Neural - warm presenter",
+  "voice": {
+    "provider": "azure-neural",
+    "name": "en-US-AriaNeural",
+    "locale": "en-US",
+    "style": "friendly",
+    "styleDegree": 0.65,
+    "ratePercent": -2,
+    "sentencePauseMs": 180
+  },
+  "sampleFile": "reports/project-video/voice-samples/aria-hd-warm.mp3",
+  "sampleSha256": "250c09cd2fc663b4e695a0ab333f471617093f511a45d8ea6132aeb1e04df6a3"
+}

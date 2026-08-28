@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-28T00:59:13.440Z",
+  "planSha256": "1c4349959ad4d270f41996bd747c1bf72a16d22bbd7285dc3e5df19f49a9532c",
+  "scene": "scene-01",
+  "sampleText": "Project Skills Orchestrator turns a repository into a governed GitHub Copilot workspace. It installs reusable instructions, prompts, specialist agents, and bounded skills, then verifies the result so teams can adopt automation consistently and rerun it safely.",
+  "sampleTextSha256": "008844517a9de347323e4c840083c3f838cf201a71b7fe91f271daee3da242ac",
+  "auditionPageSha256": "f086b5faf430f193de7a838611a15de8d2ed1ff44ef3d5eb23379615d5653fe6",
+  "cloud": "AzureUSGovernment",
+  "region": "usgovarizona",
+  "azureDiscoverySha256": "4dbffd8b5c0f314146e8e3222dadd2beba72f66cbcc732422ddf6a49067d8f15",
+  "azureDiscoveryAt": "2026-08-26T23:35:27.3914740Z",
+  "recommended": "ava-hd-warm",
+  "samples": [
+    {
+      "id": "ava-hd-warm",
+      "slot": "A",
+      "label": "A - Ava Neural - natural conversational",
+      "file": "ava-hd-warm.mp3",
+      "voice": {
+        "provider": "azure-neural",
+        "name": "en-US-AvaNeural",
+        "locale": "en-US",
+        "style": "auto",
+        "styleDegree": 0.65,
+        "ratePercent": -2,
+        "sentencePauseMs": 180
+      },
+      "sha256": "89ff0f3fc3cd6f41b116bffc8f52d850ec06498c211567663670d46468918b43"
+    },
+    {
+      "id": "aria-hd-warm",
+      "slot": "B",
+      "label": "B - Aria Neural - warm presenter",
+      "file": "aria-hd-warm.mp3",
+      "voice": {
+        "provider": "azure-neural",
+        "name": "en-US-AriaNeural",
+        "locale": "en-US",
+        "style": "friendly",
+        "styleDegree": 0.65,
+        "ratePercent": -2,
+        "sentencePauseMs": 180
+      },
+      "sha256": "250c09cd2fc663b4e695a0ab333f471617093f511a45d8ea6132aeb1e04df6a3"
+    },
+    {
+      "id": "jenny-professional",
+      "slot": "C",
+      "label": "C - Jenny Neural - professional narration",
+      "file": "jenny-professional.mp3",
+      "voice": {
+        "provider": "azure-neural",
+        "name": "en-US-JennyNeural",
+        "locale": "en-US",
+        "style": "narration-professional",
+        "styleDegree": 0.75,
+        "ratePercent": -3,
+        "sentencePauseMs": 200
+      },
+      "sha256": "db45ce827dd732398f7402c783b21c6597638c60c030c14f6eeb111cd16856f9"
+    }
+  ]
+}

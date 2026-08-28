@@ -1,0 +1,84 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-28T00:24:36.193Z",
+  "projectUnderstandingSha256": "bf2c9aa9a7d09279da8277b8b70bb01fb2fcffe3a55829009131c59610b18369",
+  "claims": [
+    {
+      "scene": "scene-01",
+      "claim": "Project Skills Orchestrator installs and verifies governed GitHub Copilot workspace capabilities with safe rerun behavior.",
+      "evidence": [
+        "README.md"
+      ]
+    },
+    {
+      "scene": "scene-02",
+      "claim": "The registry-free runtime composes configuration, templates, schemas, and authoritative reports.",
+      "evidence": [
+        "pso.mjs",
+        "config/orchestrator.yaml",
+        "templates/scaffold-manifest.json",
+        "schemas/project-understanding.schema.json"
+      ]
+    },
+    {
+      "scene": "scene-03",
+      "claim": "The implementation uses Node JavaScript modules, PowerShell, Bicep, and JSON schemas.",
+      "evidence": [
+        "package.json",
+        "pso.ps1",
+        "templates/project/infra/main.bicep",
+        "schemas/project-understanding.schema.json"
+      ]
+    },
+    {
+      "scene": "scene-04",
+      "claim": "Forty-one governed skills, transactional adoption, and ownership rules provide bounded automation without command conflicts.",
+      "evidence": [
+        "reports/skill-inventory.json",
+        "reports/artifact-ownership.json",
+        "tests/adoption-rerun.test.mjs",
+        "tests/skill-contracts.test.mjs"
+      ]
+    },
+    {
+      "scene": "scene-05",
+      "claim": "Contributors create or adopt projects through the command line and inspect results with inventory and verification commands.",
+      "evidence": [
+        "README.md",
+        "package.json",
+        "pso.mjs",
+        "config/profiles.yaml"
+      ]
+    },
+    {
+      "scene": "scene-06",
+      "claim": "Skills own bounded actions, prompts own distinct guided experiences, and instructions enforce clarification and approvals.",
+      "evidence": [
+        ".github/skills/architecture-review/SKILL.md",
+        ".github/skills/systematic-debugging/SKILL.md",
+        ".github/skills/project-understanding/SKILL.md",
+        ".github/copilot-instructions.md"
+      ]
+    },
+    {
+      "scene": "scene-07",
+      "claim": "The governed workflow clarifies, plans, executes approved actions, validates, and records handoff while external operations remain gated.",
+      "evidence": [
+        "AGENTS.md",
+        "templates/project/infra/azure-environment.ps1",
+        ".github/skills/workflow-planner/SKILL.md",
+        ".github/skills/project-handoff/SKILL.md"
+      ]
+    },
+    {
+      "scene": "scene-08",
+      "claim": "Version 1.1.0 passes local validation, while production distribution remains blocked on cross-platform, signing, and independent-review evidence.",
+      "evidence": [
+        "package.json",
+        "reports/release-readiness.json",
+        "reports/change-review.json",
+        "release/release-manifest.json"
+      ]
+    }
+  ]
+}

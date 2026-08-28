@@ -1660,7 +1660,7 @@ async function installRenderer(root, options) {
   if (!testExecutable(executable)) throw new Error(`Pinned renderer installation did not produce a working FFmpeg executable: ${executable}`);
   const lock = await readJson(path.join(target, "package-lock.json"));
   const lockedPackage = lock.packages?.[`node_modules/${RENDERER_PACKAGE}`];
-  if (lockedPackage?.version !== RENDERER_VERSION || !/^sha512-/.test(lockedPackage.integrity || "")) {
+  if (lockedPackage?.version !== RENDERER_VERSION || !/^sha(?:1|256|384|512)-[A-Za-z0-9+/]+={0,2}$/.test(lockedPackage.integrity || "")) {
     throw new Error("Pinned renderer lock integrity is missing or does not match the approved version");
   }
   const packageMetadata = await readJson(path.join(target, "node_modules", RENDERER_PACKAGE, "package.json"));

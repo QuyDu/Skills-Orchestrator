@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-28T01:27:02.318Z",
+  "provider": "azure-neural",
+  "planSha256": "5dfc3b7edc846743f405951c06714615ecdd13341bfc5c3049130726a8289eb7",
+  "voice": "en-US-AriaNeural",
+  "voiceSettings": {
+    "provider": "azure-neural",
+    "name": "en-US-AriaNeural",
+    "locale": "en-US",
+    "style": "friendly",
+    "styleDegree": 0.65,
+    "ratePercent": -2,
+    "sentencePauseMs": 180
+  },
+  "voiceSettingsSha256": "7fcb57ccb4e21924aaceec4d7c67564a716e8c7b2334d0f67e33a9c2fa03b7e1",
+  "voiceSelectionProfile": "aria-hd-warm",
+  "voiceSelectionSha256": "8123c84b58a12684e14da51f1631902dee0d2f9abd7885f06be6cb387b83f789",
+  "cloud": "AzureUSGovernment",
+  "region": "usgovarizona",
+  "azureDiscoverySha256": "4dbffd8b5c0f314146e8e3222dadd2beba72f66cbcc732422ddf6a49067d8f15",
+  "azureDiscoveryAt": "2026-08-26T23:35:27.3914740Z",
+  "scenes": [
+    {
+      "id": "scene-01",
+      "file": "reports/project-video/audio/scene-01.mp3",
+      "narrationSha256": "008844517a9de347323e4c840083c3f838cf201a71b7fe91f271daee3da242ac",
+      "audioSha256": "250c09cd2fc663b4e695a0ab333f471617093f511a45d8ea6132aeb1e04df6a3"
+    },
+    {
+      "id": "scene-02",
+      "file": "reports/project-video/audio/scene-02.mp3",
+      "narrationSha256": "7e38342c37aa8e91c9a2bf570352a9091647d320fb887033c79576094acfdc30",
+      "audioSha256": "1580a3cb0761c3b8ef56c076529003cbdf8aecd832955ccb09fa6f584c532041"
+    },
+    {
+      "id": "scene-03",
+      "file": "reports/project-video/audio/scene-03.mp3",
+      "narrationSha256": "8bccbb62a8fde8be4c3f2b44af6c25aa4e2384ca705078241aa77189c674549c",
+      "audioSha256": "5c086f31ae613dea4627ecc0d7a6fcf0a2962b9ea0d92561011f686c79d03a31"
+    },
+    {
+      "id": "scene-04",
+      "file": "reports/project-video/audio/scene-04.mp3",
+      "narrationSha256": "0f65c3b2b1d0c9ca32da5233c3ab6775dc24feb93aa5f5006824fd99ac2f856a",
+      "audioSha256": "f884cf44622ac27f8476652f0aae71d80051d43602c13527de7efe384f368645"
+    },
+    {
+      "id": "scene-05",
+      "file": "reports/project-video/audio/scene-05.mp3",
+      "narrationSha256": "c3491b35d4bc036226df76f6f75f507558d05596311da9abf14e928d7b7a3bc4",
+      "audioSha256": "89fcc19b18fca444368ad2aabe5fa46f98ba788edd55542bebe28324f81b403f"
+    },
+    {
+      "id": "scene-06",
+      "file": "reports/project-video/audio/scene-06.mp3",
+      "narrationSha256": "7b742195dc745f3788028fe2e98c21f533c7b272431193e8aac6a23b7b0144f5",
+      "audioSha256": "a4c1c25134c21557471607d8ceb19f1429d88c1e77103286274f99bab7f04a48"
+    },
+    {
+      "id": "scene-07",
+      "file": "reports/project-video/audio/scene-07.mp3",
+      "narrationSha256": "c9aaca6dba8677ba7254313196be75e8a9f88c4b6ec091a6fffc5142ec4d4e62",
+      "audioSha256": "233c1488dc107b1c3cfd2bb7f2d83d9929398bb46a1ade3e86f058fe5c51b853"
+    },
+    {
+      "id": "scene-08",
+      "file": "reports/project-video/audio/scene-08.mp3",
+      "narrationSha256": "c1a287320abf90ebb43566d948aed697a65b1f2814d63923ce7d794afc671f08",
+      "audioSha256": "e81321c46caf602717cc99b024357b196c11587fe8f169bc27ac7e7bab2af5d6"
+    }
+  ]
+}

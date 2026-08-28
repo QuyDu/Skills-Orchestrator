@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-28T00:24:29.722Z",
+  "project": {
+    "name": "project-skills-orchestrator",
+    "blueprintPurpose": ""
+  },
+  "readiness": "ready",
+  "blockers": [],
+  "knownEvidence": [
+    "README.md",
+    "package.json"
+  ],
+  "sourceFileCount": 12,
+  "testFileCount": 7,
+  "languageExtensions": {
+    ".mjs": 17,
+    ".ps1": 2
+  },
+  "candidateEvidence": [
+    ".github/workflows/codeql.yml",
+    ".github/workflows/security-validation.yml",
+    "docs/INTERNAL-RELEASE.md",
+    "docs/PROJECT-ARCHITECTURE.md",
+    "docs/SKILL-ECOSYSTEM-AUDIT.md",
+    "docs/THREAT-MODEL.md",
+    "README.md",
+    "tests/adoption-rerun.test.mjs",
+    "tests/package-install.test.mjs",
+    "tests/production-gates.test.mjs",
+    "tests/project-understanding.test.mjs",
+    "tests/project-video.test.mjs",
+    "tests/security-fuzz.test.mjs",
+    "tests/skill-contracts.test.mjs"
+  ]
+}

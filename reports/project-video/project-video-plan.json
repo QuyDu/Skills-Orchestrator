@@ -1,0 +1,191 @@
+{
+  "schemaVersion": "1.2.0",
+  "project": {
+    "name": "project-skills-orchestrator",
+    "purpose": "Turn any repository into a governed GitHub Copilot workspace: agent instructions, scoped standards, reusable prompts, specialist agents, and 41 governed skills — installed consistently, verified after every run, and safe to rerun.",
+    "evidence": [
+      "README.md"
+    ]
+  },
+  "understanding": {
+    "json": "reports/project-understanding.json",
+    "jsonSha256": "bf2c9aa9a7d09279da8277b8b70bb01fb2fcffe3a55829009131c59610b18369",
+    "markdown": "reports/project-understanding.md",
+    "markdownSha256": "d4d421c92f0b0e939d365262d36d7d9939aa147c3bcee3dd8a11d668cfb4aeff",
+    "repositoryDigestSha256": "c083d0207c03ea3b109d77576a174c09d35d44499e93127bf9e9ca250685ea67",
+    "generatedAt": "2026-08-28T00:24:36.117Z"
+  },
+  "audience": "contributors",
+  "targetDurationSeconds": 180,
+  "production": {
+    "production_path": "narrated-mp4",
+    "script_provider": "agent-grounded",
+    "narration_provider": "azure-neural",
+    "presenter_provider": "none",
+    "assembly_provider": "ffmpeg",
+    "delivery_kind": "portable-mp4",
+    "capabilities": [
+      {
+        "capability": "azure-neural",
+        "status": "ready",
+        "region": "usgovarizona",
+        "resource_id": "/subscriptions/1cce2d13-640d-47b6-b426-d20914ba45eb/resourceGroups/rg-project-skills-orchestrator/providers/Microsoft.CognitiveServices/accounts/speech-project-skills-orchestrator-780f5b",
+        "deployment_id": null,
+        "model_id": null,
+        "evidence": "reports/azure-discovery.json"
+      }
+    ],
+    "evidence": {
+      "claims_ledger": "reports/project-video/claims-ledger.json",
+      "script": "reports/project-video/script.md",
+      "project_understanding": "reports/project-understanding.json",
+      "project_understanding_markdown": "reports/project-understanding.md"
+    },
+    "approvals": {
+      "required": [
+        "script",
+        "azure-audition",
+        "voice-selection",
+        "azure-narration",
+        "ffmpeg-render"
+      ],
+      "completed": [
+        "script",
+        "azure-audition",
+        "voice-selection",
+        "azure-narration",
+        "ffmpeg-render"
+      ]
+    },
+    "selection": {
+      "voice_profile": "aria-hd-warm",
+      "avatar_profile": null
+    },
+    "paths": {
+      "assets": [
+        "reports/project-understanding.json",
+        "reports/project-understanding.md"
+      ],
+      "validation": [
+        "schemas/project-understanding.schema.json",
+        "schemas/project-video-plan.schema.json"
+      ],
+      "final_output": "dist/project-video/skills-orchestrator-1-1-0.mp4"
+    }
+  },
+  "video": {
+    "width": 1280,
+    "height": 720,
+    "fps": 30,
+    "backgroundColor": "#132129",
+    "primaryColor": "#1261A0",
+    "accentColor": "#F05D3D"
+  },
+  "voice": {
+    "provider": "azure-neural",
+    "name": "en-US-AriaNeural",
+    "locale": "en-US",
+    "style": "friendly",
+    "styleDegree": 0.65,
+    "ratePercent": -2,
+    "sentencePauseMs": 180
+  },
+  "output": {
+    "file": "dist/project-video/skills-orchestrator-1-1-0.mp4"
+  },
+  "scenes": [
+    {
+      "id": "scene-01",
+      "title": "Project purpose",
+      "subtitle": "What the project does and who it serves",
+      "narration": "Project Skills Orchestrator turns a repository into a governed GitHub Copilot workspace. It installs reusable instructions, prompts, specialist agents, and bounded skills, then verifies the result so teams can adopt automation consistently and rerun it safely.",
+      "evidence": [
+        "README.md"
+      ]
+    },
+    {
+      "id": "scene-02",
+      "title": "Architecture",
+      "subtitle": "The major boundaries and how the repository is organized",
+      "narration": "The runtime centers on a registry-free Node command line. Configuration selects governed profiles, templates carry the baseline into new repositories, schemas define machine-readable contracts, and reports preserve authoritative evidence for later workflow decisions.",
+      "evidence": [
+        "pso.mjs",
+        "config/orchestrator.yaml",
+        "templates/scaffold-manifest.json",
+        "schemas/project-understanding.schema.json"
+      ]
+    },
+    {
+      "id": "scene-03",
+      "title": "Technology",
+      "subtitle": "Languages, formats, and implementation foundations",
+      "narration": "The implementation uses modern JavaScript modules on maintained Node releases. PowerShell provides Windows-friendly entry points and Azure automation, Bicep defines the optional cloud baseline, and JSON schemas validate durable contracts and generated evidence.",
+      "evidence": [
+        "package.json",
+        "pso.ps1",
+        "templates/project/infra/main.bicep",
+        "schemas/project-understanding.schema.json"
+      ]
+    },
+    {
+      "id": "scene-04",
+      "title": "Key features",
+      "subtitle": "The capabilities supported by current evidence",
+      "narration": "Forty-one governed skills cover setup, audits, planning, recovery, release preparation, Azure discovery, and project communication. Transactional adoption protects existing repositories, while ownership rules prevent duplicate commands and conflicting report producers.",
+      "evidence": [
+        "reports/skill-inventory.json",
+        "reports/artifact-ownership.json",
+        "tests/adoption-rerun.test.mjs",
+        "tests/skill-contracts.test.mjs"
+      ]
+    },
+    {
+      "id": "scene-05",
+      "title": "Setup and use",
+      "subtitle": "The verified commands and contributor entry points",
+      "narration": "Contributors install the package prerequisites, invoke the command line to create or adopt a project, and use profiles to select required capabilities. Inventory and verification commands explain what was installed without requiring a package registry.",
+      "evidence": [
+        "README.md",
+        "package.json",
+        "pso.mjs",
+        "config/profiles.yaml"
+      ]
+    },
+    {
+      "id": "scene-06",
+      "title": "Skills and prompts",
+      "subtitle": "How users invoke governed project capabilities",
+      "narration": "Skills own bounded actions such as architecture review, debugging, and project understanding. Prompts remain focused on distinct guided experiences and help, while repository instructions enforce clarification, approval gates, and safe tool boundaries before work begins.",
+      "evidence": [
+        ".github/skills/architecture-review/SKILL.md",
+        ".github/skills/systematic-debugging/SKILL.md",
+        ".github/skills/project-understanding/SKILL.md",
+        ".github/copilot-instructions.md"
+      ]
+    },
+    {
+      "id": "scene-07",
+      "title": "Workflows",
+      "subtitle": "The operational sequence and approval boundaries",
+      "narration": "A typical workflow clarifies intent, plans bounded changes, executes only approved actions, validates results, and records a handoff. Azure choices are persisted without secrets, and external processing, deployment, publication, and destructive operations remain separately approval-gated.",
+      "evidence": [
+        "AGENTS.md",
+        "templates/project/infra/azure-environment.ps1",
+        ".github/skills/workflow-planner/SKILL.md",
+        ".github/skills/project-handoff/SKILL.md"
+      ]
+    },
+    {
+      "id": "scene-08",
+      "title": "Validation and limits",
+      "subtitle": "How confidence is established and uncertainty remains visible",
+      "narration": "The complete local gate checks syntax, security, release integrity, regression tests, and all skill contracts. Version 1.1.0 passes locally, but production distribution still requires current cross-platform evidence, trusted signing, and independent review.",
+      "evidence": [
+        "package.json",
+        "reports/release-readiness.json",
+        "reports/change-review.json",
+        "release/release-manifest.json"
+      ]
+    }
+  ]
+}

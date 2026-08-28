@@ -1,0 +1,102 @@
+{
+  "schemaVersion": "1.0.0",
+  "status": "complete",
+  "generatedAt": "2026-08-28T00:25:50.348Z",
+  "provider": "browser-preview",
+  "plan": "reports/project-video/project-video-plan.json",
+  "planSha256": "a707b70245812b611b17dfa245e8daa439476b27ad563ff7236957d2b0a66687",
+  "output": "dist/project-video/skills-orchestrator-1-1-0.html",
+  "sha256": "5b1fcca986b3e693772a91077b40ba45f5ec2976caca8e54f370563af1dbbd53",
+  "bytes": 14279,
+  "voice": {
+    "name": "default-English",
+    "locale": "en-US",
+    "processing": "browser-or-operating-system-controlled"
+  },
+  "capabilities": {
+    "browserSpeech": true,
+    "browserVisuals": true,
+    "completionDrivenScenes": true,
+    "renderedAudio": false,
+    "portableMedia": false
+  },
+  "scenes": [
+    {
+      "id": "scene-01",
+      "narrationSha256": "008844517a9de347323e4c840083c3f838cf201a71b7fe91f271daee3da242ac",
+      "evidence": [
+        "README.md"
+      ]
+    },
+    {
+      "id": "scene-02",
+      "narrationSha256": "7e38342c37aa8e91c9a2bf570352a9091647d320fb887033c79576094acfdc30",
+      "evidence": [
+        "pso.mjs",
+        "config/orchestrator.yaml",
+        "templates/scaffold-manifest.json",
+        "schemas/project-understanding.schema.json"
+      ]
+    },
+    {
+      "id": "scene-03",
+      "narrationSha256": "8bccbb62a8fde8be4c3f2b44af6c25aa4e2384ca705078241aa77189c674549c",
+      "evidence": [
+        "package.json",
+        "pso.ps1",
+        "templates/project/infra/main.bicep",
+        "schemas/project-understanding.schema.json"
+      ]
+    },
+    {
+      "id": "scene-04",
+      "narrationSha256": "0f65c3b2b1d0c9ca32da5233c3ab6775dc24feb93aa5f5006824fd99ac2f856a",
+      "evidence": [
+        "reports/skill-inventory.json",
+        "reports/artifact-ownership.json",
+        "tests/adoption-rerun.test.mjs",
+        "tests/skill-contracts.test.mjs"
+      ]
+    },
+    {
+      "id": "scene-05",
+      "narrationSha256": "c3491b35d4bc036226df76f6f75f507558d05596311da9abf14e928d7b7a3bc4",
+      "evidence": [
+        "README.md",
+        "package.json",
+        "pso.mjs",
+        "config/profiles.yaml"
+      ]
+    },
+    {
+      "id": "scene-06",
+      "narrationSha256": "7b742195dc745f3788028fe2e98c21f533c7b272431193e8aac6a23b7b0144f5",
+      "evidence": [
+        ".github/skills/architecture-review/SKILL.md",
+        ".github/skills/systematic-debugging/SKILL.md",
+        ".github/skills/project-understanding/SKILL.md",
+        ".github/copilot-instructions.md"
+      ]
+    },
+    {
+      "id": "scene-07",
+      "narrationSha256": "c9aaca6dba8677ba7254313196be75e8a9f88c4b6ec091a6fffc5142ec4d4e62",
+      "evidence": [
+        "AGENTS.md",
+        "templates/project/infra/azure-environment.ps1",
+        ".github/skills/workflow-planner/SKILL.md",
+        ".github/skills/project-handoff/SKILL.md"
+      ]
+    },
+    {
+      "id": "scene-08",
+      "narrationSha256": "c1a287320abf90ebb43566d948aed697a65b1f2814d63923ce7d794afc671f08",
+      "evidence": [
+        "package.json",
+        "reports/release-readiness.json",
+        "reports/change-review.json",
+        "release/release-manifest.json"
+      ]
+    }
+  ]
+}

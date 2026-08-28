@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "status": "complete",
-  "generatedAt": "2026-08-27T21:19:14.583Z",
+  "generatedAt": "2026-08-28T00:24:36.117Z",
   "generator": "project-understanding",
   "project": {
     "name": "project-skills-orchestrator",
@@ -13,8 +13,8 @@
   },
   "scan": {
     "mode": "full-rebuild",
-    "repositoryDigestSha256": "93c9dfbfaadfd82234060d79f3da9de5891db4df71d6c8f73793ae9c7838b81f",
-    "fileCount": 196,
+    "repositoryDigestSha256": "c083d0207c03ea3b109d77576a174c09d35d44499e93127bf9e9ca250685ea67",
+    "fileCount": 197,
     "sourceFileCount": 18,
     "testFileCount": 7,
     "excludedDirectories": [
@@ -467,7 +467,7 @@
       {
         "path": "reports/artifact-ownership.json",
         "bytes": 10002,
-        "sha256": "ac0c08da1c1e68cc599f90881c3c865c31ae4f0feede14780deec900e3e00604"
+        "sha256": "554a24b93f25f81659c69ab99ee7dfdc8b38242bed6d7f63f550bd8ee38558e9"
       },
       {
         "path": "reports/audit-remediation-plan.json",
@@ -545,6 +545,11 @@
         "sha256": "7c055f02ef06c69ec930ed00d4e287e358c6f273eda593f48b4cf37b36b3cd57"
       },
       {
+        "path": "reports/project-video/project-evidence.json",
+        "bytes": 910,
+        "sha256": "46d96846fa72a792e896e7cc721bae133e1ac66e88df29f5ed0b7c3188e82e3d"
+      },
+      {
         "path": "reports/release-readiness.json",
         "bytes": 4810,
         "sha256": "faf4db67f26760bc6307bc8dc7d9b59c58971fd9c34de424bce4c18e69ef8128"
@@ -552,27 +557,27 @@
       {
         "path": "reports/security-check.json",
         "bytes": 342,
-        "sha256": "3674fd6cbf45abf5844a7d5dd50ea1a88475ab3d46a1925fd12e72c71004ca2d"
+        "sha256": "22ee55e9c92cbe0df2780be70f5815b5e708024d441248fa13f80354d5156dec"
       },
       {
         "path": "reports/skill-details.json",
         "bytes": 35661,
-        "sha256": "dd2b8ef127c1db85debc142a33b1921113c9c226afff57fe341878b9312886b1"
+        "sha256": "11badb69d422c822cea298cfacefab133e10725cd025ac44f100a0b3cb66d262"
       },
       {
         "path": "reports/skill-details.md",
         "bytes": 3490,
-        "sha256": "06a0bf1a48a0d5a0c016b83a1017072eca0a7f2f08b08d65021d9d03f4a26618"
+        "sha256": "6cde49171343f66af9571386c06caf1e7bef3c683394737d253652be8a0d6406"
       },
       {
         "path": "reports/skill-inventory.json",
         "bytes": 27051,
-        "sha256": "69a4a7ed2084dc6df539d91852b600206c065619d496446ea050b192638e36a9"
+        "sha256": "547b5862af2851bb5985c7b01991d8f191e99358a07cb351f152e261bf8274aa"
       },
       {
         "path": "reports/skill-inventory.md",
         "bytes": 11765,
-        "sha256": "8556552906100d886e30037894dee4cdd7b72356ee843b7a5a3e081ccd31373e"
+        "sha256": "6c04365d64806e55706a330e373bd16aa81baa9d518e9c0c6b4b1ff34db58afb"
       },
       {
         "path": "schemas/adoption-transaction.schema.json",
@@ -1072,7 +1077,7 @@
     },
     {
       "name": "reports",
-      "description": "Top-level project boundary containing 24 scanned files.",
+      "description": "Top-level project boundary containing 25 scanned files.",
       "evidence": [
         "reports/adoption-rerun-evidence.json"
       ],
@@ -1122,7 +1127,7 @@
     },
     {
       "name": ".json",
-      "description": "59 scanned files use this extension.",
+      "description": "60 scanned files use this extension.",
       "evidence": [
         ".vscode/extensions.json"
       ],
@@ -2192,5 +2197,5 @@
   ],
   "limitations": [],
   "markdown": "reports/project-understanding.md",
-  "markdownSha256": "764734abbea19c6dd39479dbf2bb685e42cbea11fc077215d67dc236d4e24c27"
+  "markdownSha256": "d4d421c92f0b0e939d365262d36d7d9939aa147c3bcee3dd8a11d668cfb4aeff"
 }
