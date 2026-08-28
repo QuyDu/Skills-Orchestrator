@@ -297,8 +297,9 @@ test("project video is a portable narrated MP4 capability", async () => {
   assert.equal(localVoiceSchema.properties.wheels.maxItems, 12);
   const browserPreviewSchema = JSON.parse(await readFile(path.join(root, "schemas", "project-video-browser-preview-manifest.schema.json"), "utf8"));
   assert.equal(browserPreviewSchema.properties.provider.const, "browser-preview");
-  assert.equal(browserPreviewSchema.properties.voice.properties.name.const, "default-English");
-  assert.equal(browserPreviewSchema.properties.capabilities.properties.renderedAudio.const, false);
+  assert.equal(browserPreviewSchema.properties.voice.properties.name.type, "string");
+  assert.deepEqual(browserPreviewSchema.properties.voice.properties.processing.enum, ["browser-or-operating-system-controlled", "azure-speech-local-playback"]);
+  assert.equal(browserPreviewSchema.properties.capabilities.properties.renderedAudio.type, "boolean");
   assert.equal(browserPreviewSchema.properties.capabilities.properties.portableMedia.const, false);
   const discoverySchema = JSON.parse(await readFile(path.join(root, "schemas", "azure-discovery.schema.json"), "utf8"));
   assert.equal(discoverySchema.properties.schemaVersion.const, "1.0.0");

@@ -288,7 +288,7 @@ No approval is required for read-only work.
 
     const manifest = JSON.parse(await readFile(path.join(project, "project-orchestrator.json"), "utf8"));
     assert.equal(manifest.frameworkVersion, "9.0.0");
-    assert.equal(manifest.runtimeVersion, "1.1.0");
+    assert.equal(manifest.runtimeVersion, "1.1.1");
     assert.equal(manifest.conformanceProfile, "core");
     assert.equal(manifest.riskAcceptance.noticeVersion, "1.0.0");
     assert.equal(manifest.riskAcceptance.method, "cli-flag");

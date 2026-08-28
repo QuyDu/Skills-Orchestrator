@@ -8,7 +8,7 @@ import { createHash, randomUUID } from "node:crypto";
 import { spawn, spawnSync } from "node:child_process";
 import { setTimeout as delay } from "node:timers/promises";
 
-const VERSION = "1.1.0";
+const VERSION = "1.1.1";
 const FRAMEWORK_VERSION = "9.0.0";
 const RISK_ACCEPTANCE_VERSION = "1.0.0";
 const SCRIPT_ROOT = path.dirname(fileURLToPath(import.meta.url));

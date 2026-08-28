@@ -4,7 +4,7 @@ Turn any repository into a governed GitHub Copilot workspace: agent instructions
 
 | Item | Value |
 | --- | --- |
-| Runtime version | `1.1.0` |
+| Runtime version | `1.1.1` |
 | Framework version | `9.0.0` |
 | Skill catalog | 41 governed skills |
 | Supported Node.js | 22, 24, 26 |
@@ -383,11 +383,11 @@ Every profile is dependency-closed and enforced by tests.
 
 ### Project video
 
-Every created or adopted project receives `/project-understanding`, `/project-video`, their schemas, and self-contained Node.js helpers. Project Understanding performs a complete rescan on every run and atomically rebuilds `reports/project-understanding.json` and its Markdown view. Project Video refreshes that evidence first, binds its digests into a schema `1.2.0` plan, and derives eight presentation pages and their dialogue from the repository where it runs.
+Every created or adopted project receives `/project-understanding`, `/project-video`, their schemas, and self-contained Node.js helpers. Project Understanding performs a complete rescan on every run and atomically rebuilds `reports/project-understanding.json` and its Markdown view. When a user explicitly invokes `/project-video`, it refreshes that evidence first, binds its digests into a schema `1.2.0` plan, and derives eight presentation pages and their dialogue from the current repository where it runs. It does not run automatically after project creation or during unrelated skills.
 
 After rebuilding Project Understanding, every invocation runs `discovery-status`. When Azure discovery is missing or unusable, the skill asks whether to run `/azure-discovery`. A yes refreshes discovery and continues through `azure-preflight`. A no explicitly selects `browser-preview` and generates project-specific HTML with browser-default English speech, responsive visuals, manual controls, and scene advancement on utterance completion. The browser or operating system controls voice processing, which may use an online service. This fallback preserves the same pages and dialogue but is not rendered audio, portable video, or an MP4.
 
-The preferred MP4 path uses an approved existing Azure Speech resource configured through process environment variables. The configured region is preferred; another compatible region in the same Azure cloud requires explicit cross-region approval. Discovery records only Speech account counts, kinds, and regions, never names, identifiers, or keys. Azure supplies narration; the MP4 is rendered locally with FFmpeg. Before synthesizing the full script, the skill generates the same short passage with Ava Neural, Aria Neural, and Jenny professional narration so the user can listen and explicitly choose.
+The preferred path uses an approved existing Azure Speech resource configured through process environment variables and produces both a polished local MP4 and a self-contained narrated HTML preview. The configured region is preferred; another compatible region in the same Azure cloud requires explicit cross-region approval. Discovery records only Speech account counts, kinds, and regions, never names, identifiers, or keys. Azure supplies narration; the MP4 is rendered locally with FFmpeg, and the HTML embeds the verified scene audio so it also works when opened directly from disk. Before synthesizing the full script, the skill generates the same short passage with Ava Neural, Aria Neural, and Jenny professional narration so the user can listen and explicitly choose.
 
 The packaged helper enforces that sequence:
 

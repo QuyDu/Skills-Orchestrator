@@ -1,13 +1,13 @@
 {
   "schemaVersion": "1.0.0",
   "status": "complete",
-  "renderedAt": "2026-08-28T01:30:56.063Z",
+  "renderedAt": "2026-08-28T02:38:02.874Z",
   "projectName": "project-skills-orchestrator",
   "plan": "reports/project-video/project-video-plan.json",
   "planSha256": "5dfc3b7edc846743f405951c06714615ecdd13341bfc5c3049130726a8289eb7",
   "output": "dist/project-video/skills-orchestrator-1-1-0.mp4",
-  "sha256": "bd88a3ada5e8bba8dfa3601a16e6b78f7439a19c889b9a760645837fb78f5534",
-  "bytes": 9054475,
+  "sha256": "6b002cc3ba856a295a5c133832fcaae9746980e0c9f6f775270e5e1fc74526c1",
+  "bytes": 6777058,
   "durationSeconds": 147.39,
   "video": {
     "width": 1280,

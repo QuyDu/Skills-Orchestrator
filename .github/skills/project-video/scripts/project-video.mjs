@@ -869,13 +869,13 @@ function jsonForHtml(value) {
     .replaceAll("\u2029", "\\u2029");
 }
 
-function browserPreviewHtml(plan) {
+function browserPreviewHtml(plan, audioScenes = null) {
   const preview = {
     project: plan.project,
     audience: plan.audience,
     voice: plan.voice,
     video: plan.video,
-    scenes: plan.scenes
+    scenes: plan.scenes.map((scene) => ({ ...scene, audio: audioScenes?.[scene.id] || null }))
   };
   return `<!doctype html>
 <html lang="${escapeXml(plan.voice.locale)}">
@@ -898,19 +898,21 @@ function browserPreviewHtml(plan) {
 </head>
 <body>
   <div class="player">
-    <header><div class="brand" id="brand"></div><div class="provider" id="provider">Browser preview</div></header>
+    <header><div class="brand" id="brand"></div><div class="provider" id="provider">Narrated preview</div></header>
     <main class="scene" id="scene"><section class="copy"><div class="eyebrow" id="counter"></div><h1 class="title" id="title"></h1><p class="subtitle" id="subtitle"></p><div class="evidence" id="evidence"></div></section><aside class="visual" aria-hidden="true"><div class="number" id="number"></div><div class="bars"><i style="--height:32%"></i><i style="--height:58%"></i><i style="--height:84%"></i><i style="--height:48%"></i><i style="--height:72%"></i><i style="--height:42%"></i></div></aside></main>
-    <footer><div class="caption" id="caption" aria-live="polite"></div><div class="controls"><button id="previous" title="Previous scene" aria-label="Previous scene">&larr;</button><button id="restart" title="Restart" aria-label="Restart">&#8634;</button><button id="play" class="play" title="Play browser narration" aria-label="Play browser narration">&#9654;</button><button id="next" title="Next scene" aria-label="Next scene">&rarr;</button></div><div class="progress"><span id="progress"></span></div></footer>
+    <footer><div class="caption" id="caption" aria-live="polite"></div><div class="controls"><button id="previous" title="Previous scene" aria-label="Previous scene">&larr;</button><button id="restart" title="Restart" aria-label="Restart">&#8634;</button><button id="play" class="play" title="Play narration" aria-label="Play narration">&#9654;</button><button id="next" title="Next scene" aria-label="Next scene">&rarr;</button></div><div class="progress"><span id="progress"></span></div></footer>
+    <audio id="narration" preload="metadata"></audio>
   </div>
   <script type="application/json" id="preview-data">${jsonForHtml(preview)}</script>
   <script>
     const preview=JSON.parse(document.getElementById("preview-data").textContent);const scenes=preview.scenes;let current=0;let playing=false;let speechToken=0;
-    const elements={brand:document.getElementById("brand"),provider:document.getElementById("provider"),scene:document.getElementById("scene"),counter:document.getElementById("counter"),title:document.getElementById("title"),subtitle:document.getElementById("subtitle"),evidence:document.getElementById("evidence"),number:document.getElementById("number"),caption:document.getElementById("caption"),previous:document.getElementById("previous"),restart:document.getElementById("restart"),play:document.getElementById("play"),next:document.getElementById("next"),progress:document.getElementById("progress")};
+    const elements={brand:document.getElementById("brand"),provider:document.getElementById("provider"),scene:document.getElementById("scene"),counter:document.getElementById("counter"),title:document.getElementById("title"),subtitle:document.getElementById("subtitle"),evidence:document.getElementById("evidence"),number:document.getElementById("number"),caption:document.getElementById("caption"),previous:document.getElementById("previous"),restart:document.getElementById("restart"),play:document.getElementById("play"),next:document.getElementById("next"),progress:document.getElementById("progress"),narration:document.getElementById("narration")};
     function defaultEnglishVoice(){const voices=window.speechSynthesis&&window.speechSynthesis.getVoices?window.speechSynthesis.getVoices():[];return voices.find(function(voice){return voice.localService&&voice.lang==="en-US"})||voices.find(function(voice){return voice.lang==="en-US"})||voices.find(function(voice){return /^en(?:-|$)/i.test(voice.lang)})||null}
-    function setPlaying(value){playing=value;elements.play.innerHTML=value?"&#10074;&#10074;":"&#9654;";elements.play.title=value?"Pause browser narration":"Play browser narration";elements.play.setAttribute("aria-label",elements.play.title)}
-    function stopSpeech(){speechToken+=1;if(window.speechSynthesis)window.speechSynthesis.cancel()}
-    function renderScene(index){current=Math.max(0,Math.min(index,scenes.length-1));const item=scenes[current];elements.brand.textContent=preview.project.name;elements.counter.textContent="Scene "+String(current+1).padStart(2,"0")+" of "+String(scenes.length).padStart(2,"0");elements.title.textContent=item.title;elements.subtitle.textContent=item.subtitle;elements.number.textContent=String(current+1).padStart(2,"0");elements.caption.textContent="Browser default English voice - "+item.narration;elements.evidence.replaceChildren.apply(elements.evidence,item.evidence.map(function(value){const tag=document.createElement("span");tag.textContent=value;return tag}));elements.progress.style.width=((current+1)/scenes.length*100)+"%";elements.previous.disabled=current===0;elements.next.disabled=current===scenes.length-1;elements.scene.classList.remove("entering");requestAnimationFrame(function(){elements.scene.classList.add("entering")})}
-    function speakCurrent(){if(!playing)return;if(!window.speechSynthesis||typeof window.SpeechSynthesisUtterance!=="function"){setPlaying(false);elements.provider.textContent="Browser voice unavailable";return}const token=++speechToken;const utterance=new SpeechSynthesisUtterance(scenes[current].narration);const voice=defaultEnglishVoice();utterance.lang=preview.voice.locale;if(voice)utterance.voice=voice;utterance.rate=1;utterance.onend=function(){if(token!==speechToken||!playing)return;if(current<scenes.length-1){renderScene(current+1);speakCurrent()}else{setPlaying(false);elements.provider.textContent="Preview complete"}};utterance.onerror=function(){if(token!==speechToken)return;setPlaying(false);elements.provider.textContent="Browser voice unavailable"};elements.provider.textContent=voice?voice.name:"Browser default English voice";window.speechSynthesis.cancel();window.speechSynthesis.speak(utterance)}
+    function setPlaying(value){playing=value;elements.play.innerHTML=value?"&#10074;&#10074;":"&#9654;";elements.play.title=value?"Pause narration":"Play narration";elements.play.setAttribute("aria-label",elements.play.title)}
+    function stopSpeech(){speechToken+=1;if(window.speechSynthesis)window.speechSynthesis.cancel();elements.narration.pause();elements.narration.currentTime=0}
+    function advance(){if(current<scenes.length-1){renderScene(current+1);speakCurrent()}else{setPlaying(false);elements.provider.textContent="Preview complete"}}
+    function renderScene(index){current=Math.max(0,Math.min(index,scenes.length-1));const item=scenes[current];elements.brand.textContent=preview.project.name;elements.counter.textContent="Scene "+String(current+1).padStart(2,"0")+" of "+String(scenes.length).padStart(2,"0");elements.title.textContent=item.title;elements.subtitle.textContent=item.subtitle;elements.number.textContent=String(current+1).padStart(2,"0");elements.caption.textContent=item.audio?"Azure Speech narration - "+item.narration:"Browser default English voice - "+item.narration;elements.narration.src=item.audio||"";elements.evidence.replaceChildren.apply(elements.evidence,item.evidence.map(function(value){const tag=document.createElement("span");tag.textContent=value;return tag}));elements.progress.style.width=((current+1)/scenes.length*100)+"%";elements.previous.disabled=current===0;elements.next.disabled=current===scenes.length-1;elements.scene.classList.remove("entering");requestAnimationFrame(function(){elements.scene.classList.add("entering")})}
+    function speakCurrent(){if(!playing)return;const item=scenes[current];if(item.audio){const token=++speechToken;elements.provider.textContent="Azure Speech narration";elements.narration.onended=function(){if(token===speechToken&&playing)advance()};elements.narration.onerror=function(){if(token===speechToken){setPlaying(false);elements.provider.textContent="Audio unavailable"}};elements.narration.play().catch(function(){setPlaying(false);elements.provider.textContent="Press play to start audio"});return}if(!window.speechSynthesis||typeof window.SpeechSynthesisUtterance!=="function"){setPlaying(false);elements.provider.textContent="Browser voice unavailable";return}const token=++speechToken;const utterance=new SpeechSynthesisUtterance(item.narration);const voice=defaultEnglishVoice();utterance.lang=preview.voice.locale;if(voice)utterance.voice=voice;utterance.rate=1;utterance.onend=function(){if(token===speechToken&&playing)advance()};utterance.onerror=function(){if(token!==speechToken)return;setPlaying(false);elements.provider.textContent="Browser voice unavailable"};elements.provider.textContent=voice?voice.name:"Browser default English voice";window.speechSynthesis.cancel();window.speechSynthesis.speak(utterance)}
     function moveTo(index){const resume=playing;stopSpeech();renderScene(index);if(resume){setPlaying(true);speakCurrent()}}
     elements.play.addEventListener("click",function(){if(playing){stopSpeech();setPlaying(false)}else{setPlaying(true);speakCurrent()}});elements.previous.addEventListener("click",function(){moveTo(current-1)});elements.next.addEventListener("click",function(){moveTo(current+1)});elements.restart.addEventListener("click",function(){stopSpeech();renderScene(0);setPlaying(true);speakCurrent()});window.addEventListener("beforeunload",stopSpeech);renderScene(0);
   </script>
@@ -920,10 +922,21 @@ function browserPreviewHtml(plan) {
 
 async function generateBrowserPreview(root, options) {
   const { plan, relative: planRelative, sha256: planSha256 } = await loadPlan(root, options);
-  if (voiceProvider(plan.voice) !== BROWSER_NARRATION_PROVIDER) throw new Error("Browser preview generation requires a browser-preview plan provider");
-  const output = await resolveSafeTarget(root, plan.output.file, "browser preview output");
+  const hasAzureAudio = voiceProvider(plan.voice) === AZURE_NARRATION_PROVIDER && options["with-audio"] === true;
+  if (voiceProvider(plan.voice) !== BROWSER_NARRATION_PROVIDER && !hasAzureAudio) throw new Error("Browser preview generation requires a browser-preview plan provider or --with-audio for approved Azure narration");
+  const outputRelative = options.output || (hasAzureAudio ? plan.output.file.replace(/\.mp4$/, ".html") : plan.output.file);
+  const output = await resolveSafeTarget(root, outputRelative, "browser preview output");
   const manifestFile = await resolveSafeTarget(root, "reports/project-video/browser-preview-manifest.json", "browser preview manifest");
-  const html = browserPreviewHtml(plan);
+  let audioScenes = null;
+  if (hasAzureAudio) {
+    await verifyNarrationSet(root, plan, planSha256);
+    audioScenes = Object.fromEntries(await Promise.all(plan.scenes.map(async (scene) => {
+      const audio = resolveInside(root, `reports/project-video/audio/${scene.id}.mp3`, "narration audio");
+      const bytes = await readFile(audio);
+      return [scene.id, `data:audio/mpeg;base64,${bytes.toString("base64")}`];
+    })));
+  }
+  const html = browserPreviewHtml(plan, audioScenes);
   const manifest = {
     schemaVersion: "1.0.0",
     status: "complete",
@@ -931,16 +944,16 @@ async function generateBrowserPreview(root, options) {
     provider: BROWSER_NARRATION_PROVIDER,
     plan: planRelative.replaceAll("\\", "/"),
     planSha256,
-    output: plan.output.file,
+    output: outputRelative.replaceAll("\\", "/"),
     sha256: digest(Buffer.from(html, "utf8")),
     bytes: Buffer.byteLength(html, "utf8"),
-    voice: { name: BROWSER_VOICE_NAME, locale: plan.voice.locale, processing: "browser-or-operating-system-controlled" },
-    capabilities: { browserSpeech: true, browserVisuals: true, completionDrivenScenes: true, renderedAudio: false, portableMedia: false },
+    voice: hasAzureAudio ? { name: plan.voice.name, locale: plan.voice.locale, processing: "azure-speech-local-playback" } : { name: BROWSER_VOICE_NAME, locale: plan.voice.locale, processing: "browser-or-operating-system-controlled" },
+    capabilities: { browserSpeech: !hasAzureAudio, browserVisuals: true, completionDrivenScenes: true, renderedAudio: hasAzureAudio, portableMedia: false },
     scenes: plan.scenes.map((scene) => ({ id: scene.id, narrationSha256: digest(Buffer.from(scene.narration, "utf8")), evidence: scene.evidence }))
   };
   await writeBrowserPreviewArtifacts(output, manifestFile, html, manifest, options.force);
-  console.log(`Browser preview: ${plan.output.file}`);
-  console.log("Provider: browser-preview (interactive HTML; not a narrated MP4)");
+  console.log(`Browser preview: ${outputRelative.replaceAll("\\", "/")}`);
+  console.log(hasAzureAudio ? "Provider: Azure Speech audio (interactive HTML; not a portable MP4)" : "Provider: browser-preview (interactive HTML; not a narrated MP4)");
   return 0;
 }
 
@@ -1808,32 +1821,49 @@ function sceneVisual(buffer, width, height, plan, scene, index, colors) {
   const left = 72;
   const contentTop = 182;
   const right = 1230;
-  drawText(buffer, width, height, left, 58, plan.project.name, 3, accent);
-  drawText(buffer, width, height, left, 94, `00${index + 1}`.slice(-2), 3, muted);
-  drawText(buffer, width, height, 1110, 62, `0${index + 1} / 0${plan.scenes.length}`, 3, accent);
   drawLine(buffer, width, height, left, 142, right, 142, 2, [62, 88, 103]);
-
-  const titleLines = wrapText(scene.title, 17).slice(0, 3);
-  titleLines.forEach((line, lineIndex) => drawText(buffer, width, height, left, 172 + lineIndex * 48, line, 4, white));
-  const subtitleLines = wrapText(scene.subtitle, 26).slice(0, 3);
-  subtitleLines.forEach((line, lineIndex) => drawText(buffer, width, height, left, 330 + lineIndex * 26, line, 2, muted));
 
   const diagramX = 570;
   const diagramY = contentTop;
   drawPanel(buffer, width, height, diagramX, diagramY, 610, 400, panel, [58, 105, 132]);
-  drawText(buffer, width, height, diagramX + 28, diagramY + 28, "EVIDENCE-GROUNDED PROJECT VIEW", 2, accent);
   const evidence = scene.evidence.slice(0, 4);
   const fills = [primary, accent, green, coral];
   evidence.forEach((value, evidenceIndex) => {
     const x = diagramX + 34 + (evidenceIndex % 2) * 286;
     const y = diagramY + 82 + Math.floor(evidenceIndex / 2) * 122;
     drawPanel(buffer, width, height, x, y, 252, 92, [20, 42, 56], fills[evidenceIndex]);
-    const label = path.posix.basename(value).replace(/\.[^.]+$/, "");
-    wrapText(label, 17).slice(0, 2).forEach((line, lineIndex) => drawText(buffer, width, height, x + 18, y + 24 + lineIndex * 27, line, 2, white));
   });
   const barWidth = Math.max(80, Math.min(500, 100 + evidence.length * 90));
   fillRectangle(buffer, width, height, diagramX + 34, diagramY + 344, barWidth, 12, accent);
-  drawText(buffer, width, height, diagramX + 34, diagramY + 370, `${evidence.length} VERIFIED SOURCES`, 2, muted);
+}
+
+async function writeSceneTextFiles(directory, plan, scene, index) {
+  const files = {
+    brand: path.join(directory, `${scene.id}-brand.txt`),
+    counter: path.join(directory, `${scene.id}-counter.txt`),
+    title: path.join(directory, `${scene.id}-title.txt`),
+    subtitle: path.join(directory, `${scene.id}-subtitle.txt`),
+    diagram: path.join(directory, `${scene.id}-diagram.txt`),
+    evidence: path.join(directory, `${scene.id}-evidence.txt`)
+  };
+  const label = scene.evidence.slice(0, 4).map((value) => path.posix.basename(value)).join("  |  ");
+  await Promise.all([
+    writeFile(files.brand, plan.project.name.toUpperCase(), "utf8"),
+    writeFile(files.counter, `SCENE ${String(index + 1).padStart(2, "0")} / ${String(plan.scenes.length).padStart(2, "0")}`, "utf8"),
+    writeFile(files.title, scene.title, "utf8"),
+    writeFile(files.subtitle, scene.subtitle, "utf8"),
+    writeFile(files.diagram, "EVIDENCE-GROUNDED PROJECT VIEW", "utf8"),
+    writeFile(files.evidence, `${label}\n\n${scene.evidence.length} VERIFIED SOURCES`, "utf8")
+  ]);
+  return files;
+}
+
+function ffmpegTextFile(file) {
+  return file.replaceAll("\\", "/").replaceAll(":", "\\:").replaceAll("'", "\\'");
+}
+
+function textOverlayFilter(file, colorValue, size, x, y, extra = "") {
+  return `drawtext=fontfile='C\\:/Windows/Fonts/segoeui.ttf':textfile='${ffmpegTextFile(file)}':fontcolor=${colorValue}:fontsize=${size}:x=${x}:y=${y}:line_spacing=10${extra}`;
 }
 
 async function writeScenePpm(file, plan, scene, index) {
@@ -1934,9 +1964,18 @@ async function renderVideo(root, options) {
       const ppm = path.join(cache, `${scene.id}.ppm`);
       const svg = path.join(stagedSourceDirectory, `${scene.id}.svg`);
       const clip = path.join(cache, `${scene.id}.mp4`);
+      const textFiles = await writeSceneTextFiles(cache, plan, scene, index);
       await Promise.all([writeScenePpm(ppm, plan, scene, index), writeSceneSvg(svg, plan, scene, index)]);
       const frames = Math.ceil((duration + 1) * plan.video.fps);
-      const filter = `scale=${plan.video.width}:${plan.video.height},zoompan=z='min(zoom+0.00035,1.035)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=${frames}:s=${plan.video.width}x${plan.video.height}:fps=${plan.video.fps},fade=t=in:st=0:d=0.4,format=yuv420p`;
+      const typography = [
+        textOverlayFilter(textFiles.brand, plan.video.accentColor, 20, 72, 52),
+        textOverlayFilter(textFiles.counter, plan.video.accentColor, 18, 1040, 52),
+        textOverlayFilter(textFiles.title, "#f8fafa", 64, 72, 184, ":line_spacing=14"),
+        textOverlayFilter(textFiles.subtitle, "#aec3ca", 28, 76, 344, ":line_spacing=12"),
+        textOverlayFilter(textFiles.diagram, plan.video.accentColor, 18, 600, 210),
+        textOverlayFilter(textFiles.evidence, "#f8fafa", 18, 606, 292, ":line_spacing=18")
+      ].join(",");
+      const filter = `scale=${plan.video.width}:${plan.video.height},zoompan=z='min(zoom+0.00035,1.035)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=${frames}:s=${plan.video.width}x${plan.video.height}:fps=${plan.video.fps},fade=t=in:st=0:d=0.4,${typography},format=yuv420p`;
       const presenter = presenterAssets.get(scene.id);
       if (presenter) {
         const base = `[0:v]${filter}[base]`;

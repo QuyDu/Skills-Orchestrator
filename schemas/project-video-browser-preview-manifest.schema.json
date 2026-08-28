@@ -20,9 +20,9 @@
       "additionalProperties": false,
       "required": ["name", "locale", "processing"],
       "properties": {
-        "name": { "const": "default-English" },
+        "name": { "type": "string", "minLength": 1 },
         "locale": { "const": "en-US" },
-        "processing": { "const": "browser-or-operating-system-controlled" }
+        "processing": { "enum": ["browser-or-operating-system-controlled", "azure-speech-local-playback"] }
       }
     },
     "capabilities": {
@@ -30,10 +30,10 @@
       "additionalProperties": false,
       "required": ["browserSpeech", "browserVisuals", "completionDrivenScenes", "renderedAudio", "portableMedia"],
       "properties": {
-        "browserSpeech": { "const": true },
+        "browserSpeech": { "type": "boolean" },
         "browserVisuals": { "const": true },
         "completionDrivenScenes": { "const": true },
-        "renderedAudio": { "const": false },
+        "renderedAudio": { "type": "boolean" },
         "portableMedia": { "const": false }
       }
     },

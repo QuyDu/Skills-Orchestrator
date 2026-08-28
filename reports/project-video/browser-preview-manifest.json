@@ -1,23 +1,23 @@
 {
   "schemaVersion": "1.0.0",
   "status": "complete",
-  "generatedAt": "2026-08-28T00:25:50.348Z",
+  "generatedAt": "2026-08-28T02:45:37.187Z",
   "provider": "browser-preview",
   "plan": "reports/project-video/project-video-plan.json",
-  "planSha256": "a707b70245812b611b17dfa245e8daa439476b27ad563ff7236957d2b0a66687",
+  "planSha256": "5dfc3b7edc846743f405951c06714615ecdd13341bfc5c3049130726a8289eb7",
   "output": "dist/project-video/skills-orchestrator-1-1-0.html",
-  "sha256": "5b1fcca986b3e693772a91077b40ba45f5ec2976caca8e54f370563af1dbbd53",
-  "bytes": 14279,
+  "sha256": "b5e02c115f8ea04721fb66718aaa7357100cce04db624590f649630fac8d3e57",
+  "bytes": 4731615,
   "voice": {
-    "name": "default-English",
+    "name": "en-US-AriaNeural",
     "locale": "en-US",
-    "processing": "browser-or-operating-system-controlled"
+    "processing": "azure-speech-local-playback"
   },
   "capabilities": {
-    "browserSpeech": true,
+    "browserSpeech": false,
     "browserVisuals": true,
     "completionDrivenScenes": true,
-    "renderedAudio": false,
+    "renderedAudio": true,
     "portableMedia": false
   },
   "scenes": [
