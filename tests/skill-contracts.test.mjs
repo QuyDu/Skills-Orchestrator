@@ -345,6 +345,20 @@ test("project video is a portable narrated MP4 capability", async () => {
   assert.equal(scaffold.templates.find((item) => item.path === ".github/prompts/project-video.prompt.md"), undefined);
 });
 
+test("skill authoring routes through skill-create and reuses existing capabilities", async () => {
+  const skills = new Map((await loadSkills()).map((skill) => [skill.metadata.name, skill]));
+  const skillCreate = skills.get("skill-create");
+  const orchestrator = skills.get("project-skills-orchestrator");
+  assert.match(skillCreate.metadata.description, /Always use when a user asks.*create.*skill/);
+  assert.match(skillCreate.source, /every request to create a skill, regardless of the user's wording/);
+  assert.match(skillCreate.source, /Run `skill-inventory` and compare the request/);
+  assert.match(skillCreate.source, /do not create a duplicate silently/);
+  assert.match(skillCreate.source, /identify reusable skills/);
+  assert.match(skillCreate.source, /project-understanding/);
+  assert.match(orchestrator.source, /Route any request to create, add, define, author, build, or make a skill to `skill-create`/);
+  assert.match(orchestrator.source, /duplicate\/reuse analysis before authoring/);
+});
+
 test("skill actions have one slash-command owner", async () => {
   const skillNames = new Set((await loadSkills()).map((skill) => skill.metadata.name));
   for (const promptRoot of [path.join(root, ".github", "prompts"), path.join(root, "templates", "project", ".github", "prompts")]) {
@@ -406,7 +420,7 @@ test("every governed skill has deterministic help coverage", async () => {
   }
 });
   assert.match(runtime, /const CLARIFICATION_PROTOCOL_HEADING = "## Engagement protocol \(mandatory, highest precedence\)"/);
-  assert.match(runtime, /Ask exactly three clarifying questions\./);
+  assert.match(runtime, /Ask one question round only:/);
   assert.match(runtime, /is missing the managed \$\{block\.id\} region/);
   assert.match(runtime, /copies of the managed \$\{block\.id\} region/);
 
@@ -426,11 +440,11 @@ test("every governed skill has deterministic help coverage", async () => {
   assert.match(repositoryInstructions, /<!-- pso:end id=clarification-protocol -->/);
   assert.match(repositoryInstructions, /<!-- pso:begin id=orchestration-routing version=1 -->/);
   assert.match(repositoryInstructions, /## Engagement protocol \(mandatory, highest precedence\)/);
-  assert.match(repositoryInstructions, /Ask exactly three clarifying questions\./);
+  assert.match(repositoryInstructions, /Ask one question round only:/);
 
   const scoped = await readFile(path.join(templateRoot, ".github", "instructions", "clarification.instructions.md"), "utf8");
   assert.match(scoped, /^applyTo: "\*\*"$/m);
-  assert.match(scoped, /Ask exactly \*\*three\*\* clarifying questions\./);
+  assert.match(scoped, /Ask one question round only:/);
 
   const discovery = skills.get("azure-discovery");
   assert.ok(discovery, "azure-discovery skill must be available to generated projects");
@@ -662,8 +676,8 @@ test("resolved product configuration has a strict versioned schema", async () =>
   assert.equal(schema.properties.platforms.additionalProperties, false);
   assert.equal(schema.properties.routing.additionalProperties, false);
   assert.equal(schema.properties.clarification.additionalProperties, false);
-  assert.equal(schema.properties.clarification.properties.maxQuestionsPerRound.minimum, 1);
-  assert.equal(schema.properties.clarification.properties.maxQuestionsPerRound.maximum, 10);
+  assert.equal(schema.properties.clarification.properties.maxQuestionsPerRound.minimum, 3);
+  assert.equal(schema.properties.clarification.properties.maxQuestionsPerRound.maximum, 5);
   assert.equal(schema.properties.policy.additionalProperties, false);
 
   const transactionSchema = JSON.parse(await readFile(path.join(root, "schemas", "adoption-transaction.schema.json"), "utf8"));

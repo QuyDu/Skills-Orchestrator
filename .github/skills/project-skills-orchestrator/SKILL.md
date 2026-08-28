@@ -40,16 +40,18 @@ Coordinate project workflows by discovering capabilities, routing intent, enforc
 
 1. Route every new user prompt through `clarify-the-ask` first; when the project configures `askEveryPrompt`, no step is dispatched until the required questions are answered and the stated plan is explicitly confirmed.
 2. Resolve clarified intent to candidate skills using the inventory and ownership map.
-3. Load authoritative workflow plan and current execution state to determine next executable step.
-4. Enforce policy decisions before dispatching any step that is blocked, denied, or approval-gated.
-5. Route each eligible step to exactly one owning skill and prevent overlapping ownership claims.
-6. Track step outcomes, blocked states, and required approvals to maintain deterministic progression.
-7. Emit completion artifacts summarizing executed, skipped, blocked, and pending steps with rationale.
+3. Route any request to create, add, define, author, build, or make a skill to `skill-create` before any other skill-authoring step, regardless of the user's wording. `skill-create` must compare the requested capability with the inventory and identify reusable existing skills before authoring.
+4. Load authoritative workflow plan and current execution state to determine next executable step.
+5. Enforce policy decisions before dispatching any step that is blocked, denied, or approval-gated.
+6. Route each eligible step to exactly one owning skill and prevent overlapping ownership claims.
+7. Track step outcomes, blocked states, and required approvals to maintain deterministic progression.
+8. Emit completion artifacts summarizing executed, skipped, blocked, and pending steps with rationale.
 
 ## Validation
 
 - Clarification completed for the current prompt before any step was dispatched.
 - Every routed step maps to one owning skill and one policy outcome.
+- Every skill-creation request is routed through `skill-create` and receives duplicate/reuse analysis before authoring.
 - Orchestration status aligns with current execution state and workflow plan ordering.
 - Blocked or approval-wait states are explicit and not reported as complete.
 - Completion artifacts are internally consistent and traceable to upstream evidence.

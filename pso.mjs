@@ -82,7 +82,7 @@ const DEFAULT_CONFIGURATION = Object.freeze({
   routing: { precedence: ["project-domain", "framework"] },
   clarification: {
     enabled: true,
-    maxQuestionsPerRound: 3,
+    maxQuestionsPerRound: 5,
     blockOnMaterialAmbiguity: true,
     askEveryPrompt: true,
     questionsPerPrompt: 3,
@@ -125,16 +125,15 @@ const CLARIFICATION_PROTOCOL = `${CLARIFICATION_PROTOCOL_HEADING}
 Apply this to every new user prompt, without exception, before any analysis, tool use, file change, or answer.
 
 1. Run \`clarify-the-ask\`.
-2. Ask exactly three clarifying questions.
-3. Wait for the user's answers. Do not begin work while any question is unanswered.
-4. After the third answer, state back the objective, the concrete steps, the files or systems that will be touched, and any risk or irreversible action.
-5. Ask the user to confirm, and wait for an explicit instruction to proceed.
+2. Ask one question round only: ask three questions for an ordinary request, and up to five only when the request is complex, confusing, high-impact, or potentially damaging to the current project.
+3. Wait for the user's answers. Do not begin work while a question is unanswered.
+4. After the answers arrive, do not ask any more clarification questions for this prompt. State the objective, concrete steps, files or systems touched, and risks, then continue.
 
-- This repeats for every new prompt, including follow-ups later in the same session.
+- This runs once for every new prompt, including follow-ups later in the same session. Answers close clarification for that prompt; the next prompt starts a new round.
 - Ground the three questions in repository evidence; ask about intent, scope, constraints, and acceptance criteria rather than facts the repository already answers.
 - Never treat your own plan description as approval.
-- Never proceed merely because three questions were asked; unresolved material ambiguity still blocks.
-- The only exception is an explicit instruction in the current prompt to skip clarification, including the exact \`--proceed\` token.`;
+- Do not ask filler questions. Three is the normal round size; use four or five only when additional decisions are genuinely material. Unresolved material ambiguity still blocks.
+- The only exception is an explicit instruction in the current prompt to skip clarification, including the exact \`--proceed\` or \`--Proceed\` token. Treat the token case-insensitively.`;
 const COPILOT_ORCHESTRATION_INSTRUCTION = `## Orchestration
 
 ${COPILOT_INSTRUCTION}`;
@@ -150,7 +149,7 @@ const AZURE_ENVIRONMENT_INSTRUCTION = `## Azure environment automation
 - If the profile is missing, collect its nonsecret environment choices once and persist them. Never repeat cloud, subscription, MCP, or login questions while the profile remains valid.
 - Select the recorded Azure CLI cloud and subscription automatically. If authentication is absent or stale, start the recorded login flow instead of asking whether to log in.
 - Azure MCP is opt-in. Do not invoke it when disabled, and never invoke \`foundryextensions\` unless the profile already enables it with a client ID.`;
-const CLARIFICATION_ANCHOR = "Ask exactly three clarifying questions.";
+const CLARIFICATION_ANCHOR = "Ask one question round only";
 const COPILOT_INSTRUCTION_BLOCKS = [
   { id: "clarification-protocol", version: 1, content: CLARIFICATION_PROTOCOL, anchor: CLARIFICATION_ANCHOR },
   { id: "orchestration-routing", version: 1, content: COPILOT_ORCHESTRATION_INSTRUCTION, anchor: ORCHESTRATION_ROUTE },
@@ -1473,6 +1472,8 @@ async function createProject({ name: enteredName, destination, profile = DEFAULT
       ["project-orchestrator.json", `${JSON.stringify(manifest, null, 2)}\n`],
       ["docs/PROJECT-BLUEPRINT.json", projectBlueprint({ name, displayName, declaredStack, createdAt, intent: requestedOutcome })],
       ["docs/PROJECT-BLUEPRINT.md", projectBlueprintMarkdown({ displayName, createdAt })],
+      ["reports/project-handoff.json", `${JSON.stringify({ schemaVersion: "1.0.0", generatedAt: createdAt, project: { name, version: VERSION, branch: "uninitialized", commit: "uninitialized" }, status: "initialized", milestone: { name: "Project initialization", status: "awaiting-first-work", objective: "Establish the project foundation and confirm the first implementation objective." }, lastCompletedWork: { summary: "Created a fresh governed project foundation. No application implementation has been completed yet.", completedAt: createdAt, evidence: ["project-orchestrator.json", "docs/PROJECT-BLUEPRINT.json"] }, decisions: [], validation: [], worktree: { clean: true, unmergedPaths: 0, otherChangesPresent: false, attribution: "Fresh handoff generated for this project; it does not inherit the source repository handoff." }, blockers: [], pendingApprovals: [], limitations: ["Application code and project-specific validation do not exist yet."], nextAction: { skill: "development-environment-readiness", status: "recommended", action: "Validate the development environment before the first implementation objective." } }, null, 2)}\n`],
+      ["reports/project-handoff.md", `# Project Handoff\n\nGenerated: ${createdAt}  \nProject: ${displayName} ${VERSION}  \nStatus: **Initialized**\n\n## Current State\n\nThis is a fresh handoff generated for this project. It does not inherit the source repository's handoff, commit history, milestones, blockers, or Azure decisions. Application implementation has not started.\n\n## Next Action\n\nRun /development-environment-readiness, then begin the first implementation objective from the project blueprint.\n`],
       [CONFIGURATION_PATH, `${JSON.stringify({ ...DEFAULT_CONFIGURATION, profile }, null, 2)}\n`],
       ["config/orchestrator.yaml", `frameworkVersion: ${FRAMEWORK_VERSION}\nruntimeVersion: ${VERSION}\nprofile: ${profile}\npaths:\n  skills: .github/skills\n  reports: reports\n  schemas: schemas\nruntime:\n  eventStream: reports/execution-log.jsonl\n  stateSnapshot: reports/current-execution-state.json\n  appendOnly: true\nproject:\n  name: ${name}\n  initialized: true\n`],
       ["reports/.gitkeep", ""],

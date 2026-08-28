@@ -1,6 +1,6 @@
 ---
 name: skill-create
-description: Create or update concise, composable skill packages with valid metadata, bounded tools, ownership, validation, dependencies, and examples. Use to author or revise a skill contract; do not use to invoke an existing skill.
+description: Create or update concise, composable skill packages with valid metadata, bounded tools, ownership, validation, dependencies, and examples. Always use when a user asks, directly or indirectly, to create, add, define, author, build, or make a skill; do not use to invoke an existing skill.
 lifecycle: draft
 confidence: low
 ---
@@ -9,7 +9,7 @@ confidence: low
 
 ## Purpose
 
-Create or update concise, composable skill packages with valid metadata, bounded tools, ownership, validation, dependencies, and examples.
+Create or update concise, composable skill packages with valid metadata, bounded tools, ownership, validation, dependencies, and examples. This is the mandatory entry point for every request to create a skill, regardless of the user's wording.
 
 ## Preconditions
 
@@ -21,6 +21,7 @@ Create or update concise, composable skill packages with valid metadata, bounded
 
 - Target skill ID, capability description, ownership intent, and allowed tool boundary.
 - Existing inventory and dependency evidence from `skill-inventory` and `skill-dependency-manager`.
+- The user's requested capability, expected inputs and outputs, audience, triggers, and failure behavior.
 - Required schemas, conventions, and repository instruction constraints for skill contracts.
 
 ## Approved Tools and Resources
@@ -37,17 +38,22 @@ Create or update concise, composable skill packages with valid metadata, bounded
 
 ## Procedure
 
-1. Confirm whether the request is create, update, or deprecate metadata for an existing skill ID.
-2. Validate that frontmatter name exactly matches directory ID and remains lowercase kebab-case.
-3. Define or refine contract sections: purpose, authoritative inputs, deterministic procedure, validation, failure behavior, approval gates, and examples.
-4. Ensure dependencies include only existing skill IDs that are required as authoritative inputs.
-5. Verify output ownership boundaries and remove ambiguous ownership claims.
-6. Apply minimal edits to skill package files while preserving established public IDs.
-7. Re-check contract completeness and dependency acyclicity evidence after updates.
+1. Route every skill-creation request here, even when the user describes the desired behavior without using the word skill.
+2. Understand the requested capability and distinguish create, update, extend, or deprecate work for an existing skill ID.
+3. Run `skill-inventory` and compare the request against existing skill names, descriptions, outputs, ownership, and triggers. Inform the user when an existing skill is similar or already covers the request; do not create a duplicate silently.
+4. When no duplicate exists, identify reusable skills that should provide authoritative inputs or workflow steps, including project-understanding for current-project discovery when applicable.
+5. Validate that frontmatter name exactly matches directory ID and remains lowercase kebab-case.
+6. Define or refine contract sections: purpose, authoritative inputs, deterministic procedure, validation, failure behavior, approval gates, and examples.
+7. Ensure dependencies include only existing skill IDs that are required as authoritative inputs and remain acyclic.
+8. Verify output ownership boundaries and remove ambiguous ownership claims.
+9. Apply minimal edits to skill package files while preserving established public IDs.
+10. Re-check contract completeness, ownership, dependency closure, and duplicate-skill evidence after updates.
 
 ## Validation
 
 - Updated skill contract is complete, internally consistent, and executable without placeholder language.
+- The request's capability comparison is recorded and any similar or duplicate skill was reported before authoring.
+- Reusable existing skills are referenced as dependencies whenever they provide authoritative inputs or required workflow steps.
 - Declared dependencies resolve to existing skills and are acyclic.
 - Ownership and mutation boundaries are explicit and non-conflicting.
 - Any unresolved contract ambiguity is recorded as blocked work, not silently accepted.

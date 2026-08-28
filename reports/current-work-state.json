@@ -1,21 +1,21 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-08-27T21:18:27.416Z",
+  "updatedAt": "2026-08-28T00:00:00.000Z",
   "project": {
     "name": "project-skills-orchestrator",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "branch": "main",
-    "commit": "e46727121582e534f683eb49a0c937832db9928d"
+    "commit": "3f84e20"
   },
   "status": "ready-for-local-commit",
   "activeMilestone": {
-    "name": "Production-candidate hardening and version 1.1.0",
+    "name": "Project Video product direction and fresh handoffs",
     "status": "locally-validated"
   },
   "lastCompletedAction": {
-    "action": "Harden and validate the complete 1.1.0 production-candidate change set",
+    "action": "Document Project Video product direction and fresh handoff behavior",
     "status": "completed",
-    "completedAt": "2026-08-27T21:18:27.416Z",
+    "completedAt": "2026-08-28T00:00:00.000Z",
     "evidence": [
       ".github/skills/project-understanding/SKILL.md",
       ".github/skills/project-understanding/scripts/project-understanding.mjs",
@@ -49,9 +49,9 @@
     "Remote mutation, publication, deployment, and Azure operations remain unapproved."
   ],
   "nextAction": {
-    "skill": "prepare-commit",
-    "status": "approved",
-    "action": "Create the approved local version 1.1.0 commit, then verify the worktree is clean."
+    "skill": "project-video",
+    "status": "next",
+    "action": "Test a newly created project through implementation and invoke /project-video to verify current-project narration."
   },
   "handoff": "reports/project-handoff.json"
 }

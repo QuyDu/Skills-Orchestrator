@@ -43,7 +43,7 @@
       "required": ["enabled", "maxQuestionsPerRound", "blockOnMaterialAmbiguity", "askEveryPrompt", "questionsPerPrompt", "confirmPlanBeforeExecution"],
       "properties": {
         "enabled": { "type": "boolean" },
-        "maxQuestionsPerRound": { "type": "integer", "minimum": 1, "maximum": 10 },
+        "maxQuestionsPerRound": { "type": "integer", "minimum": 3, "maximum": 5 },
         "blockOnMaterialAmbiguity": { "type": "boolean" },
         "askEveryPrompt": { "type": "boolean" },
         "questionsPerPrompt": { "type": "integer", "minimum": 1, "maximum": 10 },

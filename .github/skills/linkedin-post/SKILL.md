@@ -14,6 +14,7 @@ Analyze the current project and prepare a concise, accurate LinkedIn post draft 
 ## Preconditions
 
 - Read repository instructions and the current project handoff first.
+- Read the current `docs/PROJECT-GUIDE.md` and `reports/project-guide.json` before drafting. They are the canonical shared project narrative; refresh them through `documentation-builder` when missing or stale.
 - Inspect the project README, architecture documentation, current status, recent changes, and relevant validation evidence.
 - Read `reports/linkedin-post-history.md` when present.
 - Confirm that the output is a draft; never publish directly to LinkedIn.
@@ -41,8 +42,8 @@ Analyze the current project and prepare a concise, accurate LinkedIn post draft 
 
 ## Procedure
 
-1. Read the project handoff and identify the current objective, status, audience, and notable evidence.
-2. Analyze the README, architecture, recent changes, tests, and release evidence to identify the project narrative.
+1. Read the project handoff and canonical project guide, identifying the current objective, status, audience, and notable evidence.
+2. Verify the guide's material claims against current README, architecture, recent changes, tests, and release evidence; do not treat a stale guide as authoritative.
 3. Without `--update`, describe the project, its problem, approach, current capabilities, and next step.
 4. With `--update`, read `reports/linkedin-post-history.md` and describe only verified new features, improvements, milestones, or lessons since the latest recorded post.
 5. Select the requested tone; default to community-focused and technically accessible.

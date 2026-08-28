@@ -1,13 +1,13 @@
 # Project Handoff
 
-Generated: 2026-08-27T21:18:27.416Z  
-Project: project-skills-orchestrator 1.1.0  
-Branch: `main` at `e46727121582e534f683eb49a0c937832db9928d`  
-Status: **Ready for local commit**
+Generated: 2026-08-28T00:00:00.000Z
+Project: project-skills-orchestrator 1.1.1
+Branch: `main` at `3f84e20`
+Status: **Product direction documented**
 
 ## Milestone
 
-The complete 1.1.0 change set is locally validated. It combines canonical Project Understanding, evidence-bound Project Video, Azure environment automation, consolidated command ownership, and production hardening while keeping external release gates fail-closed.
+The 1.1.1 change set is locally validated. This handoff also records the product direction for Project Video, the role of skills as reusable building blocks, lightweight governance, free narration fallback, and fresh continuity state in new projects.
 
 ## Last Completed Work
 
@@ -17,7 +17,8 @@ The complete 1.1.0 change set is locally validated. It combines canonical Projec
 - Added an eight-page, understanding-driven presentation baseline and generic evidence-driven browser and FFmpeg visuals.
 - Preferred Azure Speech in the configured region, approval-gated cross-region use, identical browser fallback pages and dialogue, and optional Piper for offline MP4 requirements.
 - Updated profiles, setup routing, generated instructions, adoption coverage, README guidance, demo instructions, and regression tests.
-- Updated runtime versioning to 1.1.0 and repaired workspace configuration and report-tracking policy defects.
+- Updated runtime versioning to 1.1.1 and improved Project Video rendering, audio, and self-contained preview playback.
+- Added a fresh project-specific handoff to new-project creation. New projects do not inherit this repository's handoff, commit, milestones, blockers, or Azure decisions; adoption preserves the existing project's handoff.
 - Completed a bounded no-findings change review and refreshed release-readiness evidence.
 
 ## Validation
@@ -44,6 +45,10 @@ The complete 1.1.0 change set is locally validated. It combines canonical Projec
 - Azure Speech is preferred only after discovery and approval; browser fallback preserves content but remains interactive HTML rather than rendered media.
 - Availability never authorizes Azure activity; every external or billable stage keeps a separate approval.
 - Avatar files remain presenter clips until local FFmpeg assembly produces an independently verified MP4.
+- The 41 skills are optional building blocks and reference material. Users do not need to learn every skill; they select or adapt one when a project situation calls for it.
+- Small teams can begin with the `core` profile. Additional continuity, recovery, distributed coordination, and Azure audit controls should be adopted when their operational risk justifies the extra governance.
+- Project Video should demonstrate the before-and-after journey from governed baseline to working project, using real project evidence and available screenshots or live workflow views rather than only generic animation.
+- Azure Speech is an optional quality upgrade. The standard path must remain no-cost and locally reproducible with a built-in voice fallback, even when the voice sounds more robotic.
 
 ## Worktree
 
@@ -62,4 +67,4 @@ The complete coherent working-tree scope is approved for one local 1.1.0 commit.
 
 ## Next Action
 
-Create the approved local 1.1.0 commit, verify the worktree is clean, and retain all external production-release gates.
+Create a test project, build a small application inside it, and invoke `/project-video` to verify that the resulting demo describes the new project's actual implementation. Retain all external production-release gates.

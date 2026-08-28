@@ -559,6 +559,11 @@ test("accepted project creation records the risk acknowledgment", async () => {
     assert.match(manifest.riskAcceptance.acceptedAt, /^\d{4}-\d{2}-\d{2}T/);
     assert.equal(manifest.conformanceProfile, "durable");
     const created = path.join(parent, "accepted-fixture");
+    const freshHandoff = JSON.parse(await readFile(path.join(created, "reports", "project-handoff.json"), "utf8"));
+    assert.equal(freshHandoff.project.name, "accepted-fixture");
+    assert.equal(freshHandoff.status, "initialized");
+    assert.match(freshHandoff.worktree.attribution, /does not inherit the source repository handoff/);
+    assert.match(await readFile(path.join(created, "reports", "project-handoff.md"), "utf8"), /fresh handoff generated for this project/);
     const blueprint = JSON.parse(await readFile(path.join(created, "docs", "PROJECT-BLUEPRINT.json"), "utf8"));
     assert.equal(blueprint.schemaVersion, "1.0.0");
     assert.equal(blueprint.project.name, "accepted-fixture");
@@ -579,7 +584,7 @@ test("accepted project creation records the risk acknowledgment", async () => {
     const configuration = JSON.parse(await readFile(path.join(created, "config", "skills-orchestrator.json"), "utf8"));
     assert.deepEqual(configuration.clarification, {
       enabled: true,
-      maxQuestionsPerRound: 3,
+      maxQuestionsPerRound: 5,
       blockOnMaterialAmbiguity: true,
       askEveryPrompt: true,
       questionsPerPrompt: 3,
@@ -852,7 +857,7 @@ test("managed instruction regions survive heading edits without duplicating", as
     runAdoption(project, "--apply");
     const result = await readFile(instructionPath, "utf8");
     assert.equal([...result.matchAll(/<!-- pso:begin id=clarification-protocol version=1 -->/g)].length, 1);
-    assert.equal([...result.matchAll(/Ask exactly three clarifying questions\./g)].length, 1);
+    assert.equal([...result.matchAll(/Ask one question round only:/g)].length, 1);
     assert.equal([...result.matchAll(/Engagement protocol/g)].length, 1);
     assert.match(result, /Project-authored trailing note\./);
 

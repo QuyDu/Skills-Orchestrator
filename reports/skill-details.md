@@ -1,6 +1,6 @@
 # Skill Details
 
-Generated: 2026-08-28T13:31:33.012Z
+Generated: 2026-08-28T15:35:30.039Z
 
 | Skill | Lifecycle | Confidence | Audit | Dependencies |
 | --- | --- | --- | --- | --- |
@@ -31,7 +31,7 @@ Generated: 2026-08-28T13:31:33.012Z
 | project-setup | draft | low | passed | clarify-the-ask, workflow-planner |
 | project-skills-orchestrator | tested | medium | passed | clarify-the-ask, workflow-planner, skill-inventory, policy-engine, workflow-state-manager |
 | project-understanding | draft | low | passed | clarify-the-ask |
-| project-video | draft | low | passed | clarify-the-ask, project-understanding, azure-discovery |
+| project-video | draft | low | passed | clarify-the-ask, project-understanding, documentation-builder, azure-discovery |
 | regression-test-development | draft | low | passed | policy-engine, workflow-state-manager |
 | security-review | draft | low | passed | audit-code |
 | skill-create | draft | low | passed | skill-inventory, skill-dependency-manager |

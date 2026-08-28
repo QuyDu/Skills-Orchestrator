@@ -16,7 +16,7 @@
   },
   "clarification": {
     "enabled": true,
-    "maxQuestionsPerRound": 3,
+    "maxQuestionsPerRound": 5,
     "blockOnMaterialAmbiguity": true
   },
   "policy": {

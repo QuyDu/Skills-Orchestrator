@@ -17,7 +17,7 @@
         "required": ["path", "kind", "audience", "action", "verifiedClaims", "unverifiedClaims"],
         "properties": {
           "path": { "type": "string", "minLength": 1 },
-          "kind": { "enum": ["readme", "decision-record", "deployment-guide", "operations-runbook", "architecture-overview", "executive-summary"] },
+          "kind": { "enum": ["project-guide", "readme", "decision-record", "deployment-guide", "operations-runbook", "architecture-overview", "executive-summary"] },
           "audience": { "enum": ["contributor", "operator", "security-reviewer", "executive"] },
           "action": { "enum": ["create", "update", "unchanged", "blocked"] },
           "reason": { "type": ["string", "null"] },

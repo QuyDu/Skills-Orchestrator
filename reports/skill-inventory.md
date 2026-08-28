@@ -1,6 +1,6 @@
 # Skill Inventory
 
-Generated: 2026-08-28T13:31:33.012Z
+Generated: 2026-08-28T15:35:30.039Z
 
 | Skill | Description |
 | --- | --- |
@@ -18,7 +18,7 @@ Generated: 2026-08-28T13:31:33.012Z
 | dependency-maintenance | Assess and update application package dependencies with provenance, advisory, compatibility, lockfile, and test evidence. Use for package upgrades or vulnerability remediation; do not use for Agent Skill graph dependencies or schema migrations. |
 | deployment-review | Validate that a release candidate is deployable by checking build reproducibility, configuration completeness, environment parity, verification steps, and rollback readiness. Use before requesting deployment approval; this skill never performs a deployment. |
 | development-environment-readiness | Assess, plan, configure, and validate a project's pre-coding development environment, including access, editor, source control, runtimes, authentication, isolation, debugging, testing, automation, and security gates. Use when onboarding a repository or preparing a new project; do not use for feature implementation. |
-| documentation-builder | Generate and maintain README files, decision records, deployment guides, and operations runbooks that are verified against repository evidence. Use when documentation is missing, stale, or contradicts the code; do not use to narrate changes an agent just made. |
+| documentation-builder | Generate and maintain the authoritative project guide, README files, decision records, deployment guides, and operations runbooks from verified repository evidence. Use when documentation is missing, stale, or contradicts the code; do not use to narrate changes an agent just made. |
 | environment-update | Inventory installed development tools and present available updates, then update only existing tools selected by the user with complete findings and error reporting. |
 | framework-health-check | Validate framework structure, skill contracts, schemas, ownership, profiles, fixtures, configuration, and conformance evidence. Use to verify the installed orchestrator framework itself; use audit-code instead to assess application code. |
 | linkedin-post | Analyze the current project and prepare a reviewable LinkedIn post draft for Microsoft employees and the technical community, including update posts based on project history. |

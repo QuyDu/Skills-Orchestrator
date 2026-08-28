@@ -1,6 +1,6 @@
 ---
 name: documentation-builder
-description: Generate and maintain README files, decision records, deployment guides, and operations runbooks that are verified against repository evidence. Use when documentation is missing, stale, or contradicts the code; do not use to narrate changes an agent just made.
+description: Generate and maintain the authoritative project guide, README files, decision records, deployment guides, and operations runbooks from verified repository evidence. Use when documentation is missing, stale, or contradicts the code; do not use to narrate changes an agent just made.
 lifecycle: draft
 confidence: low
 ---
@@ -9,7 +9,7 @@ confidence: low
 
 ## Purpose
 
-Produce and refresh human-facing documentation that is verified against the repository, addresses one audience per document, and never presents intended behavior as delivered behavior.
+Produce and refresh human-facing documentation that is verified against the repository, addresses one audience per document, and never presents intended behavior as delivered behavior. The canonical shared artifact is `docs/PROJECT-GUIDE.md`, with a machine-readable companion at `reports/project-guide.json`; downstream presentation, social-post, and executive-demo skills consume it as their common project narrative.
 
 ## Preconditions
 
@@ -23,6 +23,7 @@ Produce and refresh human-facing documentation that is verified against the repo
 - Documentation request: target artifacts, audience, and depth.
 - Repository evidence: entry points, manifests, scripts, configuration, infrastructure definitions, and tests.
 - Existing documentation, decision records, and authoritative reports under `reports/`.
+- The current Project Understanding artifacts and their content digests.
 - Clarification result from `clarify-the-ask` when audience, scope, or product intent is ambiguous.
 
 ## Approved Tools and Resources
@@ -42,8 +43,10 @@ Produce and refresh human-facing documentation that is verified against the repo
 ## Procedure
 
 1. Determine which documents are required, which exist, and which are stale relative to the code they describe.
-2. Fix one audience per document: new contributor, operator, security reviewer, or executive.
-3. Extract verified facts from the repository: prerequisites, setup, run and test commands, configuration keys, endpoints, and environments.
+2. Build or refresh `docs/PROJECT-GUIDE.md` first. It is the shared project narrative and covers purpose, audience, architecture, setup, primary workflows, capabilities, how to use the project, management value, user value, Azure or deployment details, validation, limitations, and next steps.
+3. Build `reports/project-guide.json` with each material claim, its repository evidence, Project Understanding digests, generated timestamp, and explicit verified, planned, or unavailable status.
+4. Fix one audience per additional document: new contributor, operator, security reviewer, or executive.
+5. Extract verified facts from the repository: prerequisites, setup, run and test commands, configuration keys, endpoints, and environments.
 4. Verify every command and path by inspection; discard any claim that cannot be confirmed.
 5. Draft or update each document, leading with the outcome and following with the procedure.
 6. Mark planned or unimplemented behavior explicitly and never describe it as available.
@@ -53,6 +56,7 @@ Produce and refresh human-facing documentation that is verified against the repo
 ## Validation
 
 - Every command, path, and configuration key in the output was verified against the repository.
+- `docs/PROJECT-GUIDE.md` is the canonical shared narrative and `reports/project-guide.json` binds its claims to current evidence.
 - Each document addresses exactly one audience and contains one top-level heading.
 - Unverified or planned behavior is explicitly marked.
 - No secrets, identifiers, or personal data appear in any output.
@@ -63,6 +67,8 @@ Produce and refresh human-facing documentation that is verified against the repo
 
 - `reports/documentation-plan.json`
 - `reports/documentation-plan.md`
+- `docs/PROJECT-GUIDE.md`
+- `reports/project-guide.json`
 
 ## Failure Behavior
 

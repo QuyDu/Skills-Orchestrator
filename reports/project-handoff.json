@@ -1,21 +1,21 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-08-27T21:18:27.416Z",
+  "generatedAt": "2026-08-28T00:00:00.000Z",
   "project": {
     "name": "project-skills-orchestrator",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "branch": "main",
-    "commit": "e46727121582e534f683eb49a0c937832db9928d"
+    "commit": "3f84e20"
   },
   "status": "ready-for-local-commit",
   "milestone": {
-    "name": "Production-candidate hardening and version 1.1.0",
+    "name": "Project Video product direction and fresh handoffs",
     "status": "locally-validated",
-    "objective": "Commit the complete locally validated 1.1.0 change set while preserving strict external production-release gates."
+    "objective": "Make Project Video describe the current completed project, clarify its product value, and ensure new projects receive fresh continuity state."
   },
   "lastCompletedWork": {
-    "summary": "Completed Project Understanding, understanding-bound Project Video, Azure environment automation, command ownership consolidation, runtime 1.1.0 versioning, production hardening, and a no-findings bounded change review.",
-    "completedAt": "2026-08-27T21:18:27.416Z",
+    "summary": "Improved Project Video rendering and audio, committed runtime 1.1.1, and defined the product direction for skill building blocks, lightweight governance, free narration fallback, and demo-led impact.",
+    "completedAt": "2026-08-28T00:00:00.000Z",
     "evidence": [
       ".github/skills/project-understanding/SKILL.md",
       ".github/skills/project-understanding/scripts/project-understanding.mjs",
@@ -83,6 +83,26 @@
     {
       "decision": "Skills own skill-named slash actions; prompt files retain only prompt-specific and help commands.",
       "rationale": "One action owner removes duplicate names and ambiguous command routing."
+    },
+    {
+      "decision": "Treat the 41 skills as optional building blocks and user reference material rather than a curriculum users must learn.",
+      "rationale": "Users need to know the range of available capabilities and can reuse or adapt individual skills when a project situation calls for them."
+    },
+    {
+      "decision": "Offer the core profile as the lightweight governance entry point and explain durable controls by the risk they address.",
+      "rationale": "Small teams can start with essential clarification, validation, and ownership controls while adding continuity, recovery, and Azure audit capabilities when their operating risk justifies them."
+    },
+    {
+      "decision": "Position the tool as the starting point for every project, not as the application builder.",
+      "rationale": "Creation establishes the governed workspace and empty application boundaries; Copilot and the user build the application afterward."
+    },
+    {
+      "decision": "Make Project Video show the actual completed project through evidence-backed content and, where available, project screenshots or live workflow views.",
+      "rationale": "A strong demo must show the before-and-after journey from governed baseline to working project, not only a generic architecture animation."
+    },
+    {
+      "decision": "Keep Azure Speech optional and provide a no-cost local narration path for standard demos.",
+      "rationale": "Azure improves voice quality when approved and available, while a built-in local voice fallback preserves reproducible demos without cloud credentials or usage charges."
     }
   ],
   "validation": [
@@ -175,7 +195,7 @@
   "nextAction": {
     "skill": "prepare-commit",
     "status": "approved",
-    "action": "Create the approved local version 1.1.0 commit and verify a clean worktree.",
+    "action": "Test create-project, build a small application, and invoke /project-video to verify that the resulting demo describes the new project.",
     "prerequisites": [
       "Keep push, tag, publication, deployment, and Azure mutation out of scope.",
       "Preserve the blocked production-release status until external evidence is available."

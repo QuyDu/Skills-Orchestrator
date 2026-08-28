@@ -27,7 +27,7 @@ It has two halves.
 
 ### What makes it different
 
-- **Every prompt starts with clarification.** Provisioned projects require the agent to ask three questions and get your confirmation before touching anything. Installation fails if that rule is missing.
+- **Every prompt gets one bounded clarification round.** Provisioned projects normally receive three useful questions; complex, confusing, high-impact, or potentially damaging requests may receive up to five. After the answers, the agent asks no more clarification questions for that prompt.
 - **It adapts to your repository.** A Python repo does not get C# standards. Detection drives what gets installed.
 - **It will not duplicate your work.** If your repo already has a security instruction file, it reports that coverage instead of adding a second one.
 - **Everything is reversible.** Every mutation is journaled under `.skills-orchestrator/transactions/` before it happens, with automatic rollback and manual recovery.
@@ -306,10 +306,10 @@ Configurations that genuinely cannot be inferred — a .NET assembly path, a Nod
 Every provisioned project carries one non-negotiable rule. For **every** new prompt, the agent must:
 
 1. Run `clarify-the-ask`
-2. Ask exactly three clarifying questions
+2. Ask one round of three clarifying questions, or up to five when complexity or risk genuinely requires it
 3. Wait for your answers
 4. State the objective, the steps, the files it will touch, and the risks
-5. Wait for your explicit confirmation
+5. Continue without another clarification round; separate approval gates still apply
 
 It is installed in four places — `.github/copilot-instructions.md`, `.github/instructions/clarification.instructions.md`, `AGENTS.md`, and `config/skills-orchestrator.json` — and enforced in code: installation verification fails if the managed region is missing or duplicated.
 
@@ -321,7 +321,7 @@ Tune it in `config/skills-orchestrator.json`:
     "enabled": true,
     "askEveryPrompt": true,
     "questionsPerPrompt": 3,
-    "maxQuestionsPerRound": 3,
+    "maxQuestionsPerRound": 5,
     "blockOnMaterialAmbiguity": true,
     "confirmPlanBeforeExecution": true
   }
@@ -354,7 +354,8 @@ Open the project in VS Code, start Copilot Chat in **Agent** mode, and invoke a 
 /security-review          Exploitable weaknesses, secrets, authorization defects
 /architecture-review      Well-Architected assessment of the defined architecture
 /deployment-review        Is this release candidate deployable, and how do we roll back
-/documentation-builder    Rebuild README, deployment guide, operations runbook
+/documentation-builder    Build the canonical project guide and supporting documentation
+/skill-create              Create or update a skill after duplicate and reuse analysis
 /project-understanding   Completely rescan and rebuild the current project guide
 /project-video            Create a project-specific animated MP4 with approved narration
 /systematic-debugging     Reproduce, isolate root cause, verify the smallest fix
@@ -383,11 +384,11 @@ Every profile is dependency-closed and enforced by tests.
 
 ### Project video
 
-Every created or adopted project receives `/project-understanding`, `/project-video`, their schemas, and self-contained Node.js helpers. Project Understanding performs a complete rescan on every run and atomically rebuilds `reports/project-understanding.json` and its Markdown view. When a user explicitly invokes `/project-video`, it refreshes that evidence first, binds its digests into a schema `1.2.0` plan, and derives eight presentation pages and their dialogue from the current repository where it runs. It does not run automatically after project creation or during unrelated skills.
+Every created or adopted project receives `/project-understanding`, `/documentation-builder`, `/project-video`, their schemas, and self-contained Node.js helpers. Project Understanding performs a complete rescan on every run and atomically rebuilds `reports/project-understanding.json` and its Markdown view. When a user explicitly invokes `/documentation-builder`, it builds the canonical `docs/PROJECT-GUIDE.md` and evidence-bound `reports/project-guide.json`. `/project-video`, `/linkedin-post`, and future presentation workflows consume that guide and verify it against current code and reports. These workflows do not run automatically after project creation or during unrelated skills.
 
 After rebuilding Project Understanding, every invocation runs `discovery-status`. When Azure discovery is missing or unusable, the skill asks whether to run `/azure-discovery`. A yes refreshes discovery and continues through `azure-preflight`. A no explicitly selects `browser-preview` and generates project-specific HTML with browser-default English speech, responsive visuals, manual controls, and scene advancement on utterance completion. The browser or operating system controls voice processing, which may use an online service. This fallback preserves the same pages and dialogue but is not rendered audio, portable video, or an MP4.
 
-The preferred path uses an approved existing Azure Speech resource configured through process environment variables and produces both a polished local MP4 and a self-contained narrated HTML preview. The configured region is preferred; another compatible region in the same Azure cloud requires explicit cross-region approval. Discovery records only Speech account counts, kinds, and regions, never names, identifiers, or keys. Azure supplies narration; the MP4 is rendered locally with FFmpeg, and the HTML embeds the verified scene audio so it also works when opened directly from disk. Before synthesizing the full script, the skill generates the same short passage with Ava Neural, Aria Neural, and Jenny professional narration so the user can listen and explicitly choose.
+The preferred quality path uses an approved existing Azure Speech resource configured through process environment variables and produces both a polished local MP4 and a self-contained narrated HTML preview. For a free portable demo, the standard fallback is local Piper narration plus local FFmpeg; its voice is more robotic but requires no Azure account, credential, network call, or usage charge after the one-time approved voice installation. If local Piper is not installed, the final fallback is browser-preview HTML, which is interactive but not a portable MP4. The configured Azure region is preferred; another compatible region in the same Azure cloud requires explicit cross-region approval. Discovery records only Speech account counts, kinds, and regions, never names, identifiers, or keys. Before Azure synthesis, the skill generates the same short passage with Ava Neural, Aria Neural, and Jenny professional narration so the user can listen and explicitly choose.
 
 The packaged helper enforces that sequence:
 

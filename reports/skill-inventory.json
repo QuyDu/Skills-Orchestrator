@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "runtimeVersion": "1.1.1",
-  "generatedAt": "2026-08-28T13:31:33.012Z",
+  "generatedAt": "2026-08-28T15:35:30.039Z",
   "skills": [
     {
       "name": "architecture-review",
@@ -208,7 +208,7 @@
     {
       "name": "documentation-builder",
       "path": ".github/skills/documentation-builder/SKILL.md",
-      "description": "Generate and maintain README files, decision records, deployment guides, and operations runbooks that are verified against repository evidence. Use when documentation is missing, stale, or contradicts the code; do not use to narrate changes an agent just made.",
+      "description": "Generate and maintain the authoritative project guide, README files, decision records, deployment guides, and operations runbooks from verified repository evidence. Use when documentation is missing, stale, or contradicts the code; do not use to narrate changes an agent just made.",
       "lifecycle": "draft",
       "confidence": "low",
       "dependencies": [
@@ -216,7 +216,8 @@
       ],
       "reports": [
         "reports/documentation-plan.json",
-        "reports/documentation-plan.md"
+        "reports/documentation-plan.md",
+        "reports/project-guide.json"
       ]
     },
     {
@@ -403,6 +404,7 @@
       "dependencies": [
         "clarify-the-ask",
         "project-understanding",
+        "documentation-builder",
         "azure-discovery"
       ],
       "reports": [
