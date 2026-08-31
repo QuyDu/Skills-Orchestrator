@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "status": "complete",
-  "generatedAt": "2026-08-28T00:24:36.117Z",
+  "generatedAt": "2026-08-30T21:08:54.518Z",
   "generator": "project-understanding",
   "project": {
     "name": "project-skills-orchestrator",
@@ -13,10 +13,10 @@
   },
   "scan": {
     "mode": "full-rebuild",
-    "repositoryDigestSha256": "c083d0207c03ea3b109d77576a174c09d35d44499e93127bf9e9ca250685ea67",
-    "fileCount": 197,
+    "repositoryDigestSha256": "54b07c005ec16c5a5a28c5becbebe0f9cf63d81b1bdbcbcb134e603ea96a3498",
+    "fileCount": 230,
     "sourceFileCount": 18,
-    "testFileCount": 7,
+    "testFileCount": 8,
     "excludedDirectories": [
       ".git",
       ".skills-orchestrator",
@@ -40,14 +40,19 @@
     ],
     "files": [
       {
+        "path": ".azure/environment.json",
+        "bytes": 667,
+        "sha256": "40a248bda9e856da6f7e0462e576d2e0b08d5943aa89ecad528dbfe8c021619f"
+      },
+      {
         "path": ".gitattributes",
         "bytes": 527,
         "sha256": "c63d80aee13e6990e327cc45b350697b1dd55d69e4db49535b0db92eb624d29d"
       },
       {
         "path": ".github/copilot-instructions.md",
-        "bytes": 3141,
-        "sha256": "70d84573bff187924dcd003bd1fea8dbb1ed6ca9a913190fd8c16633b07c5b7b"
+        "bytes": 3951,
+        "sha256": "654281e8e94f934d63f27defad286f8992005f5e571de04b86e29882ed54fb5e"
       },
       {
         "path": ".github/dependabot.yml",
@@ -66,8 +71,8 @@
       },
       {
         "path": ".github/prompts/demo-web-app.prompt.md",
-        "bytes": 6388,
-        "sha256": "610206af2a15e7d9acddcc0f0a9b16f6fbf962fdda262c240781b28a7c9e77ff"
+        "bytes": 6563,
+        "sha256": "0ce841cad8b4ed169cf70be0a64c20c1c63c148b54f0c252b325a044d71c640c"
       },
       {
         "path": ".github/prompts/environment-update-help.prompt.md",
@@ -190,9 +195,14 @@
         "sha256": "f382eb7a63d5d0c2d346791b9a122ebf14c5963eb078c6f80a616a305e6e9871"
       },
       {
+        "path": ".github/skills/documentation-builder/scripts/documentation-builder.mjs",
+        "bytes": 8922,
+        "sha256": "ead903a5f451e31ef696997c396b416b01083217d728daa1a97b8f97586df048"
+      },
+      {
         "path": ".github/skills/documentation-builder/SKILL.md",
-        "bytes": 4338,
-        "sha256": "13c6ca9d17d12833589dac86d23c2f7d1f080a74eb93b2db35c7211dc399c04e"
+        "bytes": 5388,
+        "sha256": "d8dcdff9a580995f8ce1a328ad4b9783f74fca9f0cf9079c5404d5b36ad9add4"
       },
       {
         "path": ".github/skills/environment-update/SKILL.md",
@@ -206,8 +216,8 @@
       },
       {
         "path": ".github/skills/linkedin-post/SKILL.md",
-        "bytes": 4322,
-        "sha256": "323f92eefc58c86a308ea52ae2c74be9ea63045cdbfe7436b7f8c0cda20e637a"
+        "bytes": 4611,
+        "sha256": "6e3c7fce9f5bbddc52b4f9edb27f39716d04e732a384e8befe1d868bbab98cf1"
       },
       {
         "path": ".github/skills/multi-agent-coordinator/SKILL.md",
@@ -246,13 +256,13 @@
       },
       {
         "path": ".github/skills/project-skills-orchestrator/SKILL.md",
-        "bytes": 3663,
-        "sha256": "6c42e76cd8e0c8e35a4e5acfcff5d2bda829003504e3ab29d14113662e980898"
+        "bytes": 4078,
+        "sha256": "57642b23d9ac9bb890203201f79de62027f5e69b255e2db02a5143b21ccd48be"
       },
       {
         "path": ".github/skills/project-understanding/scripts/project-understanding.mjs",
-        "bytes": 19268,
-        "sha256": "ddef1f3ed678a7c68674344cbb88889369bbd340abc2d774bd083d5e45c7d720"
+        "bytes": 19321,
+        "sha256": "1bdcc293b4a40821d7522f6dd214854fad91d979d5cae1200ce62e74ce511eeb"
       },
       {
         "path": ".github/skills/project-understanding/SKILL.md",
@@ -261,13 +271,13 @@
       },
       {
         "path": ".github/skills/project-video/scripts/project-video.mjs",
-        "bytes": 137260,
-        "sha256": "7d47d2da187e8a4985c31030c22a51187f8a4b53b5021e095ac04ef0e661cdd4"
+        "bytes": 140661,
+        "sha256": "69cc0da3d970f929edcf3bf9a2792728af201dc2a6ecba7546bf996bd2cb37fd"
       },
       {
         "path": ".github/skills/project-video/SKILL.md",
-        "bytes": 18480,
-        "sha256": "90ffec4b911df86595bd357d113de7a5db3a39a94e461e83386e3187c222d116"
+        "bytes": 19579,
+        "sha256": "355d71b922dc70a478a93f253f6c87162ad87856da40698411f48cb2e812e941"
       },
       {
         "path": ".github/skills/regression-test-development/SKILL.md",
@@ -281,8 +291,8 @@
       },
       {
         "path": ".github/skills/skill-create/SKILL.md",
-        "bytes": 3215,
-        "sha256": "e671828dbb5f5f864e96614bbd4a709573ceba7c6f6025531c3cf0407db44109"
+        "bytes": 4538,
+        "sha256": "fc4455817c0ae38f4ec60e95432fa79d0f221ac41eb2b53c62132153a0df021c"
       },
       {
         "path": ".github/skills/skill-dependency-manager/SKILL.md",
@@ -366,13 +376,13 @@
       },
       {
         "path": "AGENTS.md",
-        "bytes": 2297,
-        "sha256": "28c6af8d6fcdc8c1c6a81faa642c61d27607eabac16a7b9531be14e7446ebd57"
+        "bytes": 3101,
+        "sha256": "f37ee311dbfee056582837b0089ca8bf10811aea5dd88d780dc8e17ea670d62e"
       },
       {
         "path": "config/orchestrator.yaml",
         "bytes": 456,
-        "sha256": "407b0b210f291fb04b4ba58f15942b02aaee9d7eca282900fb0ce0c8dbf11d90"
+        "sha256": "7d95f85e165bbe2e4842c05216b5d13e01d11e54d81771addf8f10a8b0a2e6dd"
       },
       {
         "path": "config/profiles.yaml",
@@ -382,7 +392,7 @@
       {
         "path": "config/skills-orchestrator.json",
         "bytes": 582,
-        "sha256": "5bc58804ca66e7029394711aaeda6ffe6726b39f96b3c3f93ea44cf4a90389c5"
+        "sha256": "3b3c42ae287b63c7ab372ee7a751ba79d326756edaa148ec56b1dd36be232fc3"
       },
       {
         "path": "Demo/audio/narration/scenes.json",
@@ -427,17 +437,17 @@
       {
         "path": "package-lock.json",
         "bytes": 408,
-        "sha256": "f6549a4951f76a8eef84dbe7b31e1b9981a763e9e637ec6a6230e4a3e95a47b4"
+        "sha256": "046fc6b1e73d4167db6abaa8062dc73ab4284af9a7a8f5deda5e6845e6644255"
       },
       {
         "path": "package.json",
-        "bytes": 1727,
-        "sha256": "3ce5d2914f71b1c579655cebcd9492ec4571e52d6711019e18f62b76e5db4559"
+        "bytes": 1801,
+        "sha256": "1110fc54e1b5f6af9f348409736e0d4424a65a65b9a9162cc16a6a412066b53d"
       },
       {
         "path": "pso.mjs",
-        "bytes": 133110,
-        "sha256": "9f6c57639e8873422b2310d8b9604dd4cef068d1d213ea9d9999f295e527f9a3"
+        "bytes": 136376,
+        "sha256": "b4b86c3beeb2e0792adb18a507169012f2b69f5959437497e109b1dfbd6e32b0"
       },
       {
         "path": "pso.ps1",
@@ -446,8 +456,8 @@
       },
       {
         "path": "README.md",
-        "bytes": 30069,
-        "sha256": "50c4dd7747597ea8f0b38b4b57e68214bdf1f805098b2335ae3a6c6ebb5b3a20"
+        "bytes": 30966,
+        "sha256": "b7617590d071c2077f3ba425ff036040bd12d45a3d824fc1fad488a7231c91b9"
       },
       {
         "path": "release/release-manifest.json",
@@ -466,8 +476,8 @@
       },
       {
         "path": "reports/artifact-ownership.json",
-        "bytes": 10002,
-        "sha256": "554a24b93f25f81659c69ab99ee7dfdc8b38242bed6d7f63f550bd8ee38558e9"
+        "bytes": 10103,
+        "sha256": "c2e27e6701eab1b8904e4efdc8166d10578d24d9176ffb81a3e3f945e96e0e1e"
       },
       {
         "path": "reports/audit-remediation-plan.json",
@@ -501,8 +511,8 @@
       },
       {
         "path": "reports/code-audit-findings.json",
-        "bytes": 25655,
-        "sha256": "f3184323789293794481595b33ee167be734235f62128b38a5b1137a669cd2cf"
+        "bytes": 10104,
+        "sha256": "cd9de2ea561d344448c47b994d11a4f1b054482307f26818cb6e36928126a073"
       },
       {
         "path": "reports/code-audit-review.json",
@@ -521,8 +531,8 @@
       },
       {
         "path": "reports/current-work-state.json",
-        "bytes": 2084,
-        "sha256": "c92665226aa798f9d90fd5ff123c8183afbb44c5f551e8948828217b44b12ad7"
+        "bytes": 2281,
+        "sha256": "e8cc2b057cdd07b2e94e6a4a975653434147ae39443e006569689c8f502248ec"
       },
       {
         "path": "reports/deployment-review.json",
@@ -536,18 +546,163 @@
       },
       {
         "path": "reports/project-handoff.json",
-        "bytes": 9912,
-        "sha256": "4c0cc14b8b98f57c3d3c69d9a0555bba6c313324afe83a5877caafa344e012d4"
+        "bytes": 13568,
+        "sha256": "50404d7b1aadce839a7ce5e4c8f3bf996f3cb3ccfa21153a703388c637ff009a"
       },
       {
         "path": "reports/project-handoff.md",
-        "bytes": 4246,
-        "sha256": "7c055f02ef06c69ec930ed00d4e287e358c6f273eda593f48b4cf37b36b3cd57"
+        "bytes": 6225,
+        "sha256": "1641a355dc65b46c1f9848c4ff95d7bef2c863ba95221c8906d81e5e0b78be5c"
+      },
+      {
+        "path": "reports/project-video/audio/narration-manifest.json",
+        "bytes": 3098,
+        "sha256": "595fc468ff15ec944da7c3bf9bdf27d7a7640a2fcbc5f43a5db0ca9c129abdd3"
+      },
+      {
+        "path": "reports/project-video/audio/scene-01.mp3",
+        "bytes": 441216,
+        "sha256": "250c09cd2fc663b4e695a0ab333f471617093f511a45d8ea6132aeb1e04df6a3"
+      },
+      {
+        "path": "reports/project-video/audio/scene-02.mp3",
+        "bytes": 425664,
+        "sha256": "1580a3cb0761c3b8ef56c076529003cbdf8aecd832955ccb09fa6f584c532041"
+      },
+      {
+        "path": "reports/project-video/audio/scene-03.mp3",
+        "bytes": 429120,
+        "sha256": "5c086f31ae613dea4627ecc0d7a6fcf0a2962b9ea0d92561011f686c79d03a31"
+      },
+      {
+        "path": "reports/project-video/audio/scene-04.mp3",
+        "bytes": 451584,
+        "sha256": "f884cf44622ac27f8476652f0aae71d80051d43602c13527de7efe384f368645"
+      },
+      {
+        "path": "reports/project-video/audio/scene-05.mp3",
+        "bytes": 402624,
+        "sha256": "89fcc19b18fca444368ad2aabe5fa46f98ba788edd55542bebe28324f81b403f"
+      },
+      {
+        "path": "reports/project-video/audio/scene-06.mp3",
+        "bytes": 438912,
+        "sha256": "a4c1c25134c21557471607d8ceb19f1429d88c1e77103286274f99bab7f04a48"
+      },
+      {
+        "path": "reports/project-video/audio/scene-07.mp3",
+        "bytes": 494208,
+        "sha256": "233c1488dc107b1c3cfd2bb7f2d83d9929398bb46a1ade3e86f058fe5c51b853"
+      },
+      {
+        "path": "reports/project-video/audio/scene-08.mp3",
+        "bytes": 453888,
+        "sha256": "e81321c46caf602717cc99b024357b196c11587fe8f169bc27ac7e7bab2af5d6"
+      },
+      {
+        "path": "reports/project-video/browser-preview-manifest.json",
+        "bytes": 3121,
+        "sha256": "055180739d5cd3af9ee7d4714d22400dfc9744f56e74769d6c1ec58f9ff69a38"
+      },
+      {
+        "path": "reports/project-video/claims-ledger.json",
+        "bytes": 2951,
+        "sha256": "fec248dc3a16a25049e2ec1ad63a1c532578678141f13d306632962eaa855a70"
       },
       {
         "path": "reports/project-video/project-evidence.json",
         "bytes": 910,
         "sha256": "46d96846fa72a792e896e7cc721bae133e1ac66e88df29f5ed0b7c3188e82e3d"
+      },
+      {
+        "path": "reports/project-video/project-video-manifest.json",
+        "bytes": 3280,
+        "sha256": "ba68213fe602a6c0365d0751c61c3b400b691fac050363ae3774e45d2cfbdd93"
+      },
+      {
+        "path": "reports/project-video/project-video-plan.json",
+        "bytes": 7905,
+        "sha256": "5dfc3b7edc846743f405951c06714615ecdd13341bfc5c3049130726a8289eb7"
+      },
+      {
+        "path": "reports/project-video/project-video-plan.md",
+        "bytes": 1480,
+        "sha256": "bb0369b9d01d176a715865c0a524ca2446f1484bb86dc99ea46f4c3098a35c56"
+      },
+      {
+        "path": "reports/project-video/script.md",
+        "bytes": 2315,
+        "sha256": "aefc2a4153cdc6b94f50791c05381636740a6284a37db816cfef0845295ea675"
+      },
+      {
+        "path": "reports/project-video/source/scene-01.svg",
+        "bytes": 859,
+        "sha256": "7109de3a48a966840713b88aa56992511f84148a77e211a749b444f2f39045d0"
+      },
+      {
+        "path": "reports/project-video/source/scene-02.svg",
+        "bytes": 917,
+        "sha256": "3e7bf9c374f9cbf00a09e4ae46cef9f54fd8276af8b5ba66bd533f1216d239e0"
+      },
+      {
+        "path": "reports/project-video/source/scene-03.svg",
+        "bytes": 865,
+        "sha256": "6c147b4aa37e8e4b5232f139cdeff282bc97fc9d21a696816f97239c8fb40cd0"
+      },
+      {
+        "path": "reports/project-video/source/scene-04.svg",
+        "bytes": 863,
+        "sha256": "88c69acb3fd6aacb73e4066d4a11d88416eff9c61087ee6d80bd070deb675ff2"
+      },
+      {
+        "path": "reports/project-video/source/scene-05.svg",
+        "bytes": 868,
+        "sha256": "382a86c1e0e86af1f259c0d2a6eb31d995fde9463f19206a5a8c9b835f220ca8"
+      },
+      {
+        "path": "reports/project-video/source/scene-06.svg",
+        "bytes": 869,
+        "sha256": "61bee8072ecb1f84f25a29d91cf8371c924a8b03f857d4456262d7d677b20808"
+      },
+      {
+        "path": "reports/project-video/source/scene-07.svg",
+        "bytes": 862,
+        "sha256": "d7109596fe955038d2780d8659437e11a1e3ecc3fd4ccce1a0f941aa2352e626"
+      },
+      {
+        "path": "reports/project-video/source/scene-08.svg",
+        "bytes": 931,
+        "sha256": "30860883e9095069625285e4ab8ed3bc619176542147f4de6a08389e1cf1c1e0"
+      },
+      {
+        "path": "reports/project-video/voice-samples/aria-hd-warm.mp3",
+        "bytes": 441216,
+        "sha256": "250c09cd2fc663b4e695a0ab333f471617093f511a45d8ea6132aeb1e04df6a3"
+      },
+      {
+        "path": "reports/project-video/voice-samples/ava-hd-warm.mp3",
+        "bytes": 429696,
+        "sha256": "89ff0f3fc3cd6f41b116bffc8f52d850ec06498c211567663670d46468918b43"
+      },
+      {
+        "path": "reports/project-video/voice-samples/index.html",
+        "bytes": 2332,
+        "sha256": "f086b5faf430f193de7a838611a15de8d2ed1ff44ef3d5eb23379615d5653fe6"
+      },
+      {
+        "path": "reports/project-video/voice-samples/jenny-professional.mp3",
+        "bytes": 441216,
+        "sha256": "db45ce827dd732398f7402c783b21c6597638c60c030c14f6eeb111cd16856f9"
+      },
+      {
+        "path": "reports/project-video/voice-samples/voice-samples.json",
+        "bytes": 2347,
+        "sha256": "f8e60924563abdcb743f5abeddfc71ff5f9227cc8ef39d4e4769c71d0c8b28cd"
+      },
+      {
+        "path": "reports/project-video/voice-selection.json",
+        "bytes": 625,
+        "sha256": "8123c84b58a12684e14da51f1631902dee0d2f9abd7885f06be6cb387b83f789"
       },
       {
         "path": "reports/release-readiness.json",
@@ -557,27 +712,27 @@
       {
         "path": "reports/security-check.json",
         "bytes": 342,
-        "sha256": "22ee55e9c92cbe0df2780be70f5815b5e708024d441248fa13f80354d5156dec"
+        "sha256": "48627eae0b9745a52e271288f824188f882f147c71c733752fcc73b2eb9be851"
       },
       {
         "path": "reports/skill-details.json",
-        "bytes": 35661,
-        "sha256": "11badb69d422c822cea298cfacefab133e10725cd025ac44f100a0b3cb66d262"
+        "bytes": 35824,
+        "sha256": "fbc7802c0b8718a2bf7e70e5ecf8a94db6c5ae29d3782114fd74fd10cef924c6"
       },
       {
         "path": "reports/skill-details.md",
-        "bytes": 3490,
-        "sha256": "6cde49171343f66af9571386c06caf1e7bef3c683394737d253652be8a0d6406"
+        "bytes": 3517,
+        "sha256": "21b7a980a6feb9494778e618ed4c1b551d5065654edb01009ab17b16f113f248"
       },
       {
         "path": "reports/skill-inventory.json",
-        "bytes": 27051,
-        "sha256": "547b5862af2851bb5985c7b01991d8f191e99358a07cb351f152e261bf8274aa"
+        "bytes": 27214,
+        "sha256": "1a28264e2ec6099663a221152a5804e178b628ed46637873a4b637300275b024"
       },
       {
         "path": "reports/skill-inventory.md",
-        "bytes": 11765,
-        "sha256": "6c04365d64806e55706a330e373bd16aa81baa9d518e9c0c6b4b1ff34db58afb"
+        "bytes": 11853,
+        "sha256": "9e0f32edcdad59ccaa67cb8db10df759d8d4254b04875fc15f0499308b0f5dbf"
       },
       {
         "path": "schemas/adoption-transaction.schema.json",
@@ -641,8 +796,8 @@
       },
       {
         "path": "schemas/documentation-plan.schema.json",
-        "bytes": 2182,
-        "sha256": "6e1d552ace664381304757d1becf0cafb0071b4e73364f17c79e60bd4dc2f303"
+        "bytes": 2199,
+        "sha256": "27205c9c983a173f06b3c94dbe6b61579962b66e9d22a75a23c4cbebdbc9437e"
       },
       {
         "path": "schemas/independent-review.schema.json",
@@ -653,6 +808,11 @@
         "path": "schemas/project-blueprint.schema.json",
         "bytes": 2985,
         "sha256": "eb93af3a0182dcdeeff5c819e5dd05c644a9c9a84bade28a0d0a1c2c3e5499fb"
+      },
+      {
+        "path": "schemas/project-guide.schema.json",
+        "bytes": 1749,
+        "sha256": "64b8c132885436d9a9baa08a21da092fcf3454614631f63145c00c296c7b57bd"
       },
       {
         "path": "schemas/project-installation-verification.schema.json",
@@ -671,8 +831,8 @@
       },
       {
         "path": "schemas/project-video-browser-preview-manifest.schema.json",
-        "bytes": 2322,
-        "sha256": "4cfddc71a4b8db13dc8dba488760d17598125aedefaf14d46e147a9f4c653248"
+        "bytes": 2367,
+        "sha256": "5dd531e33cdf10ada219d07f06208a1880164780ec99b6e0d520b715e8802840"
       },
       {
         "path": "schemas/project-video-local-voice-manifest.schema.json",
@@ -721,8 +881,8 @@
       },
       {
         "path": "schemas/resolved-configuration.schema.json",
-        "bytes": 2455,
-        "sha256": "5050a512b67eb7a22d7fa2a4d06b4c52494d2fc11b91b264439a13253df1c242"
+        "bytes": 2454,
+        "sha256": "456b6a834b77e2fd52964103014493afc569725be6b0c41a50eec8f622548ca0"
       },
       {
         "path": "schemas/security-check.schema.json",
@@ -841,8 +1001,8 @@
       },
       {
         "path": "templates/project/.github/copilot-instructions.md",
-        "bytes": 7894,
-        "sha256": "ce6a94191a97fbf7a86574b16dadc3d10ff57691d9537099755967bb826c7155"
+        "bytes": 8899,
+        "sha256": "c44f6a21a1718d42e94da290ae6105d89f642a7202181722c1769532a691c025"
       },
       {
         "path": "templates/project/.github/instructions/azure-deployment.instructions.md",
@@ -856,8 +1016,8 @@
       },
       {
         "path": "templates/project/.github/instructions/clarification.instructions.md",
-        "bytes": 2030,
-        "sha256": "e1ba26e2376c4deb757ae845d772c4b70a1bda71df46a935a12e6abc09ad87ea"
+        "bytes": 2424,
+        "sha256": "b70630299524a373bbb8163d2c199ef7b220511ce3290e104c055263a45210ba"
       },
       {
         "path": "templates/project/.github/instructions/csharp.instructions.md",
@@ -991,8 +1151,13 @@
       },
       {
         "path": "tests/adoption-rerun.test.mjs",
-        "bytes": 75604,
-        "sha256": "1c7a1ea2ff3434d7bd37c976ea58a347278b69225814da2b5b59910f1a99d94d"
+        "bytes": 77858,
+        "sha256": "d60388807a1a471a8e0853b4faadf781594262fa35abe33725720aed81a4865d"
+      },
+      {
+        "path": "tests/documentation-builder.test.mjs",
+        "bytes": 3264,
+        "sha256": "0d898e5008f3470fdd14a9724b8ccf221da8f5667841de913551c8aeeef7b6ed"
       },
       {
         "path": "tests/package-install.test.mjs",
@@ -1006,13 +1171,13 @@
       },
       {
         "path": "tests/project-understanding.test.mjs",
-        "bytes": 5998,
-        "sha256": "bf52c401a00e362e670a61b68a39c5c4736c491987409f4aa3d93b71baca8e00"
+        "bytes": 6134,
+        "sha256": "8b5584230e975b71c6a4884e801dd9b2b60f2d677848e2b8163babd39effe4a2"
       },
       {
         "path": "tests/project-video.test.mjs",
-        "bytes": 37204,
-        "sha256": "568227fd6e25e61df3e52214420439538b532a03f5ba216d3cdc54f75bf58099"
+        "bytes": 37840,
+        "sha256": "5c0a21da159c138eb37bcda28e9866f7234c6f3d8d7ab11b0910c671ee64321c"
       },
       {
         "path": "tests/security-fuzz.test.mjs",
@@ -1021,15 +1186,23 @@
       },
       {
         "path": "tests/skill-contracts.test.mjs",
-        "bytes": 45525,
-        "sha256": "8af43e551837752d8466ae500f5500d9b0097acc9c489abc8845b194b0899de5"
+        "bytes": 47283,
+        "sha256": "87361855e32d2d819bf50b2902167c9f454a68c789ff6a7e728edb450f68e88c"
       }
     ]
   },
   "architecture": [
     {
+      "name": ".azure",
+      "description": "Top-level project boundary containing 1 scanned files.",
+      "evidence": [
+        ".azure/environment.json"
+      ],
+      "status": "verified"
+    },
+    {
       "name": ".github",
-      "description": "Top-level project boundary containing 60 scanned files.",
+      "description": "Top-level project boundary containing 61 scanned files.",
       "evidence": [
         ".github/copilot-instructions.md"
       ],
@@ -1077,7 +1250,7 @@
     },
     {
       "name": "reports",
-      "description": "Top-level project boundary containing 25 scanned files.",
+      "description": "Top-level project boundary containing 54 scanned files.",
       "evidence": [
         "reports/adoption-rerun-evidence.json"
       ],
@@ -1085,7 +1258,7 @@
     },
     {
       "name": "schemas",
-      "description": "Top-level project boundary containing 35 scanned files.",
+      "description": "Top-level project boundary containing 36 scanned files.",
       "evidence": [
         "schemas/adoption-transaction.schema.json"
       ],
@@ -1109,7 +1282,7 @@
     },
     {
       "name": "tests",
-      "description": "Top-level project boundary containing 7 scanned files.",
+      "description": "Top-level project boundary containing 8 scanned files.",
       "evidence": [
         "tests/adoption-rerun.test.mjs"
       ],
@@ -1119,7 +1292,7 @@
   "technology": [
     {
       "name": ".md",
-      "description": "96 scanned files use this extension.",
+      "description": "98 scanned files use this extension.",
       "evidence": [
         ".github/copilot-instructions.md"
       ],
@@ -1127,17 +1300,25 @@
     },
     {
       "name": ".json",
-      "description": "60 scanned files use this extension.",
+      "description": "69 scanned files use this extension.",
       "evidence": [
-        ".vscode/extensions.json"
+        ".azure/environment.json"
       ],
       "status": "verified"
     },
     {
       "name": ".mjs",
-      "description": "19 scanned files use this extension.",
+      "description": "21 scanned files use this extension.",
       "evidence": [
-        ".github/skills/project-understanding/scripts/project-understanding.mjs"
+        ".github/skills/documentation-builder/scripts/documentation-builder.mjs"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": ".mp3",
+      "description": "11 scanned files use this extension.",
+      "evidence": [
+        "reports/project-video/audio/scene-01.mp3"
       ],
       "status": "verified"
     },
@@ -1146,6 +1327,14 @@
       "description": "9 scanned files use this extension.",
       "evidence": [
         ".github/skills/azure-discovery/scripts/azure-discovery.ps1"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": ".svg",
+      "description": "8 scanned files use this extension.",
+      "evidence": [
+        "reports/project-video/source/scene-01.svg"
       ],
       "status": "verified"
     },
@@ -1167,7 +1356,7 @@
     },
     {
       "name": ".html",
-      "description": "1 scanned files use this extension.",
+      "description": "2 scanned files use this extension.",
       "evidence": [
         "Demo/project-skills-orchestrator-animation.html"
       ],
@@ -1185,7 +1374,7 @@
   "usage": [
     {
       "name": "npm run check",
-      "description": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
+      "description": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
       "evidence": [
         "package.json"
       ],
@@ -1249,7 +1438,7 @@
     },
     {
       "name": "npm run test",
-      "description": "node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/project-video.test.mjs",
+      "description": "node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-video.test.mjs",
       "evidence": [
         "package.json"
       ],
@@ -1309,7 +1498,7 @@
   "workflows": [
     {
       "name": "npm run check",
-      "description": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
+      "description": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
       "evidence": [
         "package.json"
       ],
@@ -1373,7 +1562,7 @@
     },
     {
       "name": "npm run test",
-      "description": "node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/project-video.test.mjs",
+      "description": "node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-video.test.mjs",
       "evidence": [
         "package.json"
       ],
@@ -1518,7 +1707,7 @@
       },
       {
         "name": "documentation-builder",
-        "description": "Generate and maintain README files, decision records, deployment guides, and operations runbooks that are verified against repository evidence. Use when documentation is missing, stale, or contradicts the code; do not use to narrate changes an agent just made.",
+        "description": "Generate and maintain the authoritative project guide, README files, decision records, deployment guides, and operations runbooks from verified repository evidence. Use when documentation is missing, stale, or contradicts the code; do not use to narrate changes an agent just made.",
         "evidence": [
           ".github/skills/documentation-builder/SKILL.md"
         ],
@@ -1662,7 +1851,7 @@
       },
       {
         "name": "skill-create",
-        "description": "Create or update concise, composable skill packages with valid metadata, bounded tools, ownership, validation, dependencies, and examples. Use to author or revise a skill contract; do not use to invoke an existing skill.",
+        "description": "Create or update concise, composable skill packages with valid metadata, bounded tools, ownership, validation, dependencies, and examples. Always use when a user asks, directly or indirectly, to create, add, define, author, build, or make a skill; do not use to invoke an existing skill.",
         "evidence": [
           ".github/skills/skill-create/SKILL.md"
         ],
@@ -1984,6 +2173,14 @@
         "status": "verified"
       },
       {
+        "name": "project-guide.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/project-guide.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
         "name": "project-installation-verification.schema.json",
         "description": "Machine-readable contract for a governed project artifact.",
         "evidence": [
@@ -2148,7 +2345,7 @@
   "validation": [
     {
       "name": "npm run check",
-      "description": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
+      "description": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
       "evidence": [
         "package.json"
       ],
@@ -2180,7 +2377,7 @@
     },
     {
       "name": "npm run test",
-      "description": "node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/project-video.test.mjs",
+      "description": "node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-video.test.mjs",
       "evidence": [
         "package.json"
       ],
@@ -2197,5 +2394,5 @@
   ],
   "limitations": [],
   "markdown": "reports/project-understanding.md",
-  "markdownSha256": "d4d421c92f0b0e939d365262d36d7d9939aa147c3bcee3dd8a11d668cfb4aeff"
+  "markdownSha256": "4a6014abff4184f290ce5650d9cb93a500c1945cc9d91a3c366abc22d6d45049"
 }

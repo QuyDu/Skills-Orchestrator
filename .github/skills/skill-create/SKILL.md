@@ -40,14 +40,15 @@ Create or update concise, composable skill packages with valid metadata, bounded
 
 1. Route every skill-creation request here, even when the user describes the desired behavior without using the word skill.
 2. Understand the requested capability and distinguish create, update, extend, or deprecate work for an existing skill ID.
-3. Run `skill-inventory` and compare the request against existing skill names, descriptions, outputs, ownership, and triggers. Inform the user when an existing skill is similar or already covers the request; do not create a duplicate silently.
+3. Run `skill-inventory` and compare the request against existing skill names, descriptions, outputs, ownership, and triggers. Reuse or extend a matching capability; do not create a duplicate silently.
 4. When no duplicate exists, identify reusable skills that should provide authoritative inputs or workflow steps, including project-understanding for current-project discovery when applicable.
-5. Validate that frontmatter name exactly matches directory ID and remains lowercase kebab-case.
-6. Define or refine contract sections: purpose, authoritative inputs, deterministic procedure, validation, failure behavior, approval gates, and examples.
-7. Ensure dependencies include only existing skill IDs that are required as authoritative inputs and remain acyclic.
-8. Verify output ownership boundaries and remove ambiguous ownership claims.
-9. Apply minimal edits to skill package files while preserving established public IDs.
-10. Re-check contract completeness, ownership, dependency closure, and duplicate-skill evidence after updates.
+5. When no existing skill fits, notify the user of the inventory result and obtain explicit approval before authoring a new skill.
+6. Validate that frontmatter name exactly matches directory ID and remains lowercase kebab-case.
+7. Define or refine contract sections: purpose, authoritative inputs, deterministic procedure, validation, failure behavior, approval gates, and examples.
+8. Ensure dependencies include only existing skill IDs that are required as authoritative inputs and remain acyclic.
+9. Verify output ownership boundaries and remove ambiguous ownership claims.
+10. Apply minimal edits to skill package files while preserving established public IDs.
+11. Re-check contract completeness, ownership, dependency closure, and duplicate-skill evidence after updates.
 
 ## Validation
 
@@ -70,7 +71,7 @@ Create or update concise, composable skill packages with valid metadata, bounded
 
 ## Approval Gates
 
-Require explicit approval before publishing or installing skills outside the local repository.
+Require explicit approval before authoring a new skill after the inventory finds no reusable match, and before publishing or installing skills outside the local repository.
 
 ## Composition and Dependencies
 

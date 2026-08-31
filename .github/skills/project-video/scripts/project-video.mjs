@@ -489,9 +489,13 @@ function sceneFromUnderstanding(index, title, subtitle, entries, fallbackEvidenc
 
 async function generatePlanFromUnderstanding(root, options) {
   const understandingHelper = resolveInside(root, ".github/skills/project-understanding/scripts/project-understanding.mjs", "Project Understanding helper");
+  const documentationHelper = resolveInside(root, ".github/skills/documentation-builder/scripts/documentation-builder.mjs", "Documentation Builder helper");
   if (!existsSync(understandingHelper)) throw new Error("Project Understanding helper is missing from this project");
+  if (!existsSync(documentationHelper)) throw new Error("Documentation Builder helper is missing from this project");
   const scan = spawnSync(process.execPath, [understandingHelper, "scan", "--root", root], { cwd: root, encoding: "utf8", windowsHide: true });
   if (scan.status !== 0) throw new Error(`Project Understanding rebuild failed:\n${scan.stderr || scan.stdout}`);
+  const guide = spawnSync(process.execPath, [documentationHelper, "build", "--root", root], { cwd: root, encoding: "utf8", windowsHide: true });
+  if (guide.status !== 0) throw new Error(`Documentation Builder failed:\n${guide.stderr || guide.stdout}`);
   const understandingFile = resolveInside(root, PROJECT_UNDERSTANDING_PATH, "Project Understanding JSON");
   const understandingMarkdown = resolveInside(root, PROJECT_UNDERSTANDING_MARKDOWN_PATH, "Project Understanding Markdown");
   const understanding = await readJson(understandingFile);

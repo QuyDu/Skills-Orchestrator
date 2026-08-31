@@ -12,7 +12,7 @@ const DEFAULT_ROOT = path.resolve(SCRIPT_ROOT, "..", "..", "..", "..");
 const JSON_OUTPUT = "reports/project-understanding.json";
 const MARKDOWN_OUTPUT = "reports/project-understanding.md";
 const EXCLUDED_DIRECTORIES = new Set([".git", ".skills-orchestrator", "node_modules", "dist", "build", "out", "bin", "obj", "coverage", "vendor", "venv", ".venv", "__pycache__"]);
-const EXCLUDED_FILES = new Set([JSON_OUTPUT, MARKDOWN_OUTPUT]);
+const EXCLUDED_FILES = new Set([JSON_OUTPUT, MARKDOWN_OUTPUT, "docs/PROJECT-GUIDE.md", "reports/project-guide.json"]);
 const SENSITIVE_FILE_PATTERNS = [".env and .env.*", "private key and certificate files", "credential and secret manifests", "SSH private keys"];
 const TEXT_EXTENSIONS = new Set([".md", ".json", ".jsonc", ".yaml", ".yml", ".toml", ".xml", ".txt", ".mjs", ".js", ".ts", ".tsx", ".jsx", ".py", ".ps1", ".bicep", ".tf", ".cs", ".java", ".go", ".rs", ".rb", ".php", ".sh"]);
 const MAX_TEXT_BYTES = 1024 * 1024;
@@ -107,7 +107,7 @@ function commandItems(packageJson) {
 
 function markdownList(items, empty = "No verified items were found.") {
   if (!items.length) return empty;
-  return items.map((entry) => `- **${entry.name}** — ${entry.description}  \n  Evidence: ${entry.evidence.map((value) => `\`${value}\``).join(", ")}`).join("\n");
+  return items.map((entry) => `- **${entry.name}** — ${entry.description}\n  Evidence: ${entry.evidence.map((value) => `\`${value}\``).join(", ")}`).join("\n");
 }
 
 function markdown(report) {

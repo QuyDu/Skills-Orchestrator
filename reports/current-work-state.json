@@ -1,21 +1,21 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-08-28T00:00:00.000Z",
+  "updatedAt": "2026-08-28T17:00:00.000Z",
   "project": {
     "name": "project-skills-orchestrator",
     "version": "1.1.1",
     "branch": "main",
-    "commit": "3f84e20"
+    "commit": "9c73c3d"
   },
   "status": "ready-for-local-commit",
   "activeMilestone": {
-    "name": "Project Video product direction and fresh handoffs",
+    "name": "Project value review and guide implementation",
     "status": "locally-validated"
   },
   "lastCompletedAction": {
-    "action": "Document Project Video product direction and fresh handoff behavior",
+    "action": "Review product value, demo readiness, and the canonical project guide architecture",
     "status": "completed",
-    "completedAt": "2026-08-28T00:00:00.000Z",
+    "completedAt": "2026-08-28T17:00:00.000Z",
     "evidence": [
       ".github/skills/project-understanding/SKILL.md",
       ".github/skills/project-understanding/scripts/project-understanding.mjs",
@@ -34,12 +34,13 @@
     ]
   },
   "validationStatus": {
-    "repositoryCheck": "passed",
-    "testsPassed": 87,
+    "repositoryCheck": "incomplete",
+    "testsPassed": 68,
     "testsFailed": 0,
     "skillsVerified": 41,
     "securityCheck": "passed",
-    "releaseCandidateVerification": "passed"
+    "releaseCandidateVerification": "passed",
+    "note": "The latest full npm run check completed security, release build, and candidate verification, then exceeded the execution timeout during the long integration suite."
   },
   "blockers": [
     "Production distribution requires current-commit cross-platform CI evidence.",
@@ -49,9 +50,9 @@
     "Remote mutation, publication, deployment, and Azure operations remain unapproved."
   ],
   "nextAction": {
-    "skill": "project-video",
+    "skill": "documentation-builder",
     "status": "next",
-    "action": "Test a newly created project through implementation and invoke /project-video to verify current-project narration."
+    "action": "Implement the documentation-builder generator, then run the end-to-end create, build, guide, and project-video demo."
   },
   "handoff": "reports/project-handoff.json"
 }

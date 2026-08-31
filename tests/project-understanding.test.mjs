@@ -54,6 +54,7 @@ test("project-understanding performs a complete atomic rebuild with safe invento
     assert.equal(report.scan.files.length, report.scan.fileCount);
     assert.ok(report.scan.files.some((item) => item.path === "src/app.mjs"));
     assert.ok(!report.scan.files.some((item) => item.path === ".env" || item.path === "credentials.json"));
+    assert.ok(!report.scan.files.some((item) => item.path === "docs/PROJECT-GUIDE.md" || item.path === "reports/project-guide.json"));
     assert.ok(report.customizations.skills.some((item) => item.name === "fixture-skill" && item.invocation === "/fixture-skill"));
     assert.ok(report.customizations.prompts.some((item) => item.name === "fixture" && item.invocation === "/fixture"));
     assert.ok(report.customizations.agents.some((item) => item.name === "fixture-agent"));

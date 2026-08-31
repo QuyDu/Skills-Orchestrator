@@ -19,6 +19,8 @@ Apply this to every new user prompt, without exception, before any analysis, too
 ## Project Skills Orchestrator
 
 - Read `.github/skills/project-skills-orchestrator/SKILL.md` before coordinating multi-skill work.
+- Automatically use an existing skill when its trigger and ownership match the request; continue with normal engineering work only when no available skill fits. Prefer reuse over duplicating an existing skill, script, workflow, report, or capability.
+- Before authoring a new skill, invoke `/skill-create` to inventory and compare current skills. Notify the user and obtain explicit approval when no existing skill fits before creating the new skill.
 - Inspect `reports/current-work-state.json` and `reports/project-handoff.json` when present.
 - Treat machine-readable artifacts in `reports/` as authoritative.
 - Never rewrite accepted records in `reports/execution-log.jsonl`.

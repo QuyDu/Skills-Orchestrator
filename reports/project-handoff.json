@@ -1,21 +1,21 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-08-28T00:00:00.000Z",
+  "generatedAt": "2026-08-28T17:00:00.000Z",
   "project": {
     "name": "project-skills-orchestrator",
     "version": "1.1.1",
     "branch": "main",
-    "commit": "3f84e20"
+    "commit": "9c73c3d"
   },
   "status": "ready-for-local-commit",
   "milestone": {
-    "name": "Project Video product direction and fresh handoffs",
+    "name": "Canonical project guide and governed skill authoring",
     "status": "locally-validated",
-    "objective": "Make Project Video describe the current completed project, clarify its product value, and ensure new projects receive fresh continuity state."
+    "objective": "Validate the product value and demo story using the canonical project guide, then implement the remaining guide generator."
   },
   "lastCompletedWork": {
-    "summary": "Improved Project Video rendering and audio, committed runtime 1.1.1, and defined the product direction for skill building blocks, lightweight governance, free narration fallback, and demo-led impact.",
-    "completedAt": "2026-08-28T00:00:00.000Z",
+    "summary": "Reviewed the product against peer impact, demo readiness, and production readiness. Confirmed the strongest story is the before-and-after journey from governed project creation to a documented working application.",
+    "completedAt": "2026-08-28T17:00:00.000Z",
     "evidence": [
       ".github/skills/project-understanding/SKILL.md",
       ".github/skills/project-understanding/scripts/project-understanding.mjs",
@@ -24,6 +24,11 @@
       "reports/project-understanding.md",
       ".github/skills/project-video/SKILL.md",
       ".github/skills/project-video/scripts/project-video.mjs",
+      ".github/skills/documentation-builder/SKILL.md",
+      ".github/skills/skill-create/SKILL.md",
+      ".github/skills/project-skills-orchestrator/SKILL.md",
+      ".github/skills/linkedin-post/SKILL.md",
+      "schemas/project-guide.schema.json",
       ".github/skills/project-setup/SKILL.md",
       "schemas/project-video-plan.schema.json",
       "templates/project/.github/copilot-instructions.md",
@@ -32,7 +37,9 @@
       "tests/skill-contracts.test.mjs",
       "reports/current-work-state.json",
       "reports/change-review.json",
-      "reports/release-readiness.json"
+      "reports/release-readiness.json",
+      "tests/adoption-rerun.test.mjs",
+      "tests/skill-contracts.test.mjs"
     ]
   },
   "decisions": [
@@ -103,13 +110,34 @@
     {
       "decision": "Keep Azure Speech optional and provide a no-cost local narration path for standard demos.",
       "rationale": "Azure improves voice quality when approved and available, while a built-in local voice fallback preserves reproducible demos without cloud credentials or usage charges."
+    },
+    {
+      "decision": "Make documentation-builder the authoritative producer of docs/PROJECT-GUIDE.md and reports/project-guide.json.",
+      "rationale": "Project Video, LinkedIn Post, and future management presentations need one evidence-bound project narrative while retaining current-code freshness checks."
+    },
+    {
+      "decision": "Route every request to create or define a skill through skill-create, including indirect wording.",
+      "rationale": "The authoring workflow must compare existing capabilities, report similar or duplicate skills, and reuse existing skills before creating another contract."
+    },
+    {
+      "decision": "Use the canonical project guide as the shared narrative source for project video, social posts, and future management presentations.",
+      "rationale": "One evidence-bound narrative reduces drift while downstream outputs can still verify freshness against current code and reports."
+    },
+    {
+      "decision": "Demo the complete lifecycle: create the governed foundation, build a visible application feature, validate it, generate the guide, and produce the project presentation.",
+      "rationale": "This demonstrates measurable workflow impact more convincingly than showing the framework file tree alone."
     }
   ],
   "validation": [
     {
-      "check": "npm run check",
+      "check": "Focused contract, adoption, and project-video tests",
       "status": "passed",
-      "evidence": "87 tests passed, 0 failed; syntax, security scan, release build, release-candidate checksum verification, and repository verification all passed."
+      "evidence": "68 tests passed, 0 failed, including fresh handoff creation, one-round clarification propagation, canonical guide references, and mandatory skill-create routing."
+    },
+    {
+      "check": "npm run check",
+      "status": "incomplete",
+      "evidence": "Security, release build, and unsigned release-candidate verification passed; the long integration suite exceeded the execution timeout and was stopped before a final exit status."
     },
     {
       "check": "Skill verification",
@@ -146,7 +174,7 @@
     "clean": false,
     "unmergedPaths": 0,
     "otherChangesPresent": true,
-    "attribution": "This handoff attributes the Azure environment automation, duplicate-command consolidation, related tests and documentation, and synchronized reports. Preexisting project-video, architecture, discovery-report, and other staged or unstaged changes remain preserved without blanket attribution.",
+    "attribution": "This handoff attributes the canonical project-guide contract, skill-create routing, one-round clarification policy, fresh new-project handoff, related tests and synchronized reports. Remaining modified inventory and security reports are generated evidence from validation.",
     "boundedPaths": [
       ".github/copilot-instructions.md",
       ".github/prompts/azure-cleanup-help.prompt.md",
@@ -193,9 +221,9 @@
     "The unsigned candidate is suitable for local testing only and is not approved for production distribution."
   ],
   "nextAction": {
-    "skill": "prepare-commit",
-    "status": "approved",
-    "action": "Test create-project, build a small application, and invoke /project-video to verify that the resulting demo describes the new project.",
+    "skill": "documentation-builder",
+    "status": "next",
+    "action": "Implement the documentation-builder generator for docs/PROJECT-GUIDE.md and reports/project-guide.json, then run the end-to-end create, build, guide, and project-video demo.",
     "prerequisites": [
       "Keep push, tag, publication, deployment, and Azure mutation out of scope.",
       "Preserve the blocked production-release status until external evidence is available."

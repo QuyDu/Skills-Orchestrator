@@ -145,6 +145,9 @@ test("project video is a portable narrated MP4 capability", async () => {
   assert.equal(understandingSchema.additionalProperties, false);
   assert.equal(understandingSchema.properties.scan.additionalProperties, false);
   assert.equal(understandingSchema.properties.customizations.additionalProperties, false);
+  const guideSchema = JSON.parse(await readFile(path.join(root, "schemas", "project-guide.schema.json"), "utf8"));
+  assert.ok(guideSchema.required.includes("guideSha256"));
+  assert.equal(guideSchema.properties.guideSha256.$ref, "#/$defs/sha256");
   assert.match(projectVideo.metadata.description, /new or existing project/);
   assert.match(projectVideo.source, /\.github\/skills\/project-video\/scripts\/project-video\.mjs/);
   assert.match(projectVideo.source, /Never change narration providers silently/);
@@ -352,11 +355,19 @@ test("skill authoring routes through skill-create and reuses existing capabiliti
   assert.match(skillCreate.metadata.description, /Always use when a user asks.*create.*skill/);
   assert.match(skillCreate.source, /every request to create a skill, regardless of the user's wording/);
   assert.match(skillCreate.source, /Run `skill-inventory` and compare the request/);
-  assert.match(skillCreate.source, /do not create a duplicate silently/);
+  assert.match(skillCreate.source, /Reuse or extend a matching capability/);
+  assert.match(skillCreate.source, /obtain explicit approval before authoring a new skill/);
   assert.match(skillCreate.source, /identify reusable skills/);
   assert.match(skillCreate.source, /project-understanding/);
   assert.match(orchestrator.source, /Route any request to create, add, define, author, build, or make a skill to `skill-create`/);
   assert.match(orchestrator.source, /duplicate\/reuse analysis before authoring/);
+  const repositoryInstructions = await readFile(path.join(root, ".github", "copilot-instructions.md"), "utf8");
+  const generatedInstructions = await readFile(path.join(root, "templates", "project", ".github", "copilot-instructions.md"), "utf8");
+  for (const instructions of [repositoryInstructions, generatedInstructions]) {
+    assert.match(instructions, /automatically use an existing skill/i);
+    assert.match(instructions, /Prefer reuse over duplicating/i);
+    assert.match(instructions, /obtain explicit approval.*new skill/i);
+  }
 });
 
 test("skill actions have one slash-command owner", async () => {

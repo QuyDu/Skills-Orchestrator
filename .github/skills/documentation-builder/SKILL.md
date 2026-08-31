@@ -1,8 +1,8 @@
 ---
 name: documentation-builder
 description: Generate and maintain the authoritative project guide, README files, decision records, deployment guides, and operations runbooks from verified repository evidence. Use when documentation is missing, stale, or contradicts the code; do not use to narrate changes an agent just made.
-lifecycle: draft
-confidence: low
+lifecycle: tested
+confidence: medium
 ---
 
 # documentation-builder
@@ -43,8 +43,8 @@ Produce and refresh human-facing documentation that is verified against the repo
 ## Procedure
 
 1. Determine which documents are required, which exist, and which are stale relative to the code they describe.
-2. Build or refresh `docs/PROJECT-GUIDE.md` first. It is the shared project narrative and covers purpose, audience, architecture, setup, primary workflows, capabilities, how to use the project, management value, user value, Azure or deployment details, validation, limitations, and next steps.
-3. Build `reports/project-guide.json` with each material claim, its repository evidence, Project Understanding digests, generated timestamp, and explicit verified, planned, or unavailable status.
+2. Run `node .github/skills/documentation-builder/scripts/documentation-builder.mjs build` from the target project after `project-understanding scan`. The helper builds `docs/PROJECT-GUIDE.md` and `reports/project-guide.json` for that project's own evidence, not the orchestrator source repository.
+3. Run `node .github/skills/documentation-builder/scripts/documentation-builder.mjs validate` before relying on the guide. It rejects missing or stale Project Understanding digests and unsupported claim evidence.
 4. Fix one audience per additional document: new contributor, operator, security reviewer, or executive.
 5. Extract verified facts from the repository: prerequisites, setup, run and test commands, configuration keys, endpoints, and environments.
 4. Verify every command and path by inspection; discard any claim that cannot be confirmed.

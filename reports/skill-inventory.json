@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "runtimeVersion": "1.1.1",
-  "generatedAt": "2026-08-28T15:35:30.039Z",
+  "generatedAt": "2026-08-30T21:10:28.022Z",
   "skills": [
     {
       "name": "architecture-review",
@@ -209,8 +209,8 @@
       "name": "documentation-builder",
       "path": ".github/skills/documentation-builder/SKILL.md",
       "description": "Generate and maintain the authoritative project guide, README files, decision records, deployment guides, and operations runbooks from verified repository evidence. Use when documentation is missing, stale, or contradicts the code; do not use to narrate changes an agent just made.",
-      "lifecycle": "draft",
-      "confidence": "low",
+      "lifecycle": "tested",
+      "confidence": "medium",
       "dependencies": [
         "clarify-the-ask"
       ],
@@ -455,7 +455,7 @@
     {
       "name": "skill-create",
       "path": ".github/skills/skill-create/SKILL.md",
-      "description": "Create or update concise, composable skill packages with valid metadata, bounded tools, ownership, validation, dependencies, and examples. Use to author or revise a skill contract; do not use to invoke an existing skill.",
+      "description": "Create or update concise, composable skill packages with valid metadata, bounded tools, ownership, validation, dependencies, and examples. Always use when a user asks, directly or indirectly, to create, add, define, author, build, or make a skill; do not use to invoke an existing skill.",
       "lifecycle": "draft",
       "confidence": "low",
       "dependencies": [

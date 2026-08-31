@@ -353,6 +353,85 @@ test("adoption resolves project configuration with CLI precedence", async () => 
   }
 });
 
+test("adoption preserves project-owned orchestrator routes on rerun", async () => {
+  const project = await mkdtemp(path.join(os.tmpdir(), "pso-project-routing-"));
+  try {
+    await writeFile(path.join(project, "package.json"), "{\"name\":\"project-routing-fixture\"}\n", "utf8");
+    await mkdir(path.join(project, "config"), { recursive: true });
+    await writeFile(path.join(project, "config", "orchestrator.yaml"), "routing:\n  intents:\n    project-task:\n      skill: project-skill\n      requiresApproval: false\napprovalPolicy:\n  requireExplicitApprovalFor:\n    - push\n", "utf8");
+    const projectSkill = path.join(project, ".github", "skills", "project-skill", "SKILL.md");
+    await mkdir(path.dirname(projectSkill), { recursive: true });
+    await writeFile(projectSkill, `---
+name: project-skill
+description: Project-owned route fixture.
+lifecycle: draft
+confidence: low
+---
+
+# project-skill
+
+## Purpose
+
+- Exercise project routing preservation.
+
+## Preconditions
+
+- None.
+
+## Inputs
+
+- None.
+
+## Approved Tools and Resources
+
+- None.
+
+## Read and Write Boundaries
+
+- None.
+
+## Procedure
+
+- None.
+
+## Validation
+
+- None.
+
+## Outputs
+
+- None.
+
+## Failure Behavior
+
+- None.
+
+## Approval Gates
+
+- None.
+
+## Composition and Dependencies
+
+
+## Examples
+
+- Preserve a project route.
+`, "utf8");
+
+    runAdoption(project, "--apply");
+
+    const orchestrator = await readFile(path.join(project, "config", "orchestrator.yaml"), "utf8");
+    assert.match(orchestrator, /project-task:/);
+    assert.match(orchestrator, /skill: project-skill/);
+    assert.match(orchestrator, /approvalPolicy:/);
+
+    const rerun = runAdoption(project, "--dry-run");
+    assert.match(rerun, /Wiring files to update: 0/);
+  } finally {
+    await rm(project, { recursive: true, force: true });
+  }
+});
+
 test("adoption rejects unknown project configuration fields", async () => {
   const project = await mkdtemp(path.join(os.tmpdir(), "pso-invalid-config-"));
   try {

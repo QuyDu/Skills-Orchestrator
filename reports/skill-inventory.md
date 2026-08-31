@@ -1,6 +1,6 @@
 # Skill Inventory
 
-Generated: 2026-08-28T15:35:30.039Z
+Generated: 2026-08-30T21:10:28.022Z
 
 | Skill | Description |
 | --- | --- |
@@ -34,7 +34,7 @@ Generated: 2026-08-28T15:35:30.039Z
 | project-video | Analyze a new or existing project with meaningful verified content and produce an evidence-grounded browser preview or narrated MP4 entirely from VS Code using optional Azure OpenAI, Speech, Speech Avatar, local Piper, and FFmpeg stages. Do not use for empty baselines, generic documentation, live recording, or publication. |
 | regression-test-development | Create or strengthen focused automated tests that reproduce a bug or specify a requested behavior, then capture red-green validation evidence. Use when a change needs durable regression coverage; do not use only to execute an existing test suite. |
 | security-review | Review code, configuration, and infrastructure for exploitable weaknesses, secret exposure, identity and authorization defects, and OWASP Top 10 categories with severity-ranked evidence. Use before merging or releasing security-relevant change; use audit-code instead for whole-repository quality assessment. |
-| skill-create | Create or update concise, composable skill packages with valid metadata, bounded tools, ownership, validation, dependencies, and examples. Use to author or revise a skill contract; do not use to invoke an existing skill. |
+| skill-create | Create or update concise, composable skill packages with valid metadata, bounded tools, ownership, validation, dependencies, and examples. Always use when a user asks, directly or indirectly, to create, add, define, author, build, or make a skill; do not use to invoke an existing skill. |
 | skill-dependency-manager | Resolve skill and artifact dependencies, validate compatible versions, detect cycles, assess upgrade impact, and generate dependency graphs. Use for the skill and artifact graph; use dependency-maintenance instead for application package dependencies. |
 | skill-inventory | Discover and inventory skills, reports, add-ins, integrations, schemas, templates, adapters, migrations, runtime components, and configuration extensions. Use to establish what capabilities and artifacts a project actually has before planning; do not use to execute them. |
 | skill-registry | Manage governed skill package metadata, discovery, provenance, integrity, lifecycle promotion, deprecation, retirement, and revocation proposals. Use to promote, deprecate, retire, or verify the provenance of a skill package; use skill-create instead to author its content. |

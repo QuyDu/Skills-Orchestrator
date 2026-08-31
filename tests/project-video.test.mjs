@@ -409,12 +409,15 @@ test("project-video rebuilds and binds current Project Understanding before plan
   try {
     await mkdir(path.join(project, "src"), { recursive: true });
     await mkdir(path.join(project, ".github", "skills", "project-understanding", "scripts"), { recursive: true });
+    await mkdir(path.join(project, ".github", "skills", "documentation-builder", "scripts"), { recursive: true });
     await mkdir(path.join(project, "schemas"), { recursive: true });
     await writeFile(path.join(project, "README.md"), "# Current Repository Subject\n\nBuilds a verified current-project presentation from repository evidence.\n", "utf8");
     await writeFile(path.join(project, "package.json"), "{\"name\":\"current-repository-subject\",\"scripts\":{\"start\":\"node src/app.mjs\",\"check\":\"node --check src/app.mjs\"}}\n", "utf8");
     await writeFile(path.join(project, "src", "app.mjs"), "export const projectFeature = 'current-subject';\n", "utf8");
     await copyFile(path.join(root, ".github", "skills", "project-understanding", "scripts", "project-understanding.mjs"), path.join(project, ".github", "skills", "project-understanding", "scripts", "project-understanding.mjs"));
+    await copyFile(path.join(root, ".github", "skills", "documentation-builder", "scripts", "documentation-builder.mjs"), path.join(project, ".github", "skills", "documentation-builder", "scripts", "documentation-builder.mjs"));
     await copyFile(path.join(root, "schemas", "project-understanding.schema.json"), path.join(project, "schemas", "project-understanding.schema.json"));
+    await copyFile(path.join(root, "schemas", "project-guide.schema.json"), path.join(project, "schemas", "project-guide.schema.json"));
     await copyFile(path.join(root, "schemas", "project-video-plan.schema.json"), path.join(project, "schemas", "project-video-plan.schema.json"));
 
     const generated = run(project, "plan-from-understanding", ["--name", "current-project"]);
@@ -422,6 +425,8 @@ test("project-video rebuilds and binds current Project Understanding before plan
     const understandingFile = path.join(project, "reports", "project-understanding.json");
     const understandingMarkdown = path.join(project, "reports", "project-understanding.md");
     const planFile = path.join(project, "reports", "project-video", "project-video-plan.json");
+    assert.ok(existsSync(path.join(project, "docs", "PROJECT-GUIDE.md")));
+    assert.ok(existsSync(path.join(project, "reports", "project-guide.json")));
     const plan = JSON.parse(await readFile(planFile, "utf8"));
     assert.equal(plan.schemaVersion, "1.2.0");
     assert.equal(plan.project.name, "current-repository-subject");

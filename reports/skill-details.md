@@ -1,6 +1,6 @@
 # Skill Details
 
-Generated: 2026-08-28T15:35:30.039Z
+Generated: 2026-08-30T21:10:28.022Z
 
 | Skill | Lifecycle | Confidence | Audit | Dependencies |
 | --- | --- | --- | --- | --- |
@@ -18,7 +18,7 @@ Generated: 2026-08-28T15:35:30.039Z
 | dependency-maintenance | draft | low | passed | policy-engine, regression-test-development, workflow-state-manager |
 | deployment-review | draft | low | passed | architecture-review, security-review |
 | development-environment-readiness | tested | medium | passed | policy-engine, workflow-state-manager |
-| documentation-builder | draft | low | passed | clarify-the-ask |
+| documentation-builder | tested | medium | passed | clarify-the-ask |
 | environment-update | draft | low | passed | development-environment-readiness, policy-engine |
 | framework-health-check | draft | low | passed | skill-inventory, skill-dependency-manager |
 | linkedin-post | draft | low | passed | project-handoff, documentation-builder |

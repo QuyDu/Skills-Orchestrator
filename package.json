@@ -23,8 +23,8 @@
     "pso.ps1"
   ],
   "scripts": {
-    "check": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
-    "test": "node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/project-video.test.mjs",
+    "check": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
+    "test": "node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-video.test.mjs",
     "security": "node scripts/security-check.mjs",
     "release": "node scripts/build-release.mjs",
     "release:verify:candidate": "node scripts/verify-release.mjs --candidate",

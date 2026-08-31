@@ -77,22 +77,18 @@ After the app builds and every test passes, deploy it using the project's own go
 
 Use `skillsdemo` as the site name. It is 10 characters, inside the 12-character limit, and yields the resource group `rg-skillsdemo`.
 
-1. Confirm the Azure CLI is signed in and targeting the right cloud. `az cloud show --query name -o tsv` must return `AzureUSGovernment`; if it does not, stop and report rather than switching clouds silently.
-2. Create the resource group first:
+1. Confirm Azure CLI is available, signed in, and targeting Azure Government. `az cloud show --query name -o tsv` must return `AzureUSGovernment` and `az account show --query id -o tsv` must return a subscription ID. If Azure CLI is unavailable, authentication is missing, or the cloud is not Azure Government, stop and report the exact prerequisite; do not switch clouds or start an interactive login during the demo.
+2. Explain that deployment will create `rg-skillsdemo`, billable Azure Government resources, and a public endpoint. **Stop here and ask the presenter for explicit approval before any Azure mutation.** Proceed only on an explicit yes.
+3. After approval, create the resource group, then preview the exact changes:
 
    ```powershell
    az group create --name rg-skillsdemo --location usgovvirginia -o none
-   ```
-
-   This must happen before the next step. `deploy.ps1 -WhatIf` deliberately skips resource-group creation, and `az deployment group what-if` fails with `ResourceGroupNotFound` against a group that does not exist.
-3. Preview the exact changes and show them in full:
-
-   ```powershell
    ./infra/deploy.ps1 -SiteName skillsdemo -AzureGov -Location usgovvirginia -AppServiceSku B1 -NoKeyVault -WhatIf
    ```
 
-4. **Stop here and ask the presenter for explicit approval before deploying.** This creates billable Azure resources and a public endpoint. Proceed only on an explicit yes. This is the one point in this prompt where you must wait.
-5. On approval, run the same command without `-WhatIf`, then publish the built site to the created web app and report the resulting HTTPS URL.
+   The resource group must exist before `-WhatIf`, because the preview uses a resource-group deployment.
+
+4. Show the complete preview. Stop and report if it contains unexpected changes. On the already granted approval, run the same deployment command without `-WhatIf`, then publish the built site to the created web app and report the resulting HTTPS URL.
 6. The application must bind to the port supplied by App Service through `process.env.PORT`. Set an explicit startup command if the platform does not detect one.
 7. Verify the deployed URL over HTTPS: confirm the page loads and that all three phases render using the `?mode=` and `?at=` overrides.
 

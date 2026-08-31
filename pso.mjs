@@ -140,6 +140,8 @@ ${COPILOT_INSTRUCTION}`;
 const AGENT_INSTRUCTION = `## Project Skills Orchestrator
 
 - Read \`${ORCHESTRATION_ROUTE}\` before multi-skill work.
+- Automatically use an existing skill when its trigger and ownership match the request; continue with normal engineering work only when no available skill fits. Prefer reuse over duplicating an existing skill, script, workflow, report, or capability.
+- Before authoring a new skill, invoke \`/skill-create\` to inventory and compare current skills. Notify the user and obtain explicit approval when no existing skill fits before creating the new skill.
 - Treat machine-readable artifacts under \`reports/\` as authoritative.
 - Plan and validate before modifying files.
 - Require approval for destructive, external, privileged, or irreversible actions.`;
@@ -286,6 +288,18 @@ function mergeInstructionBlocks(current, blocks) {
 
 function mergedInstructionContent(current, blocks) {
   return mergeInstructionBlocks(current, blocks).content;
+}
+
+function mergeProjectOrchestratorConfiguration(current, baseline) {
+  const frameworkSections = new Set(["frameworkVersion", "runtimeVersion", "profile", "paths", "runtime", "project"]);
+  const lines = current.split(/\r?\n/);
+  const projectSectionIndex = lines.findIndex((line) => {
+    const match = line.match(/^([A-Za-z][A-Za-z0-9_-]*):/);
+    return match && !frameworkSections.has(match[1]);
+  });
+  if (projectSectionIndex === -1) return baseline;
+  const projectSections = lines.slice(projectSectionIndex).join("\n").trim();
+  return `${baseline.trimEnd()}\n${projectSections}\n`;
 }
 
 
@@ -1839,7 +1853,12 @@ async function buildAdoptionPlan(projectRoot, profileOverride, projectNameOverri
     ...manifestFields,
     updatedAt: manifestChanged ? now : existingManifest.updatedAt || existingManifest.adoptedAt || now
   };
-  const orchestratorContent = `frameworkVersion: ${FRAMEWORK_VERSION}\nruntimeVersion: ${VERSION}\nprofile: ${profile}\npaths:\n  skills: .github/skills\n  reports: reports\n  schemas: schemas\nruntime:\n  eventStream: reports/execution-log.jsonl\n  stateSnapshot: reports/current-execution-state.json\n  appendOnly: true\nproject:\n  name: ${projectName}\n  adopted: true\n`;
+  const orchestratorPath = path.join(root, "config", "orchestrator.yaml");
+  const currentOrchestrator = existsSync(orchestratorPath) ? await readFile(orchestratorPath, "utf8") : "";
+  const orchestratorContent = mergeProjectOrchestratorConfiguration(
+    currentOrchestrator,
+    `frameworkVersion: ${FRAMEWORK_VERSION}\nruntimeVersion: ${VERSION}\nprofile: ${profile}\npaths:\n  skills: .github/skills\n  reports: reports\n  schemas: schemas\nruntime:\n  eventStream: reports/execution-log.jsonl\n  stateSnapshot: reports/current-execution-state.json\n  appendOnly: true\nproject:\n  name: ${projectName}\n  adopted: true\n`
+  );
   const instructionPath = path.join(root, ".github", "copilot-instructions.md");
   const currentInstructions = existsSync(instructionPath) ? await readFile(instructionPath, "utf8") : "";
   const mergedInstructions = mergeInstructionBlocks(currentInstructions, COPILOT_INSTRUCTION_BLOCKS);

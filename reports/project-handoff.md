@@ -1,13 +1,13 @@
 # Project Handoff
 
-Generated: 2026-08-28T00:00:00.000Z
+Generated: 2026-08-28T17:00:00.000Z
 Project: project-skills-orchestrator 1.1.1
-Branch: `main` at `3f84e20`
-Status: **Product direction documented**
+Branch: `main` at `9c73c3d`
+Status: **Product review documented**
 
 ## Milestone
 
-The 1.1.1 change set is locally validated. This handoff also records the product direction for Project Video, the role of skills as reusable building blocks, lightweight governance, free narration fallback, and fresh continuity state in new projects.
+The 1.1.1 change set is locally validated. This handoff records the product review, the canonical project-guide direction, skill-create routing, and the next end-to-end demo milestone.
 
 ## Last Completed Work
 
@@ -18,6 +18,8 @@ The 1.1.1 change set is locally validated. This handoff also records the product
 - Preferred Azure Speech in the configured region, approval-gated cross-region use, identical browser fallback pages and dialogue, and optional Piper for offline MP4 requirements.
 - Updated profiles, setup routing, generated instructions, adoption coverage, README guidance, demo instructions, and regression tests.
 - Updated runtime versioning to 1.1.1 and improved Project Video rendering, audio, and self-contained preview playback.
+- Reviewed product value and readiness. The strongest demo story is the before-and-after journey from governed project creation to a documented working application.
+- Confirmed `documentation-builder` as the canonical project-guide producer and `skill-create` as the mandatory entry point for direct or indirect skill-authoring requests.
 - Added a fresh project-specific handoff to new-project creation. New projects do not inherit this repository's handoff, commit, milestones, blockers, or Azure decisions; adoption preserves the existing project's handoff.
 - Completed a bounded no-findings change review and refreshed release-readiness evidence.
 
@@ -25,7 +27,8 @@ The 1.1.1 change set is locally validated. This handoff also records the product
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| `npm run check` | Passed | 87 tests, zero failures |
+| Focused contract, adoption, and project-video tests | Passed | 68 tests, zero failures |
+| `npm run check` | Incomplete | Security, release build, and candidate verification passed; the long integration suite exceeded the execution timeout |
 | Security scan | Passed | 173 files scanned; zero package dependencies |
 | Release candidate | Passed | 134 checksum-covered files verified |
 | Skill verification | Passed | 41/41 skills |
@@ -46,13 +49,15 @@ The 1.1.1 change set is locally validated. This handoff also records the product
 - Availability never authorizes Azure activity; every external or billable stage keeps a separate approval.
 - Avatar files remain presenter clips until local FFmpeg assembly produces an independently verified MP4.
 - The 41 skills are optional building blocks and reference material. Users do not need to learn every skill; they select or adapt one when a project situation calls for it.
+- `skill-create` is the mandatory entry point for direct or indirect skill-authoring requests. It compares existing skills, reports similarity, and maximizes reuse before authoring.
+- `documentation-builder` is the canonical project-guide producer. Project Video, LinkedIn Post, and future management presentations consume that shared evidence-bound narrative.
 - Small teams can begin with the `core` profile. Additional continuity, recovery, distributed coordination, and Azure audit controls should be adopted when their operational risk justifies the extra governance.
 - Project Video should demonstrate the before-and-after journey from governed baseline to working project, using real project evidence and available screenshots or live workflow views rather than only generic animation.
 - Azure Speech is an optional quality upgrade. The standard path must remain no-cost and locally reproducible with a built-in voice fallback, even when the voice sounds more robotic.
 
 ## Worktree
 
-The complete coherent working-tree scope is approved for one local 1.1.0 commit. No unmerged paths or unrelated generated Project Video media are present.
+The latest committed baseline is `9c73c3d`. Current continuity and generated report updates remain uncommitted. No unmerged paths are present.
 
 ## Limitations
 
@@ -67,4 +72,4 @@ The complete coherent working-tree scope is approved for one local 1.1.0 commit.
 
 ## Next Action
 
-Create a test project, build a small application inside it, and invoke `/project-video` to verify that the resulting demo describes the new project's actual implementation. Retain all external production-release gates.
+Implement the actual `documentation-builder` generator, then create a test project, build a small application inside it, generate the canonical guide, and invoke `/project-video` to verify that the resulting demo describes the new project's actual implementation. Retain all external production-release gates.

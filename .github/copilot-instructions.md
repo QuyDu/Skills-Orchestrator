@@ -33,6 +33,8 @@ Use `.github/skills/project-skills-orchestrator/SKILL.md` for project orchestrat
 
 ## Repository standards
 
+- For every request, automatically use an existing skill when its trigger and ownership match the work; continue with normal engineering work only when no available skill fits. Prefer reuse over duplicating an existing skill, script, workflow, report, or capability.
+- Before creating a new skill, invoke `/skill-create`. It must inventory and compare current skills for reuse or duplication. If no existing skill fits, notify the user and obtain explicit approval before authoring the new skill.
 - The skill catalog, `config/profiles.yaml`, `schemas/`, and `templates/project/` are contract surfaces. Changing any of them requires updating `tests/skill-contracts.test.mjs`.
 - Every skill contract carries all twelve required sections and a distinct trigger description.
 - Skill dependencies must stay acyclic and every conformance profile must remain dependency-closed.

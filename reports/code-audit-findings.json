@@ -1,471 +1,202 @@
 {
   "schemaVersion": "1.0.0",
-  "auditId": "AUDIT-2026-08-23-PSO-111",
-  "generatedAt": "2026-08-23T00:00:00.000Z",
+  "auditId": "AUD-20260830-SKILLS-ORCHESTRATOR",
+  "generatedAt": "2026-08-30T00:00:00.000Z",
   "scope": {
     "repository": "Skills-Orchestrator",
-    "revision": "23be47b525897036ae9ce913ea428909efcddd8a plus current working-tree changes",
+    "revision": "9c73c3dffa11b2a6fb9e83286fe31317438ca26c plus complete current working tree",
     "included": [
-      "pso.mjs",
-      "scripts/**/*.mjs",
-      "tests/**/*.mjs",
-      "templates/**",
-      ".github/skills/*/SKILL.md",
-      ".github/workflows/*",
-      "config/*",
-      "schemas/*",
-      "package.json",
-      "package-lock.json",
-      ".npmrc",
-      ".gitignore",
-      "README.md",
-      "AGENTS.md",
-      "SECURITY.md"
+      "Complete current working tree, including uncommitted source, tests, instructions, templates, schemas, documentation, and generated reports.",
+      "Local syntax, security, package, release-candidate, skill-contract, adoption, project-understanding, documentation-builder, and project-video validation."
     ],
     "excluded": [
-      "dist/** generated release output except through release verification commands",
-      ".git/** internal object storage",
-      "remote GitHub settings, branch protections, and Actions run history",
-      "external signing keys and independent-review evidence",
-      "behavior of MCP servers and GitHub-hosted runner images"
+      "Azure, package registry, hosted CI, deployment, commit, push, publication, and external signing operations.",
+      "Dynamic browser, accessibility, load, and long-running soak tests."
     ]
   },
   "provenance": [
     {
       "tool": "Node.js",
       "version": "24.14.1",
-      "command": "npm run check",
-      "status": "failed",
-      "exitCode": 1,
-      "notes": "Not run to completion: the release step is blocked by Windows EPERM replacing the existing dist release directory; the independent test run recorded 69/70 tests passed, with only the offline package-install test consuming the stale malformed dist artifact failing."
-    },
-    {
-      "tool": "npm",
-      "version": "11.11.0",
-      "command": "node --check pso.mjs",
+      "command": "node --check pso.mjs and all changed Node helpers",
       "status": "passed",
       "exitCode": 0,
-      "notes": "JavaScript syntax validation passed."
+      "notes": "Syntax validation passed."
     },
     {
       "tool": "Project Skills Orchestrator security scanner",
-      "version": "1.0.0",
+      "version": "1.1.1",
       "command": "npm run security",
       "status": "passed",
       "exitCode": 0,
-      "notes": "Secret, dynamic execution, shell, action pinning, symbolic-link, supply-chain, and the new SEC-SUPPLY-006 template pinning checks passed."
-    },
-    {
-      "tool": "Project Skills Orchestrator runtime",
-      "version": "1.0.0",
-      "command": "node pso.mjs verify",
-      "status": "passed",
-      "exitCode": 0,
-      "notes": "Inventoried and audited 36 skills; schemas, profiles, dependencies, ownership, and audit pipeline verified."
-    },
-    {
-      "tool": "PowerShell parser",
-      "version": "7",
-      "command": "ParseFile all *.ps1, *.psm1, and *.psd1 files",
-      "status": "passed",
-      "exitCode": 0,
-      "notes": "All PowerShell files parsed successfully; no Azure commands were executed."
+      "notes": "178 files scanned; no secrets, prohibited dynamic evaluation, shell execution, symlink, package-lock, or action-pinning findings."
     },
     {
       "tool": "Node.js test runner",
       "version": "24.14.1",
       "command": "npm test",
+      "status": "passed",
+      "exitCode": 0,
+      "notes": "90 tests passed, including adoption, security fuzzing, package installation, documentation builder, project understanding, and project video coverage."
+    },
+    {
+      "tool": "Git",
+      "version": "2.55.0",
+      "command": "git diff --check",
       "status": "failed",
       "exitCode": 1,
-      "notes": "69 of 70 tests passed. package-install.test.mjs failed because the stale dist artifact contains the previously malformed scaffold manifest."
+      "notes": "Generated project-understanding Markdown contains trailing whitespace used for hard line breaks."
+    },
+    {
+      "tool": "Project Skills Orchestrator runtime",
+      "version": "1.1.1",
+      "command": "node pso.mjs verify",
+      "status": "passed",
+      "exitCode": 0,
+      "notes": "41 skills, schemas, profiles, dependencies, ownership, and audit pipeline validated."
     }
   ],
   "coverage": [
     {
       "area": "security",
       "status": "completed",
-      "checks": [
-        "Secret material in source, templates, fixtures, and workflow definitions",
-        "Path traversal and symbolic-link handling on every managed write path",
-        "Commit-SHA pinning in repository workflows and generated project workflows",
-        "Runtime acquisition of third-party executable components by shipped templates",
-        "Dynamic code execution and shell interpretation in runtime scripts",
-        "Credential handling in clone and adoption flows"
-      ],
-      "evidence": [
-        "scripts/security-check.mjs enforces secret, action-pinning, symlink, lockfile, and template pinning rules across 120 files",
-        "SEC-SUPPLY-006 rejects unpinned package references and registry-resolved commands in shipped templates",
-        "templates/project/.vscode/mcp.json ships only HTTP servers active; registry-dependent servers are documented and disabled",
-        "tests/adoption-rerun.test.mjs asserts every generated workflow action is pinned to a full commit SHA",
-        "Repository and generated workflows pin actions/checkout v7.0.1, actions/setup-node v7.0.0, actions/upload-artifact v7.0.1, and actions/download-artifact v8.0.1 by commit SHA"
-      ],
-      "limitations": [
-        "No dynamic analysis or live exploitation was performed",
-        "MCP server implementations and runner images are external and were not evaluated"
-      ]
+      "checks": ["Secret scan", "Dynamic execution scan", "Supply-chain and workflow-action pinning scan"],
+      "evidence": ["npm run security passed for 178 files."],
+      "limitations": ["No external vulnerability advisory lookup was authorized."]
     },
     {
       "area": "correctness-reliability",
-      "status": "completed",
-      "checks": [
-        "Existing-project detection across Node, .NET, Python, Java, Ruby, PHP, Go, Rust, Swift, and infrastructure repositories",
-        "Stack detection driving scoped instruction installation",
-        "Managed instruction region idempotence, migration, and duplicate prevention",
-        "Adoption idempotence across repeated runs",
-        "Transactional journal, rollback, and recovery paths",
-        "Staging publication under transient filesystem contention"
-      ],
-      "evidence": [
-        "tests/adoption-rerun.test.mjs covers Maven, Gradle, Ruby, Terraform, and Composer fixtures plus the refusal and override paths",
-        "A Python-only fixture receives no C#, Bicep, PowerShell, or TypeScript instructions",
-        "A heading rename with stripped markers migrates to exactly one managed region and preserves project-authored text",
-        "publishStagedProject retries transient rename refusals and falls back to a copy"
-      ],
-      "limitations": [
-        "Equivalence and stack classification are heuristic and were validated against synthetic fixtures rather than large production repositories"
-      ]
+      "status": "partial",
+      "checks": ["Complete Node test suite", "Documentation and Project Understanding integrity-path review"],
+      "evidence": ["npm test passed with 90 tests.", "AUD-0002 identifies an untested integrity path."],
+      "limitations": ["No live deployment or interruption test was run."]
     },
     {
       "area": "resource-management",
       "status": "completed",
-      "checks": [
-        "File handle acquisition and release on all inspection paths",
-        "Temporary staging directory lifecycle on success and failure",
-        "Lock file acquisition and release",
-        "Cleanup of atomic write temporaries on rename failure",
-        "Bounded traversal during stack detection"
-      ],
-      "evidence": [
-        "managedPathState closes handles in a finally block",
-        "writeJsonAtomic and writeTextAtomic remove temporaries when rename fails",
-        "applyAdoption releases the adoption lock in a finally block",
-        "detectProjectStack stops at a depth limit of 5 and an entry cap of 20000"
-      ],
-      "limitations": [
-        "No memory profiling was performed; the runtime is short-lived and single-shot"
-      ]
+      "checks": ["Review of temporary-file cleanup and atomic publication paths", "Test coverage for interrupted adoption recovery"],
+      "evidence": ["Adoption recovery tests passed.", "Project Understanding cleans partial and backup publication files."],
+      "limitations": ["No long-duration memory or handle profiling was run."]
     },
     {
       "area": "performance",
-      "status": "completed",
-      "checks": [
-        "Directory hashing cost across the skill catalog",
-        "Bounded repository traversal during stack detection",
-        "Plan construction time on representative fixtures"
-      ],
-      "evidence": [
-        "discoverSkills hashes each skill package once per side",
-        "Stack detection is capped by depth and entry count and skips build output directories",
-        "The full 45-test suite completes in under a minute including several end-to-end provisioning runs"
-      ],
-      "limitations": [
-        "No benchmark was run against a very large monorepo"
-      ]
+      "status": "partial",
+      "checks": ["Static review of bounded repository scans and generated guide processing"],
+      "evidence": ["Project Understanding caps text reads and scan file counts."],
+      "limitations": ["No benchmark or load test was run."]
     },
     {
       "area": "dependencies-configuration",
       "status": "completed",
-      "checks": [
-        "Declared runtime dependencies and lock file integrity",
-        "Presence of every input the conformance gate reads",
-        "Pinning of components referenced by shipped and generated artifacts",
-        "Resolved-configuration schema strictness"
-      ],
-      "evidence": [
-        "package.json declares zero dependencies, pins packageManager, and matches the committed lock file",
-        "tests/production-gates.test.mjs asserts every gate input is tracked by git",
-        "Generated workflows pin actions/checkout and actions/setup-node to full commit SHAs",
-        "schemas/resolved-configuration.schema.json sets additionalProperties false throughout"
-      ],
-      "limitations": [
-        "Non-Node generated pipelines rely on tooling preinstalled on GitHub-hosted runners rather than pinned setup actions"
-      ]
+      "checks": ["Package lock and npm policy validation", "Skill catalog and profile closure validation"],
+      "evidence": ["npm run security passed.", "node pso.mjs verify passed."],
+      "limitations": ["No registry or advisory service was contacted."]
     },
     {
       "area": "code-hygiene",
-      "status": "completed",
-      "checks": [
-        "Unused, duplicate, wildcard, misplaced, or missing imports",
-        "Dead code and unreferenced constants",
-        "Duplicated literal contracts between runtime and templates",
-        "Comment accuracy"
-      ],
-      "evidence": [
-        "pso.mjs imports are explicit named Node built-ins with no wildcard or unused entries",
-        "The hard-coded catalog count was removed in favor of derivation",
-        "The clarification protocol text in templates matches the runtime constant exactly, verified by contract test"
-      ],
-      "limitations": [
-        "No linter is configured, so hygiene was assessed by inspection and by the contract suite"
-      ]
+      "status": "partial",
+      "checks": ["git diff --check", "Changed source and contract review"],
+      "evidence": ["AUD-0001 identifies generated trailing whitespace."],
+      "limitations": ["ESLint, Semgrep, npm-audit, pip-audit, and PSScriptAnalyzer were unavailable locally."]
     },
     {
       "area": "design-maintainability",
       "status": "completed",
-      "checks": [
-        "Oversized or multi-responsibility functions",
-        "Ownership boundaries between skill contracts and runtime behavior",
-        "Coupling between constants and the artifacts they describe",
-        "Lifecycle governance of shipped skill packages"
-      ],
-      "evidence": [
-        "The project-setup contract's stack-matching requirement is now satisfied by an executable path",
-        "templates/scaffold-manifest.json is validated against the shipped template set in both directions",
-        "Seven skills are promoted to tested with medium confidence; the remaining twenty-eight stay draft",
-        "pso.mjs remains a single module of roughly 1900 lines with several large functions"
-      ],
-      "limitations": [
-        "No cyclomatic complexity tooling was run"
-      ]
+      "checks": ["Review of project-relative documentation generation", "Review of generated-project instruction preservation"],
+      "evidence": ["Documentation builder accepts an explicit project root.", "Adoption regression tests passed."],
+      "limitations": ["No independent architecture review was requested."]
     },
     {
       "area": "tests-operability",
-      "status": "completed",
-      "checks": [
-        "Conformance coverage of every newly added behavior",
-        "Whether a clean clone passes the gate",
-        "Value of generated continuous-integration scaffolding",
-        "Recoverability of authoritative report artifacts"
-      ],
-      "evidence": [
-        "npm run check executes 53 tests plus security, release, and verification stages",
-        "A tracked-input test fails when any gate input is untracked",
-        "Generated pipelines run real commands for a declared stack and exit non-zero when unconfigured",
-        ".gitignore no longer excludes reports, enforced by test",
-        "Generated projects emit .vscode/tasks.json, .vscode/launch.json, stack-scoped extension recommendations, and .github/workflows/copilot-setup-steps.yml"
-      ],
-      "limitations": [
-        "Hosted CI results were not retrieved; only local execution was observed"
-      ]
+      "status": "partial",
+      "checks": ["Complete test suite", "Release-candidate validation", "Demo prompt review"],
+      "evidence": ["npm test passed with 90 tests.", "Release-candidate verification was previously successful."],
+      "limitations": ["No hosted CI, browser, accessibility, Azure, or deployment rehearsal was run."]
     }
   ],
   "summary": {
-    "total": 5,
+    "total": 2,
     "bySecuritySeverity": {
       "critical": 0,
       "high": 0,
-      "medium": 1,
+      "medium": 0,
       "low": 0,
-      "none": 4
+      "none": 2
     },
     "byCategory": {
-      "configuration": 1,
-      "architecture": 1,
       "correctness": 1,
-      "maintainability": 1,
-      "dependency": 1
+      "code-hygiene": 1
     }
   },
   "findings": [
     {
-      "id": "AUD-0101",
-      "title": "Release blockers remain open for signing, independent review, and cross-platform evidence",
-      "category": "configuration",
-      "bugType": "Incomplete release assurance",
-      "securitySeverity": "medium",
+      "id": "AUD-0001",
+      "title": "Generated Project Understanding Markdown fails diff hygiene checks",
+      "category": "code-hygiene",
+      "bugType": "Generated trailing whitespace",
+      "securitySeverity": "none",
       "confidence": "high",
-      "observedBehavior": "release/release-manifest.json sets releaseStatus to blocked with three unmet blockers: trusted-signing-identity, independent-security-review, and cross-platform-ci-evidence. The build produces an unsigned candidate, and scripts/build-release.mjs correctly refuses to treat it as a signed release.",
-      "expectedBehavior": "A distribution presented as production ready carries a trusted signature, an independent security review, and cross-platform continuous-integration evidence for every supported operating system and Node major.",
-      "impact": "Consumers cannot verify provenance or integrity of the distribution they receive, and no third party has reviewed the security posture. The gates are correctly implemented and correctly failing, so this is an outstanding process obligation rather than a defect, but it bounds how the release may be described.",
+      "observedBehavior": "The Markdown generator appends two spaces before each newline in every list entry. The generated reports/project-understanding.md therefore causes git diff --check to fail with trailing-whitespace errors.",
+      "expectedBehavior": "Generated repository artifacts should pass the repository's whitespace check unless a documented formatter exception exists.",
+      "impact": "A normal pre-commit hygiene check fails after regenerating Project Understanding, obscuring real whitespace defects and adding review noise.",
       "likelihood": "high",
       "evidence": [
         {
-          "path": "release/release-manifest.json",
-          "description": "releaseStatus is blocked with three named blockers and requireSignature and requireIndependentReview both true."
+          "path": ".github/skills/project-understanding/scripts/project-understanding.mjs",
+          "startLine": 108,
+          "endLine": 110,
+          "description": "markdownList deliberately emits two trailing spaces before the line break."
         },
         {
-          "path": "scripts/build-release.mjs",
-          "description": "The build refuses to relax the internal distribution policy and produces an unsigned candidate only."
-        },
-        {
-          "path": "README.md",
-          "description": "The release status block states the three open blockers explicitly rather than implying full assurance."
+          "path": "reports/project-understanding.md",
+          "startLine": 11,
+          "endLine": 11,
+          "description": "Generated list output contains the trailing whitespace detected by git diff --check."
         }
       ],
-      "resolution": "Obtain a trusted signing identity and sign the candidate, commission and record an independent security review, and publish cross-platform CI evidence for Windows, Linux, and macOS on Node 22, 24, and 26. Clear each blocker in the manifest only when its evidence artifact exists and verifies.",
-      "verification": [
-        "Run npm run release:verify against a signed candidate and confirm signature validation passes.",
-        "Confirm reports/cross-platform-ci-evidence.json covers every required operating system and Node major.",
-        "Confirm release/release-manifest.json lists no remaining blockers."
-      ],
-      "references": [
-        {
-          "title": "Microsoft Security Development Lifecycle",
-          "publisher": "Microsoft",
-          "url": "https://www.microsoft.com/en-us/securityengineering/sdl",
-          "accessedAt": "2026-08-19",
-          "kind": "microsoft"
-        }
-      ],
-      "assumptions": [
-        "The distribution remains restricted to authorized internal use until the blockers are cleared."
-      ]
+      "resolution": "Emit ordinary Markdown list lines without trailing spaces, or adopt a documented formatter exception and test it explicitly.",
+      "verification": ["Regenerate Project Understanding.", "Run git diff --check and confirm it exits successfully.", "Preserve Markdown readability in the generated report."],
+      "references": []
     },
     {
-      "id": "AUD-0102",
-      "title": "Equivalence classification can suppress a framework standard that is broader than the project's own",
-      "category": "architecture",
-      "bugType": "Heuristic classification risk",
-      "securitySeverity": "none",
-      "confidence": "high",
-      "observedBehavior": "findEquivalentAsset marks a scoped instruction as covered when an existing project file shares at least one applyTo glob and one significant purpose token. A short project-authored file can therefore suppress a substantially more detailed framework standard.",
-      "expectedBehavior": "Coverage suppression reflects genuine equivalence of guidance, not merely overlapping scope and vocabulary.",
-      "impact": "A repository can end up with weaker guidance than intended while the adoption plan reports the topic as covered. The consequence is bounded because every decision is printed with the covering path, mandatory templates are never suppressed, and --force-templates restores installation, but a reviewer who does not read the covered list may not notice.",
-      "likelihood": "medium",
-      "evidence": [
-        {
-          "path": "pso.mjs",
-          "description": "Scoped instruction equivalence requires only one shared glob and one shared token."
-        },
-        {
-          "path": "pso.mjs",
-          "description": "Every covered decision is printed with its covering path and recorded in the adoption plan."
-        },
-        {
-          "path": "templates/scaffold-manifest.json",
-          "description": "The clarification protocol is marked mandatory and is excluded from equivalence suppression."
-        }
-      ],
-      "resolution": "Add a coverage-depth signal such as relative content length or checklist-item count, and downgrade a match to a reported overlap rather than a suppression when the project's file is materially thinner. Continue to require explicit review of the covered list before apply.",
-      "verification": [
-        "Adopt a fixture whose existing instruction is a single line and assert the framework template is reported as an overlap rather than suppressed.",
-        "Adopt a fixture whose existing instruction is comprehensive and assert suppression still occurs.",
-        "Confirm --force-templates continues to install regardless of classification."
-      ],
-      "references": [
-        {
-          "title": "Customize AI responses in VS Code",
-          "publisher": "Microsoft",
-          "url": "https://code.visualstudio.com/docs/copilot/copilot-customization",
-          "accessedAt": "2026-08-19",
-          "kind": "microsoft"
-        }
-      ]
-    },
-    {
-      "id": "AUD-0103",
-      "title": "Stack detection is bounded and can under-report languages in very large repositories",
+      "id": "AUD-0002",
+      "title": "Project guide validation does not bind the current guide or Understanding Markdown content",
       "category": "correctness",
-      "bugType": "Bounded scan limitation",
+      "bugType": "Incomplete integrity validation",
       "securitySeverity": "none",
       "confidence": "high",
-      "observedBehavior": "detectProjectStack stops at a directory depth of 5 or after visiting 20000 entries, and skips common build output directories. A language present only below that depth or beyond that cap is not detected, so its scoped instruction file is not installed and its continuous-integration steps are not generated.",
-      "expectedBehavior": "Detection either covers the repository or reports that it stopped early so the user can supply the stack explicitly.",
-      "impact": "A large monorepo can silently receive fewer scoped standards than it needs. The bound exists deliberately to keep planning fast and is mitigated by an explicit stack declaration, but the truncation is currently invisible to the user.",
+      "observedBehavior": "documentation-builder validate compares the stored Understanding Markdown digest to the digest value in the Understanding JSON, but does not hash the current Understanding Markdown file. It also checks only the guide title, so an edited guide body can still validate.",
+      "expectedBehavior": "A canonical evidence-bound guide validation should reject a guide whose body or source Understanding Markdown has changed after generation.",
+      "impact": "Downstream Project Video and presentation workflows can accept altered documentation while reporting it as evidence-bound to the current repository scan.",
       "likelihood": "medium",
       "evidence": [
         {
-          "path": "pso.mjs",
-          "description": "SCAN_MAX_DEPTH is 5 and SCAN_MAX_ENTRIES is 20000, with no signal emitted when either limit is reached."
+          "path": ".github/skills/documentation-builder/scripts/documentation-builder.mjs",
+          "startLine": 115,
+          "endLine": 134,
+          "description": "validate checks metadata and claim evidence but does not compare a hash of the current guide or Understanding Markdown content."
         },
         {
-          "path": "pso.mjs",
-          "description": "The adoption plan reports the detected stack but not whether the scan completed."
-        }
-      ],
-      "resolution": "Record whether either limit was reached, surface a truncated-scan notice in the adoption plan and printed summary, and accept a --stack override on the adopt command so a user can declare what detection missed.",
-      "verification": [
-        "Construct a fixture that exceeds the entry cap and assert the plan reports a truncated scan.",
-        "Assert a declared stack on adopt installs the corresponding instruction files regardless of detection.",
-        "Confirm normal repositories report a complete scan."
-      ],
-      "references": [
-        {
-          "title": "Node.js File system API",
-          "publisher": "OpenJS Foundation",
-          "url": "https://nodejs.org/api/fs.html",
-          "accessedAt": "2026-08-19",
-          "kind": "industry"
-        }
-      ]
-    },
-    {
-      "id": "AUD-0104",
-      "title": "Generated pipelines for non-Node stacks depend on unpinned runner-provided tooling",
-      "category": "dependency",
-      "bugType": "Implicit environment dependency",
-      "securitySeverity": "none",
-      "confidence": "high",
-      "observedBehavior": "continuousIntegrationWorkflow emits pinned actions only for checkout and Node setup. Python, .NET, Java, Go, Rust, Ruby, PHP, Bicep, and Terraform steps invoke tooling preinstalled on the GitHub-hosted runner image without pinning a version.",
-      "expectedBehavior": "Generated pipelines pin the toolchain version they depend on so a runner image change cannot silently alter or break the build.",
-      "impact": "A runner image update can change compiler or SDK versions under a project without any repository change, producing an unexplained build difference. This was a deliberate trade-off: emitting setup actions would have required commit SHAs that could not be verified at authoring time, and fabricating them would have been worse.",
-      "likelihood": "medium",
-      "evidence": [
-        {
-          "path": "pso.mjs",
-          "description": "Only CHECKOUT_ACTION and SETUP_NODE_ACTION carry verified commit SHAs; other stacks use bare shell invocations."
+          "path": ".github/skills/documentation-builder/scripts/documentation-builder.mjs",
+          "startLine": 157,
+          "endLine": 164,
+          "description": "validateExisting loads the current guide and Understanding files but relies on the incomplete validation routine."
         },
         {
-          "path": ".github/workflows/security-validation.yml",
-          "description": "The repository's own workflows are fully pinned to current verified SHAs, so the gap is limited to generated non-Node pipelines."
-        },
-        {
-          "path": ".github/workflows/security-validation.yml",
-          "description": "The repository's own workflows are fully pinned, so the gap is limited to generated non-Node pipelines."
+          "path": "tests/documentation-builder.test.mjs",
+          "startLine": 17,
+          "endLine": 38,
+          "description": "The regression test covers successful generation and validation but not post-generation tampering of either bound document."
         }
       ],
-      "resolution": "Add verified commit SHAs for the official setup actions of each supported stack, emit them alongside an explicit toolchain version, and extend the template pinning rule to cover generated workflow content as well as shipped template files. Resolve each SHA from the action repository with git ls-remote rather than transcribing a version tag, as was done for the checkout, setup-node, upload-artifact, and download-artifact bumps in this release.",
-      "verification": [
-        "Assert every generated workflow references only actions pinned to a full commit SHA.",
-        "Assert each supported stack pins an explicit toolchain version.",
-        "Run a generated pipeline for at least one non-Node stack and confirm it succeeds."
-      ],
-      "references": [
-        {
-          "title": "Security hardening for GitHub Actions",
-          "publisher": "GitHub",
-          "url": "https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions",
-          "accessedAt": "2026-08-19",
-          "kind": "vendor"
-        }
-      ]
-    },
-    {
-      "id": "AUD-0105",
-      "title": "The runtime is a single large module with no automated hygiene tooling",
-      "category": "maintainability",
-      "bugType": "Module size and missing static analysis",
-      "securitySeverity": "none",
-      "confidence": "high",
-      "observedBehavior": "pso.mjs is roughly 2300 lines in one module and contains several long functions, notably buildAdoptionPlan and createProject, that mix discovery, classification, content generation, and manifest construction. No linter, formatter, or complexity tool is configured in the repository.",
-      "expectedBehavior": "A production runtime is decomposed into focused modules with automated hygiene enforcement, so review effort scales with change size rather than file size.",
-      "impact": "Review and onboarding cost rises with every feature. The zero-dependency constraint that makes the distribution attractive also blocks the usual linting tooling, so hygiene currently depends entirely on the contract suite and manual inspection.",
-      "likelihood": "medium",
-      "evidence": [
-        {
-          "path": "pso.mjs",
-          "description": "One module holds constants, detection, planning, transactions, verification, inventory, and the command-line interface."
-        },
-        {
-          "path": "package.json",
-          "description": "No lint script is defined and no static analysis dependency is declared."
-        }
-      ],
-      "resolution": "Split the runtime into modules along existing seams such as detection, template planning, transactions, and inventory, keeping the single-file entry point. Add a hygiene gate that runs without third-party dependencies, or make a deliberate, documented exception to the zero-dependency rule for development-only tooling.",
-      "verification": [
-        "Confirm each module has a single stated responsibility and the entry point remains executable directly.",
-        "Confirm npm run check still passes after decomposition with no behavior change.",
-        "Confirm the hygiene gate fails on a deliberately introduced violation."
-      ],
-      "references": [
-        {
-          "title": "Node.js Modules: ECMAScript modules",
-          "publisher": "OpenJS Foundation",
-          "url": "https://nodejs.org/api/esm.html",
-          "accessedAt": "2026-08-19",
-          "kind": "industry"
-        }
-      ]
+      "resolution": "Record a SHA-256 digest for the rendered guide in the guide report, compare it during validation, and hash the current Project Understanding Markdown against its declared digest. Add tamper regression tests for both files.",
+      "verification": ["Build and validate a guide successfully.", "Modify the guide body and confirm validate fails.", "Modify project-understanding.md without updating its JSON digest and confirm validate fails.", "Run npm test."],
+      "references": []
     }
   ],
   "limitations": [
-    "This audit assesses the 1.0.0 release candidate tree after the eleven findings of AUDIT-2026-08-19-PSO-083 were remediated; that report is superseded.",
-    "No hosted CI run, branch protection state, or Actions history was retrieved.",
-    "No dynamic analysis, penetration testing, or dependency advisory lookup was performed; the project declares zero runtime dependencies.",
-    "MCP server implementations and GitHub-hosted runner images are external and were not evaluated.",
-    "No linter or complexity tool is configured, so code hygiene and maintainability were assessed by inspection and by the contract suite.",
-    "Adoption and creation were exercised against synthetic fixtures, not against a large production repository.",
-    "Skill contract quality was assessed structurally; the runtime behavior of agent-executed skills was not measured.",
-    "The offline package-install test could not be validated against a freshly rebuilt release because Windows denied replacement of the existing dist release directory with EPERM; the stale artifact still contains the earlier malformed scaffold manifest."
+    "The audit did not contact Azure, package registries, hosted CI, or external advisory services.",
+    "No browser, accessibility, performance-load, or long-running soak tests were performed.",
+    "Several optional analyzers were unavailable locally: ESLint, Semgrep, npm-audit, pip-audit, and PSScriptAnalyzer."
   ]
 }
