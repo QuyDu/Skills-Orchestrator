@@ -31,6 +31,8 @@ profiles:
       - deployment-review
       - prepare-commit
       - project-handoff
+      - project-status
+      - workflow-telemetry
   durable:
     extends: core
     required:

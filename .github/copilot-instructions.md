@@ -24,6 +24,10 @@ Use `.github/skills/project-skills-orchestrator/SKILL.md` for project orchestrat
 - Treat machine-readable artifacts in `reports/` as authoritative.
 - Never rewrite accepted records in `reports/execution-log.jsonl`.
 
+## Launch Pad boundary
+
+This repository is the Project Skills Orchestrator launch pad and source framework. Do not create application code, generated project files, demo implementation files, deployment outputs, or target-project artifacts inside this repository. After a target project is created or adopted, all project-specific implementation, validation, documentation, and deployment work must occur inside that target project. Modify this repository only when the requested work explicitly updates Project Skills Orchestrator itself: runtime, skills, templates, schemas, prompts, docs, tests, reports, release assets, or orchestration behavior.
+
 ## Azure environment automation
 
 - Read `.azure/environment.json` before Azure work. Explicit `-Gov` or `-Commercial` overrides the saved cloud; otherwise use the saved profile, then Azure Commercial as the default.

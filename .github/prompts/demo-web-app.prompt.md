@@ -89,8 +89,8 @@ Use `skillsdemo` as the site name. It is 10 characters, inside the 12-character 
    The resource group must exist before `-WhatIf`, because the preview uses a resource-group deployment.
 
 4. Show the complete preview. Stop and report if it contains unexpected changes. On the already granted approval, run the same deployment command without `-WhatIf`, then publish the built site to the created web app and report the resulting HTTPS URL.
-6. The application must bind to the port supplied by App Service through `process.env.PORT`. Set an explicit startup command if the platform does not detect one.
-7. Verify the deployed URL over HTTPS: confirm the page loads and that all three phases render using the `?mode=` and `?at=` overrides.
+5. The application must bind to the port supplied by App Service through `process.env.PORT`. Set an explicit startup command if the platform does not detect one.
+6. Verify the deployed URL over HTTPS: confirm the page loads and that all three phases render using the `?mode=` and `?at=` overrides.
 
 Never place secrets, connection strings, or service keys in app settings; the web app authenticates with its managed identity.
 

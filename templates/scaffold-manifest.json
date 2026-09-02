@@ -214,12 +214,6 @@
       "requires": "always"
     },
     {
-      "path": ".github/prompts/project-status.prompt.md",
-      "kind": "prompt",
-      "purpose": "project status blockers next action",
-      "requires": "always"
-    },
-    {
       "path": ".github/prompts/new-component.prompt.md",
       "kind": "prompt",
       "purpose": "scaffold new component module service",

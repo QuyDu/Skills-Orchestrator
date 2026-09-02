@@ -142,6 +142,7 @@ const AGENT_INSTRUCTION = `## Project Skills Orchestrator
 - Read \`${ORCHESTRATION_ROUTE}\` before multi-skill work.
 - Automatically use an existing skill when its trigger and ownership match the request; continue with normal engineering work only when no available skill fits. Prefer reuse over duplicating an existing skill, script, workflow, report, or capability.
 - Before authoring a new skill, invoke \`/skill-create\` to inventory and compare current skills. Notify the user and obtain explicit approval when no existing skill fits before creating the new skill.
+- Treat the current repository as the target project. Create application code, tests, documentation, project-specific prompts, deployment configuration, and validation artifacts inside this repository when the user asks to implement this project's app or operations.
 - Treat machine-readable artifacts under \`reports/\` as authoritative.
 - Plan and validate before modifying files.
 - Require approval for destructive, external, privileged, or irreversible actions.`;

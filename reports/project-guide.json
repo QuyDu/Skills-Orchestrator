@@ -1,14 +1,14 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-08-30T21:09:08.952Z",
+  "generatedAt": "2026-09-02T00:56:41.376Z",
   "projectUnderstanding": {
     "json": "reports/project-understanding.json",
-    "jsonSha256": "b1ba9e4a7ab6a1b3400687a45a6dd409317a214fc6f3d63ad02755126f236013",
+    "jsonSha256": "e150beeacad8d595f2199d71868f5fd5c8118ead359253effc732544caac51be",
     "markdown": "reports/project-understanding.md",
-    "markdownSha256": "4a6014abff4184f290ce5650d9cb93a500c1945cc9d91a3c366abc22d6d45049"
+    "markdownSha256": "de1a61188666334c0dadf4b9f4f0cd1a600193cca9fd4f7e9bb4692c632304ba"
   },
   "guide": "docs/PROJECT-GUIDE.md",
-  "guideSha256": "4be96a7ddcfa404bae7b2579403f7ad0247494179e1d6f0959efc2cc61f84dc2",
+  "guideSha256": "64ee3692b861e5ad2054e17a80d1e1907c6e0ba637be9b751945608b8118643a",
   "claims": [
     {
       "id": "claim-01-azure",
@@ -23,7 +23,7 @@
       "id": "claim-02-github",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "Top-level project boundary containing 61 scanned files.",
+      "statement": "Top-level project boundary containing 62 scanned files.",
       "evidence": [
         ".github/copilot-instructions.md"
       ]
@@ -86,7 +86,7 @@
       "id": "claim-09-schemas",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "Top-level project boundary containing 36 scanned files.",
+      "statement": "Top-level project boundary containing 37 scanned files.",
       "evidence": [
         "schemas/adoption-transaction.schema.json"
       ]
@@ -104,7 +104,7 @@
       "id": "claim-11-templates",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "Top-level project boundary containing 35 scanned files.",
+      "statement": "Top-level project boundary containing 34 scanned files.",
       "evidence": [
         "templates/project/.editorconfig"
       ]
@@ -113,7 +113,7 @@
       "id": "claim-12-tests",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "Top-level project boundary containing 8 scanned files.",
+      "statement": "Top-level project boundary containing 9 scanned files.",
       "evidence": [
         "tests/adoption-rerun.test.mjs"
       ]
@@ -122,7 +122,7 @@
       "id": "claim-13-md",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "98 scanned files use this extension.",
+      "statement": "97 scanned files use this extension.",
       "evidence": [
         ".github/copilot-instructions.md"
       ]
@@ -131,7 +131,7 @@
       "id": "claim-14-json",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "69 scanned files use this extension.",
+      "statement": "70 scanned files use this extension.",
       "evidence": [
         ".azure/environment.json"
       ]
@@ -140,7 +140,7 @@
       "id": "claim-15-mjs",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "21 scanned files use this extension.",
+      "statement": "23 scanned files use this extension.",
       "evidence": [
         ".github/skills/documentation-builder/scripts/documentation-builder.mjs"
       ]
@@ -212,7 +212,7 @@
       "id": "claim-23-npm-run-check",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
+      "statement": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-status.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
       "evidence": [
         "package.json"
       ]
@@ -284,7 +284,7 @@
       "id": "claim-31-npm-run-test",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-video.test.mjs",
+      "statement": "node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-status.test.mjs tests/project-video.test.mjs",
       "evidence": [
         "package.json"
       ]
@@ -302,7 +302,7 @@
       "id": "claim-33-governed-skill-workflows",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "41 installed skills provide bounded project actions.",
+      "statement": "42 installed skills provide bounded project actions.",
       "evidence": [
         ".github/skills/architecture-review/SKILL.md",
         ".github/skills/artifact-upgrade/SKILL.md",
@@ -315,7 +315,7 @@
       "id": "claim-34-reusable-prompt-workflows",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "11 prompt files provide user-invoked workflows.",
+      "statement": "10 prompt files provide user-invoked workflows.",
       "evidence": [
         ".github/prompts/azure-cleanup-help.prompt.md",
         ".github/prompts/demo-create-project.prompt.md",
@@ -346,7 +346,7 @@
       "id": "claim-37-npm-run-check",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
+      "statement": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-status.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
       "evidence": [
         "package.json"
       ]
@@ -382,7 +382,7 @@
       "id": "claim-41-npm-run-test",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-video.test.mjs",
+      "statement": "node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-status.test.mjs tests/project-video.test.mjs",
       "evidence": [
         "package.json"
       ]

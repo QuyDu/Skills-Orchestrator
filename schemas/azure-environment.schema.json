@@ -4,7 +4,7 @@
   "title": "Local Azure Environment Profile",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schemaVersion", "updatedAt", "cloud", "location", "environmentName", "deploymentTool", "authentication", "subscription", "mcp", "mutationPolicy"],
+  "required": ["schemaVersion", "updatedAt", "cloud", "location", "environmentName", "deploymentTool", "authentication", "subscription", "cloudEndpoints", "mcp", "mutationPolicy"],
   "properties": {
     "schemaVersion": { "const": "1.0.0" },
     "updatedAt": { "type": "string", "format": "date-time" },
@@ -28,6 +28,22 @@
         "tenantId": { "type": "string", "maxLength": 100 },
         "subscriptionId": { "type": "string", "maxLength": 100 },
         "subscriptionName": { "type": "string", "maxLength": 200 }
+      }
+    },
+    "cloudEndpoints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["resourceManager", "activeDirectory", "portal", "storage", "keyVault", "cosmos", "openAI", "cognitiveServices", "speech"],
+      "properties": {
+        "resourceManager": { "type": "string", "minLength": 1 },
+        "activeDirectory": { "type": "string", "minLength": 1 },
+        "portal": { "type": "string", "minLength": 1 },
+        "storage": { "type": "string", "minLength": 1 },
+        "keyVault": { "type": "string", "minLength": 1 },
+        "cosmos": { "type": "string", "minLength": 1 },
+        "openAI": { "type": "string", "minLength": 1 },
+        "cognitiveServices": { "type": "string", "minLength": 1 },
+        "speech": { "type": "string", "minLength": 1 }
       }
     },
     "mcp": {

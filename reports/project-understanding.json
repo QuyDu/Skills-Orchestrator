@@ -1,22 +1,22 @@
 {
   "schemaVersion": "1.0.0",
   "status": "complete",
-  "generatedAt": "2026-08-30T21:08:54.518Z",
+  "generatedAt": "2026-09-02T00:56:30.393Z",
   "generator": "project-understanding",
   "project": {
     "name": "project-skills-orchestrator",
     "displayName": "Project Skills Orchestrator",
-    "purpose": "Turn any repository into a governed GitHub Copilot workspace: agent instructions, scoped standards, reusable prompts, specialist agents, and 41 governed skills — installed consistently, verified after every run, and safe to rerun.",
+    "purpose": "Turn any repository into a governed GitHub Copilot workspace: agent instructions, scoped standards, reusable prompts, specialist agents, and 42 governed skills — installed consistently, verified after every run, and safe to rerun.",
     "evidence": [
       "README.md"
     ]
   },
   "scan": {
     "mode": "full-rebuild",
-    "repositoryDigestSha256": "54b07c005ec16c5a5a28c5becbebe0f9cf63d81b1bdbcbcb134e603ea96a3498",
-    "fileCount": 230,
+    "repositoryDigestSha256": "fdbeef5e41dd8fbeee15834a92a47721e1fba91d943103bd0bf5c8922970d73a",
+    "fileCount": 232,
     "sourceFileCount": 18,
-    "testFileCount": 8,
+    "testFileCount": 9,
     "excludedDirectories": [
       ".git",
       ".skills-orchestrator",
@@ -51,8 +51,8 @@
       },
       {
         "path": ".github/copilot-instructions.md",
-        "bytes": 3951,
-        "sha256": "654281e8e94f934d63f27defad286f8992005f5e571de04b86e29882ed54fb5e"
+        "bytes": 4607,
+        "sha256": "29a7a49f282f1bc7ee164d8a596201e937570db963a89e76fa5090263d37a015"
       },
       {
         "path": ".github/dependabot.yml",
@@ -66,13 +66,13 @@
       },
       {
         "path": ".github/prompts/demo-create-project.prompt.md",
-        "bytes": 5892,
-        "sha256": "f3edfb4c2c64f6e419cdc9fb9832f77644f0b639f24bd116674249889fa67808"
+        "bytes": 5626,
+        "sha256": "8312e8a13bf6da1438ae153eccb32807d839feb5ec16a3dbb45a172762687b80"
       },
       {
         "path": ".github/prompts/demo-web-app.prompt.md",
         "bytes": 6563,
-        "sha256": "0ce841cad8b4ed169cf70be0a64c20c1c63c148b54f0c252b325a044d71c640c"
+        "sha256": "e7a5c392072f499ff8d44d443f6d34b77b44e666686589bd898acb77efd96e84"
       },
       {
         "path": ".github/prompts/environment-update-help.prompt.md",
@@ -93,11 +93,6 @@
         "path": ".github/prompts/project-start.prompt.md",
         "bytes": 1507,
         "sha256": "e6e721eca59c0ca02202b010df9845218ff8d238caf3553ff8a69610484f828b"
-      },
-      {
-        "path": ".github/prompts/project-status.prompt.md",
-        "bytes": 1212,
-        "sha256": "ce9ead40bc91eb653fc0151868ce5bb45f1db2f0e5956f601729b4578bf0ad6a"
       },
       {
         "path": ".github/prompts/project-validate.prompt.md",
@@ -156,8 +151,8 @@
       },
       {
         "path": ".github/skills/azure-discovery/scripts/azure-environment.ps1",
-        "bytes": 12281,
-        "sha256": "59fc17960d684a25cd59db5154ffb4aa46958ab27d73a83d57e25101e58ae599"
+        "bytes": 13682,
+        "sha256": "b3877a999fc1d829fcb7998d3e66e3d4b9cea115983b7be8cd2671de20db4bc6"
       },
       {
         "path": ".github/skills/azure-discovery/SKILL.md",
@@ -258,6 +253,16 @@
         "path": ".github/skills/project-skills-orchestrator/SKILL.md",
         "bytes": 4078,
         "sha256": "57642b23d9ac9bb890203201f79de62027f5e69b255e2db02a5143b21ccd48be"
+      },
+      {
+        "path": ".github/skills/project-status/scripts/project-status.mjs",
+        "bytes": 14877,
+        "sha256": "fb980262b5d8781a76be3ad766f891a02b076ec76dd763ecf4c977636e7f2117"
+      },
+      {
+        "path": ".github/skills/project-status/SKILL.md",
+        "bytes": 3401,
+        "sha256": "360c4196f639856ce87638d4270b63e17706df653cca1f0956d3a569be7ee5d9"
       },
       {
         "path": ".github/skills/project-understanding/scripts/project-understanding.mjs",
@@ -376,8 +381,8 @@
       },
       {
         "path": "AGENTS.md",
-        "bytes": 3101,
-        "sha256": "f37ee311dbfee056582837b0089ca8bf10811aea5dd88d780dc8e17ea670d62e"
+        "bytes": 3753,
+        "sha256": "d5b6d83c0acac81404bd8dd0675415d85fcdccf619f2d60e12fb98a4990eb296"
       },
       {
         "path": "config/orchestrator.yaml",
@@ -386,8 +391,8 @@
       },
       {
         "path": "config/profiles.yaml",
-        "bytes": 1366,
-        "sha256": "5c8c1c66078a01440051421de1978970d1b541b3a72e4789969b37ea69a318a9"
+        "bytes": 1416,
+        "sha256": "e503c53ca3b74d678263b72c40fab785c1ded164ec6c9a8ba86b73452309ce54"
       },
       {
         "path": "config/skills-orchestrator.json",
@@ -401,8 +406,8 @@
       },
       {
         "path": "Demo/DEMO-DAY.md",
-        "bytes": 3195,
-        "sha256": "f3614594b312df92d28be858a3ea00c54a5e7e58669b3f1f2a32cc6fa6ee854d"
+        "bytes": 4741,
+        "sha256": "b346ebdec05fbf723fb336fd253731fda41422da2f2925edf935fb80a6035a5b"
       },
       {
         "path": "Demo/project-skills-orchestrator-animation.html",
@@ -441,13 +446,13 @@
       },
       {
         "path": "package.json",
-        "bytes": 1801,
-        "sha256": "1110fc54e1b5f6af9f348409736e0d4424a65a65b9a9162cc16a6a412066b53d"
+        "bytes": 1861,
+        "sha256": "8df74adead19aa5017c692b0f7604e14a4666a9a82e1fbf8e02df1fe1fa0ba95"
       },
       {
         "path": "pso.mjs",
-        "bytes": 136376,
-        "sha256": "b4b86c3beeb2e0792adb18a507169012f2b69f5959437497e109b1dfbd6e32b0"
+        "bytes": 136643,
+        "sha256": "1d16cc85ac13b68977dc8ee5c3974a9361aacaeb7dc27241e67c755e88d5642a"
       },
       {
         "path": "pso.ps1",
@@ -456,8 +461,8 @@
       },
       {
         "path": "README.md",
-        "bytes": 30966,
-        "sha256": "b7617590d071c2077f3ba425ff036040bd12d45a3d824fc1fad488a7231c91b9"
+        "bytes": 31058,
+        "sha256": "945e629c4754b7fed5b48551191d59fe1b56e339af2b6cd0e7e57025faf7b231"
       },
       {
         "path": "release/release-manifest.json",
@@ -476,8 +481,8 @@
       },
       {
         "path": "reports/artifact-ownership.json",
-        "bytes": 10103,
-        "sha256": "c2e27e6701eab1b8904e4efdc8166d10578d24d9176ffb81a3e3f945e96e0e1e"
+        "bytes": 10291,
+        "sha256": "9bdbf7eb76a6d9ad320969b8706f62121bbbdb75f0b926e8c7fa60a3bd80d8f5"
       },
       {
         "path": "reports/audit-remediation-plan.json",
@@ -712,27 +717,27 @@
       {
         "path": "reports/security-check.json",
         "bytes": 342,
-        "sha256": "48627eae0b9745a52e271288f824188f882f147c71c733752fcc73b2eb9be851"
+        "sha256": "d67502c8795082a2d71e824147b79203169d681fcce5ffa921cf87a082e48fcd"
       },
       {
         "path": "reports/skill-details.json",
-        "bytes": 35824,
-        "sha256": "fbc7802c0b8718a2bf7e70e5ecf8a94db6c5ae29d3782114fd74fd10cef924c6"
+        "bytes": 36711,
+        "sha256": "15e1d37ca176c4c16522409fa1206a948e7960c00b48ee4332dcc0be7b9426ad"
       },
       {
         "path": "reports/skill-details.md",
-        "bytes": 3517,
-        "sha256": "21b7a980a6feb9494778e618ed4c1b551d5065654edb01009ab17b16f113f248"
+        "bytes": 3626,
+        "sha256": "f0c57a352eecd01e456149723f99f61b7dabd36788a301b9cd5707491fc9662f"
       },
       {
         "path": "reports/skill-inventory.json",
-        "bytes": 27214,
-        "sha256": "1a28264e2ec6099663a221152a5804e178b628ed46637873a4b637300275b024"
+        "bytes": 27891,
+        "sha256": "2c78367fb63901202cb5ed05dd384fd95fa97749b69f1f1cdcfe541ff7ccf693"
       },
       {
         "path": "reports/skill-inventory.md",
-        "bytes": 11853,
-        "sha256": "9e0f32edcdad59ccaa67cb8db10df759d8d4254b04875fc15f0499308b0f5dbf"
+        "bytes": 12141,
+        "sha256": "2e07868ab5020da31465c03cb3d5e3234399d8d686b61de0389b9fe8ccb02beb"
       },
       {
         "path": "schemas/adoption-transaction.schema.json",
@@ -761,8 +766,8 @@
       },
       {
         "path": "schemas/azure-environment.schema.json",
-        "bytes": 3014,
-        "sha256": "acb7dd15a84b737d34e55aba4c86afee8dc08d5387d6b8fc4836c79cfca506fa"
+        "bytes": 3847,
+        "sha256": "a2063e454318881952fd7a1f90830bd3ac44416c40969a04dcedde382ed9d3f0"
       },
       {
         "path": "schemas/clarification-result.schema.json",
@@ -823,6 +828,11 @@
         "path": "schemas/project-setup-plan.schema.json",
         "bytes": 3142,
         "sha256": "f129f7dc320f0a739c1fb7f2e60e7e1346fc3e1f24adb34f6a2b7ce0334302d4"
+      },
+      {
+        "path": "schemas/project-status.schema.json",
+        "bytes": 3071,
+        "sha256": "2c0f1c974641e86d3221d36de6a030b59c38ce37413f8b1af1e19a606e93932b"
       },
       {
         "path": "schemas/project-understanding.schema.json",
@@ -1001,8 +1011,8 @@
       },
       {
         "path": "templates/project/.github/copilot-instructions.md",
-        "bytes": 8899,
-        "sha256": "c44f6a21a1718d42e94da290ae6105d89f642a7202181722c1769532a691c025"
+        "bytes": 9373,
+        "sha256": "d52df8bb507d7021a4a76c4f432f743d8b9427fb28a84756f3eced77170ca36f"
       },
       {
         "path": "templates/project/.github/instructions/azure-deployment.instructions.md",
@@ -1075,11 +1085,6 @@
         "sha256": "53a238c19ea0645a6b1b3b7799855ec17ca0b31ceb179870de4e6e7f15e713b8"
       },
       {
-        "path": "templates/project/.github/prompts/project-status.prompt.md",
-        "bytes": 946,
-        "sha256": "58d3504323fe84d2e04bce8f710dce7388e9c1efc8e8a8bfe4909914cac5f13e"
-      },
-      {
         "path": "templates/project/.github/prompts/project-validate.prompt.md",
         "bytes": 1520,
         "sha256": "d8c554e36c5cccff3d6da0387ac28107c0040717c885cf187263274c4ce2c5e6"
@@ -1111,8 +1116,8 @@
       },
       {
         "path": "templates/project/infra/azure-environment.ps1",
-        "bytes": 12281,
-        "sha256": "59fc17960d684a25cd59db5154ffb4aa46958ab27d73a83d57e25101e58ae599"
+        "bytes": 13682,
+        "sha256": "b3877a999fc1d829fcb7998d3e66e3d4b9cea115983b7be8cd2671de20db4bc6"
       },
       {
         "path": "templates/project/infra/cleanup.ps1",
@@ -1146,8 +1151,8 @@
       },
       {
         "path": "templates/scaffold-manifest.json",
-        "bytes": 7218,
-        "sha256": "b56be7454dc6af143cce712e6cfb42dd76473ed5c218c07540048266b27d3b98"
+        "bytes": 7040,
+        "sha256": "537d76967b47d1dc11def0c74a5d8b49d91c8b2c05621d409ce9688cebc3a9e6"
       },
       {
         "path": "tests/adoption-rerun.test.mjs",
@@ -1170,6 +1175,11 @@
         "sha256": "04e59869019ae9a07f7a93ad3409cc930f883f6e77deb46c336fb4b45a0e81b5"
       },
       {
+        "path": "tests/project-status.test.mjs",
+        "bytes": 6452,
+        "sha256": "845fae45083add00d0f74f43ef5ba926a4645f0fc70c71885f29fc56504b97f6"
+      },
+      {
         "path": "tests/project-understanding.test.mjs",
         "bytes": 6134,
         "sha256": "8b5584230e975b71c6a4884e801dd9b2b60f2d677848e2b8163babd39effe4a2"
@@ -1186,8 +1196,8 @@
       },
       {
         "path": "tests/skill-contracts.test.mjs",
-        "bytes": 47283,
-        "sha256": "87361855e32d2d819bf50b2902167c9f454a68c789ff6a7e728edb450f68e88c"
+        "bytes": 49493,
+        "sha256": "22a140d09eea5eebe8a32bad7091d41c91ea6986b4db55f7c656fa937ed4910d"
       }
     ]
   },
@@ -1202,7 +1212,7 @@
     },
     {
       "name": ".github",
-      "description": "Top-level project boundary containing 61 scanned files.",
+      "description": "Top-level project boundary containing 62 scanned files.",
       "evidence": [
         ".github/copilot-instructions.md"
       ],
@@ -1258,7 +1268,7 @@
     },
     {
       "name": "schemas",
-      "description": "Top-level project boundary containing 36 scanned files.",
+      "description": "Top-level project boundary containing 37 scanned files.",
       "evidence": [
         "schemas/adoption-transaction.schema.json"
       ],
@@ -1274,7 +1284,7 @@
     },
     {
       "name": "templates",
-      "description": "Top-level project boundary containing 35 scanned files.",
+      "description": "Top-level project boundary containing 34 scanned files.",
       "evidence": [
         "templates/project/.editorconfig"
       ],
@@ -1282,7 +1292,7 @@
     },
     {
       "name": "tests",
-      "description": "Top-level project boundary containing 8 scanned files.",
+      "description": "Top-level project boundary containing 9 scanned files.",
       "evidence": [
         "tests/adoption-rerun.test.mjs"
       ],
@@ -1292,7 +1302,7 @@
   "technology": [
     {
       "name": ".md",
-      "description": "98 scanned files use this extension.",
+      "description": "97 scanned files use this extension.",
       "evidence": [
         ".github/copilot-instructions.md"
       ],
@@ -1300,7 +1310,7 @@
     },
     {
       "name": ".json",
-      "description": "69 scanned files use this extension.",
+      "description": "70 scanned files use this extension.",
       "evidence": [
         ".azure/environment.json"
       ],
@@ -1308,7 +1318,7 @@
     },
     {
       "name": ".mjs",
-      "description": "21 scanned files use this extension.",
+      "description": "23 scanned files use this extension.",
       "evidence": [
         ".github/skills/documentation-builder/scripts/documentation-builder.mjs"
       ],
@@ -1374,7 +1384,7 @@
   "usage": [
     {
       "name": "npm run check",
-      "description": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
+      "description": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-status.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
       "evidence": [
         "package.json"
       ],
@@ -1438,7 +1448,7 @@
     },
     {
       "name": "npm run test",
-      "description": "node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-video.test.mjs",
+      "description": "node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-status.test.mjs tests/project-video.test.mjs",
       "evidence": [
         "package.json"
       ],
@@ -1456,7 +1466,7 @@
   "features": [
     {
       "name": "Governed skill workflows",
-      "description": "41 installed skills provide bounded project actions.",
+      "description": "42 installed skills provide bounded project actions.",
       "evidence": [
         ".github/skills/architecture-review/SKILL.md",
         ".github/skills/artifact-upgrade/SKILL.md",
@@ -1468,7 +1478,7 @@
     },
     {
       "name": "Reusable prompt workflows",
-      "description": "11 prompt files provide user-invoked workflows.",
+      "description": "10 prompt files provide user-invoked workflows.",
       "evidence": [
         ".github/prompts/azure-cleanup-help.prompt.md",
         ".github/prompts/demo-create-project.prompt.md",
@@ -1498,7 +1508,7 @@
   "workflows": [
     {
       "name": "npm run check",
-      "description": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
+      "description": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-status.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
       "evidence": [
         "package.json"
       ],
@@ -1562,7 +1572,7 @@
     },
     {
       "name": "npm run test",
-      "description": "node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-video.test.mjs",
+      "description": "node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-status.test.mjs tests/project-video.test.mjs",
       "evidence": [
         "package.json"
       ],
@@ -1814,6 +1824,15 @@
         "invocation": "/project-skills-orchestrator"
       },
       {
+        "name": "project-status",
+        "description": "Report the current project lifecycle, deployed Azure resource health, sync freshness and errors, and deployment currency from local and read-only cloud evidence. Use when a user asks whether a project, deployment, or data sync is current, healthy, stale, or blocked.",
+        "evidence": [
+          ".github/skills/project-status/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/project-status"
+      },
+      {
         "name": "project-understanding",
         "description": "Perform a complete evidence-grounded scan of the current repository and rebuild authoritative project understanding covering purpose, architecture, setup, usage, features, skills, prompts, workflows, validation, and limitations. Use before project-video or whenever the project guide must reflect current code.",
         "evidence": [
@@ -2014,15 +2033,6 @@
         "invocation": "/project-start"
       },
       {
-        "name": "project-status",
-        "description": "Summarize the authoritative project state and identify the next governed action.",
-        "evidence": [
-          ".github/prompts/project-status.prompt.md"
-        ],
-        "status": "verified",
-        "invocation": "/project-status"
-      },
-      {
         "name": "project-validate",
         "description": "Validate that a project foundation is ready for governed implementation.",
         "evidence": [
@@ -2197,6 +2207,14 @@
         "status": "verified"
       },
       {
+        "name": "project-status.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/project-status.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
         "name": "project-understanding.schema.json",
         "description": "Machine-readable contract for a governed project artifact.",
         "evidence": [
@@ -2345,7 +2363,7 @@
   "validation": [
     {
       "name": "npm run check",
-      "description": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
+      "description": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-status.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
       "evidence": [
         "package.json"
       ],
@@ -2377,7 +2395,7 @@
     },
     {
       "name": "npm run test",
-      "description": "node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-video.test.mjs",
+      "description": "node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-status.test.mjs tests/project-video.test.mjs",
       "evidence": [
         "package.json"
       ],
@@ -2394,5 +2412,5 @@
   ],
   "limitations": [],
   "markdown": "reports/project-understanding.md",
-  "markdownSha256": "4a6014abff4184f290ce5650d9cb93a500c1945cc9d91a3c366abc22d6d45049"
+  "markdownSha256": "de1a61188666334c0dadf4b9f4f0cd1a600193cca9fd4f7e9bb4692c632304ba"
 }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-08-30T21:10:28.022Z",
+  "generatedAt": "2026-09-02T00:58:36.320Z",
   "artifacts": [
     {
       "report": "reports/architecture-review.json",
@@ -217,6 +217,14 @@
     {
       "report": "reports/workflow-completion.md",
       "producer": "project-skills-orchestrator"
+    },
+    {
+      "report": "reports/project-status.json",
+      "producer": "project-status"
+    },
+    {
+      "report": "reports/project-status.md",
+      "producer": "project-status"
     },
     {
       "report": "reports/project-understanding.json",

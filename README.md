@@ -1,12 +1,12 @@
 # Project Skills Orchestrator
 
-Turn any repository into a governed GitHub Copilot workspace: agent instructions, scoped standards, reusable prompts, specialist agents, and 41 governed skills — installed consistently, verified after every run, and safe to rerun.
+Turn any repository into a governed GitHub Copilot workspace: agent instructions, scoped standards, reusable prompts, specialist agents, and 42 governed skills — installed consistently, verified after every run, and safe to rerun.
 
 | Item | Value |
 | --- | --- |
 | Runtime version | `1.1.1` |
 | Framework version | `9.0.0` |
-| Skill catalog | 41 governed skills |
+| Skill catalog | 42 governed skills |
 | Supported Node.js | 22, 24, 26 |
 | Dependencies | None |
 | Distribution | Authorized internal use only |
@@ -23,7 +23,7 @@ It has two halves.
 
 **A command-line installer** (`pso.mjs`) that creates a new project or adopts an existing one. It runs entirely on Node.js built-ins — no packages to install, no registry access — and every change it makes is planned, journaled, and verified.
 
-**A catalog of 41 skills** installed into `.github/skills/`, invoked from GitHub Copilot Chat in Agent mode. Each skill is a bounded contract: what it owns, what it reads, what it writes, when it must stop and ask you.
+**A catalog of 42 skills** installed into `.github/skills/`, invoked from GitHub Copilot Chat in Agent mode. Each skill is a bounded contract: what it owns, what it reads, what it writes, when it must stop and ask you.
 
 ### What makes it different
 
@@ -274,9 +274,9 @@ Clones into an isolated staging directory, provisions, verifies, and only then p
 | --- | --- |
 | `.github/copilot-instructions.md` | Repository constitution: engagement protocol, orchestration, purpose, architecture, coding, naming, Azure, security, testing, documentation |
 | `.github/instructions/` | Scoped standards applied by glob — only the ones your stack needs |
-| `.github/prompts/` | Prompt-only commands such as `/create-adr`, `/project-blueprint`, `/review-architecture`, `/executive-summary`, `/project-status`, `/new-component`, and skill help prompts; skill-owned names are not duplicated here |
+| `.github/prompts/` | Prompt-only commands such as `/create-adr`, `/project-blueprint`, `/review-architecture`, `/executive-summary`, and `/new-component`, plus skill help prompts; skill-owned names are not duplicated here |
 | `.github/agents/` | Azure Architect, Security Reviewer, Documentation Writer |
-| `.github/skills/` | The 40-skill catalog |
+| `.github/skills/` | The 42-skill catalog |
 | `.github/workflows/ci.yml` | Stack-aware pipeline, SHA-pinned actions (new projects only) |
 | `.github/workflows/copilot-setup-steps.yml` | Preinstalls dependencies for Copilot cloud agent and Copilot code review (new projects with a stack) |
 | `.vscode/tasks.json` | Build and test tasks for the stack — `Ctrl+Shift+B` and Test Explorer work immediately |
@@ -355,8 +355,9 @@ Open the project in VS Code, start Copilot Chat in **Agent** mode, and invoke a 
 /architecture-review      Well-Architected assessment of the defined architecture
 /deployment-review        Is this release candidate deployable, and how do we roll back
 /documentation-builder    Build the canonical project guide and supporting documentation
-/skill-create              Create or update a skill after duplicate and reuse analysis
-/project-understanding   Completely rescan and rebuild the current project guide
+/skill-create             Create or update a skill after duplicate and reuse analysis
+/project-status           Check lifecycle, Azure resource health, sync freshness, and deployment currency
+/project-understanding    Completely rescan and rebuild the current project guide
 /project-video            Create a project-specific animated MP4 with approved narration
 /systematic-debugging     Reproduce, isolate root cause, verify the smallest fix
 /change-review            Review this diff before commit

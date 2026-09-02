@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skills-orchestrator.dev/schemas/project-status/1.0.0",
+  "title": "Project Status",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "generatedAt", "project", "local", "azure", "syncs", "deployment", "limitations"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "project": { "type": "string", "minLength": 1 },
+    "local": { "type": "object", "additionalProperties": false, "required": ["head"], "properties": { "head": { "type": ["string", "null"] } } },
+    "azure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "cloud", "subscriptionId", "resourceGroup", "resources"],
+      "properties": {
+        "status": { "enum": ["not-configured", "unknown", "healthy", "degraded"] },
+        "cloud": { "type": ["string", "null"] },
+        "subscriptionId": { "type": ["string", "null"] },
+        "resourceGroup": { "type": "string", "minLength": 1, "maxLength": 90 },
+        "resources": { "type": "array", "items": { "$ref": "#/$defs/resource" } }
+      }
+    },
+    "syncs": { "type": "array", "items": { "$ref": "#/$defs/sync" } },
+    "deployment": { "type": "object", "additionalProperties": false, "required": ["status", "localHead", "ciArtifact", "deployedMarker"], "properties": { "status": { "enum": ["current", "outdated", "unknown", "not-deployed"] }, "localHead": { "type": ["string", "null"] }, "ciArtifact": { "type": ["string", "null"] }, "deployedMarker": { "type": ["string", "null"] } } },
+    "limitations": { "type": "array", "items": { "type": "string" } }
+  },
+  "$defs": {
+    "resource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "type", "resourceGroup", "location", "provisioningState", "runtimeState", "status"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "type": { "type": "string", "minLength": 1 },
+        "resourceGroup": { "type": "string", "minLength": 1, "maxLength": 90 },
+        "location": { "type": ["string", "null"] },
+        "provisioningState": { "type": ["string", "null"] },
+        "runtimeState": { "type": ["string", "null"] },
+        "status": { "enum": ["healthy", "degraded", "unknown"] }
+      }
+    },
+    "sync": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "status", "lastSuccess", "lastError", "expectedIntervalMinutes", "graceMinutes"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "status": { "enum": ["failed", "stale", "healthy", "unknown"] },
+        "lastSuccess": { "type": ["string", "null"], "format": "date-time" },
+        "lastError": { "type": ["string", "null"] },
+        "expectedIntervalMinutes": { "type": "number", "exclusiveMinimum": 0 },
+        "graceMinutes": { "type": "number", "minimum": 0 }
+      }
+    }
+  }
+}

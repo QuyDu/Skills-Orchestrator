@@ -33,6 +33,7 @@ const expectedSkillIds = [
   "project-memory",
   "project-setup",
   "project-skills-orchestrator",
+  "project-status",
   "project-understanding",
   "project-video",
   "regression-test-development",
@@ -328,10 +329,10 @@ test("project video is a portable narrated MP4 capability", async () => {
   const demoRunbook = await readFile(path.join(root, "Demo", "DEMO-DAY.md"), "utf8");
   assert.match(demoRunbook, /\/project-video --proceed/);
   assert.match(demoRunbook, /manifest-verified MP4/);
-  assert.match(demoRunbook, /azure-discovery -Commercial/);
+  assert.match(demoRunbook, /azure-discovery -Gov/);
   assert.match(demoRunbook, /azure-preflight/);
   assert.match(demoRunbook, /local FFmpeg renders the MP4/);
-  assert.match(demoRunbook, /never create an Azure resource/i);
+  assert.match(demoRunbook, /Never create an Azure resource for video narration/i);
 
   assert.match(projectVideo.source, /A\/B\/C selection/);
   assert.match(projectVideo.source, /azure-preflight/);
@@ -362,12 +363,19 @@ test("skill authoring routes through skill-create and reuses existing capabiliti
   assert.match(orchestrator.source, /Route any request to create, add, define, author, build, or make a skill to `skill-create`/);
   assert.match(orchestrator.source, /duplicate\/reuse analysis before authoring/);
   const repositoryInstructions = await readFile(path.join(root, ".github", "copilot-instructions.md"), "utf8");
+  const repositoryAgentInstructions = await readFile(path.join(root, "AGENTS.md"), "utf8");
   const generatedInstructions = await readFile(path.join(root, "templates", "project", ".github", "copilot-instructions.md"), "utf8");
   for (const instructions of [repositoryInstructions, generatedInstructions]) {
     assert.match(instructions, /automatically use an existing skill/i);
     assert.match(instructions, /Prefer reuse over duplicating/i);
     assert.match(instructions, /obtain explicit approval.*new skill/i);
   }
+  assert.match(repositoryInstructions, /Launch Pad boundary/);
+  assert.match(repositoryAgentInstructions, /Launch Pad boundary/);
+  assert.match(repositoryInstructions, /Do not create application code, generated project files, demo implementation files, deployment outputs, or target-project artifacts inside this repository/);
+  assert.match(generatedInstructions, /This repository is the target project/);
+  assert.match(generatedInstructions, /Build application code, tests, documentation, project-specific prompts, deployment configuration, and validation artifacts here/);
+  assert.doesNotMatch(generatedInstructions, /Launch Pad boundary/);
 });
 
 test("skill actions have one slash-command owner", async () => {
@@ -479,6 +487,11 @@ test("every governed skill has deterministic help coverage", async () => {
   assert.match(environmentScript, /az cloud set --name \$AzureContext\.cloud/);
   assert.match(environmentScript, /az login --identity/);
   assert.match(environmentScript, /'login', '--use-device-code'/);
+  assert.match(environmentScript, /Get-AzureCloudEndpoints/);
+  assert.match(environmentScript, /documents\.azure\.us/);
+  assert.match(environmentScript, /openai\.azure\.us/);
+  assert.match(environmentScript, /cognitiveservices\.azure\.us/);
+  assert.match(environmentScript, /tts\.speech\.azure\.us/);
   assert.match(environmentScript, /allowedDuringChat = \[bool\]\$AzureContext\.mcp\.enabled/);
   assert.match(discoveryScript, /ChangeExtension\(\$DiscoveryOutputPath, '\.md'\)/);
   const environmentSchema = JSON.parse(await readFile(path.join(root, "schemas", "azure-environment.schema.json"), "utf8"));
@@ -486,6 +499,14 @@ test("every governed skill has deterministic help coverage", async () => {
   assert.deepEqual(environmentSchema.properties.cloud.enum, ["AzureCloud", "AzureUSGovernment"]);
   assert.equal(environmentSchema.properties.mcp.properties.foundryExtensions.additionalProperties, false);
   assert.ok(environmentSchema.required.includes("subscription"));
+  assert.ok(environmentSchema.required.includes("cloudEndpoints"));
+  assert.ok(environmentSchema.properties.cloudEndpoints.required.includes("resourceManager"));
+  assert.ok(environmentSchema.properties.cloudEndpoints.required.includes("openAI"));
+  const projectStatus = skills.get("project-status");
+  assert.ok(existsSync(path.join(skillsRoot, "project-status", "scripts", "project-status.mjs")));
+  assert.ok(sectionItems(projectStatus.source, "Outputs").includes("reports/project-status.json"));
+  assert.match(projectStatus.source, /sync.*stale/i);
+  assert.match(projectStatus.source, /deployed build\/version marker/i);
   const generatedInstructions = await readFile(path.join(templateRoot, ".github", "copilot-instructions.md"), "utf8");
   assert.match(generatedInstructions, /reports\/project-handoff\.json/);
   assert.match(generatedInstructions, /--proceed/);
@@ -500,8 +521,12 @@ test("every governed skill has deterministic help coverage", async () => {
   assert.match(demoPrompt, /--demo-date YYYY-MM-DD/);
   assert.match(demoPrompt, /skills-orchestrator-demo-test/);
   assert.match(demoPrompt, /Never delete an existing normal/);
+  assert.match(demoPrompt, /source repository is immutable during the demo/i);
+  assert.match(demoPrompt, /Modify only the newly created project/i);
+  assert.doesNotMatch(demoPrompt, /clarification\.askEveryPrompt/);
+  assert.doesNotMatch(demoPrompt, /confirmPlanBeforeExecution/);
   assert.ok(existsSync(path.join(root, ".github", "prompts", "project-blueprint.prompt.md")));
-  for (const prompt of ["project-start.prompt.md", "project-validate.prompt.md", "project-status.prompt.md"]) {
+  for (const prompt of ["project-start.prompt.md", "project-validate.prompt.md"]) {
     assert.ok(existsSync(path.join(root, ".github", "prompts", prompt)), `missing repository prompt ${prompt}`);
     assert.ok(existsSync(path.join(templateRoot, ".github", "prompts", prompt)), `missing template prompt ${prompt}`);
   }

@@ -43,7 +43,7 @@ or test project; stop and report if its destination already exists.
 
 ## Objective
 
-Provision a new governed project named **Skills Orchestrator Demo** using the Project Skills Orchestrator, then prepare it so the next demo prompt runs without interruption.
+Use Project Skills Orchestrator only as the immutable source framework to provision a new governed project named **Skills Orchestrator Demo**. After creation, perform all application development, validation, and any future deployment only inside the newly created project. Do not modify this source repository.
 
 ## Steps
 
@@ -68,15 +68,9 @@ Provision a new governed project named **Skills Orchestrator Demo** using the Pr
    - `docs/PROJECT-BLUEPRINT.json` exists and records the selected project name and demo intent
    - the supplied demo date is present when `--demo-date` was used, otherwise report it as not supplied
 
-3. Prepare the new project for automated prompts. In the created project only:
-   - In `config/skills-orchestrator.json`, set `clarification.askEveryPrompt` to `false` and `clarification.confirmPlanBeforeExecution` to `false`. Leave `blockOnMaterialAmbiguity` as `true` and leave every entry in `policy.requireApprovalFor` untouched.
-   - In both `.github/copilot-instructions.md` and `AGENTS.md`, replace the body between the `pso:begin id=clarification-protocol` and `pso:end` markers with an engagement protocol that says to work autonomously, apply safe reversible defaults, ask at most three questions only when a material ambiguity has no defensible default, and still require explicit approval before destructive, irreversible, privileged, external, deployment, commit, or push actions. Keep the marker comments intact.
+3. Copy `.github/prompts/demo-web-app.prompt.md` from this source repository into the created project at the same relative path, so the presenter can run `/demo-web-app` there without pasting prompt text. This is the final action performed from the source repository. The copied prompt already bypasses clarification for its bounded build workflow while preserving the generated project's default governance and approval policy. In test mode, preserve the test project for inspection after the run; do not delete it automatically.
 
-   This matters because a newly created project ships with a mandatory three-question protocol that would stall the next demo prompt.
-
-4. Copy `.github/prompts/demo-web-app.prompt.md` from this repository into the created project at the same relative path, so the presenter can run `/demo-web-app` there without pasting prompt text. In test mode, preserve the test project for inspection after the run; do not delete it automatically.
-
-5. Open the new project in its own Visual Studio Code window:
+4. Open the new project in its own Visual Studio Code window:
 
    ```powershell
    code --new-window "C:\repos\skills-orchestrator-demo\skills-orchestrator-demo.code-workspace"
@@ -86,7 +80,7 @@ Provision a new governed project named **Skills Orchestrator Demo** using the Pr
 
    Do not pass `--open` to `create-project`. Combined with `--intent`, that path launches `code chat --mode ask`, which cannot edit files, and it seeds a kickoff prompt that instructs the agent to ask three clarifying questions first. Both would stall the demo.
 
-6. Report the absolute project path and tell the presenter to accept the workspace trust prompt, switch Chat to **Agent** mode, and run `/demo-web-app` in the new window.
+5. Report the absolute project path and tell the presenter to accept the workspace trust prompt, switch Chat to **Agent** mode, and run `/demo-web-app` in the new window. From this point forward, all work belongs to the new project; do not return to or modify the Project Skills Orchestrator source repository.
 
    For a fully unattended handoff instead, run this from the created project directory rather than step 5:
 
@@ -96,7 +90,8 @@ Provision a new governed project named **Skills Orchestrator Demo** using the Pr
 
 ## Constraints
 
-- Do not modify anything in the Skills Orchestrator repository itself.
+- The Project Skills Orchestrator source repository is immutable during the demo. It creates and hands off the new project but is never changed by application build, validation, or deployment work.
+- Modify only the newly created project after the initial handoff.
 - Do not commit, push, or deploy.
 - `--Test` changes only the project name and destination convention; it does not grant permission to mutate external systems.
 - `--demo-date` is optional scheduling metadata and must use `YYYY-MM-DD`; do not infer it from conversational context.

@@ -27,6 +27,10 @@ Apply this to every new user prompt, without exception, before any analysis, too
 Use `.github/skills/project-skills-orchestrator/SKILL.md` for project orchestration. Audit existing project state, inventory available skills, plan before execution, preserve repository-owned skills, and stop at approval gates.
 <!-- pso:end id=orchestration-routing -->
 
+## Target project work
+
+This repository is the target project. Build application code, tests, documentation, project-specific prompts, deployment configuration, and validation artifacts here when the user asks to implement this project's app or operations. Use the installed skills as project-local capabilities, keep generated evidence under `reports/`, and preserve the approval gates before Azure, deployment, external, destructive, privileged, commit, or push actions.
+
 ## Skill reuse
 
 - Automatically use an existing skill when its trigger and ownership match the request; continue with normal engineering work only when no available skill fits. Prefer reuse over duplicating an existing skill, script, workflow, report, or capability.

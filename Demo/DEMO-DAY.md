@@ -2,19 +2,27 @@
 
 ## Before the audience arrives
 
-1. Confirm Azure CLI is signed in to Azure Commercial and an existing Speech-capable resource is available in the intended region.
-2. Configure `AZURE_SPEECH_KEY` in a private terminal using the organization's secret-handling process. Never paste the key into Copilot, a prompt, a report, source control, or the projected terminal.
-3. Pre-generate the existing project's MP4 with `/project-video`, then confirm `reports/project-video/project-video-manifest.json` is complete and its recorded output under `dist/project-video/` opens with audio and video.
-4. Keep the existing animated guide open at `Demo/project-skills-orchestrator-animation.html` as a no-network fallback.
-5. Confirm FFmpeg is available, or be ready to review and approve the skill's isolated pinned renderer installation.
+1. Open the pre-created `dist/project-video/skills-orchestrator-1-1-0.mp4` locally and confirm its audio is available through the presentation device. The associated `reports/project-video/project-video-manifest.json` records its media checksum, duration, and Azure Speech narration provenance.
+2. Keep `Demo/project-skills-orchestrator-animation.html` open as a no-network fallback for Act 1.
+3. Confirm Node.js and Visual Studio Code are available for the local project-creation flow. Use `/demo-create-project --Test` during rehearsal so the test workspace remains available for inspection.
+4. Before Act 2's deployment decision, confirm Azure CLI is already signed in to the intended Azure US Government subscription. Do not project credentials, device codes, tokens, keys, tenant identifiers, or subscription identifiers.
+5. Confirm the audience can see the terminal, editor, and browser. Keep the generated-app browser tab ready to show the `?mode=test` view and the three `?at=` phase overrides.
 
 ## Act 1: show the existing video
 
-Play the pre-generated, manifest-verified MP4 first. This demonstrates the current orchestrator without depending on live Azure availability. Use the browser guide only if the local media player cannot present the MP4.
+Play the pre-created, manifest-verified MP4 first. It gives the audience the product story before the live workflow begins and does not depend on live Azure availability. If the media player fails, use the animated browser guide and say that it is the local visual fallback rather than a rendered video.
 
 ## Act 2: build a new project
 
-Create the demo project with the normal approved `create-project` flow, enter the new project directory, and run the webapp-building skill. Do not invoke project video while the project is still an empty governed baseline.
+Run `/demo-create-project` from this repository. It creates a separate governed TypeScript project, verifies its installed skills and Azure Government scaffold, copies the bounded build prompt into that new project, and opens its own VS Code workspace. The Project Skills Orchestrator source repository is immutable after the handoff. Do not invoke project video while the project is still an empty governed baseline.
+
+In the new workspace, switch Chat to Agent mode and run `/demo-web-app`. Let the generated project build and test its own application. Present the local browser result before discussing Azure so the useful outcome is visible even if cloud prerequisites are unavailable.
+
+### Deployment checkpoint
+
+The generated-app prompt must confirm Azure CLI availability, an authenticated `AzureUSGovernment` context, and a subscription before any Azure mutation. If any prerequisite is missing, report it and end Act 2 after the local browser demonstration. Do not change clouds or start login during the live presentation.
+
+When the prompt explains the billable resource group and public endpoint, pause for explicit approval. Only after approval may it create `rg-skillsdemo`, run the deployment preview, inspect the preview, and deploy. A preview with unexpected changes is a stop condition.
 
 When the webapp has meaningful source, tests, and documentation, ask:
 
@@ -22,11 +30,11 @@ When the webapp has meaningful source, tests, and documentation, ask:
 /project-video --proceed
 ```
 
-The installed project-video workflow must then:
+Use the following sequence only when a project-specific follow-up video is part of the presentation. It is not required for the pre-created Act 1 video or for the generated application's Azure deployment:
 
 1. Run `/project-understanding --proceed` as a complete rescan and rebuild the authoritative JSON and Markdown project guide.
 2. Build the presentation pages and dialogue from that guide, then reject unsupported narration claims.
-3. Run `discovery-status`. When discovery is missing or unusable, ask whether to invoke `/azure-discovery -Commercial`.
+3. Run `discovery-status`. When discovery is missing or unusable, ask whether to invoke `/azure-discovery -Gov`.
 4. Confirm the read-only discovery query found an existing Speech-capable resource and recorded only its kind and region, never its name, identifier, or key.
 5. Run the packaged `azure-preflight` command. Prefer the configured region; require approval before using another compatible region in the same Azure cloud.
 6. Explain that Azure Speech supplies the neural narration and local FFmpeg renders the MP4. There is no Azure video API or Azure resource deployment in this workflow.
@@ -40,4 +48,4 @@ The direct preflight command is:
 node .\.github\skills\project-video\scripts\project-video.mjs azure-preflight
 ```
 
-If discovery or cross-region processing is declined, generate the same pages and dialogue as a browser-default-voice presentation and report its HTML output. Offer Piper only when the presenter explicitly requires a narrated offline MP4. Never create an Azure resource or silently relabel browser speech.
+If discovery or cross-region processing is declined, generate the same pages and dialogue as a browser-default-voice presentation and report its HTML output. Offer Piper only when the presenter explicitly requires a narrated offline MP4. Never create an Azure resource for video narration or silently relabel browser speech.

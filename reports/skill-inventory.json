@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "runtimeVersion": "1.1.1",
-  "generatedAt": "2026-08-30T21:10:28.022Z",
+  "generatedAt": "2026-09-02T00:58:36.320Z",
   "skills": [
     {
       "name": "architecture-review",
@@ -379,6 +379,22 @@
       "reports": [
         "reports/workflow-completion.json",
         "reports/workflow-completion.md"
+      ]
+    },
+    {
+      "name": "project-status",
+      "path": ".github/skills/project-status/SKILL.md",
+      "description": "Report the current project lifecycle, deployed Azure resource health, sync freshness and errors, and deployment currency from local and read-only cloud evidence. Use when a user asks whether a project, deployment, or data sync is current, healthy, stale, or blocked.",
+      "lifecycle": "tested",
+      "confidence": "medium",
+      "dependencies": [
+        "project-handoff",
+        "workflow-telemetry",
+        "audit-azure-environment"
+      ],
+      "reports": [
+        "reports/project-status.json",
+        "reports/project-status.md"
       ]
     },
     {

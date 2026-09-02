@@ -53,6 +53,23 @@ function Write-AzureEnvironmentProfile {
     return $AzureContext
 }
 
+function Get-AzureCloudEndpoints {
+    $cloud = az cloud show -o json 2>$null | ConvertFrom-Json
+    if (-not $cloud) { throw 'Could not read Azure cloud endpoints.' }
+    $suffixes = $cloud.suffixes
+    return [pscustomobject][ordered]@{
+        resourceManager   = [string]$cloud.endpoints.resourceManager
+        activeDirectory   = [string]$cloud.endpoints.activeDirectory
+        portal            = [string]$cloud.endpoints.portal
+        storage           = [string]$suffixes.storageEndpoint
+        keyVault          = [string]$suffixes.keyvaultDns
+        cosmos            = if ($cloud.name -eq 'AzureUSGovernment') { 'documents.azure.us' } else { 'documents.azure.com' }
+        openAI            = if ($cloud.name -eq 'AzureUSGovernment') { 'openai.azure.us' } else { 'openai.azure.com' }
+        cognitiveServices = if ($cloud.name -eq 'AzureUSGovernment') { 'cognitiveservices.azure.us' } else { 'cognitiveservices.azure.com' }
+        speech            = if ($cloud.name -eq 'AzureUSGovernment') { 'tts.speech.azure.us' } else { 'tts.speech.microsoft.com' }
+    }
+}
+
 function Read-AzureEnvironmentChoice {
     param([Parameter(Mandatory)][string]$Prompt, [Parameter(Mandatory)][string]$Default)
     $value = Read-Host "$Prompt [$Default]"
@@ -140,6 +157,7 @@ function Initialize-AzureEnvironmentProfile {
             subscriptionId  = if ($SubscriptionId) { $SubscriptionId } else { '' }
             subscriptionName = $subscriptionName
         }
+        cloudEndpoints  = $null
         mcp             = [pscustomobject][ordered]@{
             enabled           = $mcpEnabled
             services          = @($McpServices | Select-Object -Unique)
@@ -151,6 +169,10 @@ function Initialize-AzureEnvironmentProfile {
         }
         mutationPolicy  = 'approval-required'
     }
+
+    az cloud set --name $cloud | Out-Null
+    if ($LASTEXITCODE -ne 0) { throw "Could not select Azure cloud '$cloud' for endpoint discovery." }
+    $azureContext.cloudEndpoints = Get-AzureCloudEndpoints
 
     $azureContext = Write-AzureEnvironmentProfile -AzureContext $azureContext -ProfilePath $ProfilePath
     Sync-AzureMcpWorkspaceConfiguration -AzureContext $azureContext
@@ -222,6 +244,7 @@ function Connect-AzureEnvironment {
     $AzureContext.subscription.tenantId = [string]$account.tenantId
     $AzureContext.subscription.subscriptionId = [string]$account.id
     $AzureContext.subscription.subscriptionName = [string]$account.name
+    $AzureContext.cloudEndpoints = Get-AzureCloudEndpoints
     Write-AzureEnvironmentProfile -AzureContext $AzureContext -ProfilePath $ProfilePath | Out-Null
     Write-Host "Azure context: $($AzureContext.cloud), $($account.name) [$($account.id)]" -ForegroundColor Cyan
     return $account

@@ -1,6 +1,6 @@
 # Skill Inventory
 
-Generated: 2026-08-30T21:10:28.022Z
+Generated: 2026-09-02T00:58:36.320Z
 
 | Skill | Description |
 | --- | --- |
@@ -30,6 +30,7 @@ Generated: 2026-08-30T21:10:28.022Z
 | project-memory | Maintain operational experience and durable preferences while ensuring current instructions and repository evidence outrank saved memory. Use to record or recall durable working preferences across sessions; never use stored memory to override the current request or repository evidence. |
 | project-setup | Establish a new application's repository structure, agent customization layer, standards, and required skill set so development can start from a governed baseline. Use when starting a new application or bringing an unstructured repository up to the project baseline; do not use for feature implementation or dependency installation. |
 | project-skills-orchestrator | Coordinate project workflows by discovering capabilities, routing intent, enforcing ownership boundaries, and composing approved skills. Use to route any request that spans more than one skill or whose owner is unclear; do not use when a single owning skill clearly applies. |
+| project-status | Report the current project lifecycle, deployed Azure resource health, sync freshness and errors, and deployment currency from local and read-only cloud evidence. Use when a user asks whether a project, deployment, or data sync is current, healthy, stale, or blocked. |
 | project-understanding | Perform a complete evidence-grounded scan of the current repository and rebuild authoritative project understanding covering purpose, architecture, setup, usage, features, skills, prompts, workflows, validation, and limitations. Use before project-video or whenever the project guide must reflect current code. |
 | project-video | Analyze a new or existing project with meaningful verified content and produce an evidence-grounded browser preview or narrated MP4 entirely from VS Code using optional Azure OpenAI, Speech, Speech Avatar, local Piper, and FFmpeg stages. Do not use for empty baselines, generic documentation, live recording, or publication. |
 | regression-test-development | Create or strengthen focused automated tests that reproduce a bug or specify a requested behavior, then capture red-green validation evidence. Use when a change needs durable regression coverage; do not use only to execute an existing test suite. |
