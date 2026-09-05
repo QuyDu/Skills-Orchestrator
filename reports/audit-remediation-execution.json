@@ -1,0 +1,84 @@
+{
+  "schemaVersion": "3.0.0",
+  "executionId": "EXEC-2026-09-05-P4-RELEASE-ASSURANCE",
+  "generatedAt": "2026-09-05T15:30:00.000Z",
+  "sourcePlan": {
+    "path": "reports/audit-remediation-plans/040dad9a30d0f52ebda13c232d1885abbd9ee27b6dcbbeeab3174b1c60de65e7.json",
+    "planId": "PLAN-2026-09-05-PSO-124",
+    "sha256": "040dad9a30d0f52ebda13c232d1885abbd9ee27b6dcbbeeab3174b1c60de65e7",
+    "sourceReview": "reports/code-audit-review.json"
+  },
+  "selection": {
+    "mode": "phase",
+    "value": "P4-release-assurance",
+    "includedPrerequisites": []
+  },
+  "status": "blocked",
+  "items": [
+    {
+      "id": "REM-0205",
+      "findingIds": ["AUD-0205"],
+      "phaseIds": ["P4-release-assurance"],
+      "status": "blocked",
+      "changedPaths": [
+        "reports/clarification-result.json",
+        "reports/clarification-result.md",
+        "reports/policy-evaluation.json",
+        "reports/policy-evaluation.md",
+        "reports/policy-decision-log.jsonl",
+        "reports/cross-platform-ci-evidence.json",
+        "reports/release-readiness.json",
+        "reports/architecture-review.json",
+        "reports/architecture-review.md",
+        "reports/security-review.json",
+        "reports/security-review.md",
+        "reports/deployment-review.json",
+        "reports/deployment-review.md"
+      ],
+      "validation": [
+        { "command": "npm run check", "status": "passed", "exitCode": 0, "evidence": "One hundred five tests passed; 195 files passed built-in security scanning; 150 release files were checksum-covered; 43 of 43 skills passed." },
+        { "command": "npm run release", "status": "passed", "exitCode": 0, "evidence": "Built the unsigned 1.1.1 candidate with checksums, CycloneDX SBOM, and in-toto provenance." },
+        { "command": "npm run release:verify:candidate", "status": "passed", "exitCode": 0, "evidence": "Verified 150 checksum-covered candidate files." },
+        { "command": "GitHub Actions run 33577680101 artifact validation", "status": "passed", "exitCode": 0, "evidence": "Validated nine Windows/Linux/macOS Node 22/24/26 runs for committed HEAD 4f967865; this does not cover dirty candidate changes." },
+        { "command": "Test-Json P4 evidence schemas", "status": "passed", "exitCode": 0, "evidence": "Clarification, architecture, security, deployment, release-readiness, and cross-platform CI reports validate against repository schemas." },
+        { "command": "npm run release:status", "status": "blocked", "exitCode": 1, "evidence": "Clean worktree, trusted signature, independent review, and production verification are blocked; cross-platform committed-HEAD evidence passes." },
+        { "command": "read-only hosted GitHub control review", "status": "blocked", "exitCode": 0, "evidence": "Main has no protection/rulesets and hosted secret, dependency, code-scanning upload, and private vulnerability-reporting controls are unavailable or disabled." }
+      ],
+      "approvals": ["User approved P4 and delegated conservative autonomous decisions; local unsigned preparation and read-only GitHub inspection were allowed, while signing and remote mutations remained prohibited."],
+      "residualRisk": "The dirty candidate is not reproducible or remotely tested; trusted signing and independent reviewer identities are absent; hosted source safeguards are disabled; production verification remains blocked.",
+      "rollbackStatus": "not-started",
+      "checkpointId": "CP-2026-09-05-P4-BLOCKED"
+    }
+  ],
+  "checkpoints": [
+    {
+      "id": "CP-2026-09-05-P4-BLOCKED",
+      "createdAt": "2026-09-05T15:30:00.000Z",
+      "status": "blocked",
+      "completedItemIds": [],
+      "remainingItemIds": ["REM-0205"],
+      "repositoryRevision": "4f967865024134efc2793acfa449b2d66fd295c7",
+      "worktreeDigest": "bc0e5214eef9e30c476389719884330376e2d30d25f491a4bba59c242e85ab45"
+    }
+  ],
+  "remaining": {
+    "itemIds": ["REM-0205"],
+    "findingIds": ["AUD-0205"],
+    "phaseIds": ["P4-release-assurance"]
+  },
+  "pendingApprovals": [
+    "A reviewed clean commit and push are required before current hosted CI can run.",
+    "A separately controlled trusted signing identity and external trust anchor are required.",
+    "A distinct qualified reviewer must independently review and sign the exact candidate.",
+    "Hosted repository protection changes require separate remote-mutation approval."
+  ],
+  "limitations": [
+    "No commit, push, merge, tag, signing, publication, deployment, Azure mutation, workflow dispatch, or hosted setting mutation occurred.",
+    "Read-only GitHub inspection and one aggregate artifact download were performed; the temporary download was deleted.",
+    "Committed-HEAD matrix evidence is valid but does not cover the dirty candidate source set."
+  ],
+  "nextAction": {
+    "status": "approval-required",
+    "action": "After reviewing ARCF-0205 and SECF-0205, authorize a clean reviewed commit/push and hosted-control remediation, then obtain independent signing and review identities before resuming P4."
+  }
+}

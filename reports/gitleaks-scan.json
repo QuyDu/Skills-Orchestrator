@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-09-05T16:47:41.612Z",
+  "scanner": {
+    "name": "gitleaks",
+    "version": "8.30.1",
+    "releaseUrl": "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/",
+    "platform": "win32-x64",
+    "archiveSha256": "d29144deff3a68aa93ced33dddf84b7fdc26070add4aa0f4513094c8332afc4e",
+    "checksumsSha256": "061476c21adaf5441516f96f185c1a4706a83cd6329b9b38762271b3d4a52fae"
+  },
+  "configurationSha256": "e9ba7656309b23cb5b7d00aa9b7dde346caaec9c88dbd435ebaea98dde6975a4",
+  "allowlistCount": 1,
+  "repositoryRevision": "4f967865024134efc2793acfa449b2d66fd295c7",
+  "worktreeDigest": "291f7d5d7626aef15a8a3427ef787b3954d196aa6c6c70045e1f099889135ab5",
+  "scanInputDigest": "645cfc59daf5cbf29ab55dca07440354f12b4cc12c48cc939dd02a2392a9a4cb",
+  "scopes": [
+    "worktree",
+    "staged",
+    "untracked-distributable",
+    "tracked-reports",
+    "all-local-refs",
+    "reachable-history"
+  ],
+  "commands": [
+    {
+      "scope": "worktree",
+      "command": "gitleaks dir <repository> --redact=100 --report-format=json",
+      "exitCode": 0
+    },
+    {
+      "scope": "staged",
+      "command": "gitleaks git --staged <repository> --redact=100 --report-format=json",
+      "exitCode": 0
+    },
+    {
+      "scope": "history",
+      "command": "gitleaks git <repository> --log-opts='--all --full-history' --redact=100 --report-format=json",
+      "exitCode": 0
+    }
+  ],
+  "status": "passed",
+  "findings": {
+    "worktree": [],
+    "staged": [],
+    "history": []
+  },
+  "limitations": [
+    "Remote-only refs and unreachable or pruned objects were not scanned."
+  ]
+}

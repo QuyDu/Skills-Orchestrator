@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "1.0.0",
+  "entries": [
+    {
+      "id": "azure-key-vault-secrets-user-role-id",
+      "description": "Azure built-in Key Vault Secrets User role definition identifier",
+      "owner": "Security framework maintainer",
+      "reviewedBy": "Repository owner",
+      "reviewedAt": "2026-09-05T14:08:00.000Z",
+      "expiresAt": "2027-09-05T00:00:00.000Z",
+      "targetRules": ["generic-api-key"],
+      "paths": ["(?:^|/)templates/project/infra/main\\.bicep$"],
+      "regexTarget": "line",
+      "regexes": ["^\\s*var keyVaultSecretsUserRoleId = '[0-9a-fA-F-]{36}'\\s*$"]
+    }
+  ]
+}

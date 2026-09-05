@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "runtimeVersion": "1.1.1",
-  "generatedAt": "2026-09-02T00:58:36.320Z",
+  "generatedAt": "2026-09-05T16:44:55.800Z",
   "skills": [
     {
       "name": "architecture-review",
@@ -51,7 +51,8 @@
       "confidence": "medium",
       "dependencies": [],
       "reports": [
-        "reports/code-audit-findings.json"
+        "reports/code-audit-findings.json",
+        "reports/gitleaks-scan.json"
       ]
     },
     {
@@ -67,6 +68,28 @@
       "reports": [
         "reports/audit-remediation-plan.json",
         "reports/audit-remediation-plan.md"
+      ]
+    },
+    {
+      "name": "audit-remediation",
+      "path": ".github/skills/audit-remediation/SKILL.md",
+      "description": "Execute an approved audit remediation plan by all eligible phases, one phase, one finding, or resume state, with validation, rollback, checkpoints, and project handoff updates. Use only after audit-plan-remediation produces a valid plan; do not use to discover, review, or prioritize findings.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "audit-plan-remediation",
+        "policy-engine",
+        "workflow-state-manager",
+        "workflow-recovery",
+        "change-review",
+        "systematic-debugging",
+        "regression-test-development",
+        "project-handoff",
+        "audit-code"
+      ],
+      "reports": [
+        "reports/audit-remediation-execution.json",
+        "reports/audit-remediation-execution.md"
       ]
     },
     {

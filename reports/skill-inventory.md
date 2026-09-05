@@ -1,6 +1,6 @@
 # Skill Inventory
 
-Generated: 2026-09-02T00:58:36.320Z
+Generated: 2026-09-05T16:44:55.800Z
 
 | Skill | Description |
 | --- | --- |
@@ -9,6 +9,7 @@ Generated: 2026-09-02T00:58:36.320Z
 | audit-azure-environment | Perform an evidence-based, read-only Azure security, reliability, governance, cost, and configuration assessment. Use to assess a deployed tenant, subscription, or resource group; use architecture-review instead for design-time review of infrastructure code in the repository. |
 | audit-code | Perform a complete, read-only repository audit for security, correctness, resource management, performance, dependencies, tests, architecture, and maintainability with structured evidence. Use for a whole-repository assessment; use change-review for a bounded diff and security-review for a security-only pass. |
 | audit-plan-remediation | Convert validated audit findings into prioritized remediation work with owners, dependencies, verification, rollout, and rollback guidance. Use after findings are reviewed and confirmed; do not use to generate findings or to execute the remediation work. |
+| audit-remediation | Execute an approved audit remediation plan by all eligible phases, one phase, one finding, or resume state, with validation, rollback, checkpoints, and project handoff updates. Use only after audit-plan-remediation produces a valid plan; do not use to discover, review, or prioritize findings. |
 | audit-review-findings | Transform structured audit findings into a traceable mixed-audience review while preserving IDs, severity, confidence, evidence, and limitations. Use between audit-code and remediation planning; do not use to discover new findings. |
 | azure-cleanup | Safely inspect and, after explicit confirmation, remove Azure resources associated with a project using resource-group, resource, or all-project cleanup scopes. |
 | azure-discovery | Discover Azure Commercial or Azure US Government service and model availability for the current project, persist dated results, and identify when a refresh is needed. |

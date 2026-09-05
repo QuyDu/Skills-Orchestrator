@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-09-05T15:20:00.000Z",
+  "decisionId": "POLICY-2026-09-05-P4-PREPARATION",
+  "decision": "allow",
+  "action": "Execute bounded P4 local preparation and read-only hosted evidence collection",
+  "scope": ["REM-0205", "AUD-0205"],
+  "ruleTrace": [
+    "Repository policy requires explicit phase approval.",
+    "User approved the pending P4 phase and delegated conservative autonomous decisions.",
+    "Recommended defaults allow read-only GitHub inspection and unsigned local preparation.",
+    "Commit, push, tag, release, publication, deployment, signing, GitHub mutation, and Azure mutation remain prohibited.",
+    "Trusted signature and independent review cannot be self-issued and remain blocking controls."
+  ],
+  "conditions": [
+    "Preserve the immutable PSO-124 plan snapshot.",
+    "Fail closed on dirty-source, stale hosted-CI, missing signature, missing independent review, or failed production verification.",
+    "Do not mark REM-0205 complete unless every acceptance criterion passes."
+  ],
+  "limitations": ["This decision authorizes evidence preparation and read-only inspection, not production release or remote mutation."]
+}

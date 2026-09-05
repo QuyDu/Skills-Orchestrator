@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "2.0.0",
+  "planId": "PLAN-2026-09-05-PSO-122",
+  "generatedAt": "2026-09-05T02:57:36.5285718Z",
+  "sourceReview": "reports/code-audit-review.json",
+  "prioritization": ["prerequisite", "containment", "security-severity", "exploitability", "user-impact", "confidence", "complexity", "remediation-cost"],
+  "milestones": [
+    {"id": "P2-evidence-preservation", "title": "Preserve immutable execution plan evidence", "itemIds": ["REM-0207"]},
+    {"id": "P3-secret-assurance", "title": "Add specialist repository history scanning", "itemIds": ["REM-0204"]},
+    {"id": "P4-release-assurance", "title": "Complete release-grade external evidence", "itemIds": ["REM-0205"]}
+  ],
+  "items": [
+    {
+      "id": "REM-0207", "title": "Preserve immutable execution plan snapshots", "findingIds": ["AUD-0207"], "securitySeverity": "none", "priority": 1,
+      "complexity": "medium", "complexityRationale": "Requires a backward-compatible evidence path contract, atomic snapshot publication, path containment, digest validation, migration behavior, and regression fixtures.",
+      "ownerRole": "Workflow reliability engineer", "dependsOn": [], "scope": "audit-remediation plan snapshots, execution sourcePlan contract, validator, adoption packaging, and fixtures",
+      "implementationSteps": ["Define an execution-specific immutable plan evidence path.", "Atomically copy and digest the validated canonical plan before execution.", "Bind sourcePlan.path and SHA-256 to the snapshot and reject escaping or mutable paths.", "Add a regression that revalidates historical execution after canonical plan regeneration."],
+      "acceptanceCriteria": ["Historical executions remain verifiable after canonical plan replacement.", "Missing, altered, or escaping plan snapshots are rejected.", "Legacy execution records remain historical evidence but cannot establish current completion."],
+      "verification": ["Run immutable-plan snapshot fixtures.", "Validate a completed execution before and after canonical plan regeneration.", "Run adoption and full repository tests."],
+      "rollout": "Require immutable snapshots for every new execution before P3 begins.", "rollback": "Block new execution and retain current evidence as partial if snapshot publication or validation fails.",
+      "requiresApproval": false, "approvalReason": null, "residualRisk": "Existing P1 and P2 executions lack preserved snapshots and remain only partially revalidatable.", "parallelGroup": null
+    },
+    {
+      "id": "REM-0204", "title": "Integrate pinned Gitleaks history and worktree scanning", "findingIds": ["AUD-0204"], "securitySeverity": "medium", "priority": 2,
+      "complexity": "high", "complexityRationale": "Introduces an external binary, checksum/provenance maintenance, cross-platform installation, CI, redaction, and fixture allowlists.",
+      "ownerRole": "Security engineer", "dependsOn": ["REM-0207"], "scope": "isolated audit tools, Gitleaks configuration, audit runner, security workflow, and fixtures",
+      "implementationSteps": ["Approve and pin an official Gitleaks version and SHA-256 per platform.", "Install only under .skills-orchestrator/tools/audit-code.", "Run redacted worktree and --all reachable-history scans.", "Scan tracked reports and reject unreviewed or expired allowlists.", "Add full-history CI with immutable action or binary pins."],
+      "acceptanceCriteria": ["Current and historical seeded secrets fail.", "Output never reveals values.", "Reports and all local refs are scanned.", "Scanner provenance and configuration digest are recorded."],
+      "verification": ["Run scanner fixture suite on every supported OS.", "Run the audit evidence collector and confirm history status completed."],
+      "rollout": "Local isolated integration first, then CI enforcement after cross-platform evidence.", "rollback": "Remove scanner integration and restore blocked history status; never downgrade to complete.",
+      "requiresApproval": true, "approvalReason": "Requires approved external download, provenance verification, and CI network execution.", "residualRisk": "Remote-only and unreachable objects require separate hosted or forensic scope.", "parallelGroup": "A"
+    },
+    {
+      "id": "REM-0205", "title": "Complete current release assurance evidence", "findingIds": ["AUD-0205"], "securitySeverity": "medium", "priority": 3,
+      "complexity": "very-high", "complexityRationale": "Requires hosted CI, signing key custody, SBOM and provenance generation, independent review, and publication governance.",
+      "ownerRole": "Release owner", "dependsOn": ["REM-0207", "REM-0204"], "scope": "release evidence, hosted CI, signing, SBOM, provenance, independent review, and release verification",
+      "implementationSteps": ["Finalize a clean revision and regenerate readiness.", "Run Windows, Linux, and macOS on supported Node versions.", "Generate SBOM and provenance, then sign and verify the candidate.", "Obtain independent review bound to the exact revision.", "Clear blockers only after all evidence validates."],
+      "acceptanceCriteria": ["Current-revision matrix passes.", "SBOM, provenance, and signature verify.", "Independent review binds the revision.", "Production release verification has no blockers."],
+      "verification": ["Run npm run check.", "Run production release verification.", "Independently verify evidence digests."],
+      "rollout": "Clear evidence blockers independently; publish only after all are complete.", "rollback": "Reinstate blockers and revoke affected artifacts if evidence becomes invalid.",
+      "requiresApproval": true, "approvalReason": "Requires external CI, signing key custody, independent review, and possible publication.", "residualRisk": "Release assurance expires as code, dependencies, platforms, and keys change.", "parallelGroup": null
+    }
+  ],
+  "dispositions": [],
+  "limitations": [
+    "AUD-0201, AUD-0202, AUD-0203, and AUD-0206 were closed by re-audit and are not scheduled again.",
+    "This plan does not execute remediation.",
+    "External and destructive actions remain separately approval-gated.",
+    "Immutable plan evidence must be implemented before P3; P3 must complete before P4 can establish release-grade secret-history assurance.",
+    "Existing P1 and P2 execution records lack immutable plan snapshots and cannot be fully revalidated after canonical plan replacement.",
+    "Source assurance remains insufficient-evidence."
+  ]
+}

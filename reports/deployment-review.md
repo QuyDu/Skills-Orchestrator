@@ -1,29 +1,29 @@
 # Deployment Readiness Review
 
-- Candidate: project-skills-orchestrator 1.0.2, commit e879bd635cd42e99b4c4419151b3ce35a1e6222f
+- Candidate: project-skills-orchestrator 1.1.1, commit 4f967865024134efc2793acfa449b2d66fd295c7 plus dirty working-tree source
 - Target: authorized internal production distribution
 - Decision: **BLOCKED**
 
-## Passing gates
+## Passing evidence
 
-- Build reproducibility: `npm run check` passed; the unsigned candidate has 110 checksum-covered files.
-- Configuration completeness: required standalone package, checksums, SBOM, and provenance artifacts are present.
-- Security scan: `npm run security` passed with zero findings.
-- Tests: all 70 tests passed.
+- The unsigned candidate verifies 150 checksum-covered files with CycloneDX SBOM and in-toto provenance.
+- Local security and Gitleaks scans pass, and all 105 gate tests and 43 skills passed before evidence-only updates.
+- The validated hosted artifact proves nine successful OS/Node runs for committed HEAD `4f967865`.
 
 ## Blocking gates
 
-1. The release has no trusted signing identity or signature.
-2. No independent security review is bound to this candidate.
-3. Cross-platform evidence is bound to commit `b91b562c`, not candidate commit `e879bd6`.
-4. Confirmed audit/remediation items remain open, including heuristic classification, bounded stack detection, generated non-Node toolchain pinning, and runtime maintainability.
-5. No production observability evidence exists for package consumption or generated-project failures.
+1. The dirty candidate is not reproducible from the advertised commit and has not run through hosted CI.
+2. The release has no trusted signing identity or signature.
+3. No independently signed security review is bound to the candidate.
+4. Main has no branch protection or rulesets, and hosted secret/dependency protections are disabled.
+5. No production distribution observability or revocation signal exists.
 
 ## Required before release
 
 - Sign the exact candidate checksum file and verify it with the trusted public-key fingerprint.
 - Obtain an independent review from a qualified reviewer who did not author the release.
-- Run and record Windows, Linux, and macOS evidence on Node 22, 24, and 26 for commit `e879bd6`.
+- Commit through an approved review path, then run Windows, Linux, and macOS evidence on Node 22, 24, and 26 for the exact clean candidate commit.
+- Enable or formally disposition the hosted safeguards in `ARCF-0205` and `SECF-0205`.
 - Establish operational health signals, alerting, and an owner for distribution and generated-project failures.
 - Re-run the complete release verification chain and clear the manifest blockers only after evidence verifies.
 

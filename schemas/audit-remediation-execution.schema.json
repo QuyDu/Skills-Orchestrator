@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://project-skills.dev/schemas/audit-remediation-execution/3.0.0",
+  "title": "Audit Remediation Execution",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "executionId", "generatedAt", "sourcePlan", "selection", "status", "items", "checkpoints", "remaining", "pendingApprovals", "limitations", "nextAction"],
+  "properties": {
+    "schemaVersion": { "enum": ["1.0.0", "2.0.0", "3.0.0"] },
+    "executionId": { "type": "string", "minLength": 1 },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "sourcePlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "planId", "sha256", "sourceReview"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "planId": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-fA-F0-9]{64}$" },
+        "sourceReview": { "type": "string", "minLength": 1 }
+      }
+    },
+    "selection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "value", "includedPrerequisites"],
+      "properties": {
+        "mode": { "enum": ["all", "phase", "finding", "resume"] },
+        "value": { "type": ["string", "null"] },
+        "includedPrerequisites": { "type": "array", "items": { "type": "string", "pattern": "^REM-[0-9]{4,}$" } }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "mode": { "const": "phase" } }, "required": ["mode"] },
+          "then": { "properties": { "value": { "type": "string", "minLength": 1 } } }
+        },
+        {
+          "if": { "properties": { "mode": { "const": "finding" } }, "required": ["mode"] },
+          "then": { "properties": { "value": { "type": "string", "pattern": "^AUD-[0-9]{4,}$" } } }
+        },
+        {
+          "if": { "properties": { "mode": { "enum": ["all", "resume"] } }, "required": ["mode"] },
+          "then": { "properties": { "value": { "type": "null" } } }
+        }
+      ]
+    },
+    "status": { "enum": ["planned", "running", "approval-wait", "blocked", "failed", "partially-completed", "completed", "rolled-back"] },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "findingIds", "phaseIds", "status", "changedPaths", "validation", "approvals", "residualRisk", "checkpointId"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^REM-[0-9]{4,}$" },
+          "findingIds": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^AUD-[0-9]{4,}$" } },
+          "phaseIds": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+          "status": { "enum": ["not-started", "approval-wait", "running", "completed", "failed", "blocked", "denied", "deferred", "rolled-back", "skipped"] },
+          "changedPaths": { "type": "array", "items": { "type": "string" } },
+          "validation": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["command", "status", "exitCode", "evidence"],
+              "properties": {
+                "command": { "type": "string", "minLength": 1 },
+                "status": { "enum": ["passed", "failed", "blocked", "skipped"] },
+                "exitCode": { "type": ["integer", "null"] },
+                "evidence": { "type": "string" }
+              }
+            }
+          },
+          "approvals": { "type": "array", "items": { "type": "string" } },
+          "residualRisk": { "type": "string" },
+          "rollbackStatus": { "enum": ["not-required", "not-started", "completed", "failed", "blocked"] },
+          "checkpointId": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "checkpoints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "createdAt", "status", "completedItemIds", "remainingItemIds"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "status": { "enum": ["valid", "blocked", "recovery-required", "terminal"] },
+          "completedItemIds": { "type": "array", "items": { "type": "string", "pattern": "^REM-[0-9]{4,}$" } },
+          "remainingItemIds": { "type": "array", "items": { "type": "string", "pattern": "^REM-[0-9]{4,}$" } },
+          "repositoryRevision": { "type": "string", "pattern": "^[a-fA-F0-9]{40}$" },
+          "worktreeDigest": { "type": "string", "pattern": "^[a-fA-F0-9]{64}$" }
+        }
+      }
+    },
+    "remaining": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["itemIds", "findingIds", "phaseIds"],
+      "properties": {
+        "itemIds": { "type": "array", "items": { "type": "string", "pattern": "^REM-[0-9]{4,}$" } },
+        "findingIds": { "type": "array", "items": { "type": "string", "pattern": "^AUD-[0-9]{4,}$" } },
+        "phaseIds": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "pendingApprovals": { "type": "array", "items": { "type": "string" } },
+    "limitations": { "type": "array", "items": { "type": "string" } },
+    "nextAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "action"],
+      "properties": {
+        "status": { "enum": ["ready", "approval-required", "blocked", "complete"] },
+        "action": { "type": "string", "minLength": 1 }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "schemaVersion": { "enum": ["2.0.0", "3.0.0"] } }, "required": ["schemaVersion"] },
+      "then": {
+        "properties": {
+          "checkpoints": {
+            "items": { "required": ["repositoryRevision", "worktreeDigest"] }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "schemaVersion": { "enum": ["1.0.0", "2.0.0"] } }, "required": ["schemaVersion"] },
+      "then": { "properties": { "sourcePlan": { "properties": { "path": { "const": "reports/audit-remediation-plan.json" } } } } }
+    },
+    {
+      "if": { "properties": { "schemaVersion": { "const": "3.0.0" } }, "required": ["schemaVersion"] },
+      "then": { "properties": { "sourcePlan": { "properties": { "path": { "pattern": "^reports/audit-remediation-plans/[a-fA-F0-9]{64}\\.json$" } } } } }
+    }
+  ]
+}

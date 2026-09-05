@@ -1,17 +1,20 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://project-skills.dev/schemas/audit-findings-review/1.0.0",
+  "$id": "https://project-skills.dev/schemas/audit-findings-review/2.0.0",
   "title": "Audit Findings Review",
   "type": "object",
   "additionalProperties": false,
   "required": ["schemaVersion", "reviewId", "generatedAt", "sourceReport", "sourceAuditId", "summary", "findings", "limitations"],
   "properties": {
-    "schemaVersion": { "const": "1.0.0" },
+    "schemaVersion": { "enum": ["1.0.0", "2.0.0"] },
     "reviewId": { "type": "string", "minLength": 1 },
     "generatedAt": { "type": "string", "format": "date-time" },
     "sourceReport": { "type": "string" },
     "sourceAuditId": { "type": "string" },
     "summary": { "type": "object", "required": ["total", "confirmed", "needsMoreEvidence", "disputed", "falsePositive"], "properties": { "total": { "type": "integer", "minimum": 0 }, "confirmed": { "type": "integer", "minimum": 0 }, "needsMoreEvidence": { "type": "integer", "minimum": 0 }, "disputed": { "type": "integer", "minimum": 0 }, "falsePositive": { "type": "integer", "minimum": 0 } } },
+    "repositoryEvidence": { "$ref": "code-audit-findings.schema.json#/properties/repositoryEvidence" },
+    "standards": { "$ref": "code-audit-findings.schema.json#/properties/standards" },
+    "assurance": { "$ref": "code-audit-findings.schema.json#/properties/assurance" },
     "findings": {
       "type": "array",
       "items": {
@@ -41,5 +44,11 @@
       }
     },
     "limitations": { "type": "array", "items": { "type": "string" } }
-  }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "schemaVersion": { "const": "2.0.0" } }, "required": ["schemaVersion"] },
+      "then": { "required": ["repositoryEvidence", "standards", "assurance"] }
+    }
+  ]
 }

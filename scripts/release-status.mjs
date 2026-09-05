@@ -6,6 +6,7 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { acquireReleaseLock } from "./release-lock.mjs";
+import { releaseSourceStatus } from "./release-worktree.mjs";
 import { assertSafeRelativePath } from "./safe-path.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -27,8 +28,8 @@ function run(command, args) {
 const revision = run("git", ["rev-parse", "HEAD"]);
 const commit = revision.status === 0 ? revision.stdout.trim() : null;
 add("source-revision", Boolean(commit), commit ?? "No committed Git revision exists");
-const worktree = run("git", ["status", "--porcelain"]);
-add("clean-worktree", worktree.status === 0 && worktree.stdout.trim() === "", worktree.status === 0 ? (worktree.stdout.trim() || "Worktree clean") : worktree.stderr.trim());
+const worktree = releaseSourceStatus(root);
+add("clean-worktree", worktree.status === 0 && worktree.stdout.trim() === "", worktree.status === 0 ? (worktree.stdout.trim() || "Release source clean; report-only changes excluded") : worktree.stderr.trim());
 
 const securityReportPath = path.join(root, "reports", "security-check.json");
 let securityReport;

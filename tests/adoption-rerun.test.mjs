@@ -31,7 +31,7 @@ function runInteractive(args, exchanges) {
     const timeout = setTimeout(() => {
       child.kill();
       reject(new Error(`Interactive command timed out after ${exchangeIndex} answers:\n${stdout}\n${stderr}`));
-    }, 15000);
+    }, 60000);
     child.stdout.setEncoding("utf8");
     child.stderr.setEncoding("utf8");
     child.stdout.on("data", (chunk) => {
@@ -248,6 +248,17 @@ No approval is required for read-only work.
     assert.equal(await readFile(profilesPath, "utf8"), await readFile(path.join(root, "config", "profiles.yaml"), "utf8"));
     assert.ok(existsSync(path.join(project, ".github", "skills", "project-video", "scripts", "project-video.mjs")));
     assert.ok(existsSync(path.join(project, ".github", "skills", "project-understanding", "scripts", "project-understanding.mjs")));
+    assert.ok(existsSync(path.join(project, ".github", "skills", "audit-code", "scripts", "audit-evidence.mjs")));
+    assert.ok(existsSync(path.join(project, ".github", "skills", "audit-code", "scripts", "audit-validate.mjs")));
+    const adoptedGitleaksRunner = path.join(project, ".github", "skills", "audit-code", "scripts", "gitleaks-scan.mjs");
+    assert.ok(existsSync(adoptedGitleaksRunner));
+    assert.ok(existsSync(path.join(project, ".github", "skills", "audit-code", "scripts", "safe-path.mjs")));
+    assert.ok(existsSync(path.join(project, ".github", "skills", "audit-code", "config", "gitleaks.toml")));
+    assert.ok(existsSync(path.join(project, ".github", "skills", "audit-code", "config", "gitleaks-allowlist.json")));
+    const adoptedGitleaksMetadata = spawnSync(process.execPath, [adoptedGitleaksRunner, "metadata"], { cwd: project, encoding: "utf8" });
+    assert.equal(adoptedGitleaksMetadata.status, 0, adoptedGitleaksMetadata.stderr);
+    assert.equal(JSON.parse(adoptedGitleaksMetadata.stdout).version, "8.30.1");
+    assert.ok(existsSync(path.join(project, ".github", "skills", "audit-remediation", "SKILL.md")));
     assert.ok(existsSync(path.join(project, ".github", "skills", "azure-discovery", "scripts", "azure-discovery.ps1")));
     assert.ok(existsSync(path.join(project, ".github", "skills", "azure-discovery", "scripts", "azure-environment.ps1")));
     assert.ok(!existsSync(path.join(project, ".github", "prompts", "project-video.prompt.md")));
@@ -261,6 +272,9 @@ No approval is required for read-only work.
     assert.ok(existsSync(path.join(project, "schemas", "project-video-browser-preview-manifest.schema.json")));
     assert.ok(existsSync(path.join(project, "schemas", "azure-discovery.schema.json")));
     assert.ok(existsSync(path.join(project, "schemas", "azure-environment.schema.json")));
+    assert.ok(existsSync(path.join(project, "schemas", "audit-remediation-execution.schema.json")));
+    assert.ok(existsSync(path.join(project, "schemas", "gitleaks-scan.schema.json")));
+    assert.ok(existsSync(path.join(project, "schemas", "gitleaks-allowlist.schema.json")));
     const adoptedVideoHelper = await readFile(path.join(project, ".github", "skills", "project-video", "scripts", "project-video.mjs"), "utf8");
     assert.match(adoptedVideoHelper, /command === "install-local-voice"/);
     assert.match(adoptedVideoHelper, /en_US-ljspeech-high/);

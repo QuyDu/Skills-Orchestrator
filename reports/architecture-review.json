@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewId": "ARC-0205",
+  "generatedAt": "2026-09-05T15:25:00.000Z",
+  "scope": {
+    "components": ["Registry-free CLI and private internal package", "Release build, checksum, SBOM, provenance, signature, and independent-review gates", "GitHub Actions validation and CodeQL workflows", "Transactional project creation, adoption, rollback, and recovery", "Schema-governed reports, skill catalog, and shipped templates"],
+    "environments": ["Local Windows validation", "GitHub-hosted Windows, Linux, and macOS runners", "Authorized internal package consumption"],
+    "targetCloud": "unknown",
+    "regions": [],
+    "excluded": ["Live Azure resources and deployed workload posture", "Remote mutation, release publication, and package promotion", "Unreachable or pruned Git objects"]
+  },
+  "coverage": [
+    { "pillar": "reliability", "assessed": true, "evidence": ["Transactional adoption journals, locks, rollback, and recovery are documented in docs/THREAT-MODEL.md and exercised by npm run check.", "The current unsigned candidate verifies 150 checksum-covered files."] },
+    { "pillar": "security", "assessed": true, "evidence": ["Local security and Gitleaks scans pass with pinned tools and immutable workflow actions.", "Production verification requires trusted RSA signatures and independently signed review evidence.", "Read-only GitHub inspection found no main-branch protection or rulesets and disabled hosted secret/dependency protections."] },
+    { "pillar": "cost-optimization", "assessed": true, "evidence": ["The package has zero runtime dependencies and no always-on service cost.", "Hosted validation uses bounded jobs and retention windows; no deployment resources are part of this package release."] },
+    { "pillar": "operational-excellence", "assessed": true, "evidence": ["JSON schemas, immutable execution snapshots, release checks, and 43 skill contracts provide deterministic operations evidence.", "Remote HEAD has a successful nine-run OS/Node matrix, but current uncommitted candidate changes have not run remotely."] },
+    { "pillar": "performance-efficiency", "assessed": true, "evidence": ["Repository scans and project discovery are bounded; the complete local gate passes within its configured CI timeout.", "No application runtime or deployed service performance is in scope."] }
+  ],
+  "findings": [
+    {
+      "id": "ARCF-0205",
+      "title": "Hosted source controls do not enforce the repository release policy",
+      "pillar": "security",
+      "location": "github.com/QuyDu/Skills-Orchestrator settings and main branch",
+      "impact": "Changes can reach main without hosted required checks or reviews, while disabled secret scanning, push protection, Dependabot alerts, and private vulnerability reporting reduce prevention and detection around the source used for internal packages.",
+      "severity": "high",
+      "confidence": "high",
+      "recommendation": "Enable main-branch rules requiring current Security Validation and CodeQL checks plus an independent review; enable secret scanning, push protection, dependency alerts/security updates, and private vulnerability reporting where the repository plan supports them.",
+      "tradeOffs": ["Required reviews and checks add merge latency.", "Some hosted security features may require repository-plan or organization-policy changes.", "Local Gitleaks remains necessary because hosted controls do not cover unreachable local objects."],
+      "decisionRecord": null,
+      "conflictsWithDecision": true,
+      "evidence": ["GitHub branch protection returned HTTP 404 Branch not protected and rulesets returned an empty array.", "Repository security_and_analysis reports secret scanning, push protection, non-provider patterns, validity checks, and Dependabot security updates disabled.", "Dependabot alerts returned HTTP 403 disabled; secret-scanning alerts returned HTTP 404 disabled; private vulnerability reporting is false.", "SECURITY.md requires current checks, secret scanning, and independent review before production release."]
+    }
+  ],
+  "limitations": ["This is a design-time review; no Azure environment or package deployment was accessed.", "The current dirty working-tree candidate is not reachable from GitHub, so hosted execution evidence applies only to committed HEAD 4f967865024134efc2793acfa449b2d66fd295c7.", "No changes to hosted controls were authorized or performed."]
+}

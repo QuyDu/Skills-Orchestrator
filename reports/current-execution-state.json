@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0.0",
+  "workflowId": "audit-remediation",
+  "runId": "EXEC-2026-09-05-P4-RELEASE-ASSURANCE",
+  "status": "blocked",
+  "currentStep": 1,
+  "totalSteps": 1,
+  "activeSkill": "audit-remediation",
+  "lastCompletedStep": 0,
+  "resumeFromStep": 1,
+  "lastSequence": 26,
+  "updatedAt": "2026-09-05T15:35:00.000Z"
+}

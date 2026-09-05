@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.0.0",
+  "clarificationId": "CLR-0205",
+  "generatedAt": "2026-09-05T15:20:00.000Z",
+  "status": "ready",
+  "requestSummary": "Execute the approved P4 release-assurance phase under conservative autonomous defaults.",
+  "confirmedRequirements": [
+    "Perform local release preparation and read-only hosted GitHub inspection.",
+    "Generate and verify unsigned SBOM, provenance, checksums, and readiness evidence.",
+    "Do not commit, push, tag, release, publish, deploy, sign, mutate GitHub settings, or mutate Azure."
+  ],
+  "projectFacts": [
+    "PLAN-2026-09-05-PSO-124 contains only REM-0205 and requires a clean current candidate, hosted cross-platform CI, trusted signature, independent review, and production verification.",
+    "The repository working tree is dirty and includes approved work not reachable from remote HEAD.",
+    "Trusted signing and independent-review identities are not configured."
+  ],
+  "assumptions": [
+    "The user's autonomous-work response accepts the recommended no-remote-mutation and unsigned-preparation defaults.",
+    "Read-only GitHub API calls and artifact downloads are within the approved P4 evidence scope.",
+    "Missing trusted identities remain blockers rather than being synthesized or self-approved."
+  ],
+  "conflicts": [],
+  "rounds": [
+    {
+      "round": 1,
+      "questions": [
+        { "id": "Q-0205", "question": "How far may P4 go with hosted GitHub operations?", "materialDecision": "External read-only versus remote mutation scope", "recommendedDefault": "Read-only inspection only", "answer": "Work autonomously and make good decisions; conservative default applied." },
+        { "id": "Q-0206", "question": "What signing boundary should P4 use?", "materialDecision": "Trusted signing authority", "recommendedDefault": "Prepare and verify unsigned evidence", "answer": "Work autonomously and make good decisions; unsigned preparation default applied." },
+        { "id": "Q-0207", "question": "Does this approval include commit, push, tag, release, or publication?", "materialDecision": "Remote and irreversible mutation authority", "recommendedDefault": "No remote mutations", "answer": "Work autonomously and make good decisions; no-remote-mutation default applied." }
+      ]
+    }
+  ],
+  "openQuestions": [],
+  "decision": "proceed-to-planning"
+}

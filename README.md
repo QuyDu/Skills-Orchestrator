@@ -1,12 +1,12 @@
 # Project Skills Orchestrator
 
-Turn any repository into a governed GitHub Copilot workspace: agent instructions, scoped standards, reusable prompts, specialist agents, and 42 governed skills — installed consistently, verified after every run, and safe to rerun.
+Turn any repository into a governed GitHub Copilot workspace: agent instructions, scoped standards, reusable prompts, specialist agents, and 43 governed skills — installed consistently, verified after every run, and safe to rerun.
 
 | Item | Value |
 | --- | --- |
 | Runtime version | `1.1.1` |
 | Framework version | `9.0.0` |
-| Skill catalog | 42 governed skills |
+| Skill catalog | 43 governed skills |
 | Supported Node.js | 22, 24, 26 |
 | Dependencies | None |
 | Distribution | Authorized internal use only |
@@ -23,7 +23,7 @@ It has two halves.
 
 **A command-line installer** (`pso.mjs`) that creates a new project or adopts an existing one. It runs entirely on Node.js built-ins — no packages to install, no registry access — and every change it makes is planned, journaled, and verified.
 
-**A catalog of 42 skills** installed into `.github/skills/`, invoked from GitHub Copilot Chat in Agent mode. Each skill is a bounded contract: what it owns, what it reads, what it writes, when it must stop and ask you.
+**A catalog of 43 skills** installed into `.github/skills/`, invoked from GitHub Copilot Chat in Agent mode. Each skill is a bounded contract: what it owns, what it reads, what it writes, when it must stop and ask you.
 
 ### What makes it different
 
@@ -350,7 +350,8 @@ Open the project in VS Code, start Copilot Chat in **Agent** mode, and invoke a 
 
 ```text
 /project-setup            Establish the baseline for this application
-/audit-code               Full repository audit with structured findings
+/audit-code               Audit, analyze findings, and build a remediation plan
+/audit-remediation        Execute an approved audit plan by scope or checkpoint
 /security-review          Exploitable weaknesses, secrets, authorization defects
 /architecture-review      Well-Architected assessment of the defined architecture
 /deployment-review        Is this release candidate deployable, and how do we roll back
@@ -364,20 +365,24 @@ Open the project in VS Code, start Copilot Chat in **Agent** mode, and invoke a 
 /project-handoff          Record continuity before you stop
 ```
 
-The audit workflow is staged, and each stage validates the one before it:
+`/audit-code` automatically runs the complete read-only analysis pipeline, and each stage validates the one before it:
 
 ```text
-/audit-code            -> reports/code-audit-findings.json
-/audit-review-findings -> reports/code-audit-review.json
-/audit-plan-remediation-> reports/audit-remediation-plan.json
+/audit-code
+  -> reports/code-audit-findings.json
+  -> reports/code-audit-review.json
+  -> reports/audit-remediation-plan.json
+  -> approval-wait
 ```
+
+Remediation is always a separate, explicitly approved invocation. Use `/audit-remediation -All` for every eligible phase, `-Phase <milestone-id>` for one phase and its prerequisites, `-Finding <AUD-id>` for one finding and its prerequisites, or `-Resume` from the last valid checkpoint. Every phase validates its changes, records execution state, and refreshes project handoff with completed and remaining audit work. Destructive, external, deployment, commit, push, publication, credential, and risk-acceptance actions retain separate point-of-action approvals.
 
 ### Conformance profiles
 
 | Profile | Adds |
 | --- | --- |
 | `core` | Orchestration, clarification, planning, policy, setup, audit pipeline, security and architecture review, documentation, deployment review, debugging, testing, CI triage, dependencies, commit preparation |
-| `durable` | Handoff, knowledge capture, memory, recovery, artifact upgrade, Azure environment audit |
+| `durable` | Handoff, knowledge capture, memory, recovery, audit remediation execution, artifact upgrade, Azure cleanup |
 | `distributed` | Scheduler, multi-agent coordination, telemetry |
 | `advanced` | Workflow simulation, skill registry |
 

@@ -48,6 +48,20 @@ const stagingRoot = path.join(distRoot, `.staging-${randomUUID()}`);
 const previousRoot = path.join(distRoot, `.previous-${randomUUID()}`);
 await mkdir(distRoot, { recursive: true });
 await mkdir(stagingRoot, { recursive: true });
+
+async function renameWithTransientLockRetry(source, destination) {
+  const retryable = new Set(["EBUSY", "EPERM"]);
+  for (let attempt = 0; ; attempt += 1) {
+    try {
+      await rename(source, destination);
+      return;
+    } catch (error) {
+      if (process.platform !== "win32" || !retryable.has(error.code) || attempt >= 7) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 100 * (attempt + 1)));
+    }
+  }
+}
+
 try {
   for (const relative of shipped) {
     const source = path.join(root, relative);
@@ -114,14 +128,14 @@ try {
   await assertSafeRelativePath(root, path.relative(root, stagingRoot));
   if (existsSync(outputRoot)) {
     await assertSafeRelativePath(root, path.relative(root, outputRoot));
-    await rename(outputRoot, previousRoot);
+    await renameWithTransientLockRetry(outputRoot, previousRoot);
     replacedExisting = true;
   }
   try {
-    await rename(stagingRoot, outputRoot);
+    await renameWithTransientLockRetry(stagingRoot, outputRoot);
     if (replacedExisting) await rm(previousRoot, { recursive: true, force: true });
   } catch (error) {
-    if (replacedExisting && !existsSync(outputRoot)) await rename(previousRoot, outputRoot);
+    if (replacedExisting && !existsSync(outputRoot)) await renameWithTransientLockRetry(previousRoot, outputRoot);
     throw error;
   }
   console.log(`Built unsigned release candidate: ${outputRoot}`);

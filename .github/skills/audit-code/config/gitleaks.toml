@@ -1,0 +1,8 @@
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Dependency metadata and isolated tool directories"
+paths = [
+  '''(^|/)(\.git|\.skills-orchestrator|node_modules)/'''
+]

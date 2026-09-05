@@ -6,6 +6,7 @@ import os from "node:os";
 import { spawnSync } from "node:child_process";
 import test from "node:test";
 import { assertSafeRelativePath } from "../scripts/safe-path.mjs";
+import { releaseSourceStatus } from "../scripts/release-worktree.mjs";
 import { canonicalReviewPayload, publicKeyFingerprint, requireTrustedPublicKey } from "../scripts/trust.mjs";
 
 const root = path.resolve(import.meta.dirname, "..");
@@ -46,9 +47,10 @@ test("production scripts and release metadata are present", async () => {
 
   const codeql = await readFile(path.join(root, ".github", "workflows", "codeql.yml"), "utf8");
   assert.match(codeql, /actions: read/);
+  assert.match(codeql, /security-events: write/);
   assert.match(codeql, /github\/codeql-action\/init@bce182f857edf1feab116e9795a3393d21977282/);
   assert.match(codeql, /github\/codeql-action\/analyze@bce182f857edf1feab116e9795a3393d21977282/);
-  assert.match(codeql, /upload: never/);
+  assert.match(codeql, /upload: always/);
   assert.match(codeql, /upload-database: false/);
   assert.match(codeql, /actions\/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a/);
   assert.match(codeql, /codeql-results\/\*\.sarif/);
@@ -135,6 +137,31 @@ test("authoritative reports are not excluded from source control", async () => {
   const ignore = await readFile(path.join(root, ".gitignore"), "utf8");
   const rules = ignore.split(/\r?\n/).map((line) => line.trim()).filter((line) => line && !line.startsWith("#"));
   assert.ok(!rules.some((rule) => /^!?reports\//.test(rule)), "reports/ must remain tracked because the framework declares it authoritative");
+});
+
+test("release cleanliness excludes reports but blocks source changes", async (context) => {
+  const git = spawnSync("git", ["--version"], { encoding: "utf8" });
+  if (git.status !== 0) return context.skip("Git is required to verify release-source cleanliness");
+  const project = await mkdtemp(path.join(os.tmpdir(), "pso-release-source-"));
+  try {
+    spawnSync("git", ["init", "--quiet"], { cwd: project });
+    spawnSync("git", ["config", "user.name", "Release Test"], { cwd: project });
+    spawnSync("git", ["config", "user.email", "release@example.invalid"], { cwd: project });
+    await writeFile(path.join(project, "source.txt"), "clean\n", "utf8");
+    spawnSync("git", ["add", "source.txt"], { cwd: project });
+    spawnSync("git", ["commit", "--quiet", "-m", "baseline"], { cwd: project });
+    await mkdir(path.join(project, "reports"));
+    await writeFile(path.join(project, "reports", "evidence.json"), "{}\n", "utf8");
+    const reportsOnly = releaseSourceStatus(project);
+    assert.equal(reportsOnly.status, 0, reportsOnly.stderr);
+    assert.equal(reportsOnly.stdout.trim(), "");
+    await writeFile(path.join(project, "source.txt"), "changed\n", "utf8");
+    const sourceChanged = releaseSourceStatus(project);
+    assert.equal(sourceChanged.status, 0, sourceChanged.stderr);
+    assert.match(sourceChanged.stdout, /source\.txt/);
+  } finally {
+    await rm(project, { recursive: true, force: true });
+  }
 });
 
 async function createSecurityScanFixture(prefix) {

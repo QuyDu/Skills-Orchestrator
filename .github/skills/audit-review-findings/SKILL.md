@@ -38,20 +38,21 @@ Transform structured audit findings into a traceable mixed-audience review while
 ## Procedure
 
 1. Select the input report by audit type and validate it against its declared schema before interpreting findings.
-2. Preserve every source finding ID and evidence reference. Do not silently add, merge, split, suppress, or change severity; record each review decision and rationale.
+2. Preserve every source finding ID and evidence reference. For schema 2.0 code audits, also preserve repository evidence, standards applicability and control status, exceptions and expiry, assurance conclusion, blocking evidence, and limitations. Do not silently add, merge, split, suppress, or change severity; record each review decision and rationale.
 3. Reproduce or corroborate each finding where feasible and classify it as `confirmed`, `needs-more-evidence`, `disputed`, or `false-positive`.
 4. Explain why the issue matters, the affected behavior and stakeholders, exploitability when relevant, security severity, bug type, root cause, and likely consequence of leaving it unresolved.
 5. Add implementation-ready resolution guidance, alternatives and tradeoffs, validation steps, rollout considerations, and rollback guidance proportional to risk.
 6. Cite current Microsoft best practices when the technology is Microsoft-owned or Microsoft guidance applies. Also cite authoritative industry practices such as OWASP, CWE, NIST, CIS, language/framework maintainers, or standards bodies as applicable. Include title, publisher, URL, and access date; never invent a citation.
 7. Identify prerequisites and dependencies among findings without scheduling remediation. Mark urgent containment separately from permanent repair.
 8. Order the human-readable review by confirmed security severity, then dependency impact and confidence. Preserve limitations and unresolved questions.
-9. Validate the reviewed findings JSON against `schemas/audit-findings-review.schema.json`, then write it for downstream planning and generate its Markdown view.
+9. Emit schema 2.0 reviews for schema 2.0 code audits, validate the reviewed findings JSON against `schemas/audit-findings-review.schema.json`, then run `node .github/skills/audit-code/scripts/audit-validate.mjs review <source-report> <review-report>` to prove exact assurance preservation before downstream planning and Markdown generation. Legacy schema 1.0 inputs remain readable.
 
 ## Validation
 
 - Input and output reports validate against their schemas, including `schemas/audit-findings-review.schema.json`, and every source finding appears exactly once in the reviewed output.
 - Each confirmed finding contains issue context, bug type, security severity, resolution detail, verification steps, and applicable best-practice citations.
 - Severity changes, false-positive decisions, and unresolved evidence are explicit and justified.
+- Reviews of schema 2.0 code audits cannot upgrade or soften the source assurance conclusion without newer evidence that satisfies the same repository, secret-history, hosted-platform, standards, and exception requirements.
 - Machine-readable JSON remains authoritative; Markdown preserves IDs, ordering, status, and limitations.
 
 ## Outputs

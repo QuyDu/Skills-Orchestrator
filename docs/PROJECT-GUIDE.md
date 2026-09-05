@@ -4,7 +4,7 @@ Generated from a complete repository scan. This guide describes the project in w
 
 ## Purpose
 
-Turn any repository into a governed GitHub Copilot workspace: agent instructions, scoped standards, reusable prompts, specialist agents, and 42 governed skills — installed consistently, verified after every run, and safe to rerun.
+Turn any repository into a governed GitHub Copilot workspace: agent instructions, scoped standards, reusable prompts, specialist agents, and 43 governed skills — installed consistently, verified after every run, and safe to rerun.
 
 ## Architecture
 

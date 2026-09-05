@@ -1,30 +1,26 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-08-27T21:18:27.416Z",
+  "generatedAt": "2026-09-05T16:05:00.000Z",
   "status": "passed",
   "boundary": {
     "type": "working-tree",
-    "baseCommit": "e46727121582e534f683eb49a0c937832db9928d",
+    "baseCommit": "4f967865024134efc2793acfa449b2d66fd295c7",
     "head": "local working tree",
-    "objective": "Prepare the complete coherent Project Understanding, Project Video, Azure environment automation, command-ownership, and runtime 1.1.0 production-candidate change set for one local commit."
+    "objective": "Review the complete demo, audit-remediation, Gitleaks, CodeQL, schema, release-assurance, and evidence candidate before commit."
   },
   "findings": [],
   "validation": [
-    {
-      "command": "npm run check",
-      "status": "passed",
-      "evidence": "87 tests passed, 0 failed; 173 files passed security scanning; the unsigned candidate contained 134 checksum-covered files; 41 of 41 skills passed verification."
-    },
-    {
-      "command": "git diff --check",
-      "status": "passed",
-      "evidence": "No whitespace errors or unresolved conflict markers were reported."
-    }
+    { "command": "Complete working-tree change review", "status": "passed", "evidence": "The only finding was a stale 42-skill documentation count; all authoritative and derived references were corrected to 43." },
+    { "command": "Focused release-source gate review", "status": "passed", "evidence": "No pathspec, rename, untracked-file, platform, candidate-byte, or build-control defect remained after excluding non-shipped reports from cleanliness." },
+    { "command": "npm run check", "status": "passed", "evidence": "One hundred six tests passed; 196 files passed built-in security scanning; 150 release files were checksum-covered; 43 of 43 skills passed." },
+    { "command": "npm run security:gitleaks", "status": "passed", "evidence": "Pinned Gitleaks 8.30.1 passed worktree, staged-index, report, all-local-ref, and reachable-history scopes with full redaction." }
   ],
   "openQuestions": [],
   "residualRisks": [
-    "Production distribution remains blocked until current-commit cross-platform CI, trusted signature, and independent review evidence are attached and verified.",
-    "No live Azure operation, deployment, publication, push, or tag was included in this review."
+    "Committed-HEAD matrix evidence does not cover the dirty candidate source set.",
+    "Trusted signing and independent review require distinct authorized identities.",
+    "ARCF-0205 and SECF-0205 require hosted mutation and then fresh verification.",
+    "Overall assurance remains insufficient-evidence."
   ],
-  "recommendation": "Create one local 1.1.0 commit containing the complete coherent working-tree scope; do not publish or deploy it."
+  "recommendation": "Commit and push the reviewed candidate, verify current hosted CI, remediate hosted controls, and retain signature and independent-review blockers until distinct trusted identities complete them."
 }

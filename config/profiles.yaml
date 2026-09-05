@@ -40,6 +40,7 @@ profiles:
       - artifact-upgrade
       - project-handoff
       - workflow-recovery
+      - audit-remediation
       - project-knowledge-capture
       - project-memory
       - linkedin-post

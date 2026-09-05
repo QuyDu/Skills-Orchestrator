@@ -16,11 +16,11 @@ Play the pre-created, manifest-verified MP4 first. It gives the audience the pro
 
 Run `/demo-create-project` from this repository. It creates a separate governed TypeScript project, verifies its installed skills and Azure Government scaffold, copies the bounded build prompt into that new project, and opens its own VS Code workspace. The Project Skills Orchestrator source repository is immutable after the handoff. Do not invoke project video while the project is still an empty governed baseline.
 
-In the new workspace, switch Chat to Agent mode and run `/demo-web-app`. Let the generated project build and test its own application. Present the local browser result before discussing Azure so the useful outcome is visible even if cloud prerequisites are unavailable.
+In the new workspace, switch Chat to Agent mode and run `/demo-web-app`. Its first stage runs `/azure-discovery -Gov` for `usgovarizona`, initializes or reuses the generated project's ignored Azure environment profile, requires current evidence for an existing Speech-capable resource, binds the nonsecret Speech cloud and region environment values, and runs the packaged Project Video `azure-preflight`. Let the generated project build and test its own application only after the preflight reports `credentialConfigured: true`.
 
 ### Deployment checkpoint
 
-The generated-app prompt must confirm Azure CLI availability, an authenticated `AzureUSGovernment` context, and a subscription before any Azure mutation. If any prerequisite is missing, report it and end Act 2 after the local browser demonstration. Do not change clouds or start login during the live presentation.
+The generated-app prompt confirms Azure CLI availability, an authenticated `AzureUSGovernment` context, the selected subscription, reusable Speech capability, matching region, and a configured Speech credential during its initial read-only discovery stage. If any prerequisite is missing, it stops before application implementation. Complete authentication and set `AZURE_SPEECH_KEY` directly in the terminal before the live presentation whenever possible; never paste or project the key. The recorded interactive login flow may start during discovery when the session is stale.
 
 When the prompt explains the billable resource group and public endpoint, pause for explicit approval. Only after approval may it create `rg-skillsdemo`, run the deployment preview, inspect the preview, and deploy. A preview with unexpected changes is a stop condition.
 

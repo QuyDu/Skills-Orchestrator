@@ -1,6 +1,6 @@
 # Skill Details
 
-Generated: 2026-09-02T00:58:36.320Z
+Generated: 2026-09-05T16:44:55.800Z
 
 | Skill | Lifecycle | Confidence | Audit | Dependencies |
 | --- | --- | --- | --- | --- |
@@ -9,6 +9,7 @@ Generated: 2026-09-02T00:58:36.320Z
 | audit-azure-environment | draft | low | passed | None |
 | audit-code | tested | medium | passed | None |
 | audit-plan-remediation | tested | medium | passed | audit-review-findings, policy-engine |
+| audit-remediation | draft | low | passed | audit-plan-remediation, policy-engine, workflow-state-manager, workflow-recovery, change-review, systematic-debugging, regression-test-development, project-handoff, audit-code |
 | audit-review-findings | tested | medium | passed | audit-code, audit-azure-environment |
 | azure-cleanup | draft | low | passed | azure-discovery, project-handoff, policy-engine |
 | azure-discovery | tested | medium | passed | project-handoff |

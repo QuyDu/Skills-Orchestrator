@@ -1,58 +1,35 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-08-28T17:00:00.000Z",
-  "project": {
-    "name": "project-skills-orchestrator",
-    "version": "1.1.1",
-    "branch": "main",
-    "commit": "9c73c3d"
-  },
-  "status": "ready-for-local-commit",
-  "activeMilestone": {
-    "name": "Project value review and guide implementation",
-    "status": "locally-validated"
-  },
+  "updatedAt": "2026-09-05T15:30:00.000Z",
+  "project": { "name": "project-skills-orchestrator", "version": "1.1.1", "branch": "main", "commit": "4f967865024134efc2793acfa449b2d66fd295c7" },
+  "status": "approval-wait",
+  "activeMilestone": { "name": "P4 release assurance", "status": "blocked" },
   "lastCompletedAction": {
-    "action": "Review product value, demo readiness, and the canonical project guide architecture",
+    "action": "Prepare and assess the unsigned P4 release candidate",
     "status": "completed",
-    "completedAt": "2026-08-28T17:00:00.000Z",
-    "evidence": [
-      ".github/skills/project-understanding/SKILL.md",
-      ".github/skills/project-understanding/scripts/project-understanding.mjs",
-      "schemas/project-understanding.schema.json",
-      "reports/project-understanding.json",
-      "reports/project-understanding.md",
-      ".github/skills/project-video/SKILL.md",
-      ".github/skills/project-video/scripts/project-video.mjs",
-      "schemas/project-video-plan.schema.json",
-      "tests/project-understanding.test.mjs",
-      "tests/project-video.test.mjs",
-      "tests/skill-contracts.test.mjs",
-      "config/profiles.yaml",
-      "reports/change-review.json",
-      "reports/release-readiness.json"
-    ]
+    "completedAt": "2026-09-05T15:30:00.000Z",
+    "evidence": ["reports/release-readiness.json", "reports/cross-platform-ci-evidence.json", "reports/architecture-review.json", "reports/security-review.json", "reports/deployment-review.json", "reports/audit-remediation-execution.json"]
   },
   "validationStatus": {
-    "repositoryCheck": "incomplete",
-    "testsPassed": 68,
+    "repositoryCheck": "passed",
+    "testsPassed": 105,
     "testsFailed": 0,
-    "skillsVerified": 41,
+    "skillsVerified": 43,
     "securityCheck": "passed",
     "releaseCandidateVerification": "passed",
-    "note": "The latest full npm run check completed security, release build, and candidate verification, then exceeded the execution timeout during the long integration suite."
+    "note": "P4 preparation verified the unsigned 150-file candidate and committed-HEAD nine-run matrix. REM-0205 remains blocked by dirty-source parity, trusted signing, independent review, production verification, and hosted safeguards."
   },
   "blockers": [
-    "Production distribution requires current-commit cross-platform CI evidence.",
-    "Production distribution requires a trusted release signature and independent review."
+    "AUD-0205: production release assurance remains incomplete.",
+    "The dirty working-tree candidate is not represented by the successful hosted HEAD matrix.",
+    "Trusted signing and independent-review identities are not provisioned; production verification fails closed.",
+    "ARCF-0205 and SECF-0205: main protection/rulesets and hosted secret, dependency, code-scanning upload, and vulnerability-reporting safeguards are absent.",
+    "Overall assurance remains insufficient-evidence."
   ],
   "pendingApprovals": [
-    "Remote mutation, publication, deployment, and Azure operations remain unapproved."
+    "A reviewed clean commit and push are required before current-candidate hosted CI.",
+    "Hosted safeguard mutation, trusted signing, independent review, and publication each require separate point-of-action approval and ownership."
   ],
-  "nextAction": {
-    "skill": "documentation-builder",
-    "status": "next",
-    "action": "Implement the documentation-builder generator, then run the end-to-end create, build, guide, and project-video demo."
-  },
+  "nextAction": { "skill": "audit-remediation", "status": "approval-required", "action": "Resume P4 only after approving a reviewed clean commit/push and hosted-control remediation and designating distinct trusted signing and independent-review identities." },
   "handoff": "reports/project-handoff.json"
 }

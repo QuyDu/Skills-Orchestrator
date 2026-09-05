@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-09-02T00:58:36.320Z",
+  "generatedAt": "2026-09-05T16:44:55.800Z",
   "artifacts": [
     {
       "report": "reports/architecture-review.json",
@@ -27,12 +27,24 @@
       "producer": "audit-code"
     },
     {
+      "report": "reports/gitleaks-scan.json",
+      "producer": "audit-code"
+    },
+    {
       "report": "reports/audit-remediation-plan.json",
       "producer": "audit-plan-remediation"
     },
     {
       "report": "reports/audit-remediation-plan.md",
       "producer": "audit-plan-remediation"
+    },
+    {
+      "report": "reports/audit-remediation-execution.json",
+      "producer": "audit-remediation"
+    },
+    {
+      "report": "reports/audit-remediation-execution.md",
+      "producer": "audit-remediation"
     },
     {
       "report": "reports/code-audit-review.json",

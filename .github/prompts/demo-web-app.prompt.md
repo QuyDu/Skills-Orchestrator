@@ -5,6 +5,25 @@ description: Demo step 2 - build the session countdown web app inside the genera
 
 Skip clarification. Do not ask clarifying questions and do not wait for plan confirmation. Build this end to end, verify it, and report the result when finished.
 
+## Azure authentication and project preflight
+
+Complete this read-only preflight before creating or modifying application files:
+
+1. Confirm the current workspace contains `project-orchestrator.json`, `reports/installation-verification.json`, and `.github/skills/azure-discovery/SKILL.md`. Stop if this is the Project Orchestrator source repository or installation verification is not `passed`.
+2. Run `/azure-discovery -Gov` with `usgovarizona` as the target location. This is the only stage allowed to start the configured Azure CLI login flow. It must initialize or reuse `.azure/environment.json`, select `AzureUSGovernment` and the recorded subscription, authenticate immediately when the current session is missing or stale, and write current `reports/azure-discovery.json` and `reports/azure-discovery.md` evidence. If an existing valid profile selects another Government region, update it to `usgovarizona` for this demo.
+3. Validate that `az cloud show --query name -o tsv` returns `AzureUSGovernment` and `az account show --query id -o tsv` returns a subscription ID. Stop now if either check fails after the discovery login flow; do not defer authentication until deployment.
+4. Validate that `reports/azure-discovery.json` records `cloud` as `AzureUSGovernment` and `location` as `usgovarizona`. The discovered report must be no older than 14 days.
+5. Set the workflow's deployment location from the discovery report, for example:
+
+   ```powershell
+   $discovery = Get-Content ./reports/azure-discovery.json -Raw | ConvertFrom-Json
+   $location = [string]$discovery.location
+   ```
+
+6. Stop before application implementation if discovery, authentication, Azure Government selection, or location validation fails. Do not silently switch clouds, regions, or subscriptions.
+
+This app workflow does not synthesize Speech and must not require `AZURE_SPEECH_KEY` or run the Project Video `azure-preflight` command. Project Video performs its own Speech readiness and approval checks only when `/project-video` is invoked. Discovery is read-only and does not authorize resource creation, deployment, Speech synthesis, or other billable work. The later deployment and Project Video approval gates remain required.
+
 ## Objective
 
 Build a functional web app for the demo session titled **Skills Orchestrator**.
@@ -75,15 +94,15 @@ Run the tests, start the server, and confirm in the browser that all three phase
 
 After the app builds and every test passes, deploy it using the project's own governed entry point at `infra/deploy.ps1`. Do not author a new deployment skill and do not hand-roll `az deployment` calls.
 
-Use `skillsdemo` as the site name. It is 10 characters, inside the 12-character limit, and yields the resource group `rg-skillsdemo`.
+Use `skillsdemo` as the site name. It is 10 characters, inside the 12-character limit, and yields the resource group `rg-skillsdemo`. Reuse `$location` from the validated Azure discovery report; do not replace it with a hard-coded region.
 
-1. Confirm Azure CLI is available, signed in, and targeting Azure Government. `az cloud show --query name -o tsv` must return `AzureUSGovernment` and `az account show --query id -o tsv` must return a subscription ID. If Azure CLI is unavailable, authentication is missing, or the cloud is not Azure Government, stop and report the exact prerequisite; do not switch clouds or start an interactive login during the demo.
+1. Reconfirm the Azure CLI session established during the beginning preflight is still signed in and targeting Azure Government. `az cloud show --query name -o tsv` must return `AzureUSGovernment` and `az account show --query id -o tsv` must return a subscription ID. If the session expired or changed after preflight, stop and report the exact prerequisite; do not switch clouds or start another interactive login at deployment time.
 2. Explain that deployment will create `rg-skillsdemo`, billable Azure Government resources, and a public endpoint. **Stop here and ask the presenter for explicit approval before any Azure mutation.** Proceed only on an explicit yes.
 3. After approval, create the resource group, then preview the exact changes:
 
    ```powershell
-   az group create --name rg-skillsdemo --location usgovvirginia -o none
-   ./infra/deploy.ps1 -SiteName skillsdemo -AzureGov -Location usgovvirginia -AppServiceSku B1 -NoKeyVault -WhatIf
+   az group create --name rg-skillsdemo --location $location -o none
+   ./infra/deploy.ps1 -SiteName skillsdemo -AzureGov -Location $location -AppServiceSku B1 -NoKeyVault -WhatIf
    ```
 
    The resource group must exist before `-WhatIf`, because the preview uses a resource-group deployment.

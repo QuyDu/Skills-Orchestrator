@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import { readFile, readdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
@@ -12,6 +13,7 @@ const expectedSkillIds = [
   "audit-azure-environment",
   "audit-code",
   "audit-plan-remediation",
+  "audit-remediation",
   "audit-review-findings",
   "azure-cleanup",
   "azure-discovery",
@@ -525,6 +527,32 @@ test("every governed skill has deterministic help coverage", async () => {
   assert.match(demoPrompt, /Modify only the newly created project/i);
   assert.doesNotMatch(demoPrompt, /clarification\.askEveryPrompt/);
   assert.doesNotMatch(demoPrompt, /confirmPlanBeforeExecution/);
+  const demoWebAppPrompt = await readFile(path.join(root, ".github", "prompts", "demo-web-app.prompt.md"), "utf8");
+  assert.match(demoWebAppPrompt, /\/azure-discovery -Gov/);
+  assert.match(demoWebAppPrompt, /usgovarizona/);
+  assert.match(demoWebAppPrompt, /az cloud show --query name -o tsv.*AzureUSGovernment/);
+  assert.match(demoWebAppPrompt, /az account show --query id -o tsv.*subscription ID/);
+  assert.match(demoWebAppPrompt, /authenticate immediately when the current session is missing or stale/);
+  assert.match(demoWebAppPrompt, /Stop now if either check fails after the discovery login flow; do not defer authentication until deployment/);
+  assert.ok(
+    demoWebAppPrompt.indexOf("/azure-discovery -Gov") < demoWebAppPrompt.indexOf("## Implementation requirements"),
+    "demo Azure discovery must complete before application implementation"
+  );
+  assert.ok(
+    demoWebAppPrompt.indexOf("/azure-discovery -Gov") < demoWebAppPrompt.indexOf("az cloud show --query name -o tsv"),
+    "demo Azure discovery must establish authentication before the CLI context is validated"
+  );
+  assert.match(demoWebAppPrompt, /reports\/azure-discovery\.json/);
+  assert.match(demoWebAppPrompt, /\$discovery = Get-Content .*azure-discovery\.json/);
+  assert.match(demoWebAppPrompt, /\$location = \[string\]\$discovery\.location/);
+  assert.match(demoWebAppPrompt, /This app workflow does not synthesize Speech and must not require `AZURE_SPEECH_KEY`/);
+  assert.match(demoWebAppPrompt, /Project Video performs its own Speech readiness and approval checks only when `\/project-video` is invoked/);
+  assert.doesNotMatch(demoWebAppPrompt, /project-video\.mjs azure-preflight/);
+  assert.doesNotMatch(demoWebAppPrompt, /credentialConfigured/);
+  assert.match(demoWebAppPrompt, /Reconfirm the Azure CLI session established during the beginning preflight/);
+  assert.match(demoWebAppPrompt, /do not switch clouds or start another interactive login at deployment time/);
+  assert.match(demoWebAppPrompt, /Stop here and ask the presenter for explicit approval before any Azure mutation/);
+  assert.doesNotMatch(demoWebAppPrompt, /-Location usgovvirginia/);
   assert.ok(existsSync(path.join(root, ".github", "prompts", "project-blueprint.prompt.md")));
   for (const prompt of ["project-start.prompt.md", "project-validate.prompt.md"]) {
     assert.ok(existsSync(path.join(root, ".github", "prompts", prompt)), `missing repository prompt ${prompt}`);
@@ -580,7 +608,7 @@ test("profiles are dependency-closed", async () => {
   }
 });
 
-test("the default new-project profile requires the deployed-environment Azure audit", async () => {
+test("the default new-project profile requires Azure audit and remediation execution", async () => {
   const runtimeSource = await readFile(path.join(root, "pso.mjs"), "utf8");
   const defaultProfile = runtimeSource.match(/^const DEFAULT_PROJECT_PROFILE = "([a-z]+)";$/m)?.[1];
   assert.ok(defaultProfile, "pso.mjs must declare DEFAULT_PROJECT_PROFILE");
@@ -592,6 +620,7 @@ test("the default new-project profile requires the deployed-environment Azure au
     for (const skill of profiles.get(name).required) selected.add(skill);
   }
   assert.ok(selected.has("audit-azure-environment"), `${defaultProfile} profile omits audit-azure-environment`);
+  assert.ok(selected.has("audit-remediation"), `${defaultProfile} profile omits audit-remediation`);
 });
 
 test("shipped Bicep keeps derived Azure resource names inside service limits", async () => {
@@ -657,21 +686,106 @@ test("audit pipeline has stable handoffs and schemas", async () => {
   const audit = skills.get("audit-code");
   const review = skills.get("audit-review-findings");
   const remediation = skills.get("audit-plan-remediation");
+  const execution = skills.get("audit-remediation");
 
   assert.ok(sectionItems(audit.source, "Outputs").includes("reports/code-audit-findings.json"));
   assert.match(audit.source, /memory retention and leaks/);
   assert.match(audit.source, /C# `using`/);
   assert.match(audit.source, /unused, duplicate, wildcard, misplaced, or missing imports/);
   assert.match(audit.source, /oversized or multi-responsibility methods\/classes/);
+  assert.match(audit.source, /all locally available refs, branches, tags, and reachable history/);
+  assert.match(audit.source, /specialist secret scanner/i);
+  assert.match(audit.source, /tracked reports/i);
+  assert.match(audit.source, /hosted GitHub security/i);
+  assert.match(audit.source, /Microsoft Security Development Lifecycle/);
+  assert.match(audit.source, /Microsoft Cloud Security Benchmark/);
+  assert.match(audit.source, /OWASP ASVS/);
+  assert.match(audit.source, /NIST Secure Software Development Framework/);
+  assert.match(audit.source, /CIS Controls/);
+  assert.match(audit.source, /SLSA/);
+  assert.match(audit.source, /OpenSSF Scorecard/);
+  assert.match(audit.source, /Never claim that a repository is secure or meets all best practices/);
+  assert.match(audit.source, /schemaVersion: 2\.0\.0/);
+  assert.match(audit.source, /automatically dispatch `audit-review-findings`/);
+  assert.match(audit.source, /automatically dispatch `audit-plan-remediation`/);
+  assert.match(audit.source, /approval-wait/);
+  const auditEvidenceScript = path.join(root, ".github", "skills", "audit-code", "scripts", "audit-evidence.mjs");
+  const auditValidateScript = path.join(root, ".github", "skills", "audit-code", "scripts", "audit-validate.mjs");
+  const gitleaksScript = path.join(root, ".github", "skills", "audit-code", "scripts", "gitleaks-scan.mjs");
+  assert.ok(existsSync(auditEvidenceScript));
+  assert.ok(existsSync(auditValidateScript));
+  assert.ok(existsSync(gitleaksScript));
+  const gitleaksMetadataResult = spawnSync(process.execPath, [gitleaksScript, "metadata"], { cwd: root, encoding: "utf8" });
+  assert.equal(gitleaksMetadataResult.status, 0, gitleaksMetadataResult.stderr);
+  const gitleaksMetadata = JSON.parse(gitleaksMetadataResult.stdout);
+  assert.equal(gitleaksMetadata.version, "8.30.1");
+  assert.equal(gitleaksMetadata.releaseUrl, "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/");
+  assert.match(gitleaksMetadata.archiveSha256, /^[a-f0-9]{64}$/);
+  assert.equal(gitleaksMetadata.checksumsSha256, "061476c21adaf5441516f96f185c1a4706a83cd6329b9b38762271b3d4a52fae");
+  const gitleaksSource = await readFile(gitleaksScript, "utf8");
+  assert.match(gitleaksSource, /AbortSignal\.timeout\(60_000\)/);
+  assert.match(gitleaksSource, /checkpoint output is missing a valid revision or worktree digest/);
+  assert.match(gitleaksSource, /scan input cannot contain symbolic links/);
+  assert.equal(
+    (await readFile(path.join(root, ".gitleaks.toml"), "utf8")).replaceAll("\r\n", "\n").trimEnd(),
+    (await readFile(path.join(root, ".github", "skills", "audit-code", "config", "gitleaks.toml"), "utf8")).replaceAll("\r\n", "\n").trimEnd()
+  );
+  assert.deepEqual(
+    JSON.parse(await readFile(path.join(root, "config", "gitleaks-allowlist.json"), "utf8")),
+    JSON.parse(await readFile(path.join(root, ".github", "skills", "audit-code", "config", "gitleaks-allowlist.json"), "utf8"))
+  );
+  assert.equal(
+    (await readFile(path.join(root, "scripts", "safe-path.mjs"), "utf8")).replaceAll("\r\n", "\n").trimEnd(),
+    (await readFile(path.join(root, ".github", "skills", "audit-code", "scripts", "safe-path.mjs"), "utf8")).replaceAll("\r\n", "\n").trimEnd()
+  );
+  const packageManifest = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
+  assert.match(packageManifest.scripts["security:gitleaks"], /\.github\/skills\/audit-code\/scripts\/gitleaks-scan\.mjs scan/);
+  assert.doesNotMatch(packageManifest.scripts.check, /gitleaks/);
+  const securityWorkflow = await readFile(path.join(root, ".github", "workflows", "security-validation.yml"), "utf8");
+  assert.match(securityWorkflow, /fetch-depth: 0/);
+  assert.match(securityWorkflow, /os: \[windows-latest, ubuntu-latest, macos-latest\]/);
+  assert.match(securityWorkflow, /npm run test:gitleaks/);
+  assert.match(securityWorkflow, /npm run security:gitleaks/);
+  assert.match(securityWorkflow, /actions\/checkout@[a-f0-9]{40}/);
+  assert.match(securityWorkflow, /actions\/upload-artifact@[a-f0-9]{40}/);
+  const auditEvidenceResult = spawnSync(process.execPath, [auditEvidenceScript, "--root", root], { cwd: root, encoding: "utf8" });
+  assert.equal(auditEvidenceResult.status, 0, auditEvidenceResult.stderr);
+  const auditEvidence = JSON.parse(auditEvidenceResult.stdout);
+  assert.equal(auditEvidence.repository.shallow, false);
+  assert.ok(auditEvidence.repository.reachableCommitCount > 0);
+  assert.ok(auditEvidence.repository.trackedReportCount > 0);
+  assert.equal(auditEvidence.hostedGitHub.required, true);
+  assert.equal(auditEvidence.hostedGitHub.status, "blocked");
+  assert.equal(auditEvidence.assurance.status, "insufficient-evidence");
+  assert.ok(auditEvidence.standardsProfiles.some((profile) => profile.id === "microsoft-sdl"));
+  assert.ok(auditEvidence.standardsProfiles.some((profile) => profile.id === "owasp-asvs"));
   assert.ok(sectionItems(review.source, "Composition and Dependencies").includes("audit-code"));
+  assert.match(review.source, /preserve repository evidence, standards applicability and control status, exceptions and expiry, assurance conclusion/);
+  assert.match(review.source, /cannot upgrade or soften the source assurance conclusion/);
   assert.ok(sectionItems(review.source, "Outputs").includes("reports/code-audit-review.json"));
   assert.ok(sectionItems(remediation.source, "Composition and Dependencies").includes("audit-review-findings"));
   assert.ok(sectionItems(remediation.source, "Outputs").includes("reports/audit-remediation-plan.json"));
+  assert.match(remediation.source, /complexity/);
+  assert.match(remediation.source, /audit-remediation/);
+  assert.ok(sectionItems(execution.source, "Composition and Dependencies").includes("audit-plan-remediation"));
+  assert.ok(sectionItems(execution.source, "Composition and Dependencies").includes("workflow-state-manager"));
+  assert.ok(sectionItems(execution.source, "Composition and Dependencies").includes("project-handoff"));
+  assert.ok(sectionItems(execution.source, "Outputs").includes("reports/audit-remediation-execution.json"));
+  for (const parameter of ["-All", "-Phase", "-Finding", "-Resume"]) assert.match(execution.source, new RegExp(parameter));
+  assert.match(execution.source, /After every selected phase or interruption/);
+  assert.match(execution.source, /reports\/project-handoff\.json/);
+  assert.match(execution.source, /audit-validate\.mjs execution/);
+  assert.match(execution.source, /audit-validate\.mjs checkpoint/);
+  assert.match(execution.source, /audit-validate\.mjs snapshot/);
+  assert.match(execution.source, /--resume-root/);
 
   const schemas = [
     "code-audit-findings.schema.json",
     "audit-findings-review.schema.json",
-    "audit-remediation-plan.schema.json"
+    "audit-remediation-plan.schema.json",
+    "audit-remediation-execution.schema.json",
+    "gitleaks-scan.schema.json",
+    "gitleaks-allowlist.schema.json"
   ];
   for (const schemaName of schemas) {
     const schemaPath = path.join(root, "schemas", schemaName);
@@ -681,7 +795,26 @@ test("audit pipeline has stable handoffs and schemas", async () => {
     assert.equal(schema.type, "object");
   }
 
+  const gitleaksSchema = JSON.parse(await readFile(path.join(root, "schemas", "gitleaks-scan.schema.json"), "utf8"));
+  assert.equal(gitleaksSchema.additionalProperties, false);
+  assert.ok(gitleaksSchema.required.includes("worktreeDigest"));
+  assert.ok(gitleaksSchema.required.includes("scanInputDigest"));
+  assert.ok(gitleaksSchema.properties.scopes.items.enum.includes("staged"));
+  assert.deepEqual(gitleaksSchema.properties.findings.required, ["worktree", "staged", "history"]);
+  assert.equal(gitleaksSchema.$defs.findings.items.additionalProperties, false);
+  const allowlistSchema = JSON.parse(await readFile(path.join(root, "schemas", "gitleaks-allowlist.schema.json"), "utf8"));
+  assert.equal(allowlistSchema.additionalProperties, false);
+  assert.ok(allowlistSchema.properties.entries.items.required.includes("reviewedBy"));
+  assert.ok(allowlistSchema.properties.entries.items.required.includes("expiresAt"));
+
   const findingsSchema = JSON.parse(await readFile(path.join(root, "schemas", schemas[0]), "utf8"));
+  assert.deepEqual(findingsSchema.properties.schemaVersion.enum, ["1.0.0", "2.0.0"]);
+  assert.ok(findingsSchema.properties.repositoryEvidence);
+  assert.ok(findingsSchema.properties.standards);
+  assert.ok(findingsSchema.properties.assurance);
+  assert.ok(findingsSchema.allOf.some((condition) => condition.then?.required?.includes("repositoryEvidence")));
+  assert.ok(findingsSchema.allOf.some((condition) => condition.then?.required?.includes("standards")));
+  assert.ok(findingsSchema.allOf.some((condition) => condition.then?.required?.includes("assurance")));
   assert.ok(findingsSchema.required.includes("coverage"));
   assert.equal(findingsSchema.properties.coverage.minItems, 8);
   assert.equal(findingsSchema.properties.coverage.maxItems, 8);
@@ -698,10 +831,33 @@ test("audit pipeline has stable handoffs and schemas", async () => {
 
   const planSchema = JSON.parse(await readFile(path.join(root, "schemas", schemas[2]), "utf8"));
   const item = planSchema.properties.items.items;
+  assert.deepEqual(planSchema.properties.schemaVersion.enum, ["1.0.0", "2.0.0"]);
+  assert.ok(planSchema.properties.prioritization.items.enum.includes("complexity"));
   assert.ok(item.required.includes("dependsOn"));
   assert.ok(item.required.includes("securitySeverity"));
   assert.ok(item.required.includes("acceptanceCriteria"));
   assert.ok(item.required.includes("rollback"));
+  assert.ok(item.properties.complexity.enum.includes("very-high"));
+  assert.ok(planSchema.allOf.some((condition) => condition.then?.properties?.items?.items?.required?.includes("complexity")));
+  assert.ok(planSchema.allOf.some((condition) => condition.then?.properties?.prioritization?.contains?.const === "complexity"));
+
+  const reviewSchema = JSON.parse(await readFile(path.join(root, "schemas", schemas[1]), "utf8"));
+  assert.deepEqual(reviewSchema.properties.schemaVersion.enum, ["1.0.0", "2.0.0"]);
+  assert.ok(reviewSchema.properties.repositoryEvidence);
+  assert.ok(reviewSchema.properties.standards);
+  assert.ok(reviewSchema.properties.assurance);
+  assert.equal(reviewSchema.properties.blockingEvidence, undefined);
+  assert.ok(reviewSchema.allOf.some((condition) => condition.then?.required?.includes("assurance")));
+
+  const executionSchema = JSON.parse(await readFile(path.join(root, "schemas", schemas[3]), "utf8"));
+  assert.deepEqual(executionSchema.properties.schemaVersion.enum, ["1.0.0", "2.0.0", "3.0.0"]);
+  assert.deepEqual(executionSchema.properties.selection.properties.mode.enum, ["all", "phase", "finding", "resume"]);
+  assert.ok(executionSchema.required.includes("checkpoints"));
+  assert.ok(executionSchema.required.includes("remaining"));
+  assert.ok(executionSchema.required.includes("pendingApprovals"));
+  assert.ok(executionSchema.allOf.some((condition) => condition.then?.properties?.checkpoints?.items?.required?.includes("repositoryRevision")));
+  assert.ok(executionSchema.allOf.some((condition) => condition.then?.properties?.checkpoints?.items?.required?.includes("worktreeDigest")));
+  assert.ok(executionSchema.allOf.some((condition) => condition.then?.properties?.sourcePlan?.properties?.path?.pattern?.includes("audit-remediation-plans")));
 });
 
 test("resolved product configuration has a strict versioned schema", async () => {

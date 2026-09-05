@@ -1,27 +1,30 @@
 {
-  "schemaVersion": "1.0.0",
-  "auditId": "AUD-20260830-SKILLS-ORCHESTRATOR",
-  "generatedAt": "2026-08-30T00:00:00.000Z",
+  "schemaVersion": "2.0.0",
+  "auditId": "AUDIT-2026-09-05-PSO-124",
+  "generatedAt": "2026-09-05T14:40:00.000Z",
   "scope": {
     "repository": "Skills-Orchestrator",
-    "revision": "9c73c3dffa11b2a6fb9e83286fe31317438ca26c plus complete current working tree",
+    "revision": "4f967865024134efc2793acfa449b2d66fd295c7 plus complete current working tree",
     "included": [
-      "Complete current working tree, including uncommitted source, tests, instructions, templates, schemas, documentation, and generated reports.",
-      "Local syntax, security, package, release-candidate, skill-contract, adoption, project-understanding, documentation-builder, and project-video validation."
+      "Current tracked, staged, unstaged, and untracked distributable files, including reports and generated evidence.",
+      "All 29 commits reachable from locally available branches, tags, and remote-tracking refs through pinned Gitleaks 8.30.1.",
+      "Security, correctness, reliability, resource management, performance, dependencies, configuration, hygiene, architecture, tests, and operability.",
+      "Microsoft SDL, Microsoft Cloud Security Benchmark, Azure Well-Architected Security, OWASP, NIST SSDF, CIS Controls, SLSA, and OpenSSF applicability readiness."
     ],
     "excluded": [
-      "Azure, package registry, hosted CI, deployment, commit, push, publication, and external signing operations.",
-      "Dynamic browser, accessibility, load, and long-running soak tests."
+      "Hosted GitHub controls, remote-only refs, forks, pull-request refs, Actions logs and artifacts, releases, issues, discussions, wikis, packages, and caches because external access was not approved.",
+      "Unreachable or pruned Git objects and live credential validation.",
+      "Package registries, advisory services, Azure environments, deployment, publication, commit, and push."
     ]
   },
   "provenance": [
     {
-      "tool": "Node.js",
-      "version": "24.14.1",
-      "command": "node --check pso.mjs and all changed Node helpers",
+      "tool": "audit-evidence.mjs",
+      "version": "1.0.0",
+      "command": "node .github/skills/audit-code/scripts/audit-evidence.mjs",
       "status": "passed",
       "exitCode": 0,
-      "notes": "Syntax validation passed."
+      "notes": "Full clone; 29 reachable commits, 4 local branches, 2 remote-tracking refs, 1 tag, 235 tracked files, and 57 tracked reports. Specialist secret-history evidence is completed; hosted GitHub remains blocked."
     },
     {
       "tool": "Project Skills Orchestrator security scanner",
@@ -29,174 +32,261 @@
       "command": "npm run security",
       "status": "passed",
       "exitCode": 0,
-      "notes": "178 files scanned; no secrets, prohibited dynamic evaluation, shell execution, symlink, package-lock, or action-pinning findings."
+      "notes": "195 current files scanned and no findings; this built-in scanner remains defense in depth beside Gitleaks."
     },
     {
-      "tool": "Node.js test runner",
-      "version": "24.14.1",
-      "command": "npm test",
+      "tool": "Gitleaks",
+      "version": "8.30.1",
+      "command": "npm run security:gitleaks",
       "status": "passed",
       "exitCode": 0,
-      "notes": "90 tests passed, including adoption, security fuzzing, package installation, documentation builder, project understanding, and project video coverage."
+      "notes": "Official checksum manifest and platform archive SHA-256 verified; worktree, staged index, tracked reports, ignored distributable files, all local refs, and reachable history passed with full redaction and zero findings. Remote-only refs and unreachable objects remain excluded."
     },
     {
-      "tool": "Git",
-      "version": "2.55.0",
-      "command": "git diff --check",
-      "status": "failed",
-      "exitCode": 1,
-      "notes": "Generated project-understanding Markdown contains trailing whitespace used for hard line breaks."
-    },
-    {
-      "tool": "Project Skills Orchestrator runtime",
+      "tool": "npm repository gate",
       "version": "1.1.1",
-      "command": "node pso.mjs verify",
+      "command": "npm run check",
       "status": "passed",
       "exitCode": 0,
-      "notes": "41 skills, schemas, profiles, dependencies, ownership, and audit pipeline validated."
+      "notes": "105 tests passed, security scanned 195 files, 150 release-candidate files verified, and 43 skills passed distribution verification."
+    },
+    {
+      "tool": "VS Code diagnostics",
+      "version": "current workspace",
+      "command": "get_errors",
+      "status": "passed",
+      "exitCode": 0,
+      "notes": "No current diagnostics were reported."
     }
   ],
   "coverage": [
     {
       "area": "security",
-      "status": "completed",
-      "checks": ["Secret scan", "Dynamic execution scan", "Supply-chain and workflow-action pinning scan"],
-      "evidence": ["npm run security passed for 178 files."],
-      "limitations": ["No external vulnerability advisory lookup was authorized."]
+      "status": "partial",
+      "checks": ["Current-tree built-in scan", "Pinned worktree/index/report/all-ref/history scan", "Schema assurance review", "Release-gate review"],
+      "evidence": ["npm run security passed for 195 files.", "Gitleaks 8.30.1 passed all approved local scopes with zero findings and full redaction.", "AUD-0204 no longer reproduces; AUD-0205 records the remaining release-assurance gap."],
+      "limitations": ["No hosted GitHub security evidence.", "Remote-only refs and unreachable objects were not scanned.", "No external advisory or current standards retrieval."]
     },
     {
       "area": "correctness-reliability",
-      "status": "partial",
-      "checks": ["Complete Node test suite", "Documentation and Project Understanding integrity-path review"],
-      "evidence": ["npm test passed with 90 tests.", "AUD-0002 identifies an untested integrity path."],
-      "limitations": ["No live deployment or interruption test was run."]
+      "status": "completed",
+      "checks": ["Complete repository test suite", "Audit pipeline schema and dependency review", "Execution state contract review"],
+      "evidence": ["npm run check passed 105 tests.", "The P3 schema 3.0 execution artifact validates against immutable PSO-123 snapshot 8eab33fd.", "Canonical plan replacement regression coverage passes.", "AUD-0203, AUD-0204, and AUD-0207 no longer reproduce."],
+      "limitations": []
     },
     {
       "area": "resource-management",
       "status": "completed",
-      "checks": ["Review of temporary-file cleanup and atomic publication paths", "Test coverage for interrupted adoption recovery"],
-      "evidence": ["Adoption recovery tests passed.", "Project Understanding cleans partial and backup publication files."],
-      "limitations": ["No long-duration memory or handle profiling was run."]
+      "checks": ["Temporary fixture cleanup", "Adoption rollback and recovery tests", "Process and file-boundary review"],
+      "evidence": ["Recovery, rollback, and temporary-project tests passed in npm run check."],
+      "limitations": ["No long-running memory or handle profiler was used."]
     },
     {
       "area": "performance",
       "status": "partial",
-      "checks": ["Static review of bounded repository scans and generated guide processing"],
-      "evidence": ["Project Understanding caps text reads and scan file counts."],
-      "limitations": ["No benchmark or load test was run."]
+      "checks": ["Bounded repository scans", "Full test duration observation", "Synchronous evidence collector review"],
+      "evidence": ["Repository checks completed successfully; audit evidence collection is bounded by Git metadata queries."],
+      "limitations": ["No benchmark, load test, or profiler was run."]
     },
     {
       "area": "dependencies-configuration",
-      "status": "completed",
-      "checks": ["Package lock and npm policy validation", "Skill catalog and profile closure validation"],
-      "evidence": ["npm run security passed.", "node pso.mjs verify passed."],
-      "limitations": ["No registry or advisory service was contacted."]
+      "status": "partial",
+      "checks": ["Lockfile and npm policy", "Action pinning", "Profile dependency closure", "Release evidence"],
+      "evidence": ["Security and distribution checks passed with zero package dependencies.", "Pinned scanner assets and GitHub Actions use immutable SHA-256 or commit pins.", "AUD-0205 records release evidence blockers."],
+      "limitations": ["No package registry or advisory service was contacted."]
     },
     {
       "area": "code-hygiene",
-      "status": "partial",
-      "checks": ["git diff --check", "Changed source and contract review"],
-      "evidence": ["AUD-0001 identifies generated trailing whitespace."],
-      "limitations": ["ESLint, Semgrep, npm-audit, pip-audit, and PSScriptAnalyzer were unavailable locally."]
+      "status": "completed",
+      "checks": ["Workspace diagnostics", "git diff --check", "Changed contract and schema review"],
+      "evidence": ["No diagnostics or whitespace errors; only line-ending normalization warnings were emitted."],
+      "limitations": ["No ESLint, Semgrep, or PSScriptAnalyzer execution."]
     },
     {
       "area": "design-maintainability",
       "status": "completed",
-      "checks": ["Review of project-relative documentation generation", "Review of generated-project instruction preservation"],
-      "evidence": ["Documentation builder accepts an explicit project root.", "Adoption regression tests passed."],
-      "limitations": ["No independent architecture review was requested."]
+      "checks": ["Skill ownership boundaries", "Dependency cycle checks", "Schema version compatibility", "Generated-project propagation"],
+      "evidence": ["43 skills passed ownership and dependency verification.", "Adoption propagation test passed."],
+      "limitations": []
     },
     {
       "area": "tests-operability",
       "status": "partial",
-      "checks": ["Complete test suite", "Release-candidate validation", "Demo prompt review"],
-      "evidence": ["npm test passed with 90 tests.", "Release-candidate verification was previously successful."],
-      "limitations": ["No hosted CI, browser, accessibility, Azure, or deployment rehearsal was run."]
+      "checks": ["Full local test suite", "Release candidate build and verification", "Cross-platform evidence freshness"],
+      "evidence": ["105 local gate tests and 5 specialist scanner tests completed.", "150 candidate files verified.", "The three-OS specialist workflow is configured.", "AUD-0205 records stale or missing external release evidence."],
+      "limitations": ["The configured hosted Windows/Linux/macOS specialist jobs have not run.", "No current hosted CI, browser accessibility, deployment, or soak evidence."]
     }
   ],
-  "summary": {
-    "total": 2,
-    "bySecuritySeverity": {
-      "critical": 0,
-      "high": 0,
-      "medium": 0,
-      "low": 0,
-      "none": 2
+  "repositoryEvidence": {
+    "localGit": {
+      "status": "partial",
+      "revision": "4f967865024134efc2793acfa449b2d66fd295c7 plus dirty working tree",
+      "worktreeDirty": true,
+      "shallow": false,
+      "reachableCommitCount": 29,
+      "scannedRefs": ["refs/heads/*", "refs/remotes/*", "refs/tags/*"],
+      "limitations": ["Remote-only refs were not fetched.", "Unreachable and pruned objects were not assessed."]
     },
-    "byCategory": {
-      "correctness": 1,
-      "code-hygiene": 1
+    "secretScanning": {
+      "status": "completed",
+      "scanner": "Gitleaks",
+      "version": "8.30.1",
+      "configurationDigest": "e9ba7656309b23cb5b7d00aa9b7dde346caaec9c88dbd435ebaea98dde6975a4",
+      "scopes": ["worktree", "staged", "untracked-distributable", "tracked-reports", "all-local-refs", "reachable-history"],
+      "findingCount": 0,
+      "limitations": ["Remote-only refs were not fetched.", "Unreachable and pruned objects were not assessed."]
+    },
+    "hostedRepository": {
+      "provider": "github",
+      "status": "blocked",
+      "checkedAt": null,
+      "controls": [],
+      "limitations": ["Read-only external GitHub access was not explicitly approved."]
     }
+  },
+  "standards": [
+    {
+      "id": "microsoft-sdl",
+      "title": "Microsoft Security Development Lifecycle",
+      "publisher": "Microsoft",
+      "version": "retrieval-date-2026-09-04",
+      "reference": "https://www.microsoft.com/securityengineering/sdl/practices",
+      "accessedAt": "2026-09-04",
+      "applicability": "applicable",
+      "rationale": "The repository develops and distributes software automation.",
+      "controls": [{"id": "LOCAL-MSDL-EVIDENCE", "title": "Secure development evidence", "status": "blocked", "evidence": ["Local tests, threat model, and fail-closed release gates exist."], "limitations": ["Current external guidance retrieval and independent review were unavailable."]}]
+    },
+    {
+      "id": "microsoft-cloud-security-benchmark",
+      "title": "Microsoft Cloud Security Benchmark",
+      "publisher": "Microsoft",
+      "version": "retrieval-date-2026-09-04",
+      "reference": "https://learn.microsoft.com/security/benchmark/azure/overview",
+      "accessedAt": "2026-09-04",
+      "applicability": "partially-applicable",
+      "rationale": "The repository defines Azure templates but this audit did not inspect a deployed environment.",
+      "controls": [{"id": "LOCAL-MCSB-DESIGN", "title": "Azure design-time security", "status": "blocked", "evidence": ["Managed identity and Key Vault patterns are tested locally."], "limitations": ["Deployed Azure posture belongs to audit-azure-environment and was not run."]}]
+    },
+    {
+      "id": "azure-well-architected-security",
+      "title": "Azure Well-Architected Framework Security",
+      "publisher": "Microsoft",
+      "version": "retrieval-date-2026-09-04",
+      "reference": "https://learn.microsoft.com/azure/well-architected/security/",
+      "accessedAt": "2026-09-04",
+      "applicability": "partially-applicable",
+      "rationale": "Azure infrastructure templates are distributed by this repository.",
+      "controls": [{"id": "LOCAL-WAF-SECURITY", "title": "Design-time workload security", "status": "blocked", "evidence": ["Architecture and security contracts exist."], "limitations": ["Current external checklist and deployed evidence were unavailable."]}]
+    },
+    {
+      "id": "owasp-asvs",
+      "title": "OWASP Application Security Verification Standard",
+      "publisher": "OWASP",
+      "version": "retrieval-date-2026-09-04",
+      "reference": "https://owasp.org/www-project-application-security-verification-standard/",
+      "accessedAt": "2026-09-04",
+      "applicability": "partially-applicable",
+      "rationale": "The product is a local CLI and project generator rather than a hosted web application.",
+      "controls": [{"id": "LOCAL-ASVS-APPLICABILITY", "title": "Applicable input and trust-boundary controls", "status": "blocked", "evidence": ["Traversal, symlink, parser, and recovery tests passed."], "limitations": ["No current authoritative control-by-control retrieval."]}]
+    },
+    {
+      "id": "owasp-top-10",
+      "title": "OWASP Top 10",
+      "publisher": "OWASP",
+      "version": "2021",
+      "reference": "https://owasp.org/www-project-top-ten/",
+      "accessedAt": "2026-09-04",
+      "applicability": "partially-applicable",
+      "rationale": "Several injection, integrity, and security-configuration categories apply to generated projects and local automation.",
+      "controls": [{"id": "LOCAL-OWASP-TOP10", "title": "Applicable common weakness review", "status": "blocked", "evidence": ["Local security and fuzz checks passed."], "limitations": ["No external advisory or hosted runtime evidence."]}]
+    },
+    {
+      "id": "nist-ssdf",
+      "title": "NIST Secure Software Development Framework",
+      "publisher": "NIST",
+      "version": "SP 800-218 1.1",
+      "reference": "https://csrc.nist.gov/pubs/sp/800/218/final",
+      "accessedAt": "2026-09-04",
+      "applicability": "applicable",
+      "rationale": "The repository has a governed software development and release lifecycle.",
+      "controls": [{"id": "LOCAL-SSDF-EVIDENCE", "title": "Secure development and release evidence", "status": "blocked", "evidence": ["Threat model, tests, pinning, and release gates exist."], "limitations": ["Independent review and signed provenance are incomplete."]}]
+    },
+    {
+      "id": "cis-controls",
+      "title": "CIS Controls",
+      "publisher": "Center for Internet Security",
+      "version": "retrieval-date-2026-09-04",
+      "reference": "https://www.cisecurity.org/controls",
+      "accessedAt": "2026-09-04",
+      "applicability": "partially-applicable",
+      "rationale": "Repository, dependency, access, logging, and vulnerability-management controls are relevant.",
+      "controls": [{"id": "LOCAL-CIS-REPOSITORY", "title": "Repository operational safeguards", "status": "blocked", "evidence": ["Local workflows and security policy exist."], "limitations": ["Hosted GitHub settings and organizational controls were unavailable."]}]
+    },
+    {
+      "id": "slsa",
+      "title": "Supply-chain Levels for Software Artifacts",
+      "publisher": "OpenSSF",
+      "version": "retrieval-date-2026-09-04",
+      "reference": "https://slsa.dev/spec/",
+      "accessedAt": "2026-09-04",
+      "applicability": "applicable",
+      "rationale": "The repository builds distributable release candidates.",
+      "controls": [{"id": "LOCAL-SLSA-PROVENANCE", "title": "Artifact provenance and integrity", "status": "non-conformant", "evidence": ["Unsigned candidate checksums exist; trusted signing and provenance are blocked."], "limitations": []}]
+    },
+    {
+      "id": "openssf-scorecard",
+      "title": "OpenSSF Scorecard",
+      "publisher": "OpenSSF",
+      "version": "retrieval-date-2026-09-04",
+      "reference": "https://scorecard.dev/",
+      "accessedAt": "2026-09-04",
+      "applicability": "applicable",
+      "rationale": "The project is hosted on GitHub and uses GitHub Actions.",
+      "controls": [{"id": "LOCAL-OPENSSF-HOSTED", "title": "Hosted repository security posture", "status": "blocked", "evidence": ["Actions are pinned in local workflow files."], "limitations": ["Hosted GitHub evidence and Scorecard execution were not approved."]}]
+    }
+  ],
+  "assurance": {
+    "conclusion": "insufficient-evidence",
+    "rationale": "Local tests and pinned specialist secret-history scanning passed and AUD-0204 no longer reproduces, but hosted GitHub, signed provenance, current cross-platform, production verification, and independent review evidence remain unavailable.",
+    "blockingEvidence": ["AUD-0205", "Hosted GitHub evidence unavailable", "Current hosted cross-platform, signing, provenance, and independent-review evidence unavailable"],
+    "exceptionCount": 0,
+    "expiredExceptionCount": 0
+  },
+  "summary": {
+    "total": 1,
+    "bySecuritySeverity": {"critical": 0, "high": 0, "medium": 1, "low": 0, "none": 0},
+    "byCategory": {"configuration": 1}
   },
   "findings": [
     {
-      "id": "AUD-0001",
-      "title": "Generated Project Understanding Markdown fails diff hygiene checks",
-      "category": "code-hygiene",
-      "bugType": "Generated trailing whitespace",
-      "securitySeverity": "none",
+      "id": "AUD-0205",
+      "title": "Production release assurance evidence is incomplete and stale",
+      "category": "configuration",
+      "bugType": "Incomplete release assurance",
+      "securitySeverity": "medium",
       "confidence": "high",
-      "observedBehavior": "The Markdown generator appends two spaces before each newline in every list entry. The generated reports/project-understanding.md therefore causes git diff --check to fail with trailing-whitespace errors.",
-      "expectedBehavior": "Generated repository artifacts should pass the repository's whitespace check unless a documented formatter exception exists.",
-      "impact": "A normal pre-commit hygiene check fails after regenerating Project Understanding, obscuring real whitespace defects and adding review noise.",
+      "observedBehavior": "Release readiness remains blocked for current-commit cross-platform CI, trusted signature, independent review, and production verification; the recorded report targets an older revision and version.",
+      "expectedBehavior": "Production distribution requires current-revision cross-platform evidence, trusted signature and provenance, SBOM, independent review, and successful production verification.",
+      "impact": "Consumers cannot establish that the distributed artifact is the reviewed, tested, untampered build for the current source state.",
       "likelihood": "high",
       "evidence": [
-        {
-          "path": ".github/skills/project-understanding/scripts/project-understanding.mjs",
-          "startLine": 108,
-          "endLine": 110,
-          "description": "markdownList deliberately emits two trailing spaces before the line break."
-        },
-        {
-          "path": "reports/project-understanding.md",
-          "startLine": 11,
-          "endLine": 11,
-          "description": "Generated list output contains the trailing whitespace detected by git diff --check."
-        }
+        {"path": "reports/release-readiness.json", "startLine": 8, "endLine": 18, "description": "The release is blocked and the report predates the audited revision."},
+        {"path": "reports/release-readiness.json", "startLine": 35, "endLine": 54, "description": "Cross-platform CI, signature, independent review, and production verification are blocked."}
       ],
-      "resolution": "Emit ordinary Markdown list lines without trailing spaces, or adopt a documented formatter exception and test it explicitly.",
-      "verification": ["Regenerate Project Understanding.", "Run git diff --check and confirm it exits successfully.", "Preserve Markdown readability in the generated report."],
-      "references": []
-    },
-    {
-      "id": "AUD-0002",
-      "title": "Project guide validation does not bind the current guide or Understanding Markdown content",
-      "category": "correctness",
-      "bugType": "Incomplete integrity validation",
-      "securitySeverity": "none",
-      "confidence": "high",
-      "observedBehavior": "documentation-builder validate compares the stored Understanding Markdown digest to the digest value in the Understanding JSON, but does not hash the current Understanding Markdown file. It also checks only the guide title, so an edited guide body can still validate.",
-      "expectedBehavior": "A canonical evidence-bound guide validation should reject a guide whose body or source Understanding Markdown has changed after generation.",
-      "impact": "Downstream Project Video and presentation workflows can accept altered documentation while reporting it as evidence-bound to the current repository scan.",
-      "likelihood": "medium",
-      "evidence": [
-        {
-          "path": ".github/skills/documentation-builder/scripts/documentation-builder.mjs",
-          "startLine": 115,
-          "endLine": 134,
-          "description": "validate checks metadata and claim evidence but does not compare a hash of the current guide or Understanding Markdown content."
-        },
-        {
-          "path": ".github/skills/documentation-builder/scripts/documentation-builder.mjs",
-          "startLine": 157,
-          "endLine": 164,
-          "description": "validateExisting loads the current guide and Understanding files but relies on the incomplete validation routine."
-        },
-        {
-          "path": "tests/documentation-builder.test.mjs",
-          "startLine": 17,
-          "endLine": 38,
-          "description": "The regression test covers successful generation and validation but not post-generation tampering of either bound document."
-        }
-      ],
-      "resolution": "Record a SHA-256 digest for the rendered guide in the guide report, compare it during validation, and hash the current Project Understanding Markdown against its declared digest. Add tamper regression tests for both files.",
-      "verification": ["Build and validate a guide successfully.", "Modify the guide body and confirm validate fails.", "Modify project-understanding.md without updating its JSON digest and confirm validate fails.", "Run npm test."],
-      "references": []
+      "resolution": "Regenerate release readiness for the current revision, run hosted cross-platform CI, produce and verify SBOM/provenance and a trusted signature, obtain independent review, and retain fail-closed distribution until every artifact verifies.",
+      "verification": ["Current-revision cross-platform matrix passes.", "Trusted signature and provenance verify.", "Independent review binds the exact revision and findings.", "Production release verification passes with no blockers."],
+      "references": [
+        {"title": "Microsoft Security Development Lifecycle", "publisher": "Microsoft", "url": "https://www.microsoft.com/securityengineering/sdl/practices", "accessedAt": "2026-09-04", "kind": "microsoft"},
+        {"title": "SLSA specification", "publisher": "OpenSSF", "url": "https://slsa.dev/spec/", "accessedAt": "2026-09-04", "kind": "industry"}
+      ]
     }
   ],
   "limitations": [
-    "The audit did not contact Azure, package registries, hosted CI, or external advisory services.",
-    "No browser, accessibility, performance-load, or long-running soak tests were performed.",
-    "Several optional analyzers were unavailable locally: ESLint, Semgrep, npm-audit, pip-audit, and PSScriptAnalyzer."
+    "No external GitHub, registry, advisory, Azure, or standards retrieval was authorized.",
+    "Pinned Gitleaks completed the approved local scopes; remote-only refs and unreachable objects remain outside scope.",
+    "No live credential was validated and no candidate value is included in this report.",
+    "The working tree is dirty and includes user and agent changes; findings describe this exact combined state.",
+    "AUD-0201, AUD-0202, AUD-0203, AUD-0204, AUD-0206, and AUD-0207 were re-tested and are no longer reproducible in the current working tree.",
+    "Execution schema 3.0 and deterministic validation enforce immutable plan binding, selector, dependency, validation, checkpoint, remaining-work, approval, and resume-drift invariants."
   ]
 }

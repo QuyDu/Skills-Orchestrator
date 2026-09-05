@@ -2342,7 +2342,8 @@ async function inventory(requestedRoot) {
   const pipelineRequirements = [
     ["audit-code", "reports/code-audit-findings.json", "schemas/code-audit-findings.schema.json"],
     ["audit-review-findings", "reports/code-audit-review.json", "schemas/audit-findings-review.schema.json"],
-    ["audit-plan-remediation", "reports/audit-remediation-plan.json", "schemas/audit-remediation-plan.schema.json"]
+    ["audit-plan-remediation", "reports/audit-remediation-plan.json", "schemas/audit-remediation-plan.schema.json"],
+    ["audit-remediation", "reports/audit-remediation-execution.json", "schemas/audit-remediation-execution.schema.json"]
   ];
   for (const [skillName, report, schema] of pipelineRequirements) {
     const skill = pipeline.get(skillName);
@@ -2351,6 +2352,9 @@ async function inventory(requestedRoot) {
   }
   if (!pipeline.get("audit-review-findings")?.dependencies.includes("audit-code")) throw new Error("audit-review-findings must depend on audit-code");
   if (!pipeline.get("audit-plan-remediation")?.dependencies.includes("audit-review-findings")) throw new Error("audit-plan-remediation must depend on audit-review-findings");
+  if (!pipeline.get("audit-remediation")?.dependencies.includes("audit-plan-remediation")) throw new Error("audit-remediation must depend on audit-plan-remediation");
+  if (!pipeline.get("audit-remediation")?.dependencies.includes("workflow-state-manager")) throw new Error("audit-remediation must depend on workflow-state-manager");
+  if (!pipeline.get("audit-remediation")?.dependencies.includes("project-handoff")) throw new Error("audit-remediation must depend on project-handoff");
   const reports = path.join(root, "reports");
   await assertSafeManagedPath(root, "reports");
   await mkdir(reports, { recursive: true });

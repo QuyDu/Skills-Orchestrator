@@ -9,7 +9,7 @@ confidence: medium
 
 ## Purpose
 
-Convert validated audit findings into prioritized remediation work with owners, dependencies, verification, rollout, and rollback guidance.
+Convert validated audit findings into prioritized, complexity-estimated remediation phases with owners, dependencies, verification, rollout, and rollback guidance. This skill plans work only; `audit-remediation` exclusively owns execution.
 
 ## Preconditions
 
@@ -40,18 +40,20 @@ Convert validated audit findings into prioritized remediation work with owners, 
 1. Validate the reviewed findings report against `schemas/audit-findings-review.schema.json`; reject raw or unreviewed findings.
 2. Include confirmed findings and explicitly disposition `needs-more-evidence`, disputed, and false-positive findings without scheduling unsupported repairs.
 3. Build a directed dependency graph from finding prerequisites, shared root causes, affected components, containment needs, and release constraints. Reject cycles until they are resolved or explicitly broken into phases.
-4. Prioritize mandatory containment and critical/high security findings first, except where a prerequisite must precede them. Then order by dependency criticality, severity, exploitability, user impact, confidence, and remediation cost.
-5. Group findings only when one change and one verification strategy resolves the same root cause; preserve all source finding IDs.
-6. For each work item define owner role, scope, prerequisites, implementation steps, Microsoft and industry guidance inherited from review, acceptance criteria, tests, security validation, rollout, rollback, approvals, and residual risk.
-7. Define milestones and parallelizable work without violating dependencies. Separate immediate containment, permanent remediation, and deferred risk acceptance.
-8. Require explicit approval for accepted risk, destructive changes, production deployment, external mutation, or bypassing a security control.
-9. Validate the JSON plan against `schemas/audit-remediation-plan.schema.json`, then generate the Markdown view from the same ordered data.
+4. Estimate each item as `low`, `medium`, `high`, or `very-high` complexity using affected scope, dependency depth, migration needs, validation breadth, rollback difficulty, and operational coordination. Record rationale; never use complexity to defer required containment silently.
+5. Prioritize mandatory containment and critical/high security findings first, except where a prerequisite must precede them. Then order by dependency criticality, severity, exploitability, user impact, confidence, complexity, and remediation cost.
+6. Group findings only when one change and one verification strategy resolves the same root cause; preserve all source finding IDs.
+7. For each work item define owner role, scope, prerequisites, implementation steps, complexity and rationale, Microsoft and industry guidance inherited from review, acceptance criteria, tests, security validation, rollout, rollback, approvals, and residual risk.
+8. Define stable milestone IDs as executable phase IDs and list their ordered item IDs. Separate immediate containment, permanent remediation, and deferred risk acceptance; identify parallelizable work without violating dependencies.
+9. Require explicit approval for accepted risk, destructive changes, production deployment, external mutation, or bypassing a security control.
+10. Emit new plans with `schemaVersion: 2.0.0`, include `complexity` in the authoritative prioritization sequence, validate the JSON plan against `schemas/audit-remediation-plan.schema.json`, and run `node .github/skills/audit-code/scripts/audit-validate.mjs plan reports/audit-remediation-plan.json`. Generate the Markdown view from the same ordered data and identify `/audit-remediation -All`, `-Phase <milestone-id>`, `-Finding <AUD-id>`, and `-Resume` as the separately approval-gated execution entry points. Legacy 1.0 plans remain readable but must be upgraded before execution because they lack required complexity evidence.
 
 ## Validation
 
 - Every confirmed reviewed finding is mapped to a remediation item, containment item, or explicit approved disposition.
 - Dependencies are acyclic, resolvable, and reflected in execution order; no lower-severity item bypasses an unresolved prerequisite.
 - Each item has acceptance criteria, verification, owner role, rollout, rollback, approval requirements, and source finding IDs.
+- Every item has a complexity estimate and rationale; every milestone has a stable phase ID usable by `audit-remediation -Phase`.
 - The JSON validates against `schemas/audit-remediation-plan.schema.json`; Markdown preserves the same ordering and traceability.
 
 ## Outputs

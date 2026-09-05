@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1.0.0",
-  "reviewId": "DEP-2026-08-23-0001",
-  "generatedAt": "2026-08-23T17:56:35.579Z",
+  "reviewId": "DEP-0205",
+  "generatedAt": "2026-09-05T15:25:00.000Z",
   "candidate": {
-    "release": "project-skills-orchestrator 1.0.2, commit e879bd635cd42e99b4c4419151b3ce35a1e6222f",
+    "release": "project-skills-orchestrator 1.1.1, commit 4f967865024134efc2793acfa449b2d66fd295c7 plus dirty working-tree candidate",
     "targetEnvironment": "authorized internal production distribution",
     "carriesProductionData": false,
     "blastRadius": "Recipients use the package to create or modify development repositories and agent configuration; a bad release can affect generated project setup and workflow guidance."
@@ -12,43 +12,44 @@
   "gates": [
     {
       "gate": "build-reproducibility",
-      "state": "pass",
+      "state": "fail",
       "evidence": [
-        "npm run check passed on Node.js 24.14.1",
-        "npm run release:verify:candidate passed with 110 checksum-covered files",
-        "package-lock.json is committed and the package declares zero dependencies"
+        "npm run check passed 105 tests and all 43 skills before P4 evidence-only changes.",
+        "The rebuilt unsigned candidate verifies 150 checksum-covered files and includes CycloneDX SBOM and in-toto provenance.",
+        "The working tree is dirty, so the candidate cannot be reproduced from advertised commit 4f967865 without the uncommitted source set."
       ]
     },
     {
       "gate": "configuration-completeness",
       "state": "pass",
       "evidence": [
-        "release/release-manifest.json declares the required standalone, checksum, package, SBOM, and provenance artifacts",
-        "README.md and SECURITY.md restrict distribution to authorized internal use"
+        "release/release-manifest.json requires standalone output, checksums, private package, SBOM, provenance, trusted signature, independent review, and three-platform evidence.",
+        "README.md and SECURITY.md restrict distribution to authorized internal use and keep production release fail-closed."
       ]
     },
     {
       "gate": "environment-parity",
       "state": "fail",
       "evidence": [
-        "reports/cross-platform-ci-evidence.json covers Windows, Linux, and macOS on Node 22, 24, and 26, but is bound to commit b91b562c13f28ad53c6d60ad89c968eae6a34683 rather than candidate commit e879bd635cd42e99b4c4419151b3ce35a1e6222f"
+        "Validated GitHub artifact from run 33577680101 covers Windows, Linux, and macOS on Node 22, 24, and 26 for committed HEAD 4f967865.",
+        "The current uncommitted P3/P4 changes, including the three-OS specialist scanner jobs, are absent from that remote run."
       ]
     },
     {
       "gate": "security-findings-closed",
       "state": "fail",
       "evidence": [
-        "npm run security passed with zero findings",
-        "release/release-manifest.json still requires trusted-signing-identity and independent-security-review",
-        "The current audit identifies unresolved release assurance work"
+        "Local built-in security and pinned Gitleaks scans pass without findings in their approved scopes.",
+        "SECF-0205 records missing hosted branch, secret, dependency, code-scanning upload, and vulnerability-reporting safeguards.",
+        "Trusted release signature and independently signed review evidence are not provisioned."
       ]
     },
     {
       "gate": "architecture-findings-closed",
       "state": "fail",
       "evidence": [
-        "reports/code-audit-review.json records confirmed architecture and maintainability findings AUD-0102 through AUD-0105",
-        "reports/audit-remediation-plan.json lists remediation milestones that are not complete"
+        "ARCF-0205 records that hosted source controls do not enforce the repository release policy.",
+        "No owner has accepted that high-severity architecture finding."
       ]
     },
     {
@@ -62,18 +63,18 @@
       "gate": "observability",
       "state": "fail",
       "evidence": [
-        "No current production distribution dashboard, alert, or operational health signal is recorded for package consumption and generated-project failures"
+        "No current production distribution dashboard, alert, revocation monitor, or downstream package-consumption health signal is recorded."
       ]
     }
   ],
   "verification": [
     {
       "signal": "release:verify against the signed candidate",
-      "expected": "Signature, checksum, SBOM, provenance, and release contract verification pass with the trusted public-key fingerprint."
+      "expected": "Signature, checksum, SBOM, provenance, and independent review verify with externally trusted key fingerprints."
     },
     {
       "signal": "cross-platform CI evidence commit field",
-      "expected": "Every required Windows, Linux, and macOS run on Node 22, 24, and 26 references e879bd635cd42e99b4c4419151b3ce35a1e6222f."
+      "expected": "Every required Windows, Linux, and macOS run on Node 22, 24, and 26 references the clean commit containing the complete candidate source."
     },
     {
       "signal": "independent review decision",
@@ -99,9 +100,9 @@
   },
   "limitations": [
     "No live Azure environment or deployment was accessed.",
-    "No hosted CI run, branch protection state, or remote Actions history was retrieved.",
-    "The candidate is unsigned and has no independent review record bound to this commit.",
-    "Cross-platform evidence exists but is stale for this candidate commit.",
+    "Read-only hosted evidence was retrieved, but no GitHub setting or workflow was mutated or dispatched.",
+    "The candidate is unsigned and has no independent review record bound to its exact source set.",
+    "Cross-platform evidence is current for committed HEAD but stale for the dirty candidate.",
     "Observability for package distribution and generated-project runtime behavior is not established in repository evidence."
   ]
 }
