@@ -47,6 +47,16 @@ Both commands must exit successfully. `release:status` writes `reports/release-r
 
 Publish only to the approved restricted internal package registry or internal artifact store. Preserve checksums, SBOM, provenance, signature, review evidence, CI evidence, source revision, and readiness report for the organization's required retention period. Apply least-privilege access and prevent anonymous or public reads.
 
+## Operational Ownership And Monitoring
+
+- Assign concrete `@identity` values for the **Release owner**, **Security response owner**, and **Internal artifact repository owner** in `reports/release-operations.json`; role labels or placeholders do not pass readiness.
+- The Release owner verifies the exact candidate, records distribution time and destination, and checks GitHub Security Validation and CodeQL before promotion.
+- The Security response owner reviews secret-scanning, Dependabot, CodeQL, and private vulnerability reports before each release and at least weekly while a version remains supported.
+- The Internal artifact repository owner monitors installation failures and access anomalies, confirms artifact availability, and owns immediate revocation.
+- Record every required signal in `reports/release-operations.json` with current status, check time, and evidence bound to the candidate digest. Missing, stale, failed, or inaccessible evidence blocks promotion and triggers review of already distributed artifacts.
+- Test revocation against the selected internal artifact destination and record the owner, time, and result. A declared but untested revocation route does not pass readiness.
+- Any checksum, signature, provenance, independent-review, installation-health, or security-alert failure stops distribution immediately. Record the affected version and digest, preserve evidence, notify all three owner roles, and begin revocation.
+
 ## Revocation
 
-For a suspected compromise or material defect, stop distribution, revoke the artifact in the internal registry, preserve evidence, notify security response owners, rotate compromised signing credentials, and publish a replacement only after completing the full release process again.
+For a suspected compromise or material defect, the Release owner stops distribution, the Internal artifact repository owner revokes the artifact and verifies it is no longer downloadable, and the Security response owner preserves evidence and coordinates containment. Rotate compromised signing credentials outside this repository. Record revocation status with the release digest and notify known consumers. Publish a replacement only after completing the full release process again.

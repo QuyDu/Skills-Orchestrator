@@ -7,6 +7,7 @@ import { spawnSync } from "node:child_process";
 import test from "node:test";
 import { assertSafeRelativePath } from "../scripts/safe-path.mjs";
 import { releaseSourceStatus } from "../scripts/release-worktree.mjs";
+import { resolveReleaseMetadata } from "../scripts/release-metadata.mjs";
 import { canonicalReviewPayload, publicKeyFingerprint, requireTrustedPublicKey } from "../scripts/trust.mjs";
 
 const root = path.resolve(import.meta.dirname, "..");
@@ -65,6 +66,8 @@ test("release manifest declares required supply-chain outputs", async () => {
   assert.deepEqual(release.requiredArtifacts.sort(), ["checksums", "private-package", "provenance", "sbom", "standalone"].sort());
   assert.equal(release.requireSignature, true);
   assert.equal(release.requireIndependentReview, true);
+  assert.deepEqual(release.requiredOperationalRoles.sort(), ["artifactRevocation", "release", "securityResponse"]);
+  assert.deepEqual(release.monitoringSignals.sort(), ["artifact-revocation-status", "github-codeql", "github-dependabot-alerts", "github-secret-scanning", "github-security-validation", "internal-artifact-install-health", "private-vulnerability-reports"].sort());
   assert.equal(existsSync(path.join(root, "LICENSE")), true);
   for (const schema of [
     "release-manifest.schema.json",
@@ -72,12 +75,30 @@ test("release manifest declares required supply-chain outputs", async () => {
     "independent-review.schema.json",
     "cross-platform-ci-evidence.schema.json",
     "release-readiness.schema.json",
+    "release-operations.schema.json",
     "security-check.schema.json"
   ]) {
     const contract = JSON.parse(await readFile(path.join(root, "schemas", schema), "utf8"));
     assert.equal(contract.$schema, "https://json-schema.org/draft/2020-12/schema");
     assert.equal(contract.additionalProperties, false);
   }
+  assert.deepEqual(release.blockers.sort(), ["independent-review", "operational-readiness", "trusted-signature"]);
+  const releaseStatus = await readFile(path.join(root, "scripts", "release-status.mjs"), "utf8");
+  assert.match(releaseStatus, /operations\?\.candidateSha256 === candidateSha256/);
+  assert.match(releaseStatus, /signals\.get\(id\)\?\.status === "passing"/);
+  assert.match(releaseStatus, /revocation\?\.status === "ready"/);
+});
+
+test("release metadata is deterministic for a source revision", async () => {
+  const first = resolveReleaseMetadata(root, {});
+  const second = resolveReleaseMetadata(root, {});
+  assert.deepEqual(second, first);
+  assert.match(first.sourceRevision, /^[a-f0-9]{40}$/);
+  assert.equal(resolveReleaseMetadata(root, { SOURCE_DATE_EPOCH: "0" }).generatedAt, "1970-01-01T00:00:00.000Z");
+  assert.throws(() => resolveReleaseMetadata(root, { SOURCE_DATE_EPOCH: "invalid" }), /whole epoch seconds/);
+  const releaseBuilder = await readFile(path.join(root, "scripts", "build-release.mjs"), "utf8");
+  assert.match(releaseBuilder, /invocationId: `urn:sha256:\$\{payloadDigest\}`/);
+  assert.doesNotMatch(releaseBuilder, /GITHUB_RUN_ID/);
 });
 
 test("npm supply-chain policy is reproducible and automated", async () => {

@@ -3,7 +3,7 @@
   "$id": "https://skills-orchestrator.dev/schemas/release-manifest/1.0.0",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schemaVersion", "product", "distribution", "publicDistributionAllowed", "requiredArtifacts", "requireSignature", "requireIndependentReview", "requiredPlatforms", "requiredNodeMajors", "releaseStatus", "blockers"],
+  "required": ["schemaVersion", "product", "distribution", "publicDistributionAllowed", "requiredArtifacts", "requireSignature", "requireIndependentReview", "requiredPlatforms", "requiredNodeMajors", "requiredOperationalRoles", "monitoringSignals", "releaseStatus", "blockers"],
   "properties": {
     "schemaVersion": { "const": "1.0.0" },
     "product": { "const": "project-skills-orchestrator" },
@@ -14,6 +14,24 @@
     "requireIndependentReview": { "const": true },
     "requiredPlatforms": { "type": "array", "minItems": 3, "maxItems": 3, "uniqueItems": true, "items": { "enum": ["windows", "linux", "macos"] } },
     "requiredNodeMajors": { "type": "array", "minItems": 3, "maxItems": 3, "uniqueItems": true, "items": { "enum": [22, 24, 26] } },
+    "requiredOperationalRoles": { "type": "array", "minItems": 3, "maxItems": 3, "uniqueItems": true, "items": { "enum": ["release", "securityResponse", "artifactRevocation"] } },
+    "monitoringSignals": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "github-security-validation",
+          "github-codeql",
+          "github-secret-scanning",
+          "github-dependabot-alerts",
+          "private-vulnerability-reports",
+          "internal-artifact-install-health",
+          "artifact-revocation-status"
+        ]
+      }
+    },
     "releaseStatus": { "enum": ["blocked", "production-ready"] },
     "blockers": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
   }

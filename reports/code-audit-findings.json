@@ -1,18 +1,18 @@
 {
   "schemaVersion": "2.0.0",
-  "auditId": "AUDIT-2026-09-05-PSO-124",
-  "generatedAt": "2026-09-05T14:40:00.000Z",
+  "auditId": "AUDIT-2026-09-05-PSO-125",
+  "generatedAt": "2026-09-05T17:10:00.000Z",
   "scope": {
     "repository": "Skills-Orchestrator",
-    "revision": "4f967865024134efc2793acfa449b2d66fd295c7 plus complete current working tree",
+    "revision": "e330d56f50c2c29d622ecd28a7ce241651794e8f plus report-only evidence updates",
     "included": [
       "Current tracked, staged, unstaged, and untracked distributable files, including reports and generated evidence.",
-      "All 29 commits reachable from locally available branches, tags, and remote-tracking refs through pinned Gitleaks 8.30.1.",
+      "All 31 commits reachable from locally available branches, tags, and remote-tracking refs through pinned Gitleaks 8.30.1.",
       "Security, correctness, reliability, resource management, performance, dependencies, configuration, hygiene, architecture, tests, and operability.",
       "Microsoft SDL, Microsoft Cloud Security Benchmark, Azure Well-Architected Security, OWASP, NIST SSDF, CIS Controls, SLSA, and OpenSSF applicability readiness."
     ],
     "excluded": [
-      "Hosted GitHub controls, remote-only refs, forks, pull-request refs, Actions logs and artifacts, releases, issues, discussions, wikis, packages, and caches because external access was not approved.",
+      "Remote-only refs, forks, pull-request refs, issue/discussion/wiki content, packages, and caches not represented by approved API evidence.",
       "Unreachable or pruned Git objects and live credential validation.",
       "Package registries, advisory services, Azure environments, deployment, publication, commit, and push."
     ]
@@ -24,7 +24,7 @@
       "command": "node .github/skills/audit-code/scripts/audit-evidence.mjs",
       "status": "passed",
       "exitCode": 0,
-      "notes": "Full clone; 29 reachable commits, 4 local branches, 2 remote-tracking refs, 1 tag, 235 tracked files, and 57 tracked reports. Specialist secret-history evidence is completed; hosted GitHub remains blocked."
+      "notes": "Full clone; 31 reachable commits, 4 local branches, 2 remote-tracking refs, 1 tag, 271 tracked files, and 77 tracked reports. Specialist evidence will be refreshed after report-only audit updates."
     },
     {
       "tool": "Project Skills Orchestrator security scanner",
@@ -32,7 +32,7 @@
       "command": "npm run security",
       "status": "passed",
       "exitCode": 0,
-      "notes": "195 current files scanned and no findings; this built-in scanner remains defense in depth beside Gitleaks."
+      "notes": "196 current files scanned and no findings; this built-in scanner remains defense in depth beside Gitleaks."
     },
     {
       "tool": "Gitleaks",
@@ -48,7 +48,7 @@
       "command": "npm run check",
       "status": "passed",
       "exitCode": 0,
-      "notes": "105 tests passed, security scanned 195 files, 150 release-candidate files verified, and 43 skills passed distribution verification."
+      "notes": "106 tests passed, security scanned 196 files, 150 release-candidate files verified, and 43 skills passed distribution verification."
     },
     {
       "tool": "VS Code diagnostics",
@@ -64,14 +64,14 @@
       "area": "security",
       "status": "partial",
       "checks": ["Current-tree built-in scan", "Pinned worktree/index/report/all-ref/history scan", "Schema assurance review", "Release-gate review"],
-      "evidence": ["npm run security passed for 195 files.", "Gitleaks 8.30.1 passed all approved local scopes with zero findings and full redaction.", "AUD-0204 no longer reproduces; AUD-0205 records the remaining release-assurance gap."],
-      "limitations": ["No hosted GitHub security evidence.", "Remote-only refs and unreachable objects were not scanned.", "No external advisory or current standards retrieval."]
+      "evidence": ["npm run security passed for 196 files.", "Gitleaks 8.30.1 passed all approved local scopes with zero findings and full redaction.", "Hosted branch, secret, dependency, Actions, CodeQL, and vulnerability controls were inspected and hardened.", "AUD-0205 records the remaining trusted-signature and independent-review gap."],
+      "limitations": ["Required human review is not enforceable until a second qualified collaborator exists.", "Remote-only refs and unreachable objects were not scanned.", "No external advisory or current standards retrieval."]
     },
     {
       "area": "correctness-reliability",
       "status": "completed",
       "checks": ["Complete repository test suite", "Audit pipeline schema and dependency review", "Execution state contract review"],
-      "evidence": ["npm run check passed 105 tests.", "The P3 schema 3.0 execution artifact validates against immutable PSO-123 snapshot 8eab33fd.", "Canonical plan replacement regression coverage passes.", "AUD-0203, AUD-0204, and AUD-0207 no longer reproduce."],
+      "evidence": ["npm run check passed 106 tests.", "The blocked P4 schema 3.0 execution artifact validates against immutable PSO-124 snapshot 040dad9a.", "Canonical plan replacement and macOS root-alias regressions pass.", "AUD-0203, AUD-0204, and AUD-0207 no longer reproduce."],
       "limitations": []
     },
     {
@@ -113,17 +113,17 @@
       "area": "tests-operability",
       "status": "partial",
       "checks": ["Full local test suite", "Release candidate build and verification", "Cross-platform evidence freshness"],
-      "evidence": ["105 local gate tests and 5 specialist scanner tests completed.", "150 candidate files verified.", "The three-OS specialist workflow is configured.", "AUD-0205 records stale or missing external release evidence."],
-      "limitations": ["The configured hosted Windows/Linux/macOS specialist jobs have not run.", "No current hosted CI, browser accessibility, deployment, or soak evidence."]
+      "evidence": ["106 local gate tests and 5 specialist scanner tests completed.", "150 candidate files verified.", "Security Validation run 33979231394 passed nine OS/Node jobs, three Gitleaks jobs, and aggregate evidence for e330d56.", "CodeQL run 33979231363 passed with zero open alerts after reviewed dispositions."],
+      "limitations": ["Trusted signing, independent review, production verification, and distribution monitoring remain unavailable.", "No browser accessibility, deployment, or soak evidence."]
     }
   ],
   "repositoryEvidence": {
     "localGit": {
       "status": "partial",
-      "revision": "4f967865024134efc2793acfa449b2d66fd295c7 plus dirty working tree",
+      "revision": "e330d56f50c2c29d622ecd28a7ce241651794e8f plus report-only evidence updates",
       "worktreeDirty": true,
       "shallow": false,
-      "reachableCommitCount": 29,
+      "reachableCommitCount": 31,
       "scannedRefs": ["refs/heads/*", "refs/remotes/*", "refs/tags/*"],
       "limitations": ["Remote-only refs were not fetched.", "Unreachable and pruned objects were not assessed."]
     },
@@ -138,10 +138,17 @@
     },
     "hostedRepository": {
       "provider": "github",
-      "status": "blocked",
-      "checkedAt": null,
-      "controls": [],
-      "limitations": ["Read-only external GitHub access was not explicitly approved."]
+      "status": "completed",
+      "checkedAt": "2026-09-05T17:05:00.000Z",
+      "controls": [
+        {"id":"GITHUB-BRANCH-CHECKS","title":"Required branch checks and history protection","status":"conformant","evidence":["Main requires strict Aggregate cross-platform evidence and JavaScript security analysis checks with admin enforcement, linear history, conversation resolution, and no force pushes or deletions."],"limitations":[]},
+        {"id":"GITHUB-SECRET-PROTECTION","title":"Hosted secret prevention and detection","status":"conformant","evidence":["Secret scanning and push protection are enabled; local pinned Gitleaks adds worktree and history coverage."],"limitations":["Non-provider patterns and validity checks remain unavailable or disabled."]},
+        {"id":"GITHUB-DEPENDENCY-PROTECTION","title":"Dependency vulnerability management","status":"conformant","evidence":["Vulnerability alerts, Dependabot security updates, and automated security fixes are enabled."],"limitations":[]},
+        {"id":"GITHUB-ACTIONS-POLICY","title":"Least-privilege Actions policy","status":"conformant","evidence":["Actions are restricted to GitHub-owned actions and workflows use commit-pinned actions with read-only default tokens except scoped CodeQL security-events write."],"limitations":[]},
+        {"id":"GITHUB-CODEQL","title":"Code scanning analysis","status":"conformant","evidence":["CodeQL run 33979231363 passed for e330d56; all 11 warnings were reviewed and dispositioned with zero open alerts."],"limitations":[]},
+        {"id":"GITHUB-HUMAN-REVIEW","title":"Independent source review","status":"non-conformant","evidence":["Only one write-capable collaborator exists and required pull-request reviews are not configured."],"limitations":["A second qualified reviewer identity is required before enforcement can be enabled without lockout."]}
+      ],
+      "limitations": ["Remote-only refs, unreachable objects, and unqueried collaboration stores remain outside assessed scope."]
     }
   },
   "standards": [
@@ -247,8 +254,8 @@
   ],
   "assurance": {
     "conclusion": "insufficient-evidence",
-    "rationale": "Local tests and pinned specialist secret-history scanning passed and AUD-0204 no longer reproduces, but hosted GitHub, signed provenance, current cross-platform, production verification, and independent review evidence remain unavailable.",
-    "blockingEvidence": ["AUD-0205", "Hosted GitHub evidence unavailable", "Current hosted cross-platform, signing, provenance, and independent-review evidence unavailable"],
+    "rationale": "Local and hosted validation, checksums, SBOM, provenance, Gitleaks, CodeQL, and hosted safeguards pass for e330d56, but trusted signature, distinct independent review, production verification, and distribution monitoring remain unavailable.",
+    "blockingEvidence": ["AUD-0205", "Trusted release signature unavailable", "Distinct signed independent review unavailable", "Production verification blocked"],
     "exceptionCount": 0,
     "expiredExceptionCount": 0
   },
@@ -265,15 +272,15 @@
       "bugType": "Incomplete release assurance",
       "securitySeverity": "medium",
       "confidence": "high",
-      "observedBehavior": "Release readiness remains blocked for current-commit cross-platform CI, trusted signature, independent review, and production verification; the recorded report targets an older revision and version.",
+      "observedBehavior": "Current source, security, candidate integrity, and cross-platform CI gates pass for e330d56, but no trusted release signature or distinct independently signed review exists, so production verification remains blocked.",
       "expectedBehavior": "Production distribution requires current-revision cross-platform evidence, trusted signature and provenance, SBOM, independent review, and successful production verification.",
       "impact": "Consumers cannot establish that the distributed artifact is the reviewed, tested, untampered build for the current source state.",
       "likelihood": "high",
       "evidence": [
-        {"path": "reports/release-readiness.json", "startLine": 8, "endLine": 18, "description": "The release is blocked and the report predates the audited revision."},
-        {"path": "reports/release-readiness.json", "startLine": 35, "endLine": 54, "description": "Cross-platform CI, signature, independent review, and production verification are blocked."}
+        {"path": "reports/release-readiness.json", "startLine": 1, "endLine": 20, "description": "The current e330d56 release remains blocked while source revision and release-source cleanliness pass."},
+        {"path": "reports/release-readiness.json", "startLine": 35, "endLine": 60, "description": "Trusted signature, independent review, and production verification remain blocked after current CI passed."}
       ],
-      "resolution": "Regenerate release readiness for the current revision, run hosted cross-platform CI, produce and verify SBOM/provenance and a trusted signature, obtain independent review, and retain fail-closed distribution until every artifact verifies.",
+      "resolution": "Provision a controlled signing identity and external trust anchor, obtain a distinct qualified review with its own trusted signature, establish distribution monitoring, and run production verification against the exact candidate.",
       "verification": ["Current-revision cross-platform matrix passes.", "Trusted signature and provenance verify.", "Independent review binds the exact revision and findings.", "Production release verification passes with no blockers."],
       "references": [
         {"title": "Microsoft Security Development Lifecycle", "publisher": "Microsoft", "url": "https://www.microsoft.com/securityengineering/sdl/practices", "accessedAt": "2026-09-04", "kind": "microsoft"},
@@ -282,10 +289,10 @@
     }
   ],
   "limitations": [
-    "No external GitHub, registry, advisory, Azure, or standards retrieval was authorized.",
+    "Hosted GitHub evidence was inspected and hardened under approval; no registry, advisory, Azure, or standards retrieval was performed.",
     "Pinned Gitleaks completed the approved local scopes; remote-only refs and unreachable objects remain outside scope.",
     "No live credential was validated and no candidate value is included in this report.",
-    "The working tree is dirty and includes user and agent changes; findings describe this exact combined state.",
+    "The release source is clean at e330d56; local differences are report-only evidence updates excluded from candidate bytes.",
     "AUD-0201, AUD-0202, AUD-0203, AUD-0204, AUD-0206, and AUD-0207 were re-tested and are no longer reproducible in the current working tree.",
     "Execution schema 3.0 and deterministic validation enforce immutable plan binding, selector, dependency, validation, checkpoint, remaining-work, approval, and resume-drift invariants."
   ]

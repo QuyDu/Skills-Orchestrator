@@ -2,40 +2,46 @@
   "schemaVersion": "1.0.0",
   "product": "project-skills-orchestrator",
   "version": "1.1.1",
-  "evaluatedAt": "2026-09-05T15:22:55.256Z",
-  "commit": "4f967865024134efc2793acfa449b2d66fd295c7",
-  "candidateSha256": "ace221ab3e61d750a41cb4e7fad5d0645fac92645d3b9f1d8ae30f8b57bdccad",
+  "evaluatedAt": "2026-09-05T17:14:21.156Z",
+  "commit": "e330d56f50c2c29d622ecd28a7ce241651794e8f",
+  "candidateSha256": "d1a43cf81389ec3b1fbf5302cea4e52982fe8b759de2571cb4367eb99802da3d",
   "status": "blocked",
   "checks": [
     {
       "id": "source-revision",
       "status": "passed",
       "blocking": true,
-      "evidence": "4f967865024134efc2793acfa449b2d66fd295c7"
+      "evidence": "e330d56f50c2c29d622ecd28a7ce241651794e8f"
     },
     {
       "id": "clean-worktree",
       "status": "blocked",
       "blocking": true,
-      "evidence": "M .github/copilot-instructions.md\n M .github/prompts/demo-web-app.prompt.md\n M .github/skills/audit-code/SKILL.md\n M .github/skills/audit-plan-remediation/SKILL.md\n M .github/skills/audit-review-findings/SKILL.md\n M .github/workflows/security-validation.yml\n M Demo/DEMO-DAY.md\n M README.md\n M config/profiles.yaml\n M package.json\n M pso.mjs\n M reports/artifact-ownership.json\n M reports/audit-remediation-plan.json\n M reports/audit-remediation-plan.md\n M reports/change-review.json\n M reports/change-review.md\n M reports/code-audit-findings.json\n M reports/code-audit-review.json\n M reports/code-audit-review.md\n M reports/cross-platform-ci-evidence.json\n M reports/current-work-state.json\n M reports/deployment-review.json\n M reports/deployment-review.md\n M reports/project-handoff.json\n M reports/project-handoff.md\n M reports/release-readiness.json\n M reports/security-check.json\n M reports/skill-details.json\n M reports/skill-details.md\n M reports/skill-inventory.json\n M reports/skill-inventory.md\n M schemas/audit-findings-review.schema.json\n M schemas/audit-remediation-plan.schema.json\n M schemas/code-audit-findings.schema.json\n M scripts/build-release.mjs\n M tests/adoption-rerun.test.mjs\n M tests/skill-contracts.test.mjs\n?? .github/skills/audit-code/config/\n?? .github/skills/audit-code/scripts/\n?? .github/skills/audit-remediation/\n?? .gitleaks.toml\n?? config/gitleaks-allowlist.json\n?? reports/architecture-review.json\n?? reports/architecture-review.md\n?? reports/audit-remediation-execution.json\n?? reports/audit-remediation-execution.md\n?? reports/audit-remediation-plans/\n?? reports/clarification-result.json\n?? reports/clarification-result.md\n?? reports/current-execution-state.json\n?? reports/current-execution-state.md\n?? reports/execution-log.jsonl\n?? reports/gitleaks-scan.json\n?? reports/policy-decision-log.jsonl\n?? reports/policy-evaluation.json\n?? reports/policy-evaluation.md\n?? reports/security-review.json\n?? reports/security-review.md\n?? reports/workflow-completion.json\n?? reports/workflow-completion.md\n?? schemas/audit-remediation-execution.schema.json\n?? schemas/gitleaks-allowlist.schema.json\n?? schemas/gitleaks-scan.schema.json\n?? tests/audit-assurance.test.mjs\n?? tests/audit-execution.test.mjs\n?? tests/gitleaks-scan.test.mjs"
+      "evidence": "M docs/INTERNAL-RELEASE.md\n M release/release-manifest.json\n M schemas/release-manifest.schema.json\n M scripts/release-status.mjs\n M tests/production-gates.test.mjs\n?? schemas/release-operations.schema.json"
     },
     {
       "id": "security-scan",
       "status": "passed",
       "blocking": true,
-      "evidence": "195 files; digest f270fbbd6646d9001b39cf57016902e79cbe75bcc3ef31150029b9626494f7d7"
+      "evidence": "196 files; digest ae672f19e6dd9bc7cad472bc4e8e03b637ed4e02005a25e3d64ed69e74e19ce0"
     },
     {
       "id": "release-candidate-integrity",
       "status": "passed",
       "blocking": true,
-      "evidence": "Verified unsigned release candidate: 150 checksum-covered files"
+      "evidence": "Verified unsigned release candidate: 151 checksum-covered files"
     },
     {
       "id": "cross-platform-ci",
       "status": "passed",
       "blocking": true,
-      "evidence": "9 required runs passed for 4f967865024134efc2793acfa449b2d66fd295c7"
+      "evidence": "9 required runs passed for e330d56f50c2c29d622ecd28a7ce241651794e8f"
+    },
+    {
+      "id": "operational-readiness",
+      "status": "blocked",
+      "blocking": true,
+      "evidence": "Candidate-bound owner assignments, fresh monitoring signals, or tested revocation evidence are incomplete"
     },
     {
       "id": "trusted-signature",

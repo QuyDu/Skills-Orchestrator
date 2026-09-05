@@ -22,10 +22,24 @@
     24,
     26
   ],
+  "requiredOperationalRoles": [
+    "release",
+    "securityResponse",
+    "artifactRevocation"
+  ],
+  "monitoringSignals": [
+    "github-security-validation",
+    "github-codeql",
+    "github-secret-scanning",
+    "github-dependabot-alerts",
+    "private-vulnerability-reports",
+    "internal-artifact-install-health",
+    "artifact-revocation-status"
+  ],
   "releaseStatus": "blocked",
   "blockers": [
-    "trusted-signing-identity",
-    "independent-security-review",
-    "cross-platform-ci-evidence"
+    "trusted-signature",
+    "independent-review",
+    "operational-readiness"
   ]
 }
