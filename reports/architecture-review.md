@@ -1,7 +1,7 @@
 # Architecture Review
 
-The package architecture has strong local integrity, transaction, rollback, schema, and release-verification controls. The unsigned candidate verifies 150 checksum-covered files, and remote HEAD has a successful nine-run OS/Node matrix.
+The package architecture has strong local integrity, transaction, rollback, schema, and release-verification controls. The unsigned candidate verifies 150 checksum-covered files, and commit `e330d56` passed the nine-run OS/Node matrix, three Gitleaks jobs, and CodeQL.
 
-One high-severity design finding remains: hosted source controls do not enforce the repository's own release policy. Main has no branch protection or rulesets, and hosted secret scanning, push protection, Dependabot alerts/security updates, and private vulnerability reporting are disabled.
+One medium-severity design finding remains: hosted source changes do not require an independent human review because only one write-capable collaborator exists.
 
-The dirty working-tree candidate is not remotely reachable, so the successful HEAD workflow does not establish current-candidate parity. No hosted settings were changed.
+Main now requires strict Security Validation and CodeQL checks with admin enforcement, linear history, conversation resolution, and force-push/deletion protection. Secret scanning, push protection, dependency alerts/security updates, automated fixes, private vulnerability reporting, restricted GitHub-owned Actions, and CodeQL result upload are enabled.

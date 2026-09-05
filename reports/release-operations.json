@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-09-05T17:15:00.000Z",
+  "candidateSha256": "ff3396528830849a99b17bdc736e2f801759965186964c67bea849ebd9ae0786",
+  "owners": {
+    "release": "@QuyDu",
+    "securityResponse": null,
+    "artifactRevocation": null
+  },
+  "signals": [
+    { "id": "github-security-validation", "status": "passing", "checkedAt": "2026-09-05T16:54:55.772Z", "evidence": "Run 33979231394 passed for e330d56." },
+    { "id": "github-codeql", "status": "passing", "checkedAt": "2026-09-05T16:55:00.000Z", "evidence": "Run 33979231363 passed with zero open alerts after reviewed dispositions." },
+    { "id": "github-secret-scanning", "status": "passing", "checkedAt": "2026-09-05T17:05:00.000Z", "evidence": "Secret scanning and push protection are enabled." },
+    { "id": "github-dependabot-alerts", "status": "passing", "checkedAt": "2026-09-05T17:05:00.000Z", "evidence": "Vulnerability alerts, security updates, and automated fixes are enabled." },
+    { "id": "private-vulnerability-reports", "status": "passing", "checkedAt": "2026-09-05T17:05:00.000Z", "evidence": "Private vulnerability reporting is enabled." },
+    { "id": "internal-artifact-install-health", "status": "blocked", "checkedAt": null, "evidence": "No approved internal artifact destination or health signal is configured." },
+    { "id": "artifact-revocation-status", "status": "blocked", "checkedAt": null, "evidence": "No approved internal artifact destination or tested revocation operation exists." }
+  ],
+  "revocation": {
+    "status": "not-configured",
+    "owner": null,
+    "testedAt": null,
+    "evidence": "Revocation cannot be tested until an internal artifact repository and owner are designated."
+  }
+}

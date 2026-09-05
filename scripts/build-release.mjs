@@ -6,6 +6,7 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { acquireReleaseLock } from "./release-lock.mjs";
+import { resolveReleaseMetadata } from "./release-metadata.mjs";
 import { assertSafeRelativePath } from "./safe-path.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -91,9 +92,7 @@ try {
   }
   const payloadManifest = `${payloadChecksums.join("\n")}\n`;
   const payloadDigest = createHash("sha256").update(payloadManifest).digest("hex");
-  const generatedAt = process.env.SOURCE_DATE_EPOCH
-    ? new Date(Number.parseInt(process.env.SOURCE_DATE_EPOCH, 10) * 1000).toISOString()
-    : new Date().toISOString();
+  const { sourceRevision, generatedAt } = resolveReleaseMetadata(root);
   const sbom = {
     bomFormat: "CycloneDX",
     specVersion: "1.6",
@@ -107,8 +106,8 @@ try {
     subject: [{ name: "PAYLOAD-SHA256SUMS", digest: { sha256: payloadDigest } }],
     predicateType: "https://slsa.dev/provenance/v1",
     predicate: {
-      buildDefinition: { buildType: "https://skills-orchestrator.dev/build/standalone/v1", externalParameters: { version: packageManifest.version }, internalParameters: {}, resolvedDependencies: [] },
-      runDetails: { builder: { id: "https://skills-orchestrator.dev/builders/local-release-candidate/v1" }, metadata: { invocationId: process.env.GITHUB_RUN_ID ?? "local-untrusted", startedOn: generatedAt, finishedOn: generatedAt } }
+      buildDefinition: { buildType: "https://skills-orchestrator.dev/build/standalone/v1", externalParameters: { version: packageManifest.version, sourceRevision }, internalParameters: {}, resolvedDependencies: [] },
+      runDetails: { builder: { id: "https://skills-orchestrator.dev/builders/local-release-candidate/v1" }, metadata: { invocationId: `urn:sha256:${payloadDigest}`, startedOn: generatedAt, finishedOn: generatedAt } }
     }
   };
   await writeFile(path.join(stagingRoot, "PAYLOAD-SHA256SUMS"), payloadManifest, "utf8");

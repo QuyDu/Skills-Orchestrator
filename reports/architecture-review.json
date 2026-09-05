@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "reviewId": "ARC-0205",
-  "generatedAt": "2026-09-05T15:25:00.000Z",
+  "generatedAt": "2026-09-05T17:05:00.000Z",
   "scope": {
     "components": ["Registry-free CLI and private internal package", "Release build, checksum, SBOM, provenance, signature, and independent-review gates", "GitHub Actions validation and CodeQL workflows", "Transactional project creation, adoption, rollback, and recovery", "Schema-governed reports, skill catalog, and shipped templates"],
     "environments": ["Local Windows validation", "GitHub-hosted Windows, Linux, and macOS runners", "Authorized internal package consumption"],
@@ -19,18 +19,18 @@
   "findings": [
     {
       "id": "ARCF-0205",
-      "title": "Hosted source controls do not enforce the repository release policy",
+      "title": "Hosted source changes do not require an independent human review",
       "pillar": "security",
       "location": "github.com/QuyDu/Skills-Orchestrator settings and main branch",
-      "impact": "Changes can reach main without hosted required checks or reviews, while disabled secret scanning, push protection, Dependabot alerts, and private vulnerability reporting reduce prevention and detection around the source used for internal packages.",
-      "severity": "high",
+      "impact": "Automated Security Validation and CodeQL checks are enforced, but the sole write-capable maintainer can still merge a change without a second person reviewing it. This leaves human design and intent defects outside automated coverage.",
+      "severity": "medium",
       "confidence": "high",
-      "recommendation": "Enable main-branch rules requiring current Security Validation and CodeQL checks plus an independent review; enable secret scanning, push protection, dependency alerts/security updates, and private vulnerability reporting where the repository plan supports them.",
-      "tradeOffs": ["Required reviews and checks add merge latency.", "Some hosted security features may require repository-plan or organization-policy changes.", "Local Gitleaks remains necessary because hosted controls do not cover unreachable local objects."],
+      "recommendation": "Add a distinct qualified collaborator or team, then require at least one approving review for main and assign CODEOWNERS for workflows, release scripts, security policy, and audit contracts.",
+      "tradeOffs": ["A second trusted maintainer adds coordination and merge latency.", "Enabling a required review before adding that identity would lock out the sole maintainer.", "The separately signed release-review gate remains mandatory even after source review is enforced."],
       "decisionRecord": null,
       "conflictsWithDecision": true,
-      "evidence": ["GitHub branch protection returned HTTP 404 Branch not protected and rulesets returned an empty array.", "Repository security_and_analysis reports secret scanning, push protection, non-provider patterns, validity checks, and Dependabot security updates disabled.", "Dependabot alerts returned HTTP 403 disabled; secret-scanning alerts returned HTTP 404 disabled; private vulnerability reporting is false.", "SECURITY.md requires current checks, secret scanning, and independent review before production release."]
+      "evidence": ["Main protection now requires strict Aggregate cross-platform evidence and JavaScript security analysis checks with admin enforcement, linear history, conversation resolution, and no force pushes or deletions.", "Secret scanning, push protection, Dependabot security updates, vulnerability alerts, automated fixes, and private vulnerability reporting are enabled.", "Actions are restricted to GitHub-owned actions and CodeQL reports zero open alerts after reviewed dispositions.", "The repository has one write-capable collaborator, so required_pull_request_reviews remains unset; SECURITY.md requires independent review before production release."]
     }
   ],
-  "limitations": ["This is a design-time review; no Azure environment or package deployment was accessed.", "The current dirty working-tree candidate is not reachable from GitHub, so hosted execution evidence applies only to committed HEAD 4f967865024134efc2793acfa449b2d66fd295c7.", "No changes to hosted controls were authorized or performed."]
+  "limitations": ["This is a design-time review; no Azure environment or package deployment was accessed.", "Non-provider secret patterns and validity checks remain unavailable or disabled after best-effort enablement.", "No second qualified reviewer identity or trusted release-signing identity is currently provisioned."]
 }

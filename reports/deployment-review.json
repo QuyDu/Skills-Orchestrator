@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1.0.0",
   "reviewId": "DEP-0205",
-  "generatedAt": "2026-09-05T15:25:00.000Z",
+  "generatedAt": "2026-09-05T17:05:00.000Z",
   "candidate": {
-    "release": "project-skills-orchestrator 1.1.1, commit 4f967865024134efc2793acfa449b2d66fd295c7 plus dirty working-tree candidate",
+    "release": "project-skills-orchestrator 1.1.1, commit e330d56f50c2c29d622ecd28a7ce241651794e8f",
     "targetEnvironment": "authorized internal production distribution",
     "carriesProductionData": false,
     "blastRadius": "Recipients use the package to create or modify development repositories and agent configuration; a bad release can affect generated project setup and workflow guidance."
@@ -12,11 +12,11 @@
   "gates": [
     {
       "gate": "build-reproducibility",
-      "state": "fail",
+      "state": "pass",
       "evidence": [
-        "npm run check passed 105 tests and all 43 skills before P4 evidence-only changes.",
+        "npm run check passed 106 tests and all 43 skills before report-only evidence updates.",
         "The rebuilt unsigned candidate verifies 150 checksum-covered files and includes CycloneDX SBOM and in-toto provenance.",
-        "The working tree is dirty, so the candidate cannot be reproduced from advertised commit 4f967865 without the uncommitted source set."
+        "Release-source cleanliness passes for commit e330d56; only non-shipped report evidence differs locally."
       ]
     },
     {
@@ -29,10 +29,10 @@
     },
     {
       "gate": "environment-parity",
-      "state": "fail",
+      "state": "pass",
       "evidence": [
-        "Validated GitHub artifact from run 33577680101 covers Windows, Linux, and macOS on Node 22, 24, and 26 for committed HEAD 4f967865.",
-        "The current uncommitted P3/P4 changes, including the three-OS specialist scanner jobs, are absent from that remote run."
+        "Security Validation run 33979231394 passed all nine Windows/Linux/macOS Node 22/24/26 jobs, three Gitleaks history jobs, and aggregate evidence for e330d56.",
+        "CodeQL run 33979231363 passed for e330d56 and uploaded results; reviewed dispositions leave zero open alerts."
       ]
     },
     {
@@ -40,7 +40,7 @@
       "state": "fail",
       "evidence": [
         "Local built-in security and pinned Gitleaks scans pass without findings in their approved scopes.",
-        "SECF-0205 records missing hosted branch, secret, dependency, code-scanning upload, and vulnerability-reporting safeguards.",
+        "SECF-0205 is reduced to the missing independent human-review requirement; automated branch, secret, dependency, CodeQL, and vulnerability-reporting safeguards are enabled.",
         "Trusted release signature and independently signed review evidence are not provisioned."
       ]
     },
@@ -48,7 +48,7 @@
       "gate": "architecture-findings-closed",
       "state": "fail",
       "evidence": [
-        "ARCF-0205 records that hosted source controls do not enforce the repository release policy.",
+        "ARCF-0205 records that an independent human source review cannot be required until a second qualified collaborator exists.",
         "No owner has accepted that high-severity architecture finding."
       ]
     },
@@ -102,7 +102,7 @@
     "No live Azure environment or deployment was accessed.",
     "Read-only hosted evidence was retrieved, but no GitHub setting or workflow was mutated or dispatched.",
     "The candidate is unsigned and has no independent review record bound to its exact source set.",
-    "Cross-platform evidence is current for committed HEAD but stale for the dirty candidate.",
+    "Cross-platform and CodeQL evidence is current for exact candidate commit e330d56.",
     "Observability for package distribution and generated-project runtime behavior is not established in repository evidence."
   ]
 }

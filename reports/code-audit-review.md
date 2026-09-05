@@ -1,7 +1,7 @@
 # Code Audit Review
 
-- Review: `REVIEW-2026-09-05-PSO-124`
-- Source audit: `AUDIT-2026-09-05-PSO-124`
+- Review: `REVIEW-2026-09-05-PSO-125`
+- Source audit: `AUDIT-2026-09-05-PSO-125`
 - Revision: `4f967865024134efc2793acfa449b2d66fd295c7` plus complete working tree
 - Assurance: **insufficient evidence**
 
@@ -18,23 +18,23 @@ Machine-readable `reports/code-audit-review.json` is authoritative and preserves
 | None | 0 |
 | **Total confirmed** | **1** |
 
-Local validation is healthy: 105 gate tests and 5 specialist tests completed, 195 files passed the built-in security scan, 150 release-candidate files verified, and all 43 skills passed distribution checks. Pinned Gitleaks 8.30.1 completed the approved local worktree, staged, report, ref, and history scopes. `AUD-0204` no longer reproduces.
+Local and hosted validation is healthy for `e330d56`: 106 local gate tests, 196 built-in security-scanned files, 150 release-candidate files, 43 skills, nine hosted OS/Node jobs, three hosted Gitleaks jobs, and CodeQL all pass. Hosted branch, secret, dependency, Actions, CodeQL, and vulnerability safeguards are enabled.
 
 ## Findings
 
 | ID | Severity | Impact | Resolution |
 | --- | --- | --- | --- |
-| `AUD-0205` | medium | Current distribution cannot be tied to current tested and reviewed source. | Produce current CI, signature, SBOM, provenance, and independent review evidence. |
+| `AUD-0205` | medium | The tested candidate lacks trusted signature and distinct independently signed review evidence. | Provision separate trusted identities, sign and review the exact candidate, then verify production release. |
 
 ## Priority Analysis
 
-1. Complete `AUD-0205` only after separate approval for hosted CI, signing, independent review, and publication-related work.
+1. Complete `AUD-0205` after a controlled signer and distinct qualified reviewer are provisioned and distribution monitoring is established.
 
 ## Containment
 
 - Keep assurance at `insufficient-evidence`.
 - Preserve every remediation source plan through schema-v3 immutable snapshots.
-- Keep hosted GitHub assurance blocked until current external evidence exists.
+- Keep production distribution blocked until trusted signature, independent review, and production verification pass.
 - Keep production distribution blocked until `AUD-0205` is resolved.
 
 ## Limitations

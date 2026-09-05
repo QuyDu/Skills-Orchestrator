@@ -12,6 +12,7 @@ import { assertSafeRelativePath } from "./safe-path.mjs";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const releaseLock = await acquireReleaseLock(root, "release-status");
 const packageManifest = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
+const releaseManifest = JSON.parse(await readFile(path.join(root, "release", "release-manifest.json"), "utf8"));
 const artifactRoot = path.join(root, "dist", `${packageManifest.name}-${packageManifest.version}`);
 await assertSafeRelativePath(root, "dist");
 await assertSafeRelativePath(root, "reports");
@@ -38,6 +39,9 @@ add("security-scan", securityReport?.status === "passed", securityReport?.status
 
 const candidate = run(process.execPath, [path.join(root, "scripts", "verify-release.mjs"), "--candidate"]);
 add("release-candidate-integrity", candidate.status === 0, candidate.status === 0 ? candidate.stdout.trim() : (candidate.stderr || candidate.stdout).trim());
+const candidateSha256 = existsSync(path.join(artifactRoot, "SHA256SUMS"))
+  ? createHash("sha256").update(await readFile(path.join(artifactRoot, "SHA256SUMS"))).digest("hex")
+  : null;
 
 const ciEvidencePath = path.join(root, "reports", "cross-platform-ci-evidence.json");
 let ciEvidence;
@@ -46,6 +50,20 @@ const requiredRuns = new Set(["windows-22", "windows-24", "windows-26", "linux-2
 const passedRuns = new Set((ciEvidence?.runs ?? []).filter((item) => item.status === "passed").map((item) => `${item.os}-${item.node}`));
 const ciPassed = Boolean(commit) && ciEvidence?.commit === commit && [...requiredRuns].every((item) => passedRuns.has(item));
 add("cross-platform-ci", ciPassed, ciPassed ? `9 required runs passed for ${commit}` : "Current-commit Windows, Linux, and macOS evidence for Node 22, 24, and 26 is missing");
+
+const requiredSignals = new Set(releaseManifest.monitoringSignals ?? []);
+const operationsPath = path.join(root, "reports", "release-operations.json");
+let operations;
+if (existsSync(operationsPath)) operations = JSON.parse(await readFile(operationsPath, "utf8"));
+const ownerPattern = /^@[A-Za-z0-9](?:[A-Za-z0-9-]{0,37})$/;
+const signals = new Map((operations?.signals ?? []).map((signal) => [signal.id, signal]));
+const fresh = (value) => Number.isFinite(Date.parse(value ?? "")) && Date.now() - Date.parse(value) >= 0 && Date.now() - Date.parse(value) <= 24 * 60 * 60 * 1000;
+const ownersReady = releaseManifest.requiredOperationalRoles?.every((role) => ownerPattern.test(operations?.owners?.[role] ?? ""));
+const signalsReady = [...requiredSignals].every((id) => signals.get(id)?.status === "passing" && fresh(signals.get(id)?.checkedAt));
+const revocationReady = operations?.revocation?.status === "ready" && ownerPattern.test(operations.revocation.owner ?? "") && fresh(operations.revocation.testedAt)
+  && operations.revocation.owner === operations?.owners?.artifactRevocation;
+const operationalReady = operations?.candidateSha256 === candidateSha256 && ownersReady && signalsReady && revocationReady;
+add("operational-readiness", operationalReady, operationalReady ? "Candidate-bound owners, fresh monitoring signals, and tested revocation evidence pass" : "Candidate-bound owner assignments, fresh monitoring signals, or tested revocation evidence are incomplete");
 
 const signaturePath = path.join(artifactRoot, "release-signature.json");
 const signingTrustConfigured = /^[a-f0-9]{64}$/.test(process.env.PSO_TRUSTED_SIGNING_KEY_SHA256 ?? "");
@@ -64,9 +82,7 @@ const report = {
   version: packageManifest.version,
   evaluatedAt: new Date().toISOString(),
   commit,
-  candidateSha256: existsSync(path.join(artifactRoot, "SHA256SUMS"))
-    ? createHash("sha256").update(await readFile(path.join(artifactRoot, "SHA256SUMS"))).digest("hex")
-    : null,
+  candidateSha256,
   status: blocked.length ? "blocked" : "production-ready",
   checks
 };

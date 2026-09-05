@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-09-05T16:52:47.831Z",
+  "generatedAt": "2026-09-05T17:20:54.491Z",
   "scanner": {
     "name": "gitleaks",
     "version": "8.30.1",
@@ -11,9 +11,9 @@
   },
   "configurationSha256": "e9ba7656309b23cb5b7d00aa9b7dde346caaec9c88dbd435ebaea98dde6975a4",
   "allowlistCount": 1,
-  "repositoryRevision": "1f58cb14862a864ca002e140ba19ae980c24afe5",
-  "worktreeDigest": "19f5feb9edb70f47c6448aae53614d6d8ffe09a3b394e29ded2938dbd22a3e06",
-  "scanInputDigest": "05378457e812cd6f4a85ba247e0e5a27ccfe061cab8b9dfc805cfee708066702",
+  "repositoryRevision": "e330d56f50c2c29d622ecd28a7ce241651794e8f",
+  "worktreeDigest": "340f9bf682c25a5da0e0601b8cb416bfddb4c64270c8c3d58c5248793accf6cb",
+  "scanInputDigest": "7c9c4aec4ce89be788c5c13dddc5b6c296b6d4903122cd46146736ddc6d47b1c",
   "scopes": [
     "worktree",
     "staged",
