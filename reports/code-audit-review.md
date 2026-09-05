@@ -18,7 +18,7 @@ Machine-readable `reports/code-audit-review.json` is authoritative and preserves
 | None | 0 |
 | **Total confirmed** | **1** |
 
-Local and hosted validation is healthy for `e330d56`: 106 local gate tests, 196 built-in security-scanned files, 150 release-candidate files, 43 skills, nine hosted OS/Node jobs, three hosted Gitleaks jobs, and CodeQL all pass. Hosted branch, secret, dependency, Actions, CodeQL, and vulnerability safeguards are enabled.
+Local and hosted validation is healthy for `5190959`: 107 local gate tests with one platform-alias skip, 198 built-in security-scanned files, 151 release-candidate files, 43 skills, nine hosted OS/Node jobs, three hosted Gitleaks jobs, and CodeQL all pass. Hosted branch, secret, dependency, Actions, CodeQL, and vulnerability safeguards are enabled.
 
 ## Findings
 

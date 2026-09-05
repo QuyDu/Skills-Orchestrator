@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1.0.0",
   "reviewId": "DEP-0205",
-  "generatedAt": "2026-09-05T17:05:00.000Z",
+  "generatedAt": "2026-09-05T17:30:00.000Z",
   "candidate": {
-    "release": "project-skills-orchestrator 1.1.1, commit e330d56f50c2c29d622ecd28a7ce241651794e8f",
+    "release": "project-skills-orchestrator 1.1.1, commit 519095930b7deb08606380e7ea9f014ff2b07416",
     "targetEnvironment": "authorized internal production distribution",
     "carriesProductionData": false,
     "blastRadius": "Recipients use the package to create or modify development repositories and agent configuration; a bad release can affect generated project setup and workflow guidance."
@@ -14,9 +14,10 @@
       "gate": "build-reproducibility",
       "state": "pass",
       "evidence": [
-        "npm run check passed 106 tests and all 43 skills before report-only evidence updates.",
-        "The rebuilt unsigned candidate verifies 150 checksum-covered files and includes CycloneDX SBOM and in-toto provenance.",
-        "Release-source cleanliness passes for commit e330d56; only non-shipped report evidence differs locally."
+        "npm run check passed 107 tests with one platform-alias skip and all 43 skills before report-only evidence updates.",
+        "The rebuilt unsigned candidate verifies 151 checksum-covered files and includes CycloneDX SBOM and in-toto provenance.",
+        "Release-source cleanliness passes for commit 5190959; only non-shipped report evidence differs locally.",
+        "Two consecutive builds produced identical SHA256SUMS digest fdf8220092850f2d5baf6669fad37167b815a69a21099f992a1e23c65c9ace2c."
       ]
     },
     {
@@ -31,8 +32,8 @@
       "gate": "environment-parity",
       "state": "pass",
       "evidence": [
-        "Security Validation run 33979231394 passed all nine Windows/Linux/macOS Node 22/24/26 jobs, three Gitleaks history jobs, and aggregate evidence for e330d56.",
-        "CodeQL run 33979231363 passed for e330d56 and uploaded results; reviewed dispositions leave zero open alerts."
+        "Security Validation run 33980792156 passed all nine Windows/Linux/macOS Node 22/24/26 jobs, three Gitleaks history jobs, and aggregate evidence for 5190959.",
+        "CodeQL run 33980792246 passed for 5190959 and uploaded results; reviewed dispositions leave zero open alerts."
       ]
     },
     {
@@ -63,7 +64,7 @@
       "gate": "observability",
       "state": "fail",
       "evidence": [
-        "No current production distribution dashboard, alert, revocation monitor, or downstream package-consumption health signal is recorded."
+        "Release, security response, and artifact revocation roles are assigned to @QuyDu, but no approved internal artifact destination, installation-health signal, or tested revocation operation exists."
       ]
     }
   ],
@@ -102,7 +103,7 @@
     "No live Azure environment or deployment was accessed.",
     "Read-only hosted evidence was retrieved, but no GitHub setting or workflow was mutated or dispatched.",
     "The candidate is unsigned and has no independent review record bound to its exact source set.",
-    "Cross-platform and CodeQL evidence is current for exact candidate commit e330d56.",
+    "Cross-platform and CodeQL evidence is current for exact candidate commit 5190959.",
     "Observability for package distribution and generated-project runtime behavior is not established in repository evidence."
   ]
 }

@@ -1,25 +1,26 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-09-05T15:30:00.000Z",
-  "project": { "name": "project-skills-orchestrator", "version": "1.1.1", "branch": "main", "commit": "4f967865024134efc2793acfa449b2d66fd295c7" },
+  "generatedAt": "2026-09-05T17:30:00.000Z",
+  "project": { "name": "project-skills-orchestrator", "version": "1.1.1", "branch": "main", "commit": "519095930b7deb08606380e7ea9f014ff2b07416" },
   "status": "blocked",
   "milestone": { "name": "P4 release assurance", "status": "blocked", "objective": "Produce current release evidence and establish whether version 1.1.1 can pass trusted internal production gates." },
   "lastCompletedWork": {
-    "summary": "Prepared and verified the unsigned candidate and committed-HEAD CI evidence, then blocked REM-0205 because the dirty candidate is untested, trusted signing and independent review are absent, and hosted source safeguards are disabled.",
-    "completedAt": "2026-09-05T15:30:00.000Z",
+    "summary": "Merged the reviewed release controls through protected PR #6; verified deterministic candidate output, merge-SHA matrix, Gitleaks, CodeQL, and hosted safeguards; retained blockers for trusted identities and internal artifact operations.",
+    "completedAt": "2026-09-05T17:30:00.000Z",
     "evidence": ["reports/release-readiness.json", "reports/cross-platform-ci-evidence.json", "reports/architecture-review.json", "reports/security-review.json", "reports/deployment-review.json", "reports/audit-remediation-execution.json", "reports/audit-remediation-plans/040dad9a30d0f52ebda13c232d1885abbd9ee27b6dcbbeeab3174b1c60de65e7.json"]
   },
   "decisions": [
-    { "decision": "Keep REM-0205 incomplete.", "rationale": "Its clean-candidate, signature, independent-review, and production-verification acceptance criteria do not pass." },
-    { "decision": "Accept committed-HEAD CI as historical evidence only.", "rationale": "Run 33577680101 proves nine combinations for 4f967865 but not the dirty candidate changes." },
-    { "decision": "Record ARCF-0205 and SECF-0205.", "rationale": "Read-only GitHub evidence proves main protection/rulesets and multiple hosted security controls are absent or disabled." },
-    { "decision": "Stop before mutations and signing.", "rationale": "The approved autonomous defaults prohibit commit, push, hosted settings changes, signing, release, and publication." }
+    { "decision": "Keep REM-0205 incomplete.", "rationale": "Trusted signature, distinct independent review, internal artifact health/revocation, and production verification do not pass." },
+    { "decision": "Accept merge-SHA CI as current evidence.", "rationale": "Run 33980792156 proves nine OS/Node jobs, three Gitleaks jobs, and aggregate evidence for 5190959; CodeQL run 33980792246 also passes." },
+    { "decision": "Reduce ARCF-0205 and SECF-0205 to medium.", "rationale": "Automated hosted safeguards are enabled; only independent human source review awaits a second collaborator." },
+    { "decision": "Stop before signing and publication.", "rationale": "No controlled signer, distinct reviewer, or restricted artifact destination is available." }
   ],
   "validation": [
-    { "check": "Unsigned candidate", "status": "passed", "evidence": "150 checksum-covered files, CycloneDX SBOM, and in-toto provenance verify." },
-    { "check": "Committed-HEAD matrix", "status": "passed", "evidence": "Validated GitHub artifact from run 33577680101 contains all nine Windows/Linux/macOS Node 22/24/26 passes for 4f967865." },
+    { "check": "Unsigned candidate", "status": "passed", "evidence": "151 checksum-covered files, CycloneDX SBOM, in-toto provenance, and deterministic fdf82200 digest verify." },
+    { "check": "Merge-SHA hosted validation", "status": "passed", "evidence": "Security Validation run 33980792156 and CodeQL run 33980792246 pass for 5190959 with zero open alerts." },
+    { "check": "Hosted safeguards", "status": "passed", "evidence": "Required checks, admin enforcement, linear history, force-push/deletion protection, secret/dependency/vulnerability controls, restricted Actions, and CodeQL upload are enabled." },
     { "check": "P4 report schemas", "status": "passed", "evidence": "Clarification, architecture, security, deployment, readiness, and CI evidence reports validate." },
-    { "check": "Production release", "status": "blocked", "evidence": "Dirty worktree, missing trusted signature, missing independent review, and failed production verification." },
+    { "check": "Production release", "status": "blocked", "evidence": "Operational artifact health/revocation, trusted signature, distinct independent review, and production verification remain blocked." },
     { "check": "P4 execution validation", "status": "passed", "evidence": "Blocked schema-v3 execution validates against immutable PSO-124 snapshot 040dad9a." }
   ],
   "worktree": {
@@ -29,13 +30,13 @@
     "attribution": "This handoff attributes only P4 evidence and continuity reports; source and unrelated existing changes remain untouched.",
     "boundedPaths": ["reports/clarification-result.json", "reports/policy-evaluation.json", "reports/cross-platform-ci-evidence.json", "reports/release-readiness.json", "reports/architecture-review.json", "reports/security-review.json", "reports/deployment-review.json", "reports/audit-remediation-execution.json", "reports/current-execution-state.json", "reports/execution-log.jsonl", "reports/current-work-state.json", "reports/project-handoff.json"]
   },
-  "blockers": ["AUD-0205 remains unresolved.", "The dirty candidate is not reproducible or remotely tested.", "Trusted signature and independent review are absent.", "ARCF-0205 and SECF-0205 hosted safeguards are unresolved.", "Production verification remains blocked."],
-  "pendingApprovals": ["Reviewed clean commit and push.", "Hosted branch and security-control mutations.", "Trusted signing by a controlled identity.", "Independent review by a distinct qualified reviewer.", "Any release or publication."],
-  "limitations": ["No commit, push, merge, tag, signing, deployment, publication, Azure mutation, workflow dispatch, or hosted setting mutation occurred.", "Remote-only refs and unreachable objects were not scanned.", "Overall assurance remains insufficient-evidence."],
+  "blockers": ["AUD-0205 remains unresolved.", "Trusted signature and distinct independent review are absent.", "No restricted internal artifact destination, installation-health signal, or tested revocation operation exists.", "Required human source review awaits a second qualified collaborator.", "Production verification remains blocked."],
+  "pendingApprovals": ["Trusted signing by a controlled identity.", "Independent review by a distinct qualified reviewer.", "Selection and test of a restricted internal artifact destination.", "Any release or publication."],
+  "limitations": ["No signing, release, publication, deployment, or Azure mutation occurred.", "Remote-only refs and unreachable objects were not scanned.", "Overall assurance remains insufficient-evidence."],
   "nextAction": {
     "skill": "audit-remediation",
     "status": "approval-required",
-    "action": "Resume P4 after approving a reviewed clean commit/push and hosted-control remediation and assigning distinct trusted signing and independent-review identities.",
+    "action": "Resume P4 after designating a controlled signer, distinct qualified reviewer, second source reviewer, and restricted internal artifact destination for health and revocation testing.",
     "prerequisites": ["Do not self-sign or self-approve independent review.", "Keep release, publication, deployment, and Azure mutation prohibited until separately approved."]
   }
 }

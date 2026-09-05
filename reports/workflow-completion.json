@@ -7,6 +7,6 @@
   "executed": ["Immutable PSO-124 plan snapshot", "Unsigned candidate build and verification", "Read-only hosted GitHub control and workflow evidence", "Architecture, security, deployment, policy, and readiness reviews"],
   "skipped": ["Signing", "Independent review signing", "Commit", "Push", "Workflow dispatch", "Hosted settings mutation", "Release and publication", "Deployment and Azure mutation"],
   "blocked": ["REM-0205", "AUD-0205", "ARCF-0205", "SECF-0205", "Production release verification"],
-  "pending": ["Clean reviewed candidate revision", "Current-candidate hosted matrix", "Trusted release signature", "Distinct signed independent review", "Hosted safeguard remediation or approved disposition"],
-  "nextAction": "Obtain explicit point-of-action approvals and trusted identities before resuming P4."
+  "pending": ["Second qualified collaborator and required review", "Trusted release signature", "Distinct signed independent review", "Restricted internal artifact destination", "Installation-health and revocation test", "Production verification"],
+  "nextAction": "Designate the external identities and restricted artifact destination before resuming P4."
 }

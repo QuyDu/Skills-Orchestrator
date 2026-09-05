@@ -1,21 +1,21 @@
 # Deployment Readiness Review
 
-- Candidate: project-skills-orchestrator 1.1.1, commit e330d56f50c2c29d622ecd28a7ce241651794e8f
+- Candidate: project-skills-orchestrator 1.1.1, commit 519095930b7deb08606380e7ea9f014ff2b07416
 - Target: authorized internal production distribution
 - Decision: **BLOCKED**
 
 ## Passing evidence
 
-- The unsigned candidate verifies 150 checksum-covered files with CycloneDX SBOM and in-toto provenance.
+- The unsigned candidate verifies 151 checksum-covered files with CycloneDX SBOM and in-toto provenance.
 - Local security and Gitleaks scans pass, and all 106 gate tests and 43 skills passed before report-only evidence updates.
-- Security Validation passed nine OS/Node jobs, three Gitleaks jobs, and aggregate evidence for `e330d56`; CodeQL also passed with zero open alerts.
+- Security Validation passed nine OS/Node jobs, three Gitleaks jobs, and aggregate evidence for `5190959`; CodeQL also passed with zero open alerts.
 
 ## Blocking gates
 
 1. The release has no trusted signing identity or signature.
 2. No independently signed security review is bound to the candidate.
 3. Required human review cannot be enabled until a second qualified collaborator exists.
-4. No production distribution observability or revocation signal exists.
+4. No approved internal artifact destination, installation-health signal, or tested revocation operation exists.
 
 ## Required before release
 

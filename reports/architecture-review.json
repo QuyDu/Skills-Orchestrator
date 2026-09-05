@@ -10,10 +10,10 @@
     "excluded": ["Live Azure resources and deployed workload posture", "Remote mutation, release publication, and package promotion", "Unreachable or pruned Git objects"]
   },
   "coverage": [
-    { "pillar": "reliability", "assessed": true, "evidence": ["Transactional adoption journals, locks, rollback, and recovery are documented in docs/THREAT-MODEL.md and exercised by npm run check.", "The current unsigned candidate verifies 150 checksum-covered files."] },
+    { "pillar": "reliability", "assessed": true, "evidence": ["Transactional adoption journals, locks, rollback, and recovery are documented in docs/THREAT-MODEL.md and exercised by npm run check.", "The current unsigned candidate verifies 151 checksum-covered files."] },
     { "pillar": "security", "assessed": true, "evidence": ["Local security and Gitleaks scans pass with pinned tools and immutable workflow actions.", "Production verification requires trusted RSA signatures and independently signed review evidence.", "Read-only GitHub inspection found no main-branch protection or rulesets and disabled hosted secret/dependency protections."] },
     { "pillar": "cost-optimization", "assessed": true, "evidence": ["The package has zero runtime dependencies and no always-on service cost.", "Hosted validation uses bounded jobs and retention windows; no deployment resources are part of this package release."] },
-    { "pillar": "operational-excellence", "assessed": true, "evidence": ["JSON schemas, immutable execution snapshots, release checks, and 43 skill contracts provide deterministic operations evidence.", "Remote HEAD has a successful nine-run OS/Node matrix, but current uncommitted candidate changes have not run remotely."] },
+    { "pillar": "operational-excellence", "assessed": true, "evidence": ["JSON schemas, immutable execution snapshots, release checks, and 43 skill contracts provide deterministic operations evidence.", "Merge commit 5190959 passed nine OS/Node jobs, three Gitleaks jobs, aggregate evidence, and CodeQL.", "Candidate-bound operational evidence blocks on unconfigured internal artifact health and untested revocation."] },
     { "pillar": "performance-efficiency", "assessed": true, "evidence": ["Repository scans and project discovery are bounded; the complete local gate passes within its configured CI timeout.", "No application runtime or deployed service performance is in scope."] }
   ],
   "findings": [
