@@ -742,7 +742,7 @@ test("audit pipeline has stable handoffs and schemas", async () => {
   assert.match(packageManifest.scripts["security:gitleaks"], /\.github\/skills\/audit-code\/scripts\/gitleaks-scan\.mjs scan/);
   assert.doesNotMatch(packageManifest.scripts.check, /gitleaks/);
   const securityWorkflow = await readFile(path.join(root, ".github", "workflows", "security-validation.yml"), "utf8");
-  assert.match(securityWorkflow, /fetch-depth: 0/);
+  assert.equal((securityWorkflow.match(/fetch-depth: 0/g) ?? []).length, 2);
   assert.match(securityWorkflow, /os: \[windows-latest, ubuntu-latest, macos-latest\]/);
   assert.match(securityWorkflow, /npm run test:gitleaks/);
   assert.match(securityWorkflow, /npm run security:gitleaks/);

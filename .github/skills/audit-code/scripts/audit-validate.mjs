@@ -78,11 +78,20 @@ function sameMembers(left, right) {
 }
 
 function containedPath(root, candidate, label) {
-  const resolvedRoot = path.resolve(root);
+  const requestedRoot = path.resolve(root);
   const resolvedCandidate = path.resolve(candidate);
-  const relative = path.relative(resolvedRoot, resolvedCandidate);
+  const relative = path.relative(requestedRoot, resolvedCandidate);
   if (!relative || relative.startsWith("..") || path.isAbsolute(relative)) fail([`${label} must be contained within repository root`]);
-  return { resolvedRoot, resolvedCandidate, relative: relative.replaceAll("\\", "/") };
+  const resolvedRoot = realpathSync(requestedRoot);
+  const canonicalCandidate = realpathSync(resolvedCandidate);
+  const canonicalRelative = path.relative(resolvedRoot, canonicalCandidate);
+  if (!canonicalRelative || canonicalRelative.startsWith("..") || path.isAbsolute(canonicalRelative)) fail([`${label} must be contained within repository root`]);
+  return {
+    resolvedRoot,
+    resolvedCandidate,
+    expectedCandidate: path.join(resolvedRoot, relative),
+    relative: relative.replaceAll("\\", "/")
+  };
 }
 
 function sameFilesystemPath(left, right) {
@@ -94,13 +103,13 @@ function sameFilesystemPath(left, right) {
 }
 
 async function snapshotPlan(planPath, root) {
-  const { resolvedRoot, resolvedCandidate, relative } = containedPath(root, planPath, "canonical plan");
+  const { resolvedRoot, resolvedCandidate, expectedCandidate, relative } = containedPath(root, planPath, "canonical plan");
   if (relative !== "reports/audit-remediation-plan.json") fail(["snapshot source must be reports/audit-remediation-plan.json"]);
   const realRoot = realpathSync(resolvedRoot);
   const reportsDirectory = path.join(realRoot, "reports");
   if (!sameFilesystemPath(realpathSync(reportsDirectory), reportsDirectory)) fail(["reports directory must not redirect through a symbolic link"]);
   const sourceStat = lstatSync(resolvedCandidate);
-  if (!sourceStat.isFile() || sourceStat.nlink !== 1 || !sameFilesystemPath(realpathSync(resolvedCandidate), resolvedCandidate)) {
+  if (!sourceStat.isFile() || sourceStat.nlink !== 1 || !sameFilesystemPath(realpathSync(resolvedCandidate), expectedCandidate)) {
     fail(["canonical plan must be a regular file inside the repository"]);
   }
   const plan = await loadJson(resolvedCandidate);
@@ -270,7 +279,8 @@ async function validateExecution(plan, execution, planPath, planSha256, reposito
     }
     try {
       const stat = lstatSync(path.resolve(planPath));
-      if (!stat.isFile() || stat.nlink !== 1 || !sameFilesystemPath(realpathSync(path.resolve(planPath)), path.resolve(planPath))) {
+      const supplied = containedPath(repositoryRoot, planPath, "execution source plan");
+      if (!stat.isFile() || stat.nlink !== 1 || !sameFilesystemPath(realpathSync(path.resolve(planPath)), supplied.expectedCandidate)) {
         errors.push("execution source plan snapshot must be one regular file without links");
       }
     } catch (error) {

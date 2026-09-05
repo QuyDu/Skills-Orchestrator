@@ -99,6 +99,25 @@ async function withArtifacts(action) {
   }
 }
 
+test("snapshot validation accepts a canonical repository root alias", async (context) => {
+  const directory = await mkdtemp(path.join(os.tmpdir(), "pso-audit-root-alias-"));
+  const canonicalDirectory = await import("node:fs/promises").then(({ realpath }) => realpath(directory));
+  if (canonicalDirectory === directory) {
+    await rm(directory, { recursive: true, force: true });
+    return context.skip("The temporary directory has no filesystem alias");
+  }
+  try {
+    const reports = path.join(directory, "reports");
+    await mkdir(reports, { recursive: true });
+    const canonicalPlanPath = path.join(reports, "audit-remediation-plan.json");
+    await writeFile(canonicalPlanPath, `${JSON.stringify(plan())}\n`, "utf8");
+    const result = run("snapshot", canonicalPlanPath, directory);
+    assert.equal(result.status, 0, result.stderr);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
 test("execution validation accepts completed selected scope with unselected work remaining", async () => {
   await withArtifacts(async ({ executionPath, validate, value }) => {
     await writeFile(executionPath, `${JSON.stringify(value)}\n`, "utf8");

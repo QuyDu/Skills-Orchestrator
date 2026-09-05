@@ -1,6 +1,6 @@
 # Skill Details
 
-Generated: 2026-09-05T16:44:55.800Z
+Generated: 2026-09-05T16:52:36.855Z
 
 | Skill | Lifecycle | Confidence | Audit | Dependencies |
 | --- | --- | --- | --- | --- |
