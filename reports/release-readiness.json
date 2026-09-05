@@ -2,28 +2,28 @@
   "schemaVersion": "1.0.0",
   "product": "project-skills-orchestrator",
   "version": "1.1.1",
-  "evaluatedAt": "2026-09-05T17:14:21.156Z",
-  "commit": "e330d56f50c2c29d622ecd28a7ce241651794e8f",
-  "candidateSha256": "d1a43cf81389ec3b1fbf5302cea4e52982fe8b759de2571cb4367eb99802da3d",
+  "evaluatedAt": "2026-09-05T17:28:29.168Z",
+  "commit": "519095930b7deb08606380e7ea9f014ff2b07416",
+  "candidateSha256": "fdf8220092850f2d5baf6669fad37167b815a69a21099f992a1e23c65c9ace2c",
   "status": "blocked",
   "checks": [
     {
       "id": "source-revision",
       "status": "passed",
       "blocking": true,
-      "evidence": "e330d56f50c2c29d622ecd28a7ce241651794e8f"
+      "evidence": "519095930b7deb08606380e7ea9f014ff2b07416"
     },
     {
       "id": "clean-worktree",
-      "status": "blocked",
+      "status": "passed",
       "blocking": true,
-      "evidence": "M docs/INTERNAL-RELEASE.md\n M release/release-manifest.json\n M schemas/release-manifest.schema.json\n M scripts/release-status.mjs\n M tests/production-gates.test.mjs\n?? schemas/release-operations.schema.json"
+      "evidence": "Release source clean; report-only changes excluded"
     },
     {
       "id": "security-scan",
       "status": "passed",
       "blocking": true,
-      "evidence": "196 files; digest ae672f19e6dd9bc7cad472bc4e8e03b637ed4e02005a25e3d64ed69e74e19ce0"
+      "evidence": "198 files; digest fa50c4e90a8aca82dc1b368ab3b8c823d0d12a589c7c8aa35f988c4521a95722"
     },
     {
       "id": "release-candidate-integrity",
@@ -35,7 +35,7 @@
       "id": "cross-platform-ci",
       "status": "passed",
       "blocking": true,
-      "evidence": "9 required runs passed for e330d56f50c2c29d622ecd28a7ce241651794e8f"
+      "evidence": "9 required runs passed for 519095930b7deb08606380e7ea9f014ff2b07416"
     },
     {
       "id": "operational-readiness",

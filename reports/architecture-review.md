@@ -1,6 +1,6 @@
 # Architecture Review
 
-The package architecture has strong local integrity, transaction, rollback, schema, and release-verification controls. The unsigned candidate verifies 150 checksum-covered files, and commit `e330d56` passed the nine-run OS/Node matrix, three Gitleaks jobs, and CodeQL.
+The package architecture has strong local integrity, transaction, rollback, schema, and release-verification controls. The deterministic unsigned candidate verifies 151 checksum-covered files, and merge commit `5190959` passed the nine-run OS/Node matrix, three Gitleaks jobs, and CodeQL.
 
 One medium-severity design finding remains: hosted source changes do not require an independent human review because only one write-capable collaborator exists.
 

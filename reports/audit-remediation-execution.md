@@ -6,8 +6,8 @@
 - Checkpoint: `CP-2026-09-05-P4-BLOCKED`
 - Status: **blocked**
 
-`REM-0205` produced a verified unsigned candidate with checksums, CycloneDX SBOM, in-toto provenance, current committed-HEAD nine-run CI evidence, and current architecture, security, deployment, policy, and release-readiness assessments.
+`REM-0205` now has a deterministic verified unsigned candidate, current merge-SHA nine-run CI plus Gitleaks and CodeQL evidence, protected main, hosted secret/dependency/vulnerability controls, and candidate-bound operational-readiness enforcement.
 
-The item remains incomplete. The dirty candidate has not run remotely, the candidate is unsigned, no independently signed review exists, production verification fails closed, and hosted main/secret/dependency safeguards are disabled.
+The item remains incomplete. The candidate is unsigned, no distinct independently signed review exists, no restricted internal artifact destination or tested revocation operation exists, and production verification fails closed.
 
 No commit, push, workflow dispatch, hosted setting mutation, signing, publication, deployment, or Azure mutation occurred. Resume requires separate approvals and distinct trusted signing/reviewer identities.

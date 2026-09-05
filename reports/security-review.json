@@ -42,7 +42,7 @@
     }
   ],
   "limitations": [
-    "Commit e330d56 is present on GitHub and its Security Validation and CodeQL runs pass.",
+    "Merge commit 5190959 is present on GitHub and its Security Validation and CodeQL runs pass.",
     "No credential was validated and no candidate value is recorded.",
     "Hosted safeguards were changed under explicit approval; no collaborator, release, tag, signing identity, or publication was created.",
     "A signed independent review must come from a distinct trusted reviewer; this assessment does not satisfy that release gate."
