@@ -19,6 +19,8 @@ test("production scripts and release metadata are present", async () => {
   assert.equal(version.stdout.trim(), manifest.version);
   const help = spawnSync(process.execPath, [path.join(root, "pso.mjs"), "--help"], { cwd: root, encoding: "utf8" });
   assert.equal(help.status, 0, help.stderr);
+  assert.match(help.stdout, /^Project Orchestrator /);
+  assert.doesNotMatch(help.stdout, /Project Skills Orchestrator/);
   assert.ok(help.stdout.includes("node .\\pso.mjs clone-setup"));
   assert.ok(help.stdout.includes("C:\\repos\\project"));
   assert.ok(help.stdout.includes("--destination is optional"));
@@ -26,6 +28,7 @@ test("production scripts and release metadata are present", async () => {
   assert.ok(help.stdout.includes("destination must not already exist"));
   assert.ok(help.stdout.includes("--json emits a portable dry-run plan"));
   assert.ok(help.stdout.includes("--color sets the new workspace accent"));
+  assert.ok(help.stdout.includes("node .\\pso.mjs agent plan"));
   assert.equal(manifest.scripts.security, "node scripts/security-check.mjs");
   assert.equal(manifest.scripts.release, "node scripts/build-release.mjs");
   assert.equal(manifest.scripts["release:verify:candidate"], "node scripts/verify-release.mjs --candidate");
@@ -34,6 +37,7 @@ test("production scripts and release metadata are present", async () => {
   assert.equal(manifest.scripts["evidence:adoption"], "node scripts/adoption-evidence.mjs");
   assert.match(manifest.scripts.check, /npm run security/);
   assert.match(manifest.scripts.check, /production-gates\.test\.mjs/);
+  assert.match(manifest.scripts.check, /agent-builder\.test\.mjs/);
   assert.match(manifest.scripts.check, /security-fuzz\.test\.mjs/);
   assert.match(manifest.scripts.check, /package-install\.test\.mjs/);
   assert.match(manifest.scripts.check, /project-video\.test\.mjs/);
@@ -68,7 +72,12 @@ test("release manifest declares required supply-chain outputs", async () => {
   assert.equal(release.requireIndependentReview, true);
   assert.deepEqual(release.requiredOperationalRoles.sort(), ["artifactRevocation", "release", "securityResponse"]);
   assert.deepEqual(release.monitoringSignals.sort(), ["artifact-revocation-status", "github-codeql", "github-dependabot-alerts", "github-secret-scanning", "github-security-validation", "internal-artifact-install-health", "private-vulnerability-reports"].sort());
+  assert.equal(existsSync(path.join(root, "DISCLAIMER.md")), true);
   assert.equal(existsSync(path.join(root, "LICENSE")), true);
+  const packageManifest = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
+  assert.ok(packageManifest.files.includes("DISCLAIMER.md"));
+  const releaseBuilder = await readFile(path.join(root, "scripts", "build-release.mjs"), "utf8");
+  assert.match(releaseBuilder, /"DISCLAIMER\.md"/);
   for (const schema of [
     "release-manifest.schema.json",
     "release-signature.schema.json",

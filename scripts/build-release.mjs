@@ -13,7 +13,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const releaseLock = await acquireReleaseLock(root, "build-release");
 const packageManifest = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
 const releaseContract = JSON.parse(await readFile(path.join(root, "release", "release-manifest.json"), "utf8"));
-const shipped = [".github/skills", "config", "docs", "schemas", "templates", "LICENSE", "README.md", "SECURITY.md", "STANDALONE-WINDOWS.md", "package.json", "pso.mjs", "pso.ps1"];
+const shipped = [".github/skills", "config", "docs", "schemas", "templates", "DISCLAIMER.md", "LICENSE", "README.md", "SECURITY.md", "STANDALONE-WINDOWS.md", "package.json", "pso.mjs", "pso.ps1"];
 for (const relative of shipped) {
   const source = path.join(root, relative);
   if (!existsSync(source)) throw new Error(`Release blocked: required source is missing: ${relative}`);

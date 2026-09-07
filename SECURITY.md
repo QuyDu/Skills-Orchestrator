@@ -1,8 +1,10 @@
 # Security Policy
 
-Project Skills Orchestrator follows the [Microsoft Security Development Lifecycle](https://learn.microsoft.com/compliance/assurance/assurance-microsoft-security-development-lifecycle) and Microsoft's [SDL security practices](https://www.microsoft.com/securityengineering/sdl/practices) as its governing secure-engineering baseline.
+Project Orchestrator follows the [Microsoft Security Development Lifecycle](https://learn.microsoft.com/compliance/assurance/assurance-microsoft-security-development-lifecycle) and Microsoft's [SDL security practices](https://www.microsoft.com/securityengineering/sdl/practices) as its governing secure-engineering baseline.
 
 No tool can guarantee that it will introduce no defects or vulnerabilities. This project fails closed where trust cannot be established and does not claim production security assurance until every release gate below has current evidence.
+
+Use of this software remains subject to the independent-review and use-at-your-own-risk responsibilities in [DISCLAIMER.md](DISCLAIMER.md). That notice supplements but does not replace this policy or [LICENSE](LICENSE).
 
 Distribution is restricted to authorized internal use under [LICENSE](LICENSE). Public registry publication or third-party distribution is prohibited. Follow [docs/INTERNAL-RELEASE.md](docs/INTERNAL-RELEASE.md) for governed internal releases.
 

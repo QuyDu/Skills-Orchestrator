@@ -1,7 +1,7 @@
 ---
 name: Azure Architect
 description: Designs and reviews Azure architecture, landing zones, networking, identity, AI services, and governance against the Well-Architected Framework.
-tools: ["search", "fetch", "githubRepo", "microsoft-learn", "azure"]
+tools: ["read", "search", "web"]
 ---
 
 # Azure Architect

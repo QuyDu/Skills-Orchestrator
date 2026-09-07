@@ -2,7 +2,7 @@
 
 These instructions are always in context. Keep them accurate; stale instructions are worse than none.
 
-Sections wrapped in `pso:begin` / `pso:end` markers are managed by Project Skills Orchestrator and are replaced on update. Edit freely outside those markers.
+Sections wrapped in `pso:begin` / `pso:end` markers are managed by Project Orchestrator and are replaced on update. Edit freely outside those markers.
 
 <!-- pso:begin id=clarification-protocol version=1 -->
 ## Engagement protocol (mandatory, highest precedence)

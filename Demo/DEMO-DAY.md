@@ -14,7 +14,7 @@ Play the pre-created, manifest-verified MP4 first. It gives the audience the pro
 
 ## Act 2: build a new project
 
-Run `/demo-create-project` from this repository. It creates a separate governed TypeScript project, verifies its installed skills and Azure Government scaffold, copies the bounded build prompt into that new project, and opens its own VS Code workspace. The Project Skills Orchestrator source repository is immutable after the handoff. Do not invoke project video while the project is still an empty governed baseline.
+Run `/demo-create-project` from this repository. It creates a separate governed TypeScript project, verifies its installed skills and Azure Government scaffold, copies the bounded build prompt into that new project, and opens its own VS Code workspace. The Project Orchestrator source repository is immutable after the handoff. Do not invoke project video while the project is still an empty governed baseline.
 
 In the new workspace, switch Chat to Agent mode and run `/demo-web-app`. Its first stage runs `/azure-discovery -Gov` for `usgovarizona`, initializes or reuses the generated project's ignored Azure environment profile, requires current evidence for an existing Speech-capable resource, binds the nonsecret Speech cloud and region environment values, and runs the packaged Project Video `azure-preflight`. Let the generated project build and test its own application only after the preflight reports `credentialConfigured: true`.
 

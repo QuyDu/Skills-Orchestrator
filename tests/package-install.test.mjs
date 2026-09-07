@@ -41,6 +41,8 @@ test("private package installs offline and resolves bundled project assets", asy
     assert.equal(create.status, 0, `${create.stdout}\n${create.stderr}`);
     const createdProject = path.join(projects, "packaged-fixture");
     assert.ok(existsSync(path.join(createdProject, ".github", "skills", "project-skills-orchestrator", "SKILL.md")));
+    assert.ok(existsSync(path.join(createdProject, ".github", "skills", "agent-builder", "scripts", "agent-builder.mjs")));
+    assert.ok(existsSync(path.join(createdProject, "schemas", "agent-blueprint.schema.json")));
     const verification = JSON.parse(await readFile(path.join(createdProject, "reports", "installation-verification.json"), "utf8"));
     assert.equal(verification.status, "passed");
     assert.equal(verification.checks.frameworkSkills, expectedSkillCount);

@@ -980,6 +980,8 @@ test("created projects preinstall dependencies for Copilot cloud agent", async (
     }
 
     const readme = await readFile(path.join(parent, "agent-env", "README.md"), "utf8");
+    assert.match(readme, /Provisioned with Project Orchestrator/);
+    assert.doesNotMatch(readme, /Project Skills Orchestrator/);
     assert.match(readme, /Copilot cloud agent/);
   } finally {
     await rm(parent, { recursive: true, force: true });

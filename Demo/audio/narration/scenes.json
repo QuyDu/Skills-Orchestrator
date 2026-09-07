@@ -13,7 +13,7 @@
     {
       "id": 1,
       "file": "scene-01.mp3",
-      "text": "Every software project needs more than code. It also needs a clear, shared way of working. Project Skills Orchestrator brings that structure into your repository. It gives GitHub Copilot the instructions, prompts, agents, and reusable skills it needs \u2014 all installed as one verified foundation."
+      "text": "Every software project needs more than code. It also needs a clear, shared way of working. Project Orchestrator brings that structure into your repository. It gives GitHub Copilot the instructions, prompts, agents, and reusable skills it needs \u2014 all installed as one verified foundation."
     },
     {
       "id": 2,
@@ -48,7 +48,7 @@
     {
       "id": 8,
       "file": "scene-08.mp3",
-      "text": "That is Project Skills Orchestrator \u2014 a repeatable way to make your engineering process part of the repository itself. Verify the distribution. Provision a workspace. Begin with a blueprint. Then let each important action leave evidence that both people and automation can inspect."
+      "text": "That is Project Orchestrator \u2014 a repeatable way to make your engineering process part of the repository itself. Verify the distribution. Provision a workspace. Begin with a blueprint. Then let each important action leave evidence that both people and automation can inspect."
     }
   ]
 }

@@ -137,7 +137,7 @@ Apply this to every new user prompt, without exception, before any analysis, too
 const COPILOT_ORCHESTRATION_INSTRUCTION = `## Orchestration
 
 ${COPILOT_INSTRUCTION}`;
-const AGENT_INSTRUCTION = `## Project Skills Orchestrator
+const AGENT_INSTRUCTION = `## Project Orchestrator
 
 - Read \`${ORCHESTRATION_ROUTE}\` before multi-skill work.
 - Automatically use an existing skill when its trigger and ownership match the request; continue with normal engineering work only when no available skill fits. Prefer reuse over duplicating an existing skill, script, workflow, report, or capability.
@@ -1184,7 +1184,7 @@ function projectBrief({ displayName, profile, declaredStack, createdAt, intent }
 | Profile | ${profile} |
 | Stack | ${stackRow} |
 | Created | ${createdAt} |
-| Provisioned by | Project Skills Orchestrator ${VERSION} |
+| Provisioned by | Project Orchestrator ${VERSION} |
 
 ## Requested outcome
 
@@ -1252,7 +1252,7 @@ values.
 // Kept pure so the composed handover text can be asserted without launching an editor.
 function kickoffPrompt({ createdAt, intent }) {
   return [
-    `This project was created by Project Skills Orchestrator at ${createdAt}.`,
+    `This project was created by Project Orchestrator at ${createdAt}.`,
     "Read docs/PROJECT-BRIEF.md and .github/copilot-instructions.md before proposing anything.",
     `Requested outcome: ${intent}`,
     "Resolve relative times against the creation timestamp in the brief.",
@@ -1477,7 +1477,7 @@ async function createProject({ name: enteredName, destination, profile = DEFAULT
       nextAction: "Run development-environment-readiness before the first implementation objective"
     };
     const files = new Map([
-      ["README.md", `# ${displayName}\n\nProvisioned with Project Skills Orchestrator ${VERSION} using the ${profile} profile${declaredStack.size ? ` for the ${[...declaredStack].sort().join(", ")} stack` : ""}.\n\n## What this repository currently contains\n\nThis is a governed development baseline: agent instructions, scoped standards, reusable prompts, specialist agents, the skill catalog, editor configuration, and a continuous-integration workflow. **It does not yet contain application code.** Add your application under \`src/\` and its tests under \`tests/\`.\n\n## First steps\n\n1. Open \`${name}.code-workspace\` in Visual Studio Code.\n2. Select **Yes, I trust the authors** when Visual Studio Code asks about workspace trust. Tasks, debugging, and MCP servers stay disabled until you do.\n3. Select **Install** when Visual Studio Code offers the recommended extensions.\n4. Read \`.github/copilot-instructions.md\`. Every agent prompt in this project begins with the mandatory clarification protocol defined there.\n5. Open GitHub Copilot Chat in Agent mode and run \`/development-environment-readiness\` to validate tools, runtimes, authentication, debugging, and security gates.\n\nThe agent customization layer needs no configuration. Visual Studio Code discovers it automatically:\n\n| Location | What it provides |\n| --- | --- |\n| \`.github/copilot-instructions.md\` and \`AGENTS.md\` | Always-on project instructions |\n| \`.github/instructions/\` | Standards applied by file pattern |\n| \`.github/prompts/\` | Slash commands such as \`/create-adr\` and \`/security-review\` |\n| \`.github/agents/\` | Specialist agents in the agent picker |\n| \`.github/skills/\` | The governed skill catalog |\n\n${declaredStack.size ? "## Build, test, and debug\n\n`Ctrl+Shift+B` runs the build task and the Test Explorer runs the test task, both defined in `.vscode/tasks.json`. Debug configurations are in `.vscode/launch.json`; any value containing `REPLACE_WITH_` is a placeholder that needs your entry point before `F5` will work.\n\nThe continuous-integration workflow runs real build and test commands for the declared stack. Confirm they match this project before relying on the result.\n\n## Copilot cloud agent\n\n`.github/workflows/copilot-setup-steps.yml` preinstalls this project's dependencies in the ephemeral environment used by Copilot cloud agent and Copilot code review, so the agent can build and test instead of guessing at dependencies. It only takes effect once it is on the default branch." : "## Build, test, and debug\n\nNo stack was declared, so no build task, debug configuration, Copilot setup steps, or continuous-integration command was generated. The pipeline in `.github/workflows/ci.yml` fails until you configure one. That is deliberate: a pipeline that passes without testing anything is worse than no pipeline.\n\nRerun setup with `--stack` to generate tasks, debug configurations, Copilot cloud agent setup steps, and real CI commands."}\n`],
+      ["README.md", `# ${displayName}\n\nProvisioned with Project Orchestrator ${VERSION} using the ${profile} profile${declaredStack.size ? ` for the ${[...declaredStack].sort().join(", ")} stack` : ""}.\n\n## What this repository currently contains\n\nThis is a governed development baseline: agent instructions, scoped standards, reusable prompts, specialist agents, the skill catalog, editor configuration, and a continuous-integration workflow. **It does not yet contain application code.** Add your application under \`src/\` and its tests under \`tests/\`.\n\n## First steps\n\n1. Open \`${name}.code-workspace\` in Visual Studio Code.\n2. Select **Yes, I trust the authors** when Visual Studio Code asks about workspace trust. Tasks, debugging, and MCP servers stay disabled until you do.\n3. Select **Install** when Visual Studio Code offers the recommended extensions.\n4. Read \`.github/copilot-instructions.md\`. Every agent prompt in this project begins with the mandatory clarification protocol defined there.\n5. Open GitHub Copilot Chat in Agent mode and run \`/development-environment-readiness\` to validate tools, runtimes, authentication, debugging, and security gates.\n\nThe agent customization layer needs no configuration. Visual Studio Code discovers it automatically:\n\n| Location | What it provides |\n| --- | --- |\n| \`.github/copilot-instructions.md\` and \`AGENTS.md\` | Always-on project instructions |\n| \`.github/instructions/\` | Standards applied by file pattern |\n| \`.github/prompts/\` | Slash commands such as \`/create-adr\` and \`/security-review\` |\n| \`.github/agents/\` | Specialist agents in the agent picker |\n| \`.github/skills/\` | The governed skill catalog |\n\n${declaredStack.size ? "## Build, test, and debug\n\n`Ctrl+Shift+B` runs the build task and the Test Explorer runs the test task, both defined in `.vscode/tasks.json`. Debug configurations are in `.vscode/launch.json`; any value containing `REPLACE_WITH_` is a placeholder that needs your entry point before `F5` will work.\n\nThe continuous-integration workflow runs real build and test commands for the declared stack. Confirm they match this project before relying on the result.\n\n## Copilot cloud agent\n\n`.github/workflows/copilot-setup-steps.yml` preinstalls this project's dependencies in the ephemeral environment used by Copilot cloud agent and Copilot code review, so the agent can build and test instead of guessing at dependencies. It only takes effect once it is on the default branch." : "## Build, test, and debug\n\nNo stack was declared, so no build task, debug configuration, Copilot setup steps, or continuous-integration command was generated. The pipeline in `.github/workflows/ci.yml` fails until you configure one. That is deliberate: a pipeline that passes without testing anything is worse than no pipeline.\n\nRerun setup with `--stack` to generate tasks, debug configurations, Copilot cloud agent setup steps, and real CI commands."}\n`],
       ["AGENTS.md", mergedInstructionContent("# Project Agent Instructions", AGENT_INSTRUCTION_BLOCKS)],
       [".gitignore", "dist/\nnode_modules/\n.env\n.azure/environment.json\n.skills-orchestrator/\n"],
       [".github/workflows/ci.yml", continuousIntegrationWorkflow(declaredStack)],
@@ -2224,7 +2224,7 @@ async function applyAdoptionLocked(plan) {
   await mkdir(reports, { recursive: true });
   const reportPlan = portableAdoptionPlan(plan);
   await writeFile(path.join(reports, "adoption-plan.json"), `${JSON.stringify(reportPlan, null, 2)}\n`, "utf8");
-  const markdown = `# Project Skills Orchestrator Adoption
+  const markdown = `# Project Orchestrator Adoption
 
 - Project: \`${plan.projectName ?? path.basename(plan.projectRoot)}\`
 - Profile: \`${plan.profile}\`
@@ -2485,6 +2485,35 @@ function reportLaunch({ launch, prompt, brief }) {
   if (prompt) console.log(`Paste this into Copilot Chat in the new project:\n\n${prompt}\n`);
 }
 
+function runAgentBuilder(options) {
+  const action = options._[1];
+  if (!action) throw new Error("Use agent build, agent validate, agent plan, or agent apply");
+  const script = path.join(SCRIPT_ROOT, ".github", "skills", "agent-builder", "scripts", "agent-builder.mjs");
+  if (!existsSync(script)) throw new Error("Distribution is missing the Agent Builder engine");
+  const args = [script, action];
+  const valueOptions = [
+    "project", "blueprint", "plan", "agent", "type", "id", "name", "description", "purpose", "risk", "capabilities",
+    "user-invocable", "model-invocable", "constraints", "approach", "output-format", "subagents", "handoffs-file",
+    "azure-required", "cloud", "location", "environment-name", "authentication-method", "subscription-id"
+  ];
+  const flagOptions = ["accept-risk", "json"];
+  for (const key of Object.keys(options).filter((item) => item !== "_")) {
+    if (/^(?:password|client-secret|secret|token|api-key|access-key|connection-string)$/i.test(key)) {
+      throw new Error(`Credential parameter --${key} is prohibited; authenticate directly through the Azure CLI session`);
+    }
+    if (![...valueOptions, ...flagOptions].includes(key)) throw new Error(`Unknown Agent Builder parameter: --${key}`);
+  }
+  for (const key of valueOptions) {
+    if (options[key] !== undefined) args.push(`--${key}`, String(options[key]));
+  }
+  for (const key of flagOptions) {
+    if (options[key] === true) args.push(`--${key}`);
+  }
+  const result = spawnSync(process.execPath, args, { cwd: process.cwd(), stdio: "inherit", windowsHide: true });
+  if (result.error) throw new Error(`Agent Builder could not start: ${result.error.message}`);
+  if (result.status !== 0) throw new Error(`Agent Builder failed with exit code ${result.status}`);
+}
+
 // Windows can refuse a directory rename while an indexer or scanner still holds a handle in the staging tree.
 async function publishStagedProject(staging, destination) {
   const transientCodes = new Set(["EACCES", "EBUSY", "EPERM"]);
@@ -2545,7 +2574,7 @@ async function cloneAndSetup({ repository: enteredRepository, destination, profi
 async function guidedSetup() {
   const terminal = createInterface({ input: process.stdin, output: process.stdout });
   try {
-    console.log("Project Skills Orchestrator Setup\n");
+    console.log("Project Orchestrator Setup\n");
     const projectType = (await terminal.question("Is this a (N)ew project, (E)xisting local project, or (R)emote GitHub repository? [N/E/R]: ")).trim().toLowerCase();
     if (projectType === "n" || projectType === "new") {
       const name = await terminal.question("Project name: ");
@@ -2605,7 +2634,7 @@ async function guidedSetup() {
 }
 
 function help() {
-  console.log(`Project Skills Orchestrator ${VERSION}
+  console.log(`Project Orchestrator ${VERSION}
 
 Usage:
   node .\\pso.mjs
@@ -2616,6 +2645,10 @@ Usage:
   node .\\pso.mjs recover --project "C:\\repos\\existing" [--transaction ID]
   node .\\pso.mjs inventory [--root "C:\\repos\\my-project"]
   node .\\pso.mjs plan --intent "Build a customer portal" [--root PATH]
+  node .\\pso.mjs agent build --project "C:\\repos\\my-project" [agent parameters]
+  node .\\pso.mjs agent validate --project "C:\\repos\\my-project" --blueprint agent.json
+  node .\\pso.mjs agent plan --project "C:\\repos\\my-project" --blueprint agent.json
+  node .\\pso.mjs agent apply --project "C:\\repos\\my-project" --blueprint agent.json --plan reports/agent-builder-plan.json --accept-risk
   node .\\pso.mjs verify
   node .\\pso.mjs --version
 
@@ -2634,6 +2667,14 @@ New project:
   docs/PROJECT-BRIEF.md, and with --open it is handed to Copilot Chat in ask
   mode so the first turn can plan and ask questions but cannot change files.
   Describe the application only; the project itself already exists by then.
+
+Agent Builder:
+  agent build accepts --type, --id, --name, --description, --purpose, --risk,
+  --capabilities, --user-invocable, --model-invocable, --constraints, --approach,
+  --output-format, --subagents, and --handoffs-file. Missing values are requested.
+  Foundry types or --azure-required true also resolve --cloud, --location,
+  --environment-name, --authentication-method, and optional --subscription-id.
+  Azure CLI authentication starts only when required. Credential values are never accepted.
 
 Adoption:
   --force-templates installs framework templates even where an equivalent exists.
@@ -2728,6 +2769,7 @@ async function main() {
     if (!options.project) throw new Error("Use --project with the repository path to recover");
     return recoverAdoption(options.project, options.transaction);
   }
+  if (command === "agent") return runAgentBuilder(options);
   if (command === "inventory") return inventory(path.resolve(options.root ?? process.cwd()));
   if (command === "plan") return plan(path.resolve(options.root ?? process.cwd()), options.intent);
   if (!command) return guidedSetup();

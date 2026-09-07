@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://project-skills.dev/schemas/agent-blueprint/2.0.0",
+  "title": "Governed Agent Blueprint",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "id", "name", "description", "purpose", "risk", "capabilities", "invocation", "instructions", "subagents", "handoffs"],
+  "properties": {
+    "schemaVersion": { "enum": ["1.0.0", "2.0.0"] },
+    "agentType": { "enum": ["copilot", "foundry-prompt", "foundry-hosted"] },
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$", "maxLength": 64 },
+    "name": { "type": "string", "minLength": 3, "maxLength": 80 },
+    "description": { "type": "string", "minLength": 40, "maxLength": 500 },
+    "purpose": { "type": "string", "minLength": 20, "maxLength": 1000 },
+    "risk": { "enum": ["read-only", "mutating"] },
+    "capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "enum": ["read", "search", "web", "edit", "execute", "agent", "todo"] }
+    },
+    "invocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["userInvocable", "modelInvocable"],
+      "properties": {
+        "userInvocable": { "type": "boolean" },
+        "modelInvocable": { "type": "boolean" }
+      }
+    },
+    "instructions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["constraints", "approach", "outputFormat"],
+      "properties": {
+        "constraints": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 10, "maxLength": 500 } },
+        "approach": { "type": "array", "minItems": 2, "maxItems": 12, "items": { "type": "string", "minLength": 10, "maxLength": 500 } },
+        "outputFormat": { "type": "string", "minLength": 10, "maxLength": 1000 }
+      }
+    },
+    "subagents": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$", "maxLength": 64 }
+    },
+    "handoffs": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["label", "agent", "prompt", "send"],
+        "properties": {
+          "label": { "type": "string", "minLength": 3, "maxLength": 80 },
+          "agent": { "type": "string", "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$", "maxLength": 64 },
+          "prompt": { "type": "string", "minLength": 10, "maxLength": 1000 },
+          "send": { "const": false }
+        }
+      }
+    },
+    "azure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "cloud", "location", "environmentName", "authenticationMethod", "subscriptionConfigured"],
+      "properties": {
+        "required": { "type": "boolean" },
+        "cloud": { "enum": ["AzureCloud", "AzureUSGovernment"] },
+        "location": { "type": "string", "pattern": "^[a-z0-9-]+$", "maxLength": 64 },
+        "environmentName": { "type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-]{0,39}$" },
+        "authenticationMethod": { "enum": ["interactive", "managed-identity"] },
+        "subscriptionConfigured": { "type": "boolean" }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "schemaVersion": { "const": "2.0.0" } }, "required": ["schemaVersion"] },
+      "then": { "required": ["agentType"] }
+    },
+    {
+      "if": { "properties": { "agentType": { "enum": ["foundry-prompt", "foundry-hosted"] } }, "required": ["agentType"] },
+      "then": {
+        "required": ["azure"],
+        "properties": { "azure": { "properties": { "required": { "const": true } } } }
+      }
+    }
+  ]
+}

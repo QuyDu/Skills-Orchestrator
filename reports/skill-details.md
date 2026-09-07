@@ -1,9 +1,10 @@
 # Skill Details
 
-Generated: 2026-09-05T18:57:14.938Z
+Generated: 2026-09-07T15:07:47.951Z
 
 | Skill | Lifecycle | Confidence | Audit | Dependencies |
 | --- | --- | --- | --- | --- |
+| agent-builder | draft | low | passed | clarify-the-ask, policy-engine, azure-discovery |
 | architecture-review | draft | low | passed | clarify-the-ask |
 | artifact-upgrade | draft | low | passed | skill-inventory, skill-dependency-manager |
 | audit-azure-environment | draft | low | passed | None |

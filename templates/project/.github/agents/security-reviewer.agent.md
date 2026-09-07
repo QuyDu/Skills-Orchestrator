@@ -1,7 +1,7 @@
 ---
 name: Security Reviewer
 description: Reviews code, configuration, and infrastructure for exploitable weaknesses, secret exposure, identity misconfiguration, and OWASP Top 10 defects.
-tools: ["search", "fetch", "githubRepo", "problems", "microsoft-learn"]
+tools: ["read", "search", "web"]
 ---
 
 # Security Reviewer

@@ -8,6 +8,7 @@ import test from "node:test";
 const root = path.resolve(import.meta.dirname, "..");
 const skillsRoot = path.join(root, ".github", "skills");
 const expectedSkillIds = [
+  "agent-builder",
   "architecture-review",
   "artifact-upgrade",
   "audit-azure-environment",
@@ -581,6 +582,21 @@ test("every governed skill has deterministic help coverage", async () => {
   assert.equal(configuration.properties.clarification.properties.questionsPerPrompt.minimum, 1);
   assert.equal(configuration.properties.clarification.properties.confirmPlanBeforeExecution.type, "boolean");
   assert.ok(configuration.properties.clarification.required.includes("askEveryPrompt"));
+  for (const relative of [
+    ".github/skills/agent-builder/SKILL.md",
+    ".github/skills/agent-builder/scripts/agent-builder.mjs",
+    ".github/skills/agent-builder/scripts/azure-context.ps1",
+    "schemas/agent-blueprint.schema.json",
+    "schemas/agent-builder-plan.schema.json",
+    "schemas/agent-builder-result.schema.json"
+  ]) {
+    assert.ok(existsSync(path.join(root, relative)), `missing Agent Builder contract ${relative}`);
+  }
+  for (const agent of ["azure-architect", "security-reviewer", "documentation-writer"]) {
+    const source = await readFile(path.join(templateRoot, ".github", "agents", `${agent}.agent.md`), "utf8");
+    assert.doesNotMatch(source, /tools:.*(?:fetch|githubRepo|microsoft-learn|problems|azure)/);
+    assert.match(source, /tools: \["read", "search", "web"/);
+  }
 });
 
 test("profiles are dependency-closed", async () => {
@@ -606,6 +622,7 @@ test("profiles are dependency-closed", async () => {
       }
     }
   }
+  assert.ok(effective("core").has("agent-builder"), "core profile must include the governed Agent Builder");
 });
 
 test("the default new-project profile requires Azure audit and remediation execution", async () => {

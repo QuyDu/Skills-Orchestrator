@@ -1,26 +1,42 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-09-05T16:05:00.000Z",
+  "generatedAt": "2026-09-07T15:08:01.404Z",
   "status": "passed",
   "boundary": {
     "type": "working-tree",
-    "baseCommit": "4f967865024134efc2793acfa449b2d66fd295c7",
+    "baseCommit": "109c52086ee8dfb04cada7afe1f15f58a01799f8",
     "head": "local working tree",
-    "objective": "Review the complete demo, audit-remediation, Gitleaks, CodeQL, schema, release-assurance, and evidence candidate before commit."
+    "objective": "Review the complete latest-version candidate: governed Agent Builder, runtime and profile integration, portable template-agent tools, product-name refresh with compatibility identifiers preserved, disclaimer packaging, documentation, tests, and generated inventory and security evidence."
   },
   "findings": [],
   "validation": [
-    { "command": "Complete working-tree change review", "status": "passed", "evidence": "The only finding was a stale 42-skill documentation count; all authoritative and derived references were corrected to 43." },
-    { "command": "Focused release-source gate review", "status": "passed", "evidence": "No pathspec, rename, untracked-file, platform, candidate-byte, or build-control defect remained after excluding non-shipped reports from cleanliness." },
-    { "command": "npm run check", "status": "passed", "evidence": "One hundred seven tests passed with one platform-alias skip; 198 files passed built-in security scanning; 151 release files were checksum-covered; 43 of 43 skills passed." },
-    { "command": "npm run security:gitleaks", "status": "passed", "evidence": "Pinned Gitleaks 8.30.1 passed worktree, staged-index, report, all-local-ref, and reachable-history scopes with full redaction." }
+    {
+      "command": "node --test tests/agent-builder.test.mjs",
+      "status": "passed",
+      "evidence": "Twelve Agent Builder tests passed, including transactional apply, stale-plan rejection, symlink and cycle rejection, Azure Government context, rollback preservation, schema-parity rejection, connection-string rejection, and credential-option rejection."
+    },
+    {
+      "command": "npm run check",
+      "status": "passed",
+      "evidence": "The mandatory gate scanned 206 files with zero package dependencies, verified 158 checksum-covered release files, passed 119 tests with one platform-specific skip, and verified all 44 skills."
+    },
+    {
+      "command": "npm run security:gitleaks",
+      "status": "passed",
+      "evidence": "Pinned Gitleaks 8.30.1 passed worktree, staged-index, tracked-report, all-local-ref, and reachable-history scopes with full redaction."
+    },
+    {
+      "command": "Complete working-tree change review",
+      "status": "passed",
+      "evidence": "No correctness, security, compatibility, packaging, contract, or test defect remains. CR-0001 and CR-0002 were repaired and reproduced as passing negative regressions."
+    }
   ],
   "openQuestions": [],
   "residualRisks": [
-    "Merge-SHA matrix and CodeQL evidence cover the exact release source; report-only updates remain outside candidate bytes.",
-    "Trusted signing and independent review require distinct authorized identities.",
-    "ARCF-0205 and SECF-0205 require hosted mutation and then fresh verification.",
-    "Overall assurance remains insufficient-evidence."
+    "The focused suite does not exercise simultaneous lock contention between two live apply processes.",
+    "Hosted Foundry creation and deployment remain outside this feature and were not assessed.",
+    "The release candidate remains unsigned and requires distinct trusted signing and independent-review identities before release.",
+    "Hosted CI for the new commit is unavailable until after push."
   ],
-  "recommendation": "Commit and push the reviewed candidate, verify current hosted CI, remediate hosted controls, and retain signature and independent-review blockers until distinct trusted identities complete them."
+  "recommendation": "Commit the complete reviewed candidate and push through normal branch protections. Do not sign, publish, deploy, or represent the unsigned candidate as production-ready."
 }

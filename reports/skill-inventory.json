@@ -1,8 +1,26 @@
 {
   "schemaVersion": "1.0.0",
   "runtimeVersion": "1.1.1",
-  "generatedAt": "2026-09-05T18:57:14.938Z",
+  "generatedAt": "2026-09-07T15:07:47.951Z",
   "skills": [
+    {
+      "name": "agent-builder",
+      "path": ".github/skills/agent-builder/SKILL.md",
+      "description": "Build, validate, preview, and transactionally install least-privilege custom agents from guided parameters or governed blueprints, with conditional Azure environment authentication for Foundry-aware designs. Use when creating, updating, or reviewing .agent.md files; do not use for hosted deployment or MCP installation.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "clarify-the-ask",
+        "policy-engine",
+        "azure-discovery"
+      ],
+      "reports": [
+        "reports/agent-builder-plan.json",
+        "reports/agent-builder-plan.md",
+        "reports/agent-builder-result.json",
+        "reports/agent-blueprints/<id>.json"
+      ]
+    },
     {
       "name": "architecture-review",
       "path": ".github/skills/architecture-review/SKILL.md",

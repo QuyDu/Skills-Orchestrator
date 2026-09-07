@@ -21,7 +21,7 @@ flowchart LR
     classDef governance fill:#fff0c9,stroke:#d98d18,stroke-width:1.5px,color:#422b00
     classDef outcome fill:#dff5e5,stroke:#2b8f56,stroke-width:1.5px,color:#163a2c
 
-    title[Project Skills Orchestrator]
+    title[Project Orchestrator]
 
     subgraph U[Users & Personas]
         U1[Engineering Teams]
@@ -42,7 +42,7 @@ flowchart LR
     end
 
     subgraph O[Agentic Orchestration]
-        O1[Project Skills Orchestrator]
+        O1[Project Orchestrator]
         O2[Workflow Planner]
         O3[Execution State]
     end
