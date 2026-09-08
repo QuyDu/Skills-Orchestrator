@@ -9,6 +9,14 @@ import test from "node:test";
 const root = path.resolve(import.meta.dirname, "..");
 const builder = path.join(root, ".github", "skills", "agent-builder", "scripts", "agent-builder.mjs");
 const runtime = path.join(root, "pso.mjs");
+const approvalGates = [
+  "purchase-or-payment",
+  "booking-or-external-commitment",
+  "provider-contact-or-message",
+  "account-identity-or-security-change",
+  "sensitive-data-disclosure",
+  "destructive-or-irreversible-action"
+];
 
 function run(project, command, blueprint, extra = []) {
   return spawnSync(process.execPath, [builder, command, "--project", project, "--blueprint", blueprint, ...extra], {
@@ -111,6 +119,177 @@ test("Agent Builder plans, applies, and validates a least-privilege agent", asyn
     assert.equal(result.status, "applied");
     assert.equal(result.action, "create");
     assert.match(result.transactionId, /^AGT-[a-f0-9-]{36}$/);
+  } finally {
+    await rm(project, { recursive: true, force: true });
+  }
+});
+
+test("Agent Builder preserves schema 2.0 compatibility and requires schema 2.1 autonomy", async () => {
+  const { project, blueprintPath } = await fixture();
+  try {
+    const legacy = blueprint({ schemaVersion: "2.0.0", agentType: "copilot" });
+    await writeFile(blueprintPath, `${JSON.stringify(legacy, null, 2)}\n`, "utf8");
+    const planned = run(project, "plan", blueprintPath);
+    assert.equal(planned.status, 0, planned.stderr);
+    const plan = JSON.parse(await readFile(path.join(project, "reports", "agent-builder-plan.json"), "utf8"));
+    assert.doesNotMatch(plan.renderedAgent, /## Autonomy and Approval/);
+
+    const incomplete = blueprint({ schemaVersion: "2.1.0", agentType: "copilot" });
+    await writeFile(blueprintPath, `${JSON.stringify(incomplete, null, 2)}\n`, "utf8");
+    const rejected = run(project, "validate", blueprintPath);
+    assert.notEqual(rejected.status, 0);
+    assert.match(rejected.stderr, /schemaVersion 2\.1\.0 requires an autonomy policy/);
+  } finally {
+    await rm(project, { recursive: true, force: true });
+  }
+});
+
+test("Agent Builder renders autonomous research with mandatory safety gates", async () => {
+  const { project, blueprintPath } = await fixture();
+  try {
+    const autonomous = blueprint({
+      schemaVersion: "2.1.0",
+      agentType: "copilot",
+      capabilities: ["read", "search", "web"],
+      autonomy: {
+        mode: "autonomous-research",
+        approvalRequiredFor: approvalGates,
+        webSafety: "threat-informed"
+      }
+    });
+    await writeFile(blueprintPath, `${JSON.stringify(autonomous, null, 2)}\n`, "utf8");
+    const planned = run(project, "plan", blueprintPath);
+    assert.equal(planned.status, 0, planned.stderr);
+    const plan = JSON.parse(await readFile(path.join(project, "reports", "agent-builder-plan.json"), "utf8"));
+    assert.match(plan.renderedAgent, /Proceed autonomously through read-only research/);
+    assert.match(plan.renderedAgent, /purchase or payment/);
+    assert.match(plan.renderedAgent, /deleting files, data, resources, or accounts/);
+    assert.match(plan.renderedAgent, /credibly attributed to malicious or state-sponsored threat actors/);
+    assert.match(plan.renderedAgent, /country, language, hosting region/);
+    assert.match(plan.warnings.join("\n"), /does not override VS Code permission settings/);
+
+    const unsafe = { ...autonomous, risk: "mutating", capabilities: ["read", "search", "web", "edit"] };
+    await writeFile(blueprintPath, `${JSON.stringify(unsafe, null, 2)}\n`, "utf8");
+    const rejected = run(project, "validate", blueprintPath);
+    assert.notEqual(rejected.status, 0);
+    assert.match(rejected.stderr, /autonomous-research requires a read-only agent/);
+  } finally {
+    await rm(project, { recursive: true, force: true });
+  }
+});
+
+test("Agent Builder rejects schema 2.1 and 2.2 autonomy policies missing any consequential-action approval gate", async () => {
+  const { project, blueprintPath } = await fixture();
+  try {
+    for (const schemaVersion of ["2.1.0", "2.2.0"]) {
+      for (const omittedGate of approvalGates) {
+        const candidate = blueprint({
+          schemaVersion,
+          agentType: "copilot",
+          capabilities: ["read", "search", "web"],
+          autonomy: {
+            mode: "autonomous-research",
+            approvalRequiredFor: approvalGates.filter((gate) => gate !== omittedGate),
+            webSafety: "threat-informed"
+          }
+        });
+        await writeFile(blueprintPath, `${JSON.stringify(candidate, null, 2)}\n`, "utf8");
+        const rejected = run(project, "validate", blueprintPath);
+        assert.notEqual(rejected.status, 0, `${schemaVersion} ${omittedGate} omission must be rejected`);
+        assert.match(rejected.stderr, /autonomy\.approvalRequiredFor must contain 6-6 items/);
+      }
+    }
+  } finally {
+    await rm(project, { recursive: true, force: true });
+  }
+});
+
+test("Agent Builder plans governed Foundry publication handoffs without deploying", async () => {
+  const { project, blueprintPath } = await fixture();
+  try {
+    const candidate = blueprint({
+      schemaVersion: "2.2.0",
+      agentType: "foundry-prompt",
+      autonomy: {
+        mode: "guided",
+        approvalRequiredFor: approvalGates,
+        webSafety: "standard"
+      },
+      azure: {
+        required: true,
+        cloud: "AzureUSGovernment",
+        location: "usgovarizona",
+        environmentName: "development",
+        authenticationMethod: "interactive",
+        subscriptionConfigured: true
+      },
+      publication: {
+        targets: ["foundry-endpoint", "microsoft-365-copilot-and-teams", "chatgpt-action"],
+        versionPolicy: "pinned",
+        microsoft365Audience: "tenant",
+        chatgptVisibility: "workspace"
+      }
+    });
+    await writeFile(blueprintPath, `${JSON.stringify(candidate, null, 2)}\n`, "utf8");
+    const planned = run(project, "plan", blueprintPath);
+    assert.equal(planned.status, 0, planned.stderr);
+    const plan = JSON.parse(await readFile(path.join(project, "reports", "agent-builder-plan.json"), "utf8"));
+    assert.equal(plan.schemaVersion, "1.1.0");
+    assert.deepEqual(plan.publication, candidate.publication);
+    assert.match(plan.warnings.join("\n"), /endpoint is live when the Foundry agent is created/i);
+    assert.match(plan.warnings.join("\n"), /Azure Bot Service/i);
+    assert.match(plan.warnings.join("\n"), /not a direct Foundry publication target/i);
+    assert.match(plan.warnings.join("\n"), /AzureUSGovernment.*availability.*data boundary/i);
+    assert.doesNotMatch(plan.renderedAgent, /Publication Handoff/);
+  } finally {
+    await rm(project, { recursive: true, force: true });
+  }
+});
+
+test("Agent Builder rejects invalid publication intent", async () => {
+  const { project, blueprintPath } = await fixture();
+  const governed = blueprint({
+    schemaVersion: "2.2.0",
+    agentType: "foundry-prompt",
+    autonomy: {
+      mode: "guided",
+      approvalRequiredFor: approvalGates,
+      webSafety: "standard"
+    },
+    azure: {
+      required: true,
+      cloud: "AzureCloud",
+      location: "eastus2",
+      environmentName: "development",
+      authenticationMethod: "interactive",
+      subscriptionConfigured: true
+    }
+  });
+  try {
+    const cases = [
+      [
+        { ...governed, schemaVersion: "2.1.0", publication: { targets: ["foundry-endpoint"], versionPolicy: "pinned" } },
+        /publication requires schemaVersion 2\.2\.0/
+      ],
+      [
+        { ...governed, agentType: "copilot", publication: { targets: ["foundry-endpoint"], versionPolicy: "pinned" } },
+        /publication is supported only for Foundry agents/
+      ],
+      [
+        { ...governed, publication: { targets: ["microsoft-365-copilot-and-teams"], versionPolicy: "pinned" } },
+        /microsoft365Audience is required/
+      ],
+      [
+        { ...governed, publication: { targets: ["chatgpt-action"], versionPolicy: "pinned" } },
+        /chatgptVisibility is required/
+      ]
+    ];
+    for (const [candidate, expected] of cases) {
+      await writeFile(blueprintPath, `${JSON.stringify(candidate, null, 2)}\n`, "utf8");
+      const rejected = run(project, "validate", blueprintPath);
+      assert.notEqual(rejected.status, 0);
+      assert.match(rejected.stderr, expected);
+    }
   } finally {
     await rm(project, { recursive: true, force: true });
   }
@@ -279,13 +458,32 @@ test("pso agent build accepts complete parameters and asks only for missing valu
     assert.equal(built.status, 0, built.stderr);
     const blueprintPath = path.join(project, "reports", "agent-blueprints", "accessibility-reviewer.json");
     const generated = JSON.parse(await readFile(blueprintPath, "utf8"));
-    assert.equal(generated.schemaVersion, "2.0.0");
+    assert.equal(generated.schemaVersion, "2.1.0");
     assert.equal(generated.agentType, "copilot");
+    assert.deepEqual(generated.autonomy, {
+      mode: "guided",
+      approvalRequiredFor: approvalGates,
+      webSafety: "standard"
+    });
     assert.equal(generated.instructions.approach.length, 2);
     assert.match(generated.instructions.approach[1], /locations, impact, and suggested remediation/);
     assert.equal(Object.hasOwn(generated, "azure"), false);
     assert.equal(existsSync(path.join(project, ".azure", "environment.json")), false);
     assert.equal(existsSync(path.join(project, "reports", "agent-builder-plan.json")), true);
+
+    const autonomous = runRuntimeBuild(project, buildParameters([
+      "--capabilities", "web",
+      "--autonomy", "autonomous-research",
+      "--web-safety", "threat-informed"
+    ]));
+    assert.equal(autonomous.status, 0, autonomous.stderr);
+    const autonomousBlueprint = JSON.parse(await readFile(blueprintPath, "utf8"));
+    assert.deepEqual(autonomousBlueprint.capabilities, ["web"]);
+    assert.equal(autonomousBlueprint.autonomy.mode, "autonomous-research");
+    assert.equal(autonomousBlueprint.autonomy.webSafety, "threat-informed");
+    const autonomousPlan = JSON.parse(await readFile(path.join(project, "reports", "agent-builder-plan.json"), "utf8"));
+    assert.match(autonomousPlan.renderedAgent, /tools: \["web"\]/);
+    assert.match(autonomousPlan.renderedAgent, /Proceed autonomously through read-only research/);
 
     const missing = runRuntimeBuild(project, buildParameters().filter((value, index, values) => value !== "--purpose" && values[index - 1] !== "--purpose"));
     assert.notEqual(missing.status, 0);
@@ -333,7 +531,11 @@ test("Foundry-aware build selects Azure Government and persists only sanitized b
       "--location", "usgovarizona",
       "--environment-name", "demo",
       "--authentication-method", "interactive",
-      "--subscription-id", "00000000-0000-0000-0000-000000000002"
+      "--subscription-id", "00000000-0000-0000-0000-000000000002",
+      "--publication-targets", "foundry-endpoint,microsoft-365-copilot-and-teams,chatgpt-action",
+      "--version-policy", "pinned",
+      "--microsoft365-audience", "individual",
+      "--chatgpt-visibility", "workspace"
     ]);
     const built = runRuntimeBuild(project, parameters, {
       PATH: `${fakeBin}${path.delimiter}${process.env.PATH}`,
@@ -349,6 +551,13 @@ test("Foundry-aware build selects Azure Government and persists only sanitized b
       environmentName: "demo",
       authenticationMethod: "interactive",
       subscriptionConfigured: true
+    });
+    assert.equal(generated.schemaVersion, "2.2.0");
+    assert.deepEqual(generated.publication, {
+      targets: ["foundry-endpoint", "microsoft-365-copilot-and-teams", "chatgpt-action"],
+      versionPolicy: "pinned",
+      microsoft365Audience: "individual",
+      chatgptVisibility: "workspace"
     });
     const serialized = JSON.stringify(generated);
     assert.doesNotMatch(serialized, /00000000-0000-0000-0000-00000000000[12]/);

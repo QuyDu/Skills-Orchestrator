@@ -1,12 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://project-skills.dev/schemas/agent-blueprint/2.0.0",
+  "$id": "https://project-skills.dev/schemas/agent-blueprint/2.2.0",
   "title": "Governed Agent Blueprint",
   "type": "object",
   "additionalProperties": false,
   "required": ["schemaVersion", "id", "name", "description", "purpose", "risk", "capabilities", "invocation", "instructions", "subagents", "handoffs"],
   "properties": {
-    "schemaVersion": { "enum": ["1.0.0", "2.0.0"] },
+    "schemaVersion": { "enum": ["1.0.0", "2.0.0", "2.1.0", "2.2.0"] },
     "agentType": { "enum": ["copilot", "foundry-prompt", "foundry-hosted"] },
     "id": { "type": "string", "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$", "maxLength": 64 },
     "name": { "type": "string", "minLength": 3, "maxLength": 80 },
@@ -18,6 +18,38 @@
       "minItems": 1,
       "uniqueItems": true,
       "items": { "enum": ["read", "search", "web", "edit", "execute", "agent", "todo"] }
+    },
+    "autonomy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "approvalRequiredFor", "webSafety"],
+      "properties": {
+        "mode": { "enum": ["guided", "autonomous-research"] },
+        "approvalRequiredFor": {
+          "type": "array",
+          "minItems": 6,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "purchase-or-payment",
+              "booking-or-external-commitment",
+              "provider-contact-or-message",
+              "account-identity-or-security-change",
+              "sensitive-data-disclosure",
+              "destructive-or-irreversible-action"
+            ]
+          }
+        },
+        "webSafety": { "enum": ["standard", "threat-informed"] }
+      },
+      "allOf": [
+        { "properties": { "approvalRequiredFor": { "contains": { "const": "purchase-or-payment" } } } },
+        { "properties": { "approvalRequiredFor": { "contains": { "const": "booking-or-external-commitment" } } } },
+        { "properties": { "approvalRequiredFor": { "contains": { "const": "provider-contact-or-message" } } } },
+        { "properties": { "approvalRequiredFor": { "contains": { "const": "account-identity-or-security-change" } } } },
+        { "properties": { "approvalRequiredFor": { "contains": { "const": "sensitive-data-disclosure" } } } },
+        { "properties": { "approvalRequiredFor": { "contains": { "const": "destructive-or-irreversible-action" } } } }
+      ]
     },
     "invocation": {
       "type": "object",
@@ -70,18 +102,91 @@
         "authenticationMethod": { "enum": ["interactive", "managed-identity"] },
         "subscriptionConfigured": { "type": "boolean" }
       }
+    },
+    "publication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["targets", "versionPolicy"],
+      "properties": {
+        "targets": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": { "enum": ["foundry-endpoint", "microsoft-365-copilot-and-teams", "chatgpt-action"] }
+        },
+        "versionPolicy": { "enum": ["latest", "pinned"] },
+        "microsoft365Audience": { "enum": ["individual", "tenant"] },
+        "chatgptVisibility": { "enum": ["workspace", "link", "gpt-store"] }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "targets": { "contains": { "const": "microsoft-365-copilot-and-teams" } } },
+            "required": ["targets"]
+          },
+          "then": { "required": ["microsoft365Audience"] },
+          "else": { "not": { "required": ["microsoft365Audience"] } }
+        },
+        {
+          "if": {
+            "properties": { "targets": { "contains": { "const": "chatgpt-action" } } },
+            "required": ["targets"]
+          },
+          "then": { "required": ["chatgptVisibility"] },
+          "else": { "not": { "required": ["chatgptVisibility"] } }
+        }
+      ]
     }
   },
   "allOf": [
     {
-      "if": { "properties": { "schemaVersion": { "const": "2.0.0" } }, "required": ["schemaVersion"] },
+      "if": { "properties": { "schemaVersion": { "enum": ["2.0.0", "2.1.0", "2.2.0"] } }, "required": ["schemaVersion"] },
       "then": { "required": ["agentType"] }
+    },
+    {
+      "if": { "properties": { "schemaVersion": { "enum": ["2.1.0", "2.2.0"] } }, "required": ["schemaVersion"] },
+      "then": { "required": ["autonomy"] }
+    },
+    {
+      "if": { "required": ["autonomy"] },
+      "then": { "properties": { "schemaVersion": { "enum": ["2.1.0", "2.2.0"] } } }
+    },
+    {
+      "if": {
+        "properties": { "autonomy": { "properties": { "mode": { "const": "autonomous-research" } }, "required": ["mode"] } },
+        "required": ["autonomy"]
+      },
+      "then": {
+        "properties": {
+          "risk": { "const": "read-only" },
+          "capabilities": { "items": { "enum": ["read", "search", "web"] } }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "autonomy": { "properties": { "webSafety": { "const": "threat-informed" } }, "required": ["webSafety"] } },
+        "required": ["autonomy"]
+      },
+      "then": { "properties": { "capabilities": { "contains": { "const": "web" } } } }
     },
     {
       "if": { "properties": { "agentType": { "enum": ["foundry-prompt", "foundry-hosted"] } }, "required": ["agentType"] },
       "then": {
         "required": ["azure"],
         "properties": { "azure": { "properties": { "required": { "const": true } } } }
+      }
+    },
+    {
+      "if": { "required": ["publication"] },
+      "then": {
+        "required": ["agentType", "azure"],
+        "properties": {
+          "schemaVersion": { "const": "2.2.0" },
+          "agentType": { "enum": ["foundry-prompt", "foundry-hosted"] },
+          "azure": { "properties": { "required": { "const": true } } }
+        }
       }
     }
   ]

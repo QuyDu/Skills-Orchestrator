@@ -1,5 +1,7 @@
 # Policy Evaluation
 
-Decision: **allow** bounded `P4-release-assurance` preparation and read-only hosted GitHub inspection.
+Decision: **allow** one reviewed Agent Builder and version 1.1.1 demo commit followed by one normal push of `feat/agent-builder-latest` to its configured upstream.
 
-Commit, push, tag, release, publication, deployment, signing, GitHub mutation, and Azure mutation remain prohibited. `REM-0205` must remain blocked until a clean candidate has current hosted CI, a trusted signature, independent review, and passing production verification.
+The user explicitly requested the deck update, commit, and push, and the current clarification round applied the autonomous resume-and-finish default. The change must remain within the reviewed boundary and pass `npm run check`; any remote rejection is a stop condition.
+
+Pull request creation, merge, tag, release, signing, publication, deployment, hosted-agent creation, MCP installation, and Azure mutation remain prohibited. P4 release assurance remains blocked.

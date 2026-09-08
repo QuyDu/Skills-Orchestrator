@@ -1,42 +1,53 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-09-07T15:08:01.404Z",
+  "generatedAt": "2026-09-08T16:27:24.6739016Z",
   "status": "passed",
   "boundary": {
     "type": "working-tree",
-    "baseCommit": "109c52086ee8dfb04cada7afe1f15f58a01799f8",
+    "baseCommit": "ba012e6b1eae61168dde5a01aa16c5cd7e1e0be8",
     "head": "local working tree",
-    "objective": "Review the complete latest-version candidate: governed Agent Builder, runtime and profile integration, portable template-agent tools, product-name refresh with compatibility identifiers preserved, disclaimer packaging, documentation, tests, and generated inventory and security evidence."
+    "objective": "Review the complete 30-path Agent Builder autonomy and publication-planning increment plus synchronized version 1.1.1 Markdown, HTML, narration, PowerPoint, test, policy, and continuity artifacts. Confirm all six approval gates, backward-compatible contracts, non-deploying publication boundaries, generated-project propagation, accurate demo claims, and blocked P4 status."
   },
   "findings": [],
   "validation": [
     {
-      "command": "node --test tests/agent-builder.test.mjs",
+      "command": "Read-only review of the 30-path working-tree diff and nearest controlling contracts and tests",
       "status": "passed",
-      "evidence": "Twelve Agent Builder tests passed, including transactional apply, stale-plan rejection, symlink and cycle rejection, Azure Government context, rollback preservation, schema-parity rejection, connection-string rejection, and credential-option rejection."
+      "evidence": "No correctness, security, compatibility, publication-boundary, requirement, evidence-integrity, or missing-test defect was identified."
+    },
+    {
+      "command": "node --test tests/agent-builder.test.mjs tests/skill-contracts.test.mjs",
+      "status": "passed",
+      "evidence": "All 33 focused tests passed. The 17 Agent Builder tests cover governed publication intent, invalid target-specific combinations, schema 2.1 and 2.2 approval-gate omissions, Azure Government CLI generation, identifier sanitization, and exclusion of publication metadata from rendered agent instructions."
+    },
+    {
+      "command": "Generated-project propagation validation",
+      "status": "passed",
+      "evidence": "Package-install coverage verified the updated skill, runtime, schemas, and root CLI flags in the packaged framework and a newly generated project."
+    },
+    {
+      "command": "PowerPoint OOXML assertions and desktop PowerPoint rendering",
+      "status": "passed",
+      "evidence": "Demo/Project-Orchestrator-Demo.pptx is a valid 10-slide 16:9 OOXML deck. Desktop PowerPoint opened and exported every slide, and the changed slides were visually inspected without clipping, overlap, or font-substitution defects."
     },
     {
       "command": "npm run check",
       "status": "passed",
-      "evidence": "The mandatory gate scanned 206 files with zero package dependencies, verified 158 checksum-covered release files, passed 119 tests with one platform-specific skip, and verified all 44 skills."
+      "evidence": "The mandatory repository gate passed 124 of 125 tests with one platform-specific skip, verified all 44 skills, scanned 207 files without a security failure, and verified 158 checksum-covered release-candidate files."
     },
     {
-      "command": "npm run security:gitleaks",
+      "command": "git status --porcelain=v2 --branch; git diff --name-status; git diff --stat; git diff --check",
       "status": "passed",
-      "evidence": "Pinned Gitleaks 8.30.1 passed worktree, staged-index, tracked-report, all-local-ref, and reachable-history scopes with full redaction."
-    },
-    {
-      "command": "Complete working-tree change review",
-      "status": "passed",
-      "evidence": "No correctness, security, compatibility, packaging, contract, or test defect remains. CR-0001 and CR-0002 were repaired and reproduced as passing negative regressions."
+      "evidence": "The frozen boundary contains 29 modified tracked paths and one untracked PowerPoint, no staged or unmerged path, and no diff-check error. Every path maps to the requested Agent Builder, demo, validation, governance, or continuity work."
     }
   ],
   "openQuestions": [],
   "residualRisks": [
+    "No live Foundry endpoint, Microsoft 365 or Teams channel, Bot Service resource, Custom GPT, or GPT Action was created or exercised.",
+    "Publication readiness in Azure Government or another sovereign cloud must fail closed until current service, channel, authorization, and data-boundary availability is proven by Azure discovery and platform evidence.",
     "The focused suite does not exercise simultaneous lock contention between two live apply processes.",
-    "Hosted Foundry creation and deployment remain outside this feature and were not assessed.",
-    "The release candidate remains unsigned and requires distinct trusted signing and independent-review identities before release.",
-    "Hosted CI for the new commit is unavailable until after push."
+    "Hosted CI across repository-supported platforms and Node versions can run only after the authorized branch push.",
+    "The release candidate remains unsigned and P4 requires trusted signing, distinct independent review, operational artifact evidence, revocation testing, and production verification."
   ],
-  "recommendation": "Commit the complete reviewed candidate and push through normal branch protections. Do not sign, publish, deploy, or represent the unsigned candidate as production-ready."
+  "recommendation": "The reviewed Agent Builder and version 1.1.1 demo change set is ready for the authorized normal commit and configured feature-branch push. Do not force-push, merge, sign, release, publish, deploy, create external channel integrations, mutate Azure, or represent the unsigned candidate as production-ready."
 }

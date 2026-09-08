@@ -318,18 +318,34 @@ test("project video is a portable narrated MP4 capability", async () => {
   const demoNarration = JSON.parse(await readFile(path.join(root, "Demo", "audio", "narration", "scenes.json"), "utf8"));
   assert.equal(demoNarration.voice.name, "en-US-Ava:DragonHDLatestNeural");
   assert.equal(demoNarration.outputFormat, "audio-48khz-192kbitrate-mono-mp3");
+  assert.equal(demoNarration.scenes.length, 11);
   const demoGenerator = await readFile(path.join(root, "scripts", "generate-demo-narration.ps1"), "utf8");
   assert.match(demoGenerator, /ValidateSet\("ava-hd-warm", "aria-hd-warm", "aria-professional"\)/);
   assert.match(demoGenerator, /\$selectedProfile\.style/);
   assert.match(demoGenerator, /-ApproveExternal/);
+  assert.match(demoGenerator, /between one and 99 ordered scenes/);
   assert.doesNotMatch(demoGenerator, /pitch=/);
   const demoAnimation = await readFile(path.join(root, "Demo", "project-skills-orchestrator-animation.html"), "utf8");
+  assert.equal((demoAnimation.match(/<section class="scene/g) ?? []).length, demoNarration.scenes.length);
+  for (const scene of demoNarration.scenes) {
+    assert.ok(demoAnimation.includes(scene.text), `Demo scene ${scene.id} narration must match its manifest text.`);
+  }
+  assert.match(demoAnimation, /guided or autonomous-research/);
+  assert.match(demoAnimation, /Never silently publish/);
+  assert.match(demoAnimation, /P4 BLOCKED/);
   assert.match(demoAnimation, /SpeechSynthesisUtterance/);
   assert.match(demoAnimation, /defaultEnglishVoice/);
   assert.match(demoAnimation, /Local browser voice/);
   assert.match(demoAnimation, /utterance\.onend = \(\) =>/);
   assert.match(demoAnimation, /scheduleAdvance\(token\)/);
+  const demoPowerPoint = await readFile(path.join(root, "Demo", "Project-Orchestrator-Demo.pptx"));
+  assert.deepEqual([...demoPowerPoint.subarray(0, 4)], [0x50, 0x4b, 0x03, 0x04]);
+  const demoPowerPointSlideIds = new Set(
+    [...demoPowerPoint.toString("latin1").matchAll(/ppt\/slides\/slide(\d+)\.xml/g)].map((match) => Number(match[1]))
+  );
+  assert.deepEqual([...demoPowerPointSlideIds].sort((left, right) => left - right), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   const demoRunbook = await readFile(path.join(root, "Demo", "DEMO-DAY.md"), "utf8");
+  assert.match(demoRunbook, /PowerPoint deck as the primary current product story/);
   assert.match(demoRunbook, /\/project-video --proceed/);
   assert.match(demoRunbook, /manifest-verified MP4/);
   assert.match(demoRunbook, /azure-discovery -Gov/);
@@ -592,6 +608,28 @@ test("every governed skill has deterministic help coverage", async () => {
   ]) {
     assert.ok(existsSync(path.join(root, relative)), `missing Agent Builder contract ${relative}`);
   }
+  const agentBlueprint = JSON.parse(await readFile(path.join(root, "schemas", "agent-blueprint.schema.json"), "utf8"));
+  assert.deepEqual(agentBlueprint.properties.schemaVersion.enum, ["1.0.0", "2.0.0", "2.1.0", "2.2.0"]);
+  assert.equal(agentBlueprint.properties.autonomy.additionalProperties, false);
+  assert.deepEqual(agentBlueprint.properties.autonomy.required, ["mode", "approvalRequiredFor", "webSafety"]);
+  assert.deepEqual(agentBlueprint.properties.autonomy.properties.mode.enum, ["guided", "autonomous-research"]);
+  assert.deepEqual(agentBlueprint.properties.autonomy.properties.webSafety.enum, ["standard", "threat-informed"]);
+  const approvalGates = agentBlueprint.properties.autonomy.properties.approvalRequiredFor.items.enum;
+  assert.equal(agentBlueprint.properties.autonomy.properties.approvalRequiredFor.minItems, approvalGates.length);
+  assert.deepEqual(
+    agentBlueprint.properties.autonomy.allOf.map((condition) => condition.properties.approvalRequiredFor.contains.const),
+    approvalGates
+  );
+  assert.equal(agentBlueprint.properties.publication.additionalProperties, false);
+  assert.deepEqual(agentBlueprint.properties.publication.required, ["targets", "versionPolicy"]);
+  assert.deepEqual(agentBlueprint.properties.publication.properties.targets.items.enum, [
+    "foundry-endpoint",
+    "microsoft-365-copilot-and-teams",
+    "chatgpt-action"
+  ]);
+  const agentBuilderPlan = JSON.parse(await readFile(path.join(root, "schemas", "agent-builder-plan.schema.json"), "utf8"));
+  assert.deepEqual(agentBuilderPlan.properties.schemaVersion.enum, ["1.0.0", "1.1.0"]);
+  assert.deepEqual(agentBuilderPlan.properties.publication.type, ["object", "null"]);
   for (const agent of ["azure-architect", "security-reviewer", "documentation-writer"]) {
     const source = await readFile(path.join(templateRoot, ".github", "agents", `${agent}.agent.md`), "utf8");
     assert.doesNotMatch(source, /tools:.*(?:fetch|githubRepo|microsoft-learn|problems|azure)/);

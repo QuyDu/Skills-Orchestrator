@@ -90,8 +90,13 @@ if (-not (Test-Path -LiteralPath $ManifestPath -PathType Leaf)) {
 }
 
 $manifest = Get-Content -LiteralPath $ManifestPath -Raw | ConvertFrom-Json
-if ($manifest.schemaVersion -ne "1.0.0" -or $manifest.scenes.Count -ne 8) {
-  throw "Narration manifest must use schemaVersion 1.0.0 and contain exactly eight scenes."
+if ($manifest.schemaVersion -ne "1.0.0" -or $manifest.scenes.Count -lt 1 -or $manifest.scenes.Count -gt 99) {
+  throw "Narration manifest must use schemaVersion 1.0.0 and contain between one and 99 ordered scenes."
+}
+for ($index = 0; $index -lt $manifest.scenes.Count; $index += 1) {
+  if ($manifest.scenes[$index].id -ne ($index + 1)) {
+    throw "Narration scene IDs must be contiguous and ordered from one."
+  }
 }
 
 $profiles = @(

@@ -9,13 +9,36 @@ import path from "node:path";
 
 const CAPABILITY_ORDER = ["read", "search", "web", "edit", "execute", "agent", "todo"];
 const MUTATING_CAPABILITIES = new Set(["edit", "execute"]);
-const BLUEPRINT_FIELDS = ["schemaVersion", "agentType", "id", "name", "description", "purpose", "risk", "capabilities", "invocation", "instructions", "subagents", "handoffs", "azure"];
+const RESEARCH_CAPABILITIES = new Set(["read", "search", "web"]);
+const AUTONOMY_MODES = new Set(["guided", "autonomous-research"]);
+const WEB_SAFETY_MODES = new Set(["standard", "threat-informed"]);
+const PUBLICATION_TARGETS = new Set(["foundry-endpoint", "microsoft-365-copilot-and-teams", "chatgpt-action"]);
+const VERSION_POLICIES = new Set(["latest", "pinned"]);
+const MICROSOFT_365_AUDIENCES = new Set(["individual", "tenant"]);
+const CHATGPT_VISIBILITIES = new Set(["workspace", "link", "gpt-store"]);
+const APPROVAL_GATES = [
+  "purchase-or-payment",
+  "booking-or-external-commitment",
+  "provider-contact-or-message",
+  "account-identity-or-security-change",
+  "sensitive-data-disclosure",
+  "destructive-or-irreversible-action"
+];
+const APPROVAL_GATE_LABELS = {
+  "purchase-or-payment": "a purchase or payment",
+  "booking-or-external-commitment": "a booking, reservation, or other external commitment",
+  "provider-contact-or-message": "contacting a provider or sending a message",
+  "account-identity-or-security-change": "an account, identity, permission, or security change",
+  "sensitive-data-disclosure": "disclosing credentials, payment data, government identifiers, or other sensitive personal data",
+  "destructive-or-irreversible-action": "deleting files, data, resources, or accounts, or another destructive or irreversible action"
+};
+const BLUEPRINT_FIELDS = ["schemaVersion", "agentType", "id", "name", "description", "purpose", "risk", "capabilities", "autonomy", "invocation", "instructions", "subagents", "handoffs", "azure", "publication"];
 const AGENT_TYPES = new Set(["copilot", "foundry-prompt", "foundry-hosted"]);
 const COMMON_OPTIONS = new Set(["project", "blueprint", "plan", "agent", "json", "accept-risk"]);
 const BUILD_OPTIONS = new Set([
   "type", "id", "name", "description", "purpose", "risk", "capabilities", "user-invocable", "model-invocable",
-  "constraints", "approach", "output-format", "subagents", "handoffs-file", "azure-required", "cloud", "location",
-  "environment-name", "authentication-method", "subscription-id"
+  "autonomy", "web-safety", "constraints", "approach", "output-format", "subagents", "handoffs-file", "azure-required", "cloud", "location",
+  "environment-name", "authentication-method", "subscription-id", "publication-targets", "version-policy", "microsoft365-audience", "chatgpt-visibility"
 ]);
 const FORBIDDEN_CREDENTIAL_OPTIONS = /^(?:password|client-secret|secret|token|api-key|access-key|connection-string)$/i;
 const SECRET_PATTERNS = [
@@ -233,7 +256,7 @@ async function readJson(file, location) {
 
 function validateBlueprint(blueprint) {
   rejectUnknown(blueprint, BLUEPRINT_FIELDS, "blueprint");
-  if (!["1.0.0", "2.0.0"].includes(blueprint.schemaVersion)) throw new Error("Unsupported blueprint schemaVersion");
+  if (!["1.0.0", "2.0.0", "2.1.0", "2.2.0"].includes(blueprint.schemaVersion)) throw new Error("Unsupported blueprint schemaVersion");
   const agentType = blueprint.agentType ?? (blueprint.schemaVersion === "1.0.0" ? "copilot" : undefined);
   if (!AGENT_TYPES.has(agentType)) throw new Error("agentType must be copilot, foundry-prompt, or foundry-hosted");
   requireString(blueprint.id, "id", 1, 64);
@@ -251,6 +274,32 @@ function validateBlueprint(blueprint) {
   }
   if (blueprint.risk === "read-only" && blueprint.capabilities.some((item) => MUTATING_CAPABILITIES.has(item))) {
     throw new Error("read-only agents cannot use edit or execute");
+  }
+  if (["2.1.0", "2.2.0"].includes(blueprint.schemaVersion) && blueprint.autonomy === undefined) {
+    throw new Error(`schemaVersion ${blueprint.schemaVersion} requires an autonomy policy`);
+  }
+  if (blueprint.autonomy !== undefined) {
+    if (!["2.1.0", "2.2.0"].includes(blueprint.schemaVersion)) throw new Error("autonomy requires schemaVersion 2.1.0 or 2.2.0");
+    rejectUnknown(blueprint.autonomy, ["mode", "approvalRequiredFor", "webSafety"], "autonomy");
+    if (!AUTONOMY_MODES.has(blueprint.autonomy.mode)) throw new Error("autonomy.mode must be guided or autonomous-research");
+    requireStringArray(blueprint.autonomy.approvalRequiredFor, "autonomy.approvalRequiredFor", {
+      minimum: APPROVAL_GATES.length, maximum: APPROVAL_GATES.length, itemMaximum: 64
+    });
+    for (const gate of blueprint.autonomy.approvalRequiredFor) {
+      if (!APPROVAL_GATES.includes(gate)) throw new Error(`Unsupported approval gate: ${gate}`);
+    }
+    for (const gate of APPROVAL_GATES) {
+      if (!blueprint.autonomy.approvalRequiredFor.includes(gate)) throw new Error(`autonomy must require direct approval for ${gate}`);
+    }
+    if (!WEB_SAFETY_MODES.has(blueprint.autonomy.webSafety)) throw new Error("autonomy.webSafety must be standard or threat-informed");
+    if (blueprint.autonomy.mode === "autonomous-research") {
+      if (blueprint.risk !== "read-only" || blueprint.capabilities.some((item) => !RESEARCH_CAPABILITIES.has(item))) {
+        throw new Error("autonomous-research requires a read-only agent limited to read, search, and web capabilities");
+      }
+    }
+    if (blueprint.autonomy.webSafety === "threat-informed" && !blueprint.capabilities.includes("web")) {
+      throw new Error("threat-informed web safety requires the web capability");
+    }
   }
   rejectUnknown(blueprint.invocation, ["userInvocable", "modelInvocable"], "invocation");
   if (typeof blueprint.invocation.userInvocable !== "boolean" || typeof blueprint.invocation.modelInvocable !== "boolean") {
@@ -295,6 +344,30 @@ function validateBlueprint(blueprint) {
   }
   if (agentType.startsWith("foundry-") && blueprint.azure?.required !== true) {
     throw new Error(`${agentType} requires an Azure environment binding`);
+  }
+  if (blueprint.publication !== undefined) {
+    if (blueprint.schemaVersion !== "2.2.0") throw new Error("publication requires schemaVersion 2.2.0");
+    if (!agentType.startsWith("foundry-")) throw new Error("publication is supported only for Foundry agents");
+    rejectUnknown(blueprint.publication, ["targets", "versionPolicy", "microsoft365Audience", "chatgptVisibility"], "publication");
+    requireStringArray(blueprint.publication.targets, "publication.targets", { minimum: 1, maximum: PUBLICATION_TARGETS.size, itemMaximum: 64 });
+    for (const target of blueprint.publication.targets) {
+      if (!PUBLICATION_TARGETS.has(target)) throw new Error(`Unsupported publication target: ${target}`);
+    }
+    if (!VERSION_POLICIES.has(blueprint.publication.versionPolicy)) throw new Error("publication.versionPolicy must be latest or pinned");
+    const publishesToMicrosoft365 = blueprint.publication.targets.includes("microsoft-365-copilot-and-teams");
+    if (publishesToMicrosoft365 && !MICROSOFT_365_AUDIENCES.has(blueprint.publication.microsoft365Audience)) {
+      throw new Error("publication.microsoft365Audience is required for Microsoft 365 Copilot and Teams");
+    }
+    if (!publishesToMicrosoft365 && blueprint.publication.microsoft365Audience !== undefined) {
+      throw new Error("publication.microsoft365Audience requires the Microsoft 365 Copilot and Teams target");
+    }
+    const integratesWithChatGpt = blueprint.publication.targets.includes("chatgpt-action");
+    if (integratesWithChatGpt && !CHATGPT_VISIBILITIES.has(blueprint.publication.chatgptVisibility)) {
+      throw new Error("publication.chatgptVisibility is required for the ChatGPT action target");
+    }
+    if (!integratesWithChatGpt && blueprint.publication.chatgptVisibility !== undefined) {
+      throw new Error("publication.chatgptVisibility requires the ChatGPT action target");
+    }
   }
   const serialized = stableJson(blueprint);
   if (SECRET_PATTERNS.some((pattern) => pattern.test(serialized))) throw new Error("blueprint contains suspected secret material");
@@ -376,6 +449,24 @@ function renderAgent(blueprint) {
   }
   lines.push("---", "", `# ${blueprint.name}`, "", blueprint.purpose, "", "## Constraints", "");
   lines.push(...blueprint.instructions.constraints.map((item) => `- ${item}`));
+  if (blueprint.autonomy) {
+    lines.push("", "## Autonomy and Approval", "");
+    if (blueprint.autonomy.mode === "autonomous-research") {
+      lines.push("- Proceed autonomously through read-only research. Do not ask for permission before each search, source comparison, or read-only retrieval.");
+      lines.push("- Ask only when required inputs are missing, no safe source can answer a material question, or an action reaches an approval gate below.");
+    } else {
+      lines.push("- Work in guided mode and pause when user direction is materially required.");
+    }
+    lines.push(`- Obtain the user's direct approval immediately before ${blueprint.autonomy.approvalRequiredFor.map((gate) => APPROVAL_GATE_LABELS[gate]).join("; ")}.`);
+    lines.push("- Never interpret permission to research as permission to take an external, sensitive, destructive, or irreversible action, and never expand tools or delegate work to bypass an approval gate.");
+    if (blueprint.autonomy.webSafety === "threat-informed") {
+      lines.push("", "## Web Safety", "");
+      lines.push("- Prefer official, primary, and established reputable sources. Skip domains or downloads flagged by the browser, operating system, or reputable security intelligence for malware, phishing, deceptive behavior, or known compromise.");
+      lines.push("- Avoid suspicious redirects, URL shorteners, executable downloads, certificate warnings, newly registered or low-reputation domains, and infrastructure credibly attributed to malicious or state-sponsored threat actors.");
+      lines.push("- Treat country, language, hosting region, or top-level domain alone as insufficient evidence of maliciousness. Apply the same threat-evidence standard regardless of origin.");
+      lines.push("- When a source is unsafe or blocked, continue with a safer authoritative alternative without asking unless no adequate safe source remains.");
+    }
+  }
   lines.push("", "## Approach", "");
   lines.push(...blueprint.instructions.approach.map((item, index) => `${index + 1}. ${item}`));
   lines.push("", "## Output Format", "", blueprint.instructions.outputFormat, "");
@@ -406,6 +497,8 @@ async function buildBlueprint(root, options) {
     const purpose = await askMissing(terminal, options.purpose, "Agent purpose");
     const risk = await askMissing(terminal, options.risk, "Risk (read-only or mutating)", "read-only");
     const capabilities = parseList(await askMissing(terminal, options.capabilities, "Capabilities separated by commas", risk === "read-only" ? "read,search" : "read,search,edit"));
+    const autonomyMode = await askMissing(terminal, options.autonomy, "Autonomy (guided or autonomous-research)", "guided");
+    const webSafety = await askMissing(terminal, options["web-safety"], "Web safety (standard or threat-informed)", autonomyMode === "autonomous-research" && capabilities.includes("web") ? "threat-informed" : "standard");
     const userInvocable = parseBoolean(await askMissing(terminal, options["user-invocable"], "User invocable (true or false)", "true"), "user-invocable");
     const modelInvocable = parseBoolean(await askMissing(terminal, options["model-invocable"], "Model invocable (true or false)", "true"), "model-invocable");
     const constraints = parseList(await askMissing(terminal, options.constraints, "Constraints separated by |"), /\|/);
@@ -416,13 +509,38 @@ async function buildBlueprint(root, options) {
     const handoffs = handoffsPath === "none" ? [] : await readJson(handoffsPath, "handoffs-file");
     if (!Array.isArray(handoffs)) throw new Error("handoffs-file must contain a JSON array");
 
+    const publicationTargets = parseList(await askMissing(terminal, options["publication-targets"], "Publication targets separated by commas, or none", "none"));
+    if (!publicationTargets.length && [options["version-policy"], options["microsoft365-audience"], options["chatgpt-visibility"]].some((value) => value !== undefined)) {
+      throw new Error("Publication options require at least one --publication-targets value");
+    }
+    let publication;
+    if (publicationTargets.length) {
+      const versionPolicy = await askMissing(terminal, options["version-policy"], "Foundry endpoint version policy (latest or pinned)", "pinned");
+      const publishesToMicrosoft365 = publicationTargets.includes("microsoft-365-copilot-and-teams");
+      const integratesWithChatGpt = publicationTargets.includes("chatgpt-action");
+      const microsoft365Audience = publishesToMicrosoft365
+        ? await askMissing(terminal, options["microsoft365-audience"], "Microsoft 365 audience (individual or tenant)", "individual")
+        : undefined;
+      const chatgptVisibility = integratesWithChatGpt
+        ? await askMissing(terminal, options["chatgpt-visibility"], "ChatGPT visibility (workspace, link, or gpt-store)", "workspace")
+        : undefined;
+      publication = {
+        targets: publicationTargets,
+        versionPolicy,
+        ...(microsoft365Audience ? { microsoft365Audience } : {}),
+        ...(chatgptVisibility ? { chatgptVisibility } : {})
+      };
+    }
+
     const azureRequired = agentType.startsWith("foundry-") || parseBoolean(options["azure-required"] ?? false, "azure-required");
     const azure = azureRequired ? { required: true, ...await resolveAzureContext(root, options, terminal) } : undefined;
     const candidate = {
-      schemaVersion: "2.0.0", agentType, id, name, description, purpose, risk, capabilities,
+      schemaVersion: publication ? "2.2.0" : "2.1.0", agentType, id, name, description, purpose, risk, capabilities,
+      autonomy: { mode: autonomyMode, approvalRequiredFor: APPROVAL_GATES, webSafety },
       invocation: { userInvocable, modelInvocable },
       instructions: { constraints, approach, outputFormat }, subagents, handoffs,
-      ...(azure ? { azure } : {})
+      ...(azure ? { azure } : {}),
+      ...(publication ? { publication } : {})
     };
     validateBlueprint(candidate);
     await validateReferences(root, candidate);
@@ -444,12 +562,29 @@ async function createPlan(root, blueprintFile) {
   const renderedAgent = renderAgent(blueprint);
   const renderedSha256 = sha256(renderedAgent);
   const action = targetState === "missing" ? "create" : targetState === `file:sha256:${renderedSha256}` ? "unchanged" : "update";
-  const warnings = blueprint.risk === "mutating"
-    ? ["This agent can modify files or execute commands; review its tools and instructions before applying."]
-    : [];
+  const warnings = [];
+  if (blueprint.risk === "mutating") warnings.push("This agent can modify files or execute commands; review its tools and instructions before applying.");
+  if (blueprint.autonomy?.mode === "autonomous-research") {
+    warnings.push("Autonomous research controls agent behavior but does not override VS Code permission settings; use a session permission level appropriate for these read-only tools.");
+  }
+  if (blueprint.publication) {
+    warnings.push("Agent Builder records publication intent only; deployment, endpoint configuration, channel publication, external sharing, and marketplace listing require separate approval and an authorized publishing workflow.");
+    if (blueprint.publication.targets.includes("foundry-endpoint")) {
+      warnings.push("The managed endpoint is live when the Foundry agent is created; configure its active version, protocols, and Microsoft Entra authorization rather than treating endpoint activation as a separate publish step.");
+    }
+    if (blueprint.publication.targets.includes("microsoft-365-copilot-and-teams")) {
+      warnings.push("Microsoft 365 Copilot and Teams publication requires a tested active version, Activity Protocol, BotServiceRbac or BotServiceTenant authorization, Microsoft.BotService readiness, Azure Bot Service permissions, and any required tenant-admin approval.");
+    }
+    if (blueprint.publication.targets.includes("chatgpt-action")) {
+      warnings.push("ChatGPT is not a direct Foundry publication target; use a separately governed Custom GPT with an HTTPS OpenAPI action, supported authentication, workspace eligibility, privacy policy, domain controls, and cross-platform data-flow review.");
+    }
+    if (blueprint.azure?.cloud === "AzureUSGovernment") {
+      warnings.push("AzureUSGovernment publication requires fresh target availability and sovereign data boundary validation before any Foundry, Microsoft 365, Teams, or ChatGPT handoff.");
+    }
+  }
   const relativeBlueprint = path.relative(root, path.resolve(blueprintFile)).replaceAll("\\", "/");
   const plan = {
-    schemaVersion: "1.0.0",
+    schemaVersion: "1.1.0",
     generatedAt: new Date().toISOString(),
     status: "review-required",
     projectRoot: root,
@@ -460,6 +595,7 @@ async function createPlan(root, blueprintFile) {
     action,
     renderedSha256,
     renderedAgent,
+    publication: blueprint.publication ?? null,
     warnings
   };
   const reports = await safeRelativeTarget(root, "reports");
@@ -477,6 +613,16 @@ async function createPlan(root, blueprintFile) {
     "## Capabilities",
     "",
     ...[...blueprint.capabilities].sort().map((item) => `- ${item}`),
+    "",
+    "## Publication Handoff",
+    "",
+    ...(blueprint.publication ? [
+      `- Targets: ${blueprint.publication.targets.join(", ")}`,
+      `- Foundry version policy: ${blueprint.publication.versionPolicy}`,
+      `- Microsoft 365 audience: ${blueprint.publication.microsoft365Audience ?? "not requested"}`,
+      `- ChatGPT visibility: ${blueprint.publication.chatgptVisibility ?? "not requested"}`,
+      "- Execution owner: Microsoft Foundry or the separately authorized target-platform workflow; Agent Builder does not publish."
+    ] : ["- None requested."]),
     "",
     "## Warnings",
     "",
@@ -497,12 +643,19 @@ async function createPlan(root, blueprintFile) {
 async function applyPlan(root, blueprintFile, planFile, accepted) {
   if (!accepted) throw new Error("Use --accept-risk after reviewing the Agent Builder plan");
   const plan = await readJson(planFile, "plan");
-  rejectUnknown(plan, ["schemaVersion", "generatedAt", "status", "projectRoot", "blueprintPath", "blueprintSha256", "targetPath", "targetState", "action", "renderedSha256", "renderedAgent", "warnings"], "plan");
-  if (plan.schemaVersion !== "1.0.0" || plan.status !== "review-required") throw new Error("Unsupported Agent Builder plan");
+  rejectUnknown(plan, ["schemaVersion", "generatedAt", "status", "projectRoot", "blueprintPath", "blueprintSha256", "targetPath", "targetState", "action", "renderedSha256", "renderedAgent", "publication", "warnings"], "plan");
+  if (!["1.0.0", "1.1.0"].includes(plan.schemaVersion) || plan.status !== "review-required") throw new Error("Unsupported Agent Builder plan");
   if (plan.projectRoot !== root) throw new Error("Plan project root does not match --project");
   const { blueprint, sha256: blueprintSha256 } = await loadBlueprint(blueprintFile);
   await validateReferences(root, blueprint);
   if (blueprintSha256 !== plan.blueprintSha256) throw new Error("Blueprint changed after plan review");
+  if (plan.schemaVersion === "1.0.0" && (plan.publication !== undefined || blueprint.publication !== undefined)) {
+    throw new Error("Agent Builder plan 1.0.0 cannot review publication intent; create a new plan");
+  }
+  if (plan.schemaVersion === "1.1.0") {
+    if (!Object.hasOwn(plan, "publication")) throw new Error("Agent Builder plan 1.1.0 requires publication review state");
+    if (stableJson(plan.publication) !== stableJson(blueprint.publication ?? null)) throw new Error("Plan publication intent is invalid or stale");
+  }
   const renderedAgent = renderAgent(blueprint);
   if (sha256(renderedAgent) !== plan.renderedSha256 || renderedAgent !== plan.renderedAgent) throw new Error("Plan rendered content is invalid or stale");
   const expectedTargetPath = `.github/agents/${blueprint.id}.agent.md`;

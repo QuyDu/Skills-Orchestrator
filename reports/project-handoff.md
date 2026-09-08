@@ -1,16 +1,34 @@
 # Project Handoff
 
-P4 release assurance has advanced to the external-identity and internal-artifact boundary.
+## Current Status
 
-Protected PR #6 merged as `5190959`. The deterministic unsigned 1.1.1 candidate verifies 151 checksum-covered files with CycloneDX SBOM and in-toto provenance. Security Validation run `33980792156` and CodeQL run `33980792246` pass for that exact merge SHA.
+The Agent Builder and version 1.1.1 demo increment is complete and validated on `feat/agent-builder-latest`. P4 release assurance remains the blocked overarching milestone; this work does not represent the unsigned candidate as production-ready.
 
-`REM-0205` remains incomplete because:
+## Latest Completed Work
 
-1. No controlled trusted signature or distinct independently signed review exists.
-2. No restricted internal artifact destination, installation-health signal, or tested revocation operation exists.
-3. Required human source review awaits a second qualified collaborator.
-4. Production verification fails closed.
+- Added strict, non-executing publication intent for `foundry-endpoint`, `microsoft-365-copilot-and-teams`, and `chatgpt-action`.
+- Added `guided` and bounded `autonomous-research` paths while preserving all six consequential-action approval gates.
+- Added blueprint schema 2.2 and plan schema 1.1 with compatibility for older contracts and generated-project propagation.
+- Synchronized the Markdown runbook, 11-scene animated HTML deck, narration contract, and narration generator.
+- Added the primary 10-slide, 16:9 PowerPoint deck with Agent Builder, publication handoff, approval-gate, live-demo, and evidence slides.
+- Kept publication metadata out of rendered agent instructions and performed no publication, deployment, or Azure mutation.
 
-The blocked schema-v3 execution validates against immutable PSO-124 snapshot `040dad9a30d0f52ebda13c232d1885abbd9ee27b6dcbbeeab3174b1c60de65e7`.
+## Validation
 
-Main now enforces automated checks and hosted security safeguards. Resume requires a controlled signing identity, distinct qualified reviewer, second source reviewer, and restricted internal artifact destination. No signing, release, publication, deployment, or Azure mutation was performed.
+- Agent Builder focused tests: 17 passed.
+- Combined Agent Builder and contract tests: 33 passed.
+- PowerPoint: valid OOXML, 10 slides, native PowerPoint open/export passed, and updated slides visually inspected.
+- Final full repository gate: 124 passed, one platform-specific skip, zero failed, and all 44 framework skills verified.
+- Security scan: 207 files scanned with no findings.
+- Unsigned candidate verification: 158 checksum-covered files verified.
+- Working-tree check: no staged or unmerged paths and no `git diff --check` errors.
+
+## Blockers And Approvals
+
+P4 still lacks a controlled signer, distinct independent reviewer, restricted internal artifact destination, tested installation-health and revocation operations, second qualified source reviewer, and production verification. Azure Government publication remains fail-closed wherever current service, channel, authorization, or data-boundary availability is unknown.
+
+The user authorized one normal commit and push of this reviewed branch. Pull request creation, merge, force push, signing, release, Foundry agent or endpoint changes, Bot Service creation, Microsoft 365 or Teams publication, Custom GPT creation or sharing, GPT Action configuration, deployment, MCP installation, and Azure mutation remain separately gated.
+
+## Resume Point
+
+After the authorized branch update, obtain the distinct qualified reviewer, controlled signer, restricted artifact destination, installation-health evidence, and revocation evidence before resuming P4 release assurance.

@@ -1,21 +1,29 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-09-05T15:20:00.000Z",
-  "decisionId": "POLICY-2026-09-05-P4-PREPARATION",
+  "generatedAt": "2026-09-08T16:20:54.0426172Z",
+  "decisionId": "POLICY-2026-09-08-AGENT-BUILDER-DEMO-PUSH",
   "decision": "allow",
-  "action": "Execute bounded P4 local preparation and read-only hosted evidence collection",
-  "scope": ["REM-0205", "AUD-0205"],
+  "action": "Create one reviewed Agent Builder and version 1.1.1 demo commit and push feat/agent-builder-latest to its configured upstream",
+  "scope": [
+    "Agent Builder autonomy and publication-planning implementation",
+    "Version 1.1.1 demo collateral including Demo/Project-Orchestrator-Demo.pptx",
+    "Required tests and generated governance evidence",
+    "origin/feat/agent-builder-latest"
+  ],
   "ruleTrace": [
-    "Repository policy requires explicit phase approval.",
-    "User approved the pending P4 phase and delegated conservative autonomous decisions.",
-    "Recommended defaults allow read-only GitHub inspection and unsigned local preparation.",
-    "Commit, push, tag, release, publication, deployment, signing, GitHub mutation, and Azure mutation remain prohibited.",
-    "Trusted signature and independent review cannot be self-issued and remain blocking controls."
+    "Repository policy requires explicit approval for commit and push.",
+    "The user explicitly requested that the updated demo slide deck be committed and pushed.",
+    "The current clarification round applied the user's autonomous resume-and-finish instruction.",
+    "The exact working-tree boundary must pass change review and npm run check before mutation.",
+    "Signing, tag creation, release, deployment, publication, hosted-agent creation, MCP installation, and Azure mutation remain prohibited."
   ],
   "conditions": [
-    "Preserve the immutable PSO-124 plan snapshot.",
-    "Fail closed on dirty-source, stale hosted-CI, missing signature, missing independent review, or failed production verification.",
-    "Do not mark REM-0205 complete unless every acceptance criterion passes."
+    "Commit only the reviewed Agent Builder, demo, test, and generated evidence paths.",
+    "Use one normal commit and push only to the configured upstream without force.",
+    "Stop and report any remote rejection rather than bypassing branch protections.",
+    "Keep P4 release assurance blocked and make no production-readiness claim."
   ],
-  "limitations": ["This decision authorizes evidence preparation and read-only inspection, not production release or remote mutation."]
+  "limitations": [
+    "This decision authorizes the bounded commit and branch push only; it does not authorize a pull request, merge, tag, release, signing, publication, deployment, or Azure action."
+  ]
 }

@@ -1,12 +1,12 @@
 {
   "schemaVersion": "1.0.0",
   "runtimeVersion": "1.1.1",
-  "generatedAt": "2026-09-07T15:07:47.951Z",
+  "generatedAt": "2026-09-08T16:30:45.519Z",
   "skills": [
     {
       "name": "agent-builder",
       "path": ".github/skills/agent-builder/SKILL.md",
-      "description": "Build, validate, preview, and transactionally install least-privilege custom agents from guided parameters or governed blueprints, with conditional Azure environment authentication for Foundry-aware designs. Use when creating, updating, or reviewing .agent.md files; do not use for hosted deployment or MCP installation.",
+      "description": "Build, validate, preview, and transactionally install least-privilege custom agents, including governed publication handoffs for Foundry endpoints, Microsoft 365 Copilot and Teams, or ChatGPT actions. Use when creating, updating, or reviewing .agent.md files; do not use for cloud deployment, channel publication, or MCP installation.",
       "lifecycle": "draft",
       "confidence": "low",
       "dependencies": [

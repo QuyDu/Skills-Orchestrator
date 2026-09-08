@@ -2,17 +2,43 @@
 
 ## Before the audience arrives
 
-1. Open the pre-created `dist/project-video/skills-orchestrator-1-1-0.mp4` locally and confirm its audio is available through the presentation device. The associated `reports/project-video/project-video-manifest.json` records its media checksum, duration, and Azure Speech narration provenance.
-2. Keep `Demo/project-skills-orchestrator-animation.html` open as a no-network fallback for Act 1.
-3. Confirm Node.js and Visual Studio Code are available for the local project-creation flow. Use `/demo-create-project --Test` during rehearsal so the test workspace remains available for inspection.
-4. Before Act 2's deployment decision, confirm Azure CLI is already signed in to the intended Azure US Government subscription. Do not project credentials, device codes, tokens, keys, tenant identifiers, or subscription identifiers.
-5. Confirm the audience can see the terminal, editor, and browser. Keep the generated-app browser tab ready to show the `?mode=test` view and the three `?at=` phase overrides.
+1. Open `Demo/Project-Orchestrator-Demo.pptx` and confirm all 10 slides render correctly. This is the primary version 1.1.1 deck and includes the Agent Builder, publication-intent, approval-gate, and current-evidence updates.
+2. Open `Demo/project-skills-orchestrator-animation.html` locally as the animated companion and fallback. Confirm every scene, caption, navigation control, and responsive layout works.
+3. Optionally open the pre-created `dist/project-video/skills-orchestrator-1-1-0.mp4` as a short baseline opener. Its `reports/project-video/project-video-manifest.json` records the media checksum, duration, and Azure Speech narration provenance, but the older video does not replace the current PowerPoint or HTML decks.
+4. Confirm Node.js and Visual Studio Code are available for the local project-creation flow. Use `/demo-create-project --Test` during rehearsal so the test workspace remains available for inspection.
+5. Before Act 3's deployment decision, confirm Azure CLI is already signed in to the intended Azure US Government subscription. Do not project credentials, device codes, tokens, keys, tenant identifiers, or subscription identifiers.
+6. Confirm the audience can see the slides, terminal, editor, and browser. Keep the generated-app browser tab ready to show the `?mode=test` view and the three `?at=` phase overrides.
+7. Keep the validated milestone evidence visible: 124 tests passed with one platform-specific skip, all 44 skills verified, 207 files security-scanned, and 158 release files checksum-verified. The candidate is unsigned and P4 release assurance remains blocked.
 
-## Act 1: show the existing video
+## Act 1: introduce the governed foundation
 
-Play the pre-created, manifest-verified MP4 first. It gives the audience the product story before the live workflow begins and does not depend on live Azure availability. If the media player fails, use the animated browser guide and say that it is the local visual fallback rather than a rendered video.
+Use the PowerPoint deck as the primary current product story. Use the animated browser deck when motion or narration serves the room better, or as the local fallback. If desired, play the pre-created, manifest-verified MP4 first as the version 1.1.0 baseline, then return to either current version 1.1.1 deck. The browser deck falls back to the browser's default English voice when a matching narration file is absent.
 
-## Act 2: build a new project
+## Act 2: show the Agent Builder milestone
+
+Use the Agent Builder scenes to make this boundary explicit:
+
+```text
+Agent Builder
+	-> governed local agent definition
+	-> reviewed publication plan
+	-> explicit approval
+	-> platform-specific publishing workflow
+```
+
+Explain that `guided` mode works from supplied requirements while `autonomous-research` gathers bounded evidence before proposing a blueprint. Both modes validate a least-privilege `.agent.md`, preserve the six mandatory approval gates, and install transactionally only after review.
+
+Show that publication intent is planning data, not an instruction to publish. Blueprint schema 2.2 and plan schema 1.1 distinguish three handoffs: a Microsoft Foundry managed endpoint, Microsoft 365 Copilot and Teams distribution, and an indirect ChatGPT Custom GPT HTTPS/OpenAPI Action. Agent Builder does not create or mutate any of those external resources.
+
+Close the act with three controls:
+
+1. Updated CLI, schemas, runtime, and tests propagate through the packaged framework into newly created projects.
+2. Purchase, booking, messaging, account-security changes, sensitive disclosure, and destructive actions always require approval.
+3. Azure Government publication readiness fails closed wherever current service, channel, authorization, or data-boundary evidence is unknown.
+
+Do not describe the release as production-ready. The candidate remains unsigned, independent review and revocation evidence are incomplete, and P4 release assurance is blocked.
+
+## Act 3: build a new project
 
 Run `/demo-create-project` from this repository. It creates a separate governed TypeScript project, verifies its installed skills and Azure Government scaffold, copies the bounded build prompt into that new project, and opens its own VS Code workspace. The Project Orchestrator source repository is immutable after the handoff. Do not invoke project video while the project is still an empty governed baseline.
 

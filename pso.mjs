@@ -2493,8 +2493,9 @@ function runAgentBuilder(options) {
   const args = [script, action];
   const valueOptions = [
     "project", "blueprint", "plan", "agent", "type", "id", "name", "description", "purpose", "risk", "capabilities",
-    "user-invocable", "model-invocable", "constraints", "approach", "output-format", "subagents", "handoffs-file",
-    "azure-required", "cloud", "location", "environment-name", "authentication-method", "subscription-id"
+    "user-invocable", "model-invocable", "autonomy", "web-safety", "constraints", "approach", "output-format", "subagents", "handoffs-file",
+    "azure-required", "cloud", "location", "environment-name", "authentication-method", "subscription-id",
+    "publication-targets", "version-policy", "microsoft365-audience", "chatgpt-visibility"
   ];
   const flagOptions = ["accept-risk", "json"];
   for (const key of Object.keys(options).filter((item) => item !== "_")) {
@@ -2670,8 +2671,13 @@ New project:
 
 Agent Builder:
   agent build accepts --type, --id, --name, --description, --purpose, --risk,
-  --capabilities, --user-invocable, --model-invocable, --constraints, --approach,
-  --output-format, --subagents, and --handoffs-file. Missing values are requested.
+  --capabilities, --user-invocable, --model-invocable, --autonomy, --web-safety,
+  --constraints, --approach, --output-format, --subagents, and --handoffs-file.
+  Missing values are requested. Autonomous research is limited to read-only
+  read, search, and web capabilities.
+  Foundry publication planning accepts --publication-targets, --version-policy,
+  --microsoft365-audience, and --chatgpt-visibility. It records a review handoff
+  but does not deploy, configure endpoints, publish channels, or create a GPT.
   Foundry types or --azure-required true also resolve --cloud, --location,
   --environment-name, --authentication-method, and optional --subscription-id.
   Azure CLI authentication starts only when required. Credential values are never accepted.

@@ -1,10 +1,10 @@
 # Skill Inventory
 
-Generated: 2026-09-07T15:07:47.951Z
+Generated: 2026-09-08T16:30:45.519Z
 
 | Skill | Description |
 | --- | --- |
-| agent-builder | Build, validate, preview, and transactionally install least-privilege custom agents from guided parameters or governed blueprints, with conditional Azure environment authentication for Foundry-aware designs. Use when creating, updating, or reviewing .agent.md files; do not use for hosted deployment or MCP installation. |
+| agent-builder | Build, validate, preview, and transactionally install least-privilege custom agents, including governed publication handoffs for Foundry endpoints, Microsoft 365 Copilot and Teams, or ChatGPT actions. Use when creating, updating, or reviewing .agent.md files; do not use for cloud deployment, channel publication, or MCP installation. |
 | architecture-review | Assess a repository's designed architecture against reliability, security, cost, operational, and performance criteria using infrastructure-as-code, configuration, and decision records. Use for design-time review of the architecture a repository defines; use audit-azure-environment instead to assess a deployed cloud tenant. |
 | artifact-upgrade | Plan and validate schema and artifact migrations with compatibility checks, backups, rollback routes, and migration evidence. Use when a schema or artifact version changes and existing records must migrate; use dependency-maintenance instead for application package upgrades. |
 | audit-azure-environment | Perform an evidence-based, read-only Azure security, reliability, governance, cost, and configuration assessment. Use to assess a deployed tenant, subscription, or resource group; use architecture-review instead for design-time review of infrastructure code in the repository. |

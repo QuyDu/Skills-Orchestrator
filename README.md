@@ -555,12 +555,14 @@ The skill will not persist credentials or silently change narration providers. M
 | `node .\pso.mjs recover --project PATH` | Restore an interrupted adoption |
 | `node .\pso.mjs inventory --root PATH` | Regenerate and validate the skill inventory |
 | `node .\pso.mjs plan --root PATH --intent TEXT` | Create a workflow plan |
-| `node .\pso.mjs agent build --project PATH [parameters]` | Ask for missing fields, conditionally establish Azure context, and generate a v2 agent blueprint and review plan |
+| `node .\pso.mjs agent build --project PATH [parameters]` | Ask for missing fields, conditionally establish Azure context, and generate a v2.1 agent blueprint and review plan |
 | `node .\pso.mjs agent validate --project PATH --blueprint FILE` | Validate a governed agent blueprint |
 | `node .\pso.mjs agent plan --project PATH --blueprint FILE` | Render a reviewable agent plan without changing the agent |
 | `node .\pso.mjs agent apply --project PATH --blueprint FILE --plan FILE --accept-risk` | Apply a current reviewed agent plan transactionally |
 | `npm run evidence:adoption` | Regenerate disposable-fixture adoption and no-op evidence |
 | `npm run check` | Full conformance gate |
+
+Use `--autonomy autonomous-research --web-safety threat-informed` to let a read-only `read,search,web` agent continue research without conversational approval pauses. VS Code tool and URL confirmations remain controlled by the session permission level; do not use Bypass Approvals or Autopilot with agents that expose mutating tools.
 
 ## Reports
 

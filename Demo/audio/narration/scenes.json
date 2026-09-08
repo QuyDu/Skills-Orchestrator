@@ -18,7 +18,7 @@
     {
       "id": 2,
       "file": "scene-02.mp3",
-      "text": "There are two parts. First, a registry-free command-line installer can create a new workspace, or carefully adopt an existing one. It runs entirely on the tools built into Node.js. Then, a catalog of forty governed skills gives Copilot focused capabilities \u2014 with clear inputs, outputs, checks, approval gates, and stop conditions."
+      "text": "There are two parts. First, a registry-free command-line installer can create a new workspace, or carefully adopt an existing one. It runs entirely on the tools built into Node.js. Then, a catalog of forty-four governed skills gives Copilot focused capabilities \u2014 with clear inputs, outputs, checks, approval gates, and stop conditions."
     },
     {
       "id": 3,
@@ -43,12 +43,27 @@
     {
       "id": 7,
       "file": "scene-07.mp3",
-      "text": "Control is built into the system. Each new prompt begins with three clarifying questions, followed by your confirmation, before any files are changed. Risky operations need explicit approval. Dry runs show proposed changes in advance. Transaction journals support rollback and recovery. And machine-readable reports preserve the authoritative evidence of what happened."
+      "text": "Agent Builder now supports two deliberate paths. Guided mode starts from supplied requirements. Autonomous research gathers bounded evidence before proposing a blueprint. Both validate a least-privilege local agent, require review, and install transactionally. Publication intent uses blueprint schema two point two and plan schema one point one, while the updated command line, runtime, schemas, and tests propagate into newly generated projects."
     },
     {
       "id": 8,
       "file": "scene-08.mp3",
-      "text": "That is Project Orchestrator \u2014 a repeatable way to make your engineering process part of the repository itself. Verify the distribution. Provision a workspace. Begin with a blueprint. Then let each important action leave evidence that both people and automation can inspect."
+      "text": "Publication is a governed handoff, not an automatic side effect. A Foundry endpoint is managed with its agent. Microsoft 365 Copilot and Teams distribution requires its own Activity Protocol and Bot Service prerequisites. ChatGPT integration is indirect, through a separately governed Custom GPT HTTPS and OpenAPI Action. Agent Builder records the plan, but it creates none of those external resources."
+    },
+    {
+      "id": 9,
+      "file": "scene-09.mp3",
+      "text": "Autonomy does not erase consent. Six consequential actions always remain approval-gated: purchases, bookings, messages, account-security changes, sensitive disclosures, and destructive actions. Publication metadata stays in the reviewed plan and never enters the installed agent instructions, so distribution intent cannot trigger runtime behavior."
+    },
+    {
+      "id": 10,
+      "file": "scene-10.mp3",
+      "text": "The milestone is backed by current evidence: one hundred twenty-four tests passed with one platform-specific skip, all forty-four skills were verified, two hundred six files passed the security scan, and one hundred fifty-eight release files passed checksum verification. Azure Government readiness fails closed when current evidence is unknown. The candidate is still unsigned, and P4 release assurance remains blocked."
+    },
+    {
+      "id": 11,
+      "file": "scene-11.mp3",
+      "text": "That is Project Orchestrator version one point one point one \u2014 a repeatable way to make both engineering workflows and agent creation part of the repository itself. Verify the distribution. Provision a workspace. Build governed agents. Then let each important action leave evidence that people and automation can inspect."
     }
   ]
 }
