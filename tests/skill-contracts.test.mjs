@@ -316,13 +316,16 @@ test("project video is a portable narrated MP4 capability", async () => {
   assert.equal(discoverySchema.properties.speech.allOf[1].then.properties.existingResourceAvailable.const, false);
 
   const demoNarration = JSON.parse(await readFile(path.join(root, "Demo", "audio", "narration", "scenes.json"), "utf8"));
-  assert.equal(demoNarration.voice.name, "en-US-Ava:DragonHDLatestNeural");
+  assert.equal(demoNarration.voice.name, "en-US-AvaNeural");
+  assert.equal(demoNarration.voice.style, "auto");
   assert.equal(demoNarration.outputFormat, "audio-48khz-192kbitrate-mono-mp3");
   assert.equal(demoNarration.scenes.length, 11);
   const demoGenerator = await readFile(path.join(root, "scripts", "generate-demo-narration.ps1"), "utf8");
   assert.match(demoGenerator, /ValidateSet\("ava-hd-warm", "aria-hd-warm", "aria-professional"\)/);
   assert.match(demoGenerator, /\$selectedProfile\.style/);
   assert.match(demoGenerator, /-ApproveExternal/);
+  assert.match(demoGenerator, /AzureUSGovernment = "tts\.speech\.azure\.us"/);
+  assert.match(demoGenerator, /AZURE_SPEECH_CLOUD must be AzureCloud or AzureUSGovernment/);
   assert.match(demoGenerator, /between one and 99 ordered scenes/);
   assert.doesNotMatch(demoGenerator, /pitch=/);
   const demoAnimation = await readFile(path.join(root, "Demo", "project-skills-orchestrator-animation.html"), "utf8");

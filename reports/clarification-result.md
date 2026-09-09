@@ -1,7 +1,7 @@
 # Clarification Result
 
-The requested PowerPoint is `Demo/Project-Orchestrator-Demo.pptx`. The updated 10-slide, 16:9 deck includes the Agent Builder, publication-intent, six-gate, live-demo, and current-evidence changes and has rendered successfully through desktop PowerPoint.
+The requested outcome is a concise status checkpoint followed by autonomous completion of the already authorized female Ava commit and normal upstream push.
 
-The user was unavailable for the required question round and directed the agent to work autonomously. The recommended defaults apply: give a brief repository-deck status and resume the previously requested evidence synchronization, bounded review, commit, and branch push.
+The user was unavailable for the required question round and instructed the agent to work autonomously. The recommended defaults therefore apply: resume the exact reviewed staging boundary, create the one `fix(demo): use Ava narration in animated guide` commit, push normally to `origin/feat/agent-builder-latest`, verify matching hashes, and report once after remote verification.
 
-The earlier explicit request to update the deck and then push and commit authorizes one normal local commit and one non-force push of `feat/agent-builder-latest`. Signing, release, deployment, external publication, hosted-agent creation, MCP installation, and Azure mutation remain prohibited. P4 release assurance remains blocked.
+The final `npm run check` passed with exit code 0. Nothing has yet been staged, committed, or pushed for this correction. `Demo/~$Project-Orchestrator-Demo.pptx` remains excluded. Force push, pull request creation, merge, release, deployment, external publication, signing, hosted-agent changes, MCP installation, and Azure mutation remain outside scope. P4 release assurance remains blocked.

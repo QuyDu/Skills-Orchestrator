@@ -527,7 +527,7 @@ node .\.github\skills\project-video\scripts\project-video.mjs narrate --approve-
 
 The installer does not install Python globally or modify the application dependency graph. It verifies the official Piper wheel digest for the current platform, retains and hashes the resolved wheel set, verifies the pinned model, and records an installation manifest. Local WAV narration and the final MP4 are labeled `local-piper`; switching later to Azure requires an explicit plan change and the normal Azure audition workflow.
 
-For the bundled animation under `Demo/`, generate its matching audition set and final Ava HD narration with:
+For the bundled animation under `Demo/`, generate its matching audition set and final Ava Neural narration with:
 
 ```powershell
 .\scripts\generate-demo-narration.ps1 -Audition -ApproveExternal

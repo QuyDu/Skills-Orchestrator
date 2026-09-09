@@ -1,29 +1,30 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-09-08T16:20:54.0426172Z",
-  "decisionId": "POLICY-2026-09-08-AGENT-BUILDER-DEMO-PUSH",
+  "generatedAt": "2026-09-08T23:40:00.000Z",
+  "decisionId": "POLICY-2026-09-08-AVA-NARRATION-PUSH",
   "decision": "allow",
-  "action": "Create one reviewed Agent Builder and version 1.1.1 demo commit and push feat/agent-builder-latest to its configured upstream",
+  "action": "Create one reviewed female Ava demo narration commit and push feat/agent-builder-latest to its configured upstream",
   "scope": [
-    "Agent Builder autonomy and publication-planning implementation",
-    "Version 1.1.1 demo collateral including Demo/Project-Orchestrator-Demo.pptx",
-    "Required tests and generated governance evidence",
+    "Female en-US-AvaNeural narration metadata and 11 local scene MP3 assets",
+    "AzureUSGovernment narration generation support, documentation, and focused tests",
+    "Current validation and governance evidence attributable to the narration change",
     "origin/feat/agent-builder-latest"
   ],
   "ruleTrace": [
     "Repository policy requires explicit approval for commit and push.",
-    "The user explicitly requested that the updated demo slide deck be committed and pushed.",
-    "The current clarification round applied the user's autonomous resume-and-finish instruction.",
-    "The exact working-tree boundary must pass change review and npm run check before mutation.",
-    "Signing, tag creation, release, deployment, publication, hosted-agent creation, MCP installation, and Azure mutation remain prohibited."
+    "The user explicitly requested Commit and Push for the completed female Ava narration correction.",
+    "The current clarification round applied the user's autonomous instruction to the recommended one-commit, upstream-only boundary.",
+    "The exact working-tree boundary must pass current change review and npm run check before mutation.",
+    "The transient PowerPoint lock file, force push, pull request, merge, signing, tag creation, release, deployment, publication, hosted-agent creation, MCP installation, and Azure mutation remain prohibited."
   ],
   "conditions": [
-    "Commit only the reviewed Agent Builder, demo, test, and generated evidence paths.",
+    "Commit only the reviewed Ava narration assets, metadata, generator, documentation, test, and attributable evidence paths.",
+    "Exclude Demo/~$Project-Orchestrator-Demo.pptx from staging.",
     "Use one normal commit and push only to the configured upstream without force.",
     "Stop and report any remote rejection rather than bypassing branch protections.",
     "Keep P4 release assurance blocked and make no production-readiness claim."
   ],
   "limitations": [
-    "This decision authorizes the bounded commit and branch push only; it does not authorize a pull request, merge, tag, release, signing, publication, deployment, or Azure action."
+    "This decision authorizes the bounded commit and branch push only; it does not authorize a pull request, merge, force push, tag, release, signing, publication, deployment, or Azure action."
   ]
 }
