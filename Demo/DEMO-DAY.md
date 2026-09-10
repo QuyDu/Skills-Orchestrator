@@ -2,17 +2,20 @@
 
 ## Before the audience arrives
 
-1. Open `Demo/Project-Orchestrator-Demo.pptx` and confirm all 10 slides render correctly. This is the primary version 1.1.1 deck and includes the Agent Builder, publication-intent, approval-gate, and current-evidence updates.
-2. Open `Demo/project-skills-orchestrator-animation.html` locally as the animated companion and fallback. Confirm every scene, caption, navigation control, and responsive layout works.
-3. Optionally open the pre-created `dist/project-video/skills-orchestrator-1-1-0.mp4` as a short baseline opener. Its `reports/project-video/project-video-manifest.json` records the media checksum, duration, and Azure Speech narration provenance, but the older video does not replace the current PowerPoint or HTML decks.
-4. Confirm Node.js and Visual Studio Code are available for the local project-creation flow. Use `/demo-create-project --Test` during rehearsal so the test workspace remains available for inspection.
-5. Before Act 3's deployment decision, confirm Azure CLI is already signed in to the intended Azure US Government subscription. Do not project credentials, device codes, tokens, keys, tenant identifiers, or subscription identifiers.
-6. Confirm the audience can see the slides, terminal, editor, and browser. Keep the generated-app browser tab ready to show the `?mode=test` view and the three `?at=` phase overrides.
-7. Keep the validated milestone evidence visible: 124 tests passed with one platform-specific skip, all 44 skills verified, 207 files security-scanned, and 158 release files checksum-verified. The candidate is unsigned and P4 release assurance remains blocked.
+1. Open `Demo/Project-Orchestrator-Demo.pptx` and confirm all 11 slides render correctly. This is the primary version 1.1.1 deck and includes the project-created video, Agent Builder, publication-intent, approval-gate, and current-evidence updates.
+2. On slide 3, test **Watch: Built by Project Orchestrator** and confirm it opens `dist/project-video/skills-orchestrator-1-1-0.html`. If PowerPoint blocks the local link or the repository moved, open that repository-relative path manually and return to slide 4 after playback.
+3. Open `Demo/project-skills-orchestrator-animation.html` locally as the animated companion and fallback. Confirm every scene, caption, navigation control, and responsive layout works.
+4. Optionally open the pre-created `dist/project-video/skills-orchestrator-1-1-0.mp4` as an alternate short baseline. Its `reports/project-video/project-video-manifest.json` records the media checksum, duration, and Azure Speech narration provenance, but the older video does not replace the current PowerPoint or HTML decks.
+5. Confirm Node.js and Visual Studio Code are available for the local project-creation flow. Use `/demo-create-project --Test` during rehearsal so the test workspace remains available for inspection.
+6. Before Act 3's deployment decision, confirm Azure CLI is already signed in to the intended Azure US Government subscription. Do not project credentials, device codes, tokens, keys, tenant identifiers, or subscription identifiers.
+7. Confirm the audience can see the slides, terminal, editor, and browser. Keep the generated-app browser tab ready to show the `?mode=test` view and the three `?at=` phase overrides.
+8. Keep the latest successful `npm run check` evidence visible and confirm all 45 skills were verified. The candidate remains unsigned and P4 release assurance remains blocked.
 
 ## Act 1: introduce the governed foundation
 
-Use the PowerPoint deck as the primary current product story. Use the animated browser deck when motion or narration serves the room better, or as the local fallback. If desired, play the pre-created, manifest-verified MP4 first as the version 1.1.0 baseline, then return to either current version 1.1.1 deck. The browser deck falls back to the browser's default English voice when a matching narration file is absent.
+Use the PowerPoint deck as the primary current product story. Use slides 1 and 2 to introduce yourself, Project Orchestrator, its purpose, and the problem it solves. Then use slide 3 to launch **Watch: Built by Project Orchestrator** and explain that the project generated this evidence-grounded walkthrough from its own repository. After playback, return to slide 4 and continue the architecture story.
+
+Use the animated browser deck when motion or narration serves the room better, or as the local fallback. The browser deck falls back to the browser's default English voice when a matching narration file is absent. The pre-created, manifest-verified MP4 remains an alternate version 1.1.0 baseline rather than the primary opener.
 
 ## Act 2: show the Agent Builder milestone
 

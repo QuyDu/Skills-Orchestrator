@@ -1,12 +1,12 @@
 # Project Orchestrator
 
-Turn any repository into a governed GitHub Copilot workspace: agent instructions, scoped standards, reusable prompts, specialist agents, and 44 governed skills — installed consistently, verified after every run, and safe to rerun.
+Turn any repository into a governed GitHub Copilot workspace: agent instructions, scoped standards, reusable prompts, specialist agents, and 45 governed skills — installed consistently, verified after every run, and safe to rerun.
 
 | Item | Value |
 | --- | --- |
 | Runtime version | `1.1.1` |
 | Framework version | `9.0.0` |
-| Skill catalog | 44 governed skills |
+| Skill catalog | 45 governed skills |
 | Supported Node.js | 22, 24, 26 |
 | Dependencies | None |
 | Distribution | Authorized internal use only |
@@ -30,7 +30,7 @@ It has two halves.
 
 **A command-line installer** (`pso.mjs`) that creates a new project or adopts an existing one. It runs entirely on Node.js built-ins — no packages to install, no registry access — and every change it makes is planned, journaled, and verified.
 
-**A catalog of 44 skills** installed into `.github/skills/`, invoked from GitHub Copilot Chat in Agent mode. Each skill is a bounded contract: what it owns, what it reads, what it writes, when it must stop and ask you.
+**A catalog of 45 skills** installed into `.github/skills/`, invoked from GitHub Copilot Chat in Agent mode. Each skill is a bounded contract: what it owns, what it reads, what it writes, when it must stop and ask you.
 
 ### What makes it different
 
@@ -438,7 +438,8 @@ Open the project in VS Code, start Copilot Chat in **Agent** mode, and invoke a 
 /architecture-review      Well-Architected assessment of the defined architecture
 /deployment-review        Is this release candidate deployable, and how do we roll back
 /documentation-builder    Build the canonical project guide and supporting documentation
-/skill-create             Create or update a skill after duplicate and reuse analysis
+/skill-create             Create a skill after duplicate, reuse, and wiring analysis
+/skill-update             Resolve and update one existing skill after explicit approval
 /project-status           Check lifecycle, Azure resource health, sync freshness, and deployment currency
 /project-understanding    Completely rescan and rebuild the current project guide
 /project-video            Create a project-specific animated MP4 with approved narration

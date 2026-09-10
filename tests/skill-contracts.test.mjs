@@ -4,9 +4,44 @@ import { readFile, readdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import test from "node:test";
+import { inflateRawSync } from "node:zlib";
 
 const root = path.resolve(import.meta.dirname, "..");
 const skillsRoot = path.join(root, ".github", "skills");
+
+function readZipEntry(archive, expectedName) {
+  let endOfCentralDirectory = archive.length - 22;
+  while (endOfCentralDirectory >= 0 && archive.readUInt32LE(endOfCentralDirectory) !== 0x06054b50) {
+    endOfCentralDirectory -= 1;
+  }
+  assert.ok(endOfCentralDirectory >= 0, "ZIP end-of-central-directory record must exist.");
+
+  const entryCount = archive.readUInt16LE(endOfCentralDirectory + 10);
+  let centralDirectoryOffset = archive.readUInt32LE(endOfCentralDirectory + 16);
+  for (let entryIndex = 0; entryIndex < entryCount; entryIndex += 1) {
+    assert.equal(archive.readUInt32LE(centralDirectoryOffset), 0x02014b50, "ZIP central-directory entry must be valid.");
+    const compressionMethod = archive.readUInt16LE(centralDirectoryOffset + 10);
+    const compressedSize = archive.readUInt32LE(centralDirectoryOffset + 20);
+    const fileNameLength = archive.readUInt16LE(centralDirectoryOffset + 28);
+    const extraLength = archive.readUInt16LE(centralDirectoryOffset + 30);
+    const commentLength = archive.readUInt16LE(centralDirectoryOffset + 32);
+    const localHeaderOffset = archive.readUInt32LE(centralDirectoryOffset + 42);
+    const fileName = archive.subarray(centralDirectoryOffset + 46, centralDirectoryOffset + 46 + fileNameLength).toString("utf8");
+    if (fileName === expectedName) {
+      assert.equal(archive.readUInt32LE(localHeaderOffset), 0x04034b50, "ZIP local entry must be valid.");
+      const localFileNameLength = archive.readUInt16LE(localHeaderOffset + 26);
+      const localExtraLength = archive.readUInt16LE(localHeaderOffset + 28);
+      const dataOffset = localHeaderOffset + 30 + localFileNameLength + localExtraLength;
+      const compressed = archive.subarray(dataOffset, dataOffset + compressedSize);
+      if (compressionMethod === 0) return compressed;
+      if (compressionMethod === 8) return inflateRawSync(compressed);
+      assert.fail(`Unsupported ZIP compression method ${compressionMethod}.`);
+    }
+    centralDirectoryOffset += 46 + fileNameLength + extraLength + commentLength;
+  }
+  assert.fail(`ZIP entry ${expectedName} must exist.`);
+}
+
 const expectedSkillIds = [
   "agent-builder",
   "architecture-review",
@@ -45,6 +80,7 @@ const expectedSkillIds = [
   "skill-dependency-manager",
   "skill-inventory",
   "skill-registry",
+  "skill-update",
   "systematic-debugging",
   "workflow-planner",
   "workflow-recovery",
@@ -346,9 +382,14 @@ test("project video is a portable narrated MP4 capability", async () => {
   const demoPowerPointSlideIds = new Set(
     [...demoPowerPoint.toString("latin1").matchAll(/ppt\/slides\/slide(\d+)\.xml/g)].map((match) => Number(match[1]))
   );
-  assert.deepEqual([...demoPowerPointSlideIds].sort((left, right) => left - right), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+  assert.deepEqual([...demoPowerPointSlideIds].sort((left, right) => left - right), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
+  const videoSlideRelationships = readZipEntry(demoPowerPoint, "ppt/slides/_rels/slide3.xml.rels").toString("utf8");
+  assert.match(videoSlideRelationships, /Target="file:\/\/\/C:[\\/]repos[\\/]Skills-Orchestrator[\\/]dist[\\/]project-video[\\/]skills-orchestrator-1-1-0\.html"/);
+  assert.match(videoSlideRelationships, /TargetMode="External"/);
   const demoRunbook = await readFile(path.join(root, "Demo", "DEMO-DAY.md"), "utf8");
   assert.match(demoRunbook, /PowerPoint deck as the primary current product story/);
+  assert.match(demoRunbook, /Watch: Built by Project Orchestrator/);
+  assert.match(demoRunbook, /repository-relative path manually/);
   assert.match(demoRunbook, /\/project-video --proceed/);
   assert.match(demoRunbook, /manifest-verified MP4/);
   assert.match(demoRunbook, /azure-discovery -Gov/);
@@ -371,18 +412,39 @@ test("project video is a portable narrated MP4 capability", async () => {
   assert.equal(scaffold.templates.find((item) => item.path === ".github/prompts/project-video.prompt.md"), undefined);
 });
 
-test("skill authoring routes through skill-create and reuses existing capabilities", async () => {
+test("skill authoring has distinct create and update owners", async () => {
   const skills = new Map((await loadSkills()).map((skill) => [skill.metadata.name, skill]));
   const skillCreate = skills.get("skill-create");
+  const skillUpdate = skills.get("skill-update");
   const orchestrator = skills.get("project-skills-orchestrator");
   assert.match(skillCreate.metadata.description, /Always use when a user asks.*create.*skill/);
-  assert.match(skillCreate.source, /every request to create a skill, regardless of the user's wording/);
+  assert.match(skillCreate.source, /every request to create a new skill, regardless of the user's wording/);
   assert.match(skillCreate.source, /Run `skill-inventory` and compare the request/);
   assert.match(skillCreate.source, /Reuse or extend a matching capability/);
   assert.match(skillCreate.source, /obtain explicit approval before authoring a new skill/);
   assert.match(skillCreate.source, /identify reusable skills/);
   assert.match(skillCreate.source, /project-understanding/);
+  assert.match(skillCreate.source, /Analyze both directions of integration/);
+  assert.match(skillCreate.source, /<skill-name>-help\.prompt\.md/);
+  assert.match(skillCreate.source, /Refresh the authoritative skill inventory, Project Understanding/);
+  assert.match(skillUpdate.metadata.description, /Always use when a user asks.*update an existing skill/);
+  assert.match(skillUpdate.source, /rank the plausible matches.*offer the candidate IDs as options/is);
+  assert.match(skillUpdate.source, /Never mutate the closest match merely because it ranked first/);
+  assert.match(skillUpdate.source, /names the exact skill ID and every file to change/);
+  assert.match(skillUpdate.source, /require the user to enter `-Proceed` or `--proceed`/);
+  assert.match(skillUpdate.source, /A prior general request, an inferred preference, silence, or a different token does not authorize mutation/);
+  assert.match(skillUpdate.source, /incoming and outgoing integration/);
+  assert.match(skillUpdate.source, /<skill-name>-help\.prompt\.md/);
+  assert.match(skillUpdate.source, /Refresh the authoritative skill inventory, Project Understanding/);
+  assert.deepEqual(sectionItems(skillUpdate.source, "Composition and Dependencies"), [
+    "skill-inventory",
+    "skill-dependency-manager",
+    "project-understanding",
+    "documentation-builder"
+  ]);
   assert.match(orchestrator.source, /Route any request to create, add, define, author, build, or make a skill to `skill-create`/);
+  assert.match(orchestrator.source, /Route any request to modify, revise, enhance, fix, or update an existing skill to `skill-update`/);
+  assert.match(orchestrator.source, /candidate identification and user selection/);
   assert.match(orchestrator.source, /duplicate\/reuse analysis before authoring/);
   const repositoryInstructions = await readFile(path.join(root, ".github", "copilot-instructions.md"), "utf8");
   const repositoryAgentInstructions = await readFile(path.join(root, "AGENTS.md"), "utf8");
@@ -391,6 +453,7 @@ test("skill authoring routes through skill-create and reuses existing capabiliti
     assert.match(instructions, /automatically use an existing skill/i);
     assert.match(instructions, /Prefer reuse over duplicating/i);
     assert.match(instructions, /obtain explicit approval.*new skill/i);
+    assert.match(instructions, /existing skill.*`\/skill-update`/i);
   }
   assert.match(repositoryInstructions, /Launch Pad boundary/);
   assert.match(repositoryAgentInstructions, /Launch Pad boundary/);

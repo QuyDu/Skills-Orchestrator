@@ -1,7 +1,7 @@
 # Clarification Result
 
-The requested outcome is a concise status checkpoint followed by autonomous completion of the already authorized female Ava commit and normal upstream push.
+The requested outcome is a complete, shareable Markdown overview explaining what Project Orchestrator is, what it is for, how to use it, and why it is valuable.
 
-The user was unavailable for the required question round and instructed the agent to work autonomously. The recommended defaults therefore apply: resume the exact reviewed staging boundary, create the one `fix(demo): use Ava narration in animated guide` commit, push normally to `origin/feat/agent-builder-latest`, verify matching hashes, and report once after remote verification.
+The user was unavailable for the required question round and instructed the agent to work autonomously. The recommended defaults therefore apply: create `docs/PROJECT-OVERVIEW.md`, write for mixed leadership and engineering readers, and structure it as an executive summary followed by a detailed technical and operational guide.
 
-The final `npm run check` passed with exit code 0. Nothing has yet been staged, committed, or pushed for this correction. `Demo/~$Project-Orchestrator-Demo.pptx` remains excluded. Force push, pull request creation, merge, release, deployment, external publication, signing, hosted-agent changes, MCP installation, and Azure mutation remain outside scope. P4 release assurance remains blocked.
+The document will cover purpose, value, architecture, capabilities, workflows, setup, usage, governance, validation, limitations, pilot adoption, and terminology. Every command and claim will be grounded in current repository evidence. The document will preserve the authorized-internal-use boundary and state that the unsigned candidate remains blocked from production release.

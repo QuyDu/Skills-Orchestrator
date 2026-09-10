@@ -2,7 +2,7 @@
 
 ## Current Status
 
-The Agent Builder and version 1.1.1 demo increment is complete and validated on `feat/agent-builder-latest`. P4 release assurance remains the blocked overarching milestone; this work does not represent the unsigned candidate as production-ready.
+The skill-update and 11-slide Demo Day increment is complete and validated on `feat/agent-builder-latest`. P4 release assurance remains the blocked overarching milestone; this work does not represent the unsigned candidate as production-ready.
 
 ## Latest Completed Work
 
@@ -10,17 +10,20 @@ The Agent Builder and version 1.1.1 demo increment is complete and validated on 
 - Added `guided` and bounded `autonomous-research` paths while preserving all six consequential-action approval gates.
 - Added blueprint schema 2.2 and plan schema 1.1 with compatibility for older contracts and generated-project propagation.
 - Synchronized the Markdown runbook, 11-scene animated HTML deck, narration contract, and narration generator.
-- Added the primary 10-slide, 16:9 PowerPoint deck with Agent Builder, publication handoff, approval-gate, live-demo, and evidence slides.
+- Added `skill-update` with candidate resolution, an exact-target proposal, explicit proceed approval, dependency analysis, generated help, and documentation refresh.
+- Separated new-skill ownership in `skill-create` from existing-skill ownership in `skill-update` and propagated routing into generated projects.
+- Updated current documentation and evidence to 45 governed skills.
+- Expanded the primary PowerPoint to 11 slides with the validated project-created video link on slide 3.
 - Kept publication metadata out of rendered agent instructions and performed no publication, deployment, or Azure mutation.
 
 ## Validation
 
 - Agent Builder focused tests: 17 passed.
 - Combined Agent Builder and contract tests: 33 passed.
-- PowerPoint: valid OOXML, 10 slides, native PowerPoint open/export passed, and updated slides visually inspected.
-- Final full repository gate: 124 passed, one platform-specific skip, zero failed, and all 44 framework skills verified.
-- Security scan: 207 files scanned with no findings.
-- Unsigned candidate verification: 158 checksum-covered files verified.
+- PowerPoint: valid OOXML, 11 slides, native PowerPoint open/export passed, slide 3 visually inspected, and its local HTML hyperlink validated.
+- Final full repository gate: 124 passed, one platform-specific skip, zero failed, and all 45 framework skills verified.
+- Security scan: 220 files scanned with no findings and zero package dependencies.
+- Unsigned candidate verification: 160 checksum-covered files verified.
 - Working-tree check: no staged or unmerged paths and no `git diff --check` errors.
 
 ## Blockers And Approvals

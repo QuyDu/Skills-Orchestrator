@@ -36,6 +36,7 @@ This repository is the Project Orchestrator launch pad and source framework. Do 
 
 - For every request, automatically use an existing skill when its trigger and ownership match the work; continue with normal engineering work only when no available skill fits. Prefer reuse over duplicating an existing skill, script, workflow, report, or capability.
 - Before creating a new skill, invoke `/skill-create`. It must inventory and compare current skills for reuse or duplication. If no existing skill fits, notify the user and obtain explicit approval before authoring the new skill.
+- Before changing an existing skill, invoke `/skill-update`. Resolve an inexact name by offering ranked candidate skill IDs, identify one exact target, present every proposed file and behavior change, and wait for `-Proceed` or `--proceed` before editing.
 - The skill catalog, `config/profiles.yaml`, `schemas/`, and `templates/project/` are contract surfaces. Changing any of them requires updating `tests/skill-contracts.test.mjs`.
 - Every skill contract carries all twelve required sections and a distinct trigger description.
 - Skill dependencies must stay acyclic and every conformance profile must remain dependency-closed.

@@ -1,37 +1,37 @@
 {
   "schemaVersion": "1.0.0",
-  "clarificationId": "CLR-0210",
-  "generatedAt": "2026-09-09T08:33:16.981Z",
+  "clarificationId": "CLR-0212",
+  "generatedAt": "2026-09-09T09:19:56.607Z",
   "status": "ready",
-  "requestSummary": "Report the current Ava commit-and-push status and, using the autonomous defaults, resume the previously authorized bounded workflow through remote verification.",
+  "requestSummary": "Create a complete, shareable Markdown overview explaining what Project Orchestrator is, what it is for, how to use it, and why it is valuable.",
   "confirmedRequirements": [
-    "Provide a concise milestone status rather than repeating the complete evidence record.",
-    "Resume the already authorized exact stage, commit, normal upstream push, and remote-hash verification workflow.",
-    "Report again after the local and upstream commit hashes match.",
-    "Keep Demo/~$Project-Orchestrator-Demo.pptx excluded and retain fix(demo): use Ava narration in animated guide as the one commit message.",
-    "Do not force-push, open a pull request, merge, release, deploy, publish, sign, or mutate Azure."
+    "Create docs/PROJECT-OVERVIEW.md as a standalone, shareable document without replacing the generated canonical project guide.",
+    "Address mixed leadership and engineering readers by leading with value and following with technical and operational detail.",
+    "Organize the document as an executive summary plus a complete technical guide.",
+    "Explain purpose, problems solved, differentiated value, architecture, capabilities, workflows, installation, usage, governance, validation, limitations, pilot adoption, and terminology.",
+    "Ground every claim and command in current repository evidence and retain the internal-only, unsigned-candidate release boundary."
   ],
   "projectFacts": [
-    "The final npm run check completed successfully with exit code 0 after the current policy and change-review evidence updates.",
-    "The bounded review has no findings and covers the female Ava assets, metadata, generator, documentation, focused test, and attributable evidence.",
-    "All 11 Ava MP3 files and the unchanged visual-artifact hashes have already passed media and browser validation.",
-    "No path has been staged, committed, or pushed for this Ava correction yet.",
-    "The repository remains on feat/agent-builder-latest and the normal destination remains origin/feat/agent-builder-latest.",
-    "P4 release assurance remains blocked and outside this branch-update request."
+    "Project Orchestrator version 1.1.1 and framework version 9.0.0 provide a registry-free Node.js runtime and 44 governed skills.",
+    "The runtime supports Node.js 22, 24, and 26 and uses no application package dependencies.",
+    "It can create a governed baseline, adopt an existing local repository, clone and adopt a GitHub repository, and update an installed standalone project while preserving project-owned content.",
+    "Core controls include bounded clarification, stack-aware installation, overlap detection, dry-run planning, explicit risk acceptance, transactional writes, rollback and recovery, policy decisions, schemas, event-sourced state, and machine-readable reports.",
+    "Agent Builder creates and validates least-privilege local agent definitions and publication handoff plans without deploying or publishing external resources.",
+    "The current evidence reports 124 passing tests, zero failures, one platform-specific skip, 44 audited skills, 219 security-scanned files, and 158 checksum-covered candidate files; release remains blocked."
   ],
   "assumptions": [
-    "The user's unavailable response selects the recommended resume, concise-reporting, and post-verification reporting defaults.",
-    "The status request does not expand or revoke the explicit Commit and Push authorization from the immediately preceding request.",
-    "The exact reviewed Ava boundary and every existing prohibition remain unchanged."
+    "The user's unavailable response selects the recommended new-document, mixed-audience, and executive-summary-plus-technical-guide defaults.",
+    "A standalone overview is preferable to expanding README.md because it preserves the concise repository entry point and the generated canonical guide.",
+    "The document may recommend a bounded pilot but must not imply public distribution or production readiness."
   ],
   "conflicts": [],
   "rounds": [
     {
       "round": 1,
       "questions": [
-        { "id": "Q-0220", "question": "After this status checkpoint, should I resume the already-authorized exact stage, commit, push, and remote verification workflow?", "materialDecision": "Whether this prompt pauses or resumes the authorized Git workflow", "recommendedDefault": "Resume the exact workflow", "answer": "The user is not available to respond and will review your work later. Work autonomously and make good decisions." },
-        { "id": "Q-0221", "question": "How much detail should the status report include?", "materialDecision": "Status reporting depth", "recommendedDefault": "Concise milestones", "answer": "The user is not available to respond and will review your work later. Work autonomously and make good decisions." },
-        { "id": "Q-0222", "question": "If work resumes, when should I provide the next report?", "materialDecision": "Whether to interrupt between Git steps or report after remote verification", "recommendedDefault": "Report after remote verification", "answer": "The user is not available to respond and will review your work later. Work autonomously and make good decisions." }
+        { "id": "Q-0226", "question": "Where should the complete Markdown live?", "materialDecision": "Whether to create a standalone document, expand the repository homepage, or return chat-only content", "recommendedDefault": "Create docs/PROJECT-OVERVIEW.md", "answer": "The user is not available to respond and will review your work later. Work autonomously and make good decisions." },
+        { "id": "Q-0227", "question": "Who should the document persuade first?", "materialDecision": "Balance between outcome-oriented narrative and implementation detail", "recommendedDefault": "Mixed leaders and engineers", "answer": "The user is not available to respond and will review your work later. Work autonomously and make good decisions." },
+        { "id": "Q-0228", "question": "How should the detailed material be organized?", "materialDecision": "Document structure and depth", "recommendedDefault": "Executive summary plus technical guide", "answer": "The user is not available to respond and will review your work later. Work autonomously and make good decisions." }
       ]
     }
   ],

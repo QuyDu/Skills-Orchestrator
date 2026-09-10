@@ -1204,6 +1204,10 @@ test("every created project receives the Azure discovery and deployment scaffold
     const promptFiles = await readdir(path.join(parent, "infra-demo", ".github", "prompts"));
     assert.equal(promptFiles.filter((file) => file.endsWith("-help.prompt.md") && file !== "skills-help.prompt.md").length, skillCount);
     assert.ok(promptFiles.includes("skills-help.prompt.md"));
+    assert.ok(promptFiles.includes("skill-update-help.prompt.md"));
+    const skillUpdateHelp = await readFile(path.join(parent, "infra-demo", ".github", "prompts", "skill-update-help.prompt.md"), "utf8");
+    assert.match(skillUpdateHelp, /Run the skill with \/skill-update\./);
+    assert.match(skillUpdateHelp, /Open this help with \/skill-update-help\./);
     const instructions = await readFile(path.join(parent, "infra-demo", ".github", "instructions", "azure-deployment.instructions.md"), "utf8");
     assert.match(instructions, /applyTo:\s*"infra\/\*\*"/);
   } finally {

@@ -1,25 +1,23 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-09-08T16:20:54.0426172Z",
-  "project": { "name": "project-skills-orchestrator", "version": "1.1.1", "branch": "feat/agent-builder-latest", "commit": "ba012e6b1eae61168dde5a01aa16c5cd7e1e0be8" },
+  "updatedAt": "2026-09-10T00:53:06.586Z",
+  "project": { "name": "project-skills-orchestrator", "version": "1.1.1", "branch": "feat/agent-builder-latest", "commit": "0981867ca6795a9be48428b2f297ba5d6bf09c1d" },
   "status": "blocked",
   "activeMilestone": { "name": "P4 release assurance", "status": "blocked" },
   "lastCompletedAction": {
-    "action": "Complete and validate the governed Agent Builder autonomy and publication-planning increment plus synchronized version 1.1.1 Markdown, HTML, narration, and 10-slide PowerPoint demo collateral",
+    "action": "Complete and validate the skill-update workflow, 45-skill documentation refresh, and 11-slide Demo Day video handoff",
     "status": "completed",
-    "completedAt": "2026-09-08T16:20:54.0426172Z",
+    "completedAt": "2026-09-10T00:53:06.586Z",
     "evidence": [
-      ".github/skills/agent-builder/SKILL.md",
-      ".github/skills/agent-builder/scripts/agent-builder.mjs",
+      ".github/skills/skill-update/SKILL.md",
+      ".github/skills/skill-create/SKILL.md",
       "Demo/Project-Orchestrator-Demo.pptx",
       "Demo/project-skills-orchestrator-animation.html",
       "Demo/DEMO-DAY.md",
-      "schemas/agent-blueprint.schema.json",
-      "schemas/agent-builder-plan.schema.json",
-      "tests/agent-builder.test.mjs",
-      "tests/package-install.test.mjs",
+      "docs/PROJECT-OVERVIEW.md",
+      "reports/skill-inventory.json",
       "tests/skill-contracts.test.mjs",
-      "reports/change-review.json"
+      "tests/adoption-rerun.test.mjs"
     ]
   },
   "validationStatus": {
@@ -27,10 +25,10 @@
     "testsPassed": 124,
     "testsFailed": 0,
     "testsSkipped": 1,
-    "skillsVerified": 44,
+    "skillsVerified": 45,
     "securityCheck": "passed",
     "releaseCandidateVerification": "passed",
-    "note": "Agent Builder has 17 passing focused tests; the combined Agent Builder and contract run passed 33 tests, and generated-project propagation passed. The final npm run check passed 124 tests with one platform-specific skip, verified all 44 skills, scanned 207 files without a security failure, and verified 158 checksum-covered candidate files. The 10-slide 16:9 PowerPoint opened and rendered through desktop PowerPoint, and its OOXML contract test passed. P4 remains blocked."
+    "note": "The final npm run check passed 124 tests with one platform-specific skip, verified all 45 skills, scanned 220 files without a security failure, and verified 160 checksum-covered candidate files. The 11-slide 16:9 PowerPoint opened through desktop PowerPoint, and slide 3 contains the validated project-created video hyperlink. P4 remains blocked."
   },
   "blockers": [
     "AUD-0205: production release assurance remains incomplete.",

@@ -1,12 +1,12 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-09-08T16:20:54.0426172Z",
-  "project": { "name": "project-skills-orchestrator", "version": "1.1.1", "branch": "feat/agent-builder-latest", "commit": "ba012e6b1eae61168dde5a01aa16c5cd7e1e0be8" },
+  "generatedAt": "2026-09-10T00:53:06.586Z",
+  "project": { "name": "project-skills-orchestrator", "version": "1.1.1", "branch": "feat/agent-builder-latest", "commit": "0981867ca6795a9be48428b2f297ba5d6bf09c1d" },
   "status": "blocked",
   "milestone": { "name": "P4 release assurance", "status": "blocked", "objective": "Produce current release evidence and establish whether version 1.1.1 can pass trusted internal production gates." },
   "lastCompletedWork": {
-    "summary": "Completed Agent Builder autonomy and publication planning, generated-project propagation, synchronized version 1.1.1 demo collateral, a native 10-slide PowerPoint update, and final validation while preserving the non-deploying boundary and all six approval gates.",
-    "completedAt": "2026-09-08T16:20:54.0426172Z",
+    "summary": "Completed the governed skill-update workflow, separated new-skill and existing-skill ownership, propagated deterministic help and routing, refreshed the 45-skill documentation and evidence, and added the project-created video handoff to the 11-slide Demo Day deck.",
+    "completedAt": "2026-09-10T00:53:06.586Z",
     "evidence": [
       ".github/skills/agent-builder/SKILL.md",
       ".github/skills/agent-builder/scripts/agent-builder.mjs",
@@ -37,10 +37,11 @@
     { "check": "Publication semantics review", "status": "passed", "evidence": "The contract distinguishes a managed Foundry endpoint, direct Microsoft 365 Copilot and Teams distribution, and separately governed ChatGPT Action integration." },
     { "check": "Focused Agent Builder and contract tests", "status": "passed", "evidence": "All 33 tests passed, including 17 Agent Builder tests for publication planning, invalid combinations, approval-gate omissions, Azure Government generation, sanitization, and rendered-instruction isolation." },
     { "check": "Generated-project propagation", "status": "passed", "evidence": "The package-install test verified the updated skill, runtime, schemas, and root CLI flags in the packaged framework and a newly generated project." },
-    { "check": "PowerPoint structure and rendering", "status": "passed", "evidence": "The final 10-slide 16:9 OOXML deck opened and rendered through desktop PowerPoint; focused tests enforce its ZIP signature and ten slide parts." },
-    { "check": "Repository conformance", "status": "passed", "evidence": "Final npm run check passed 124 tests with one platform-specific skip and verified all 44 framework skills." },
-    { "check": "Security scan", "status": "passed", "evidence": "The final gate scanned 207 files with no security failure." },
-    { "check": "Release candidate verification", "status": "passed", "evidence": "The unsigned candidate contains 158 checksum-covered verified files; signing and production release remain blocked." },
+    { "check": "PowerPoint structure and rendering", "status": "passed", "evidence": "The final 11-slide 16:9 deck opened through desktop PowerPoint; slide 3 contains the validated project-created video hyperlink, and focused tests enforce all eleven slide parts and the external OOXML relationship." },
+    { "check": "Skill update and help propagation", "status": "passed", "evidence": "Focused contract tests passed, and generated-project validation confirmed one help prompt per skill including skill-update-help.prompt.md." },
+    { "check": "Repository conformance", "status": "passed", "evidence": "Final npm run check passed 124 tests with one platform-specific skip and verified all 45 framework skills." },
+    { "check": "Security scan", "status": "passed", "evidence": "The final gate scanned 220 files with no security failure and zero package dependencies." },
+    { "check": "Release candidate verification", "status": "passed", "evidence": "The unsigned candidate contains 160 checksum-covered verified files; signing and production release remain blocked." },
     { "check": "Working-tree integrity", "status": "passed", "evidence": "The prepared boundary contains no staged or unmerged paths, and git diff --check passed without errors." },
     { "check": "Production release", "status": "blocked", "evidence": "Operational artifact health and revocation, trusted signature, distinct independent review, and production verification remain blocked." }
   ],

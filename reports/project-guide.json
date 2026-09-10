@@ -1,14 +1,14 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-09-02T00:56:41.376Z",
+  "generatedAt": "2026-09-10T00:50:13.381Z",
   "projectUnderstanding": {
     "json": "reports/project-understanding.json",
-    "jsonSha256": "e150beeacad8d595f2199d71868f5fd5c8118ead359253effc732544caac51be",
+    "jsonSha256": "cec06ff56295a97c53a6757e8e8e0aaf4aa63baadf46e2cd019feb6e49f6c8d9",
     "markdown": "reports/project-understanding.md",
-    "markdownSha256": "de1a61188666334c0dadf4b9f4f0cd1a600193cca9fd4f7e9bb4692c632304ba"
+    "markdownSha256": "17567fb6783f9931961230406e98aab430fdaacba1d3f33e2c76452667a003db"
   },
   "guide": "docs/PROJECT-GUIDE.md",
-  "guideSha256": "64ee3692b861e5ad2054e17a80d1e1907c6e0ba637be9b751945608b8118643a",
+  "guideSha256": "397f56a8593610f8236350eff12f75bf8f8183de125673cbb81ede247b2dfda6",
   "claims": [
     {
       "id": "claim-01-azure",
@@ -23,7 +23,7 @@
       "id": "claim-02-github",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "Top-level project boundary containing 62 scanned files.",
+      "statement": "Top-level project boundary containing 73 scanned files.",
       "evidence": [
         ".github/copilot-instructions.md"
       ]
@@ -41,25 +41,25 @@
       "id": "claim-04-demo",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "Top-level project boundary containing 3 scanned files.",
+      "statement": "Top-level project boundary containing 15 scanned files.",
       "evidence": [
-        "Demo/audio/narration/scenes.json"
+        "Demo/audio/narration/scene-01.mp3"
       ]
     },
     {
       "id": "claim-05-config",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "Top-level project boundary containing 3 scanned files.",
+      "statement": "Top-level project boundary containing 4 scanned files.",
       "evidence": [
-        "config/orchestrator.yaml"
+        "config/gitleaks-allowlist.json"
       ]
     },
     {
       "id": "claim-06-docs",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "Top-level project boundary containing 4 scanned files.",
+      "statement": "Top-level project boundary containing 5 scanned files.",
       "evidence": [
         "docs/INTERNAL-RELEASE.md"
       ]
@@ -77,7 +77,7 @@
       "id": "claim-08-reports",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "Top-level project boundary containing 54 scanned files.",
+      "statement": "Top-level project boundary containing 78 scanned files.",
       "evidence": [
         "reports/adoption-rerun-evidence.json"
       ]
@@ -86,7 +86,7 @@
       "id": "claim-09-schemas",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "Top-level project boundary containing 37 scanned files.",
+      "statement": "Top-level project boundary containing 44 scanned files.",
       "evidence": [
         "schemas/adoption-transaction.schema.json"
       ]
@@ -95,7 +95,7 @@
       "id": "claim-10-scripts",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "Top-level project boundary containing 10 scanned files.",
+      "statement": "Top-level project boundary containing 12 scanned files.",
       "evidence": [
         "scripts/adoption-evidence.mjs"
       ]
@@ -113,7 +113,7 @@
       "id": "claim-12-tests",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "Top-level project boundary containing 9 scanned files.",
+      "statement": "Top-level project boundary containing 13 scanned files.",
       "evidence": [
         "tests/adoption-rerun.test.mjs"
       ]
@@ -122,7 +122,7 @@
       "id": "claim-13-md",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "97 scanned files use this extension.",
+      "statement": "110 scanned files use this extension.",
       "evidence": [
         ".github/copilot-instructions.md"
       ]
@@ -131,7 +131,7 @@
       "id": "claim-14-json",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "70 scanned files use this extension.",
+      "statement": "93 scanned files use this extension.",
       "evidence": [
         ".azure/environment.json"
       ]
@@ -140,27 +140,27 @@
       "id": "claim-15-mjs",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "23 scanned files use this extension.",
+      "statement": "34 scanned files use this extension.",
       "evidence": [
-        ".github/skills/documentation-builder/scripts/documentation-builder.mjs"
+        ".github/skills/agent-builder/scripts/agent-builder.mjs"
       ]
     },
     {
       "id": "claim-16-mp3",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "11 scanned files use this extension.",
+      "statement": "22 scanned files use this extension.",
       "evidence": [
-        "reports/project-video/audio/scene-01.mp3"
+        "Demo/audio/narration/scene-01.mp3"
       ]
     },
     {
       "id": "claim-17-ps1",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "9 scanned files use this extension.",
+      "statement": "10 scanned files use this extension.",
       "evidence": [
-        ".github/skills/azure-discovery/scripts/azure-discovery.ps1"
+        ".github/skills/agent-builder/scripts/azure-context.ps1"
       ]
     },
     {
@@ -182,7 +182,16 @@
       ]
     },
     {
-      "id": "claim-20-yaml",
+      "id": "claim-20-toml",
+      "topic": "project-understanding",
+      "status": "verified",
+      "statement": "2 scanned files use this extension.",
+      "evidence": [
+        ".github/skills/audit-code/config/gitleaks.toml"
+      ]
+    },
+    {
+      "id": "claim-21-yaml",
       "topic": "project-understanding",
       "status": "verified",
       "statement": "2 scanned files use this extension.",
@@ -191,7 +200,7 @@
       ]
     },
     {
-      "id": "claim-21-html",
+      "id": "claim-22-html",
       "topic": "project-understanding",
       "status": "verified",
       "statement": "2 scanned files use this extension.",
@@ -200,25 +209,34 @@
       ]
     },
     {
-      "id": "claim-22-bicep",
+      "id": "claim-23-jsonl",
+      "topic": "project-understanding",
+      "status": "verified",
+      "statement": "2 scanned files use this extension.",
+      "evidence": [
+        "reports/execution-log.jsonl"
+      ]
+    },
+    {
+      "id": "claim-24-pptx",
       "topic": "project-understanding",
       "status": "verified",
       "statement": "1 scanned files use this extension.",
       "evidence": [
-        "templates/project/infra/main.bicep"
+        "Demo/Project-Orchestrator-Demo.pptx"
       ]
     },
     {
-      "id": "claim-23-npm-run-check",
+      "id": "claim-25-npm-run-check",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-status.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
+      "statement": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/agent-builder.test.mjs tests/audit-assurance.test.mjs tests/audit-execution.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-status.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
       "evidence": [
         "package.json"
       ]
     },
     {
-      "id": "claim-24-npm-run-evidence-adoption",
+      "id": "claim-26-npm-run-evidence-adoption",
       "topic": "project-understanding",
       "status": "verified",
       "statement": "node scripts/adoption-evidence.mjs",
@@ -227,7 +245,7 @@
       ]
     },
     {
-      "id": "claim-25-npm-run-inventory",
+      "id": "claim-27-npm-run-inventory",
       "topic": "project-understanding",
       "status": "verified",
       "statement": "node pso.mjs inventory --root .",
@@ -236,7 +254,7 @@
       ]
     },
     {
-      "id": "claim-26-npm-run-release",
+      "id": "claim-28-npm-run-release",
       "topic": "project-understanding",
       "status": "verified",
       "statement": "node scripts/build-release.mjs",
@@ -245,7 +263,7 @@
       ]
     },
     {
-      "id": "claim-27-npm-run-release-status",
+      "id": "claim-29-npm-run-release-status",
       "topic": "project-understanding",
       "status": "verified",
       "statement": "node scripts/release-status.mjs",
@@ -254,7 +272,7 @@
       ]
     },
     {
-      "id": "claim-28-npm-run-release-verify",
+      "id": "claim-30-npm-run-release-verify",
       "topic": "project-understanding",
       "status": "verified",
       "statement": "node scripts/verify-release.mjs",
@@ -263,7 +281,7 @@
       ]
     },
     {
-      "id": "claim-29-npm-run-release-verify-candidate",
+      "id": "claim-31-npm-run-release-verify-candidate",
       "topic": "project-understanding",
       "status": "verified",
       "statement": "node scripts/verify-release.mjs --candidate",
@@ -272,7 +290,7 @@
       ]
     },
     {
-      "id": "claim-30-npm-run-security",
+      "id": "claim-32-npm-run-security",
       "topic": "project-understanding",
       "status": "verified",
       "statement": "node scripts/security-check.mjs",
@@ -281,16 +299,43 @@
       ]
     },
     {
-      "id": "claim-31-npm-run-test",
+      "id": "claim-33-npm-run-security-gitleaks",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-status.test.mjs tests/project-video.test.mjs",
+      "statement": "node .github/skills/audit-code/scripts/gitleaks-scan.mjs scan",
       "evidence": [
         "package.json"
       ]
     },
     {
-      "id": "claim-32-npm-run-verify",
+      "id": "claim-34-npm-run-security-gitleaks-install",
+      "topic": "project-understanding",
+      "status": "verified",
+      "statement": "node .github/skills/audit-code/scripts/gitleaks-scan.mjs install",
+      "evidence": [
+        "package.json"
+      ]
+    },
+    {
+      "id": "claim-35-npm-run-test",
+      "topic": "project-understanding",
+      "status": "verified",
+      "statement": "node --test tests/skill-contracts.test.mjs tests/agent-builder.test.mjs tests/audit-assurance.test.mjs tests/audit-execution.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-status.test.mjs tests/project-video.test.mjs",
+      "evidence": [
+        "package.json"
+      ]
+    },
+    {
+      "id": "claim-36-npm-run-test-gitleaks",
+      "topic": "project-understanding",
+      "status": "verified",
+      "statement": "node --test tests/gitleaks-scan.test.mjs",
+      "evidence": [
+        "package.json"
+      ]
+    },
+    {
+      "id": "claim-37-npm-run-verify",
       "topic": "project-understanding",
       "status": "verified",
       "statement": "node pso.mjs verify",
@@ -299,20 +344,20 @@
       ]
     },
     {
-      "id": "claim-33-governed-skill-workflows",
+      "id": "claim-38-governed-skill-workflows",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "42 installed skills provide bounded project actions.",
+      "statement": "45 installed skills provide bounded project actions.",
       "evidence": [
+        ".github/skills/agent-builder/SKILL.md",
         ".github/skills/architecture-review/SKILL.md",
         ".github/skills/artifact-upgrade/SKILL.md",
         ".github/skills/audit-azure-environment/SKILL.md",
-        ".github/skills/audit-code/SKILL.md",
-        ".github/skills/audit-plan-remediation/SKILL.md"
+        ".github/skills/audit-code/SKILL.md"
       ]
     },
     {
-      "id": "claim-34-reusable-prompt-workflows",
+      "id": "claim-39-reusable-prompt-workflows",
       "topic": "project-understanding",
       "status": "verified",
       "statement": "10 prompt files provide user-invoked workflows.",
@@ -325,7 +370,7 @@
       ]
     },
     {
-      "id": "claim-35-machine-readable-contracts",
+      "id": "claim-40-machine-readable-contracts",
       "topic": "project-understanding",
       "status": "verified",
       "statement": "Schemas validate governed plans, reports, and runtime evidence.",
@@ -334,7 +379,7 @@
       ]
     },
     {
-      "id": "claim-36-automated-validation",
+      "id": "claim-41-automated-validation",
       "topic": "project-understanding",
       "status": "verified",
       "statement": "Repository tests protect contracts and implementation behavior.",
@@ -343,16 +388,16 @@
       ]
     },
     {
-      "id": "claim-37-npm-run-check",
+      "id": "claim-42-npm-run-check",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-status.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
+      "statement": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/agent-builder.test.mjs tests/audit-assurance.test.mjs tests/audit-execution.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-status.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
       "evidence": [
         "package.json"
       ]
     },
     {
-      "id": "claim-38-npm-run-release-verify",
+      "id": "claim-43-npm-run-release-verify",
       "topic": "project-understanding",
       "status": "verified",
       "statement": "node scripts/verify-release.mjs",
@@ -361,7 +406,7 @@
       ]
     },
     {
-      "id": "claim-39-npm-run-release-verify-candidate",
+      "id": "claim-44-npm-run-release-verify-candidate",
       "topic": "project-understanding",
       "status": "verified",
       "statement": "node scripts/verify-release.mjs --candidate",
@@ -370,7 +415,7 @@
       ]
     },
     {
-      "id": "claim-40-npm-run-security",
+      "id": "claim-45-npm-run-security",
       "topic": "project-understanding",
       "status": "verified",
       "statement": "node scripts/security-check.mjs",
@@ -379,16 +424,43 @@
       ]
     },
     {
-      "id": "claim-41-npm-run-test",
+      "id": "claim-46-npm-run-security-gitleaks",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-status.test.mjs tests/project-video.test.mjs",
+      "statement": "node .github/skills/audit-code/scripts/gitleaks-scan.mjs scan",
       "evidence": [
         "package.json"
       ]
     },
     {
-      "id": "claim-42-npm-run-verify",
+      "id": "claim-47-npm-run-security-gitleaks-install",
+      "topic": "project-understanding",
+      "status": "verified",
+      "statement": "node .github/skills/audit-code/scripts/gitleaks-scan.mjs install",
+      "evidence": [
+        "package.json"
+      ]
+    },
+    {
+      "id": "claim-48-npm-run-test",
+      "topic": "project-understanding",
+      "status": "verified",
+      "statement": "node --test tests/skill-contracts.test.mjs tests/agent-builder.test.mjs tests/audit-assurance.test.mjs tests/audit-execution.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-status.test.mjs tests/project-video.test.mjs",
+      "evidence": [
+        "package.json"
+      ]
+    },
+    {
+      "id": "claim-49-npm-run-test-gitleaks",
+      "topic": "project-understanding",
+      "status": "verified",
+      "statement": "node --test tests/gitleaks-scan.test.mjs",
+      "evidence": [
+        "package.json"
+      ]
+    },
+    {
+      "id": "claim-50-npm-run-verify",
       "topic": "project-understanding",
       "status": "verified",
       "statement": "node pso.mjs verify",
