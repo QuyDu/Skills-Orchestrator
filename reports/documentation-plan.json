@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-09-09T09:19:56.607Z",
+  "status": "applied",
+  "documents": [
+    {
+      "path": "docs/PROJECT-OVERVIEW.md",
+      "kind": "architecture-overview",
+      "audience": "executive",
+      "action": "create",
+      "reason": "Provide a standalone value narrative with enough verified technical and operational detail for a mixed leadership and engineering evaluation.",
+      "verifiedClaims": [
+        "Runtime version 1.1.1 and framework version 9.0.0",
+        "44 governed skills with zero third-party core runtime dependencies",
+        "Node.js 22, 24, and 26 support",
+        "Create, adopt, clone-setup, update, recover, inventory, plan, verify, help, and Agent Builder command surfaces",
+        "Bounded clarification, approval classes, transaction journaling, rollback, and recovery controls",
+        "Current validation evidence and blocked internal-candidate release status"
+      ],
+      "unverifiedClaims": []
+    },
+    {
+      "path": "docs/PROJECT-GUIDE.md",
+      "kind": "project-guide",
+      "audience": "contributor",
+      "action": "blocked",
+      "reason": "The generated canonical guide and its Project Understanding inputs are stale; refreshing them would expand the approved document boundary for this request.",
+      "verifiedClaims": [],
+      "unverifiedClaims": [
+        "Current repository purpose, inventory counts, setup commands, and capability summary in the generated guide"
+      ]
+    }
+  ],
+  "contradictions": [
+    {
+      "document": "docs/PROJECT-GUIDE.md",
+      "authoritativeArtifact": "reports/skill-inventory.json",
+      "detail": "The generated guide reports 42 skills, while the current inventory generated on 2026-09-09 contains 44 skills."
+    },
+    {
+      "document": "reports/project-understanding.json",
+      "authoritativeArtifact": "README.md",
+      "detail": "The September 2 understanding report describes 43 governed skills, while the current README and inventory report 44."
+    },
+    {
+      "document": "STANDALONE-WINDOWS.md",
+      "authoritativeArtifact": "pso.mjs",
+      "detail": "The expected verify-output example reports 40 skills, while the current runtime verifies 44."
+    },
+    {
+      "document": "docs/PROJECT-GUIDE.md",
+      "authoritativeArtifact": "package.json",
+      "detail": "The generated guide records an older npm test/check composition that does not include all current configured test files."
+    }
+  ],
+  "limitations": [
+    "The overview uses current code, configuration, inventory, security, and release evidence because documentation-builder validation confirms the canonical guide inputs are stale.",
+    "No measured business ROI or comparative productivity benchmark exists in the repository; the overview recommends collecting those results through a bounded pilot.",
+    "The document describes an unsigned internal candidate and does not claim production readiness or authorization for public distribution."
+  ]
+}

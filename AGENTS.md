@@ -16,11 +16,12 @@ Apply this to every new user prompt, without exception, before any analysis, too
 - The only exception is an explicit instruction in the current prompt to skip clarification,
   including the exact `--proceed` or `--Proceed` token. Treat the token case-insensitively.
 
-## Project Skills Orchestrator
+## Project Orchestrator
 
 - Read `.github/skills/project-skills-orchestrator/SKILL.md` before coordinating multi-skill work.
 - Automatically use an existing skill when its trigger and ownership match the request; continue with normal engineering work only when no available skill fits. Prefer reuse over duplicating an existing skill, script, workflow, report, or capability.
 - Before authoring a new skill, invoke `/skill-create` to inventory and compare current skills. Notify the user and obtain explicit approval when no existing skill fits before creating the new skill.
+- Before changing an existing skill, invoke `/skill-update`. Resolve an inexact name by offering ranked candidate skill IDs, identify one exact target, present every proposed file and behavior change, and wait for `-Proceed` or `--proceed` before editing.
 - Inspect `reports/current-work-state.json` and `reports/project-handoff.json` when present.
 - Treat machine-readable artifacts in `reports/` as authoritative.
 - Never rewrite accepted records in `reports/execution-log.jsonl`.
@@ -29,7 +30,7 @@ Apply this to every new user prompt, without exception, before any analysis, too
 
 ## Launch Pad boundary
 
-This repository is the Project Skills Orchestrator launch pad and source framework. Do not create application code, generated project files, demo implementation files, deployment outputs, or target-project artifacts inside this repository. After a target project is created or adopted, all project-specific implementation, validation, documentation, and deployment work must occur inside that target project. Modify this repository only when the requested work explicitly updates Project Skills Orchestrator itself: runtime, skills, templates, schemas, prompts, docs, tests, reports, release assets, or orchestration behavior.
+This repository is the Project Orchestrator launch pad and source framework. Do not create application code, generated project files, demo implementation files, deployment outputs, or target-project artifacts inside this repository. After a target project is created or adopted, all project-specific implementation, validation, documentation, and deployment work must occur inside that target project. Modify this repository only when the requested work explicitly updates Project Orchestrator itself: runtime, skills, templates, schemas, prompts, docs, tests, reports, release assets, or orchestration behavior.
 
 ## Azure environment automation
 

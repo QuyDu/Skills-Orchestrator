@@ -43,7 +43,7 @@ or test project; stop and report if its destination already exists.
 
 ## Objective
 
-Use Project Skills Orchestrator only as the immutable source framework to provision a new governed project named **Skills Orchestrator Demo**. After creation, perform all application development, validation, and any future deployment only inside the newly created project. Do not modify this source repository.
+Use Project Orchestrator only as the immutable source framework to provision a new governed project named **Project Orchestrator Demo**. After creation, perform all application development, validation, and any future deployment only inside the newly created project. Do not modify this source repository.
 
 ## Steps
 
@@ -80,7 +80,7 @@ Use Project Skills Orchestrator only as the immutable source framework to provis
 
    Do not pass `--open` to `create-project`. Combined with `--intent`, that path launches `code chat --mode ask`, which cannot edit files, and it seeds a kickoff prompt that instructs the agent to ask three clarifying questions first. Both would stall the demo.
 
-5. Report the absolute project path and tell the presenter to accept the workspace trust prompt, switch Chat to **Agent** mode, and run `/demo-web-app` in the new window. From this point forward, all work belongs to the new project; do not return to or modify the Project Skills Orchestrator source repository.
+5. Report the absolute project path and tell the presenter to accept the workspace trust prompt, switch Chat to **Agent** mode, and run `/demo-web-app` in the new window. From this point forward, all work belongs to the new project; do not return to or modify the Project Orchestrator source repository.
 
    For a fully unattended handoff instead, run this from the created project directory rather than step 5:
 
@@ -90,7 +90,7 @@ Use Project Skills Orchestrator only as the immutable source framework to provis
 
 ## Constraints
 
-- The Project Skills Orchestrator source repository is immutable during the demo. It creates and hands off the new project but is never changed by application build, validation, or deployment work.
+- The Project Orchestrator source repository is immutable during the demo. It creates and hands off the new project but is never changed by application build, validation, or deployment work.
 - Modify only the newly created project after the initial handoff.
 - Do not commit, push, or deploy.
 - `--Test` changes only the project name and destination convention; it does not grant permission to mutate external systems.

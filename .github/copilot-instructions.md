@@ -26,7 +26,7 @@ Use `.github/skills/project-skills-orchestrator/SKILL.md` for project orchestrat
 
 ## Launch Pad boundary
 
-This repository is the Project Skills Orchestrator launch pad and source framework. Do not create application code, generated project files, demo implementation files, deployment outputs, or target-project artifacts inside this repository. After a target project is created or adopted, all project-specific implementation, validation, documentation, and deployment work must occur inside that target project. Modify this repository only when the requested work explicitly updates Project Skills Orchestrator itself: runtime, skills, templates, schemas, prompts, docs, tests, reports, release assets, or orchestration behavior.
+This repository is the Project Orchestrator launch pad and source framework. Do not create application code, generated project files, demo implementation files, deployment outputs, or target-project artifacts inside this repository. After a target project is created or adopted, all project-specific implementation, validation, documentation, and deployment work must occur inside that target project. Modify this repository only when the requested work explicitly updates Project Orchestrator itself: runtime, skills, templates, schemas, prompts, docs, tests, reports, release assets, or orchestration behavior.
 
 ## Azure environment automation
 
@@ -36,6 +36,7 @@ This repository is the Project Skills Orchestrator launch pad and source framewo
 
 - For every request, automatically use an existing skill when its trigger and ownership match the work; continue with normal engineering work only when no available skill fits. Prefer reuse over duplicating an existing skill, script, workflow, report, or capability.
 - Before creating a new skill, invoke `/skill-create`. It must inventory and compare current skills for reuse or duplication. If no existing skill fits, notify the user and obtain explicit approval before authoring the new skill.
+- Before changing an existing skill, invoke `/skill-update`. Resolve an inexact name by offering ranked candidate skill IDs, identify one exact target, present every proposed file and behavior change, and wait for `-Proceed` or `--proceed` before editing.
 - The skill catalog, `config/profiles.yaml`, `schemas/`, and `templates/project/` are contract surfaces. Changing any of them requires updating `tests/skill-contracts.test.mjs`.
 - Every skill contract carries all twelve required sections and a distinct trigger description.
 - Skill dependencies must stay acyclic and every conformance profile must remain dependency-closed.

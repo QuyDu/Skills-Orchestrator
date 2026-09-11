@@ -75,6 +75,11 @@ function Write-SpeechAudio {
 
 $speechKey = if ($env:AZURE_SPEECH_KEY) { $env:AZURE_SPEECH_KEY } else { $env:SPEECH_KEY }
 $speechRegion = if ($env:AZURE_SPEECH_REGION) { $env:AZURE_SPEECH_REGION } else { $env:SPEECH_REGION }
+$speechCloud = if ($env:AZURE_SPEECH_CLOUD) { $env:AZURE_SPEECH_CLOUD } else { "AzureCloud" }
+$speechDomains = @{
+  AzureCloud = "tts.speech.microsoft.com"
+  AzureUSGovernment = "tts.speech.azure.us"
+}
 
 if ([string]::IsNullOrWhiteSpace($speechKey)) {
   throw "Set AZURE_SPEECH_KEY (or SPEECH_KEY) in this process before generating narration."
@@ -85,18 +90,26 @@ if (-not $ApproveExternal) {
 if ([string]::IsNullOrWhiteSpace($speechRegion) -or $speechRegion -notmatch "^[a-z0-9-]+$") {
   throw "Set AZURE_SPEECH_REGION (or SPEECH_REGION) to the Azure Speech resource region."
 }
+if (-not $speechDomains.ContainsKey($speechCloud)) {
+  throw "AZURE_SPEECH_CLOUD must be AzureCloud or AzureUSGovernment."
+}
 if (-not (Test-Path -LiteralPath $ManifestPath -PathType Leaf)) {
   throw "Narration manifest not found: $ManifestPath"
 }
 
 $manifest = Get-Content -LiteralPath $ManifestPath -Raw | ConvertFrom-Json
-if ($manifest.schemaVersion -ne "1.0.0" -or $manifest.scenes.Count -ne 8) {
-  throw "Narration manifest must use schemaVersion 1.0.0 and contain exactly eight scenes."
+if ($manifest.schemaVersion -ne "1.0.0" -or $manifest.scenes.Count -lt 1 -or $manifest.scenes.Count -gt 99) {
+  throw "Narration manifest must use schemaVersion 1.0.0 and contain between one and 99 ordered scenes."
+}
+for ($index = 0; $index -lt $manifest.scenes.Count; $index += 1) {
+  if ($manifest.scenes[$index].id -ne ($index + 1)) {
+    throw "Narration scene IDs must be contiguous and ordered from one."
+  }
 }
 
 $profiles = @(
-  [ordered]@{ id = "ava-hd-warm"; slot = "A"; label = "A - Ava Dragon HD - warm conversational"; name = "en-US-Ava:DragonHDLatestNeural"; locale = "en-US"; style = "friendly"; degree = 0.65; rate = -2; pauseMs = 180 },
-  [ordered]@{ id = "aria-hd-warm"; slot = "B"; label = "B - Aria Dragon HD - warm presenter"; name = "en-US-Aria:DragonHDLatestNeural"; locale = "en-US"; style = "friendly"; degree = 0.65; rate = -2; pauseMs = 180 },
+  [ordered]@{ id = "ava-hd-warm"; slot = "A"; label = "A - Ava Neural - warm conversational"; name = "en-US-AvaNeural"; locale = "en-US"; style = "auto"; degree = 0.65; rate = -2; pauseMs = 180 },
+  [ordered]@{ id = "aria-hd-warm"; slot = "B"; label = "B - Aria Neural - warm presenter"; name = "en-US-AriaNeural"; locale = "en-US"; style = "friendly"; degree = 0.65; rate = -2; pauseMs = 180 },
   [ordered]@{ id = "aria-professional"; slot = "C"; label = "C - Aria Neural - professional narration"; name = "en-US-AriaNeural"; locale = "en-US"; style = "narration-professional"; degree = 0.75; rate = -3; pauseMs = 200 }
 )
 $selectedProfile = $profiles | Where-Object { $_.id -eq $VoiceProfile } | Select-Object -First 1
@@ -117,7 +130,7 @@ if ($voiceLocale -notmatch "^[a-z]{2}-[A-Z]{2}$" -or $voiceStyle -notmatch "^(au
 }
 
 $outputDirectory = Split-Path -Parent $ManifestPath
-$serviceUri = "https://$speechRegion.tts.speech.microsoft.com/cognitiveservices/v1"
+$serviceUri = "https://$speechRegion.$($speechDomains[$speechCloud])/cognitiveservices/v1"
 $headers = @{
   "Ocp-Apim-Subscription-Key" = $speechKey
   "X-Microsoft-OutputFormat" = $manifest.outputFormat

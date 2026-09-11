@@ -1,32 +1,96 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://project-skills.dev/schemas/workflow-plan/1.0.0",
+  "$id": "https://project-skills.dev/schemas/workflow-plan/1.1.0",
   "title": "Workflow Plan",
-  "type": "object",
-  "additionalProperties": false,
-  "required": ["schemaVersion", "workflowId", "runId", "intent", "status", "createdAt", "steps"],
-  "properties": {
-    "schemaVersion": { "const": "1.0.0" },
-    "workflowId": { "type": "string", "minLength": 1 },
-    "runId": { "type": "string", "minLength": 1 },
-    "intent": { "type": "string", "minLength": 1 },
-    "status": { "const": "planned" },
-    "createdAt": { "type": "string", "format": "date-time" },
-    "steps": {
-      "type": "array",
-      "minItems": 1,
-      "items": {
-        "type": "object",
-        "required": ["id", "skill", "action", "status"],
-        "properties": {
-          "id": { "type": "string" },
-          "skill": { "type": "string" },
-          "action": { "type": "string" },
-          "status": { "enum": ["planned", "ready", "blocked", "completed", "failed", "skipped"] },
-          "inputs": { "type": "array", "items": { "type": "string" } },
-          "outputs": { "type": "array", "items": { "type": "string" } },
-          "requiresApproval": { "type": "boolean" }
-        }
+  "oneOf": [
+    { "$ref": "#/$defs/legacyPlan" },
+    { "$ref": "#/$defs/governedPlan" }
+  ],
+  "$defs": {
+    "baseProperties": {
+      "schemaVersion": { "enum": ["1.0.0", "1.1.0"] },
+      "workflowId": { "type": "string", "minLength": 1 },
+      "runId": { "type": "string", "minLength": 1 },
+      "intent": { "type": "string", "minLength": 1 },
+      "status": { "const": "planned" },
+      "createdAt": { "type": "string", "format": "date-time" }
+    },
+    "legacyStep": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["id", "skill", "action", "status"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "skill": { "type": "string", "minLength": 1 },
+        "action": { "type": "string", "minLength": 1 },
+        "status": { "enum": ["planned", "ready", "blocked", "completed", "failed", "skipped"] },
+        "inputs": { "type": "array", "items": { "type": "string" } },
+        "outputs": { "type": "array", "items": { "type": "string" } },
+        "requiresApproval": { "type": "boolean" }
+      }
+    },
+    "legacyPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "workflowId", "runId", "intent", "status", "createdAt", "steps"],
+      "properties": {
+        "schemaVersion": { "const": "1.0.0" },
+        "workflowId": { "$ref": "#/$defs/baseProperties/workflowId" },
+        "runId": { "$ref": "#/$defs/baseProperties/runId" },
+        "intent": { "$ref": "#/$defs/baseProperties/intent" },
+        "status": { "$ref": "#/$defs/baseProperties/status" },
+        "createdAt": { "$ref": "#/$defs/baseProperties/createdAt" },
+        "steps": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/legacyStep" } }
+      }
+    },
+    "owner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "id"],
+      "properties": {
+        "type": { "enum": ["skill", "operator"] },
+        "id": { "type": "string", "minLength": 1 }
+      }
+    },
+    "governedStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "owner", "action", "status", "inputs", "outputs", "requiresApproval", "approvalClasses", "prerequisites", "completionCriteria", "checkpoint", "rollback", "recovery", "onBlocked", "onFailed"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^STEP-[0-9]{3,}$" },
+        "owner": { "$ref": "#/$defs/owner" },
+        "action": { "type": "string", "minLength": 1 },
+        "status": { "enum": ["planned", "ready", "blocked", "completed", "failed", "skipped"] },
+        "inputs": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+        "outputs": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+        "requiresApproval": { "type": "boolean" },
+        "approvalClasses": {
+          "type": "array",
+          "items": { "enum": ["external", "privileged", "destructive", "irreversible", "production-data-mutation", "commit", "push", "phase", "signing", "publication", "release"] },
+          "uniqueItems": true
+        },
+        "prerequisites": { "type": "array", "items": { "type": "string", "pattern": "^STEP-[0-9]{3,}$" }, "uniqueItems": true },
+        "completionCriteria": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+        "checkpoint": { "type": "string", "pattern": "^CP-[A-Z0-9-]+$" },
+        "rollback": { "type": "string", "minLength": 1 },
+        "recovery": { "type": "string", "minLength": 1 },
+        "onBlocked": { "type": "string", "pattern": "^STEP-[0-9]{3,}$" },
+        "onFailed": { "type": "string", "pattern": "^STEP-[0-9]{3,}$" }
+      }
+    },
+    "governedPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "workflowId", "runId", "intent", "status", "createdAt", "terminalStepId", "steps"],
+      "properties": {
+        "schemaVersion": { "const": "1.1.0" },
+        "workflowId": { "$ref": "#/$defs/baseProperties/workflowId" },
+        "runId": { "$ref": "#/$defs/baseProperties/runId" },
+        "intent": { "$ref": "#/$defs/baseProperties/intent" },
+        "status": { "$ref": "#/$defs/baseProperties/status" },
+        "createdAt": { "$ref": "#/$defs/baseProperties/createdAt" },
+        "terminalStepId": { "type": "string", "pattern": "^STEP-[0-9]{3,}$" },
+        "steps": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/governedStep" } }
       }
     }
   }

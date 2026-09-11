@@ -1,13 +1,49 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { readFile, readdir } from "node:fs/promises";
+import { readFile, readdir, rm } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import test from "node:test";
+import { inflateRawSync } from "node:zlib";
 
 const root = path.resolve(import.meta.dirname, "..");
 const skillsRoot = path.join(root, ".github", "skills");
+
+function readZipEntry(archive, expectedName) {
+  let endOfCentralDirectory = archive.length - 22;
+  while (endOfCentralDirectory >= 0 && archive.readUInt32LE(endOfCentralDirectory) !== 0x06054b50) {
+    endOfCentralDirectory -= 1;
+  }
+  assert.ok(endOfCentralDirectory >= 0, "ZIP end-of-central-directory record must exist.");
+
+  const entryCount = archive.readUInt16LE(endOfCentralDirectory + 10);
+  let centralDirectoryOffset = archive.readUInt32LE(endOfCentralDirectory + 16);
+  for (let entryIndex = 0; entryIndex < entryCount; entryIndex += 1) {
+    assert.equal(archive.readUInt32LE(centralDirectoryOffset), 0x02014b50, "ZIP central-directory entry must be valid.");
+    const compressionMethod = archive.readUInt16LE(centralDirectoryOffset + 10);
+    const compressedSize = archive.readUInt32LE(centralDirectoryOffset + 20);
+    const fileNameLength = archive.readUInt16LE(centralDirectoryOffset + 28);
+    const extraLength = archive.readUInt16LE(centralDirectoryOffset + 30);
+    const commentLength = archive.readUInt16LE(centralDirectoryOffset + 32);
+    const localHeaderOffset = archive.readUInt32LE(centralDirectoryOffset + 42);
+    const fileName = archive.subarray(centralDirectoryOffset + 46, centralDirectoryOffset + 46 + fileNameLength).toString("utf8");
+    if (fileName === expectedName) {
+      assert.equal(archive.readUInt32LE(localHeaderOffset), 0x04034b50, "ZIP local entry must be valid.");
+      const localFileNameLength = archive.readUInt16LE(localHeaderOffset + 26);
+      const localExtraLength = archive.readUInt16LE(localHeaderOffset + 28);
+      const dataOffset = localHeaderOffset + 30 + localFileNameLength + localExtraLength;
+      const compressed = archive.subarray(dataOffset, dataOffset + compressedSize);
+      if (compressionMethod === 0) return compressed;
+      if (compressionMethod === 8) return inflateRawSync(compressed);
+      assert.fail(`Unsupported ZIP compression method ${compressionMethod}.`);
+    }
+    centralDirectoryOffset += 46 + fileNameLength + extraLength + commentLength;
+  }
+  assert.fail(`ZIP entry ${expectedName} must exist.`);
+}
+
 const expectedSkillIds = [
+  "agent-builder",
   "architecture-review",
   "artifact-upgrade",
   "audit-azure-environment",
@@ -44,6 +80,7 @@ const expectedSkillIds = [
   "skill-dependency-manager",
   "skill-inventory",
   "skill-registry",
+  "skill-update",
   "systematic-debugging",
   "workflow-planner",
   "workflow-recovery",
@@ -69,6 +106,13 @@ function sectionItems(source, heading) {
   const next = remainder.search(/^## /m);
   const section = next === -1 ? remainder : remainder.slice(0, next);
   return [...section.matchAll(/^\s*-\s+`?([^`\r\n]+?)`?\s*$/gm)].map((match) => match[1].trim());
+}
+
+function dependencyItems(source) {
+  const section = source.match(/^## Composition and Dependencies\s*$([\s\S]*?)(?=^## |(?![\s\S]))/m)?.[1] ?? "";
+  const prerequisites = section.match(/^### Prerequisite Dependencies\s*$([\s\S]*?)(?=^### |(?![\s\S]))/m)?.[1];
+  const content = prerequisites ?? section;
+  return [...content.matchAll(/^\s*-\s+`?([^`\r\n]+?)`?\s*$/gm)].map((match) => match[1].trim()).filter((item) => item !== "None");
 }
 
 async function loadSkills() {
@@ -315,20 +359,44 @@ test("project video is a portable narrated MP4 capability", async () => {
   assert.equal(discoverySchema.properties.speech.allOf[1].then.properties.existingResourceAvailable.const, false);
 
   const demoNarration = JSON.parse(await readFile(path.join(root, "Demo", "audio", "narration", "scenes.json"), "utf8"));
-  assert.equal(demoNarration.voice.name, "en-US-Ava:DragonHDLatestNeural");
+  assert.equal(demoNarration.voice.name, "en-US-AvaNeural");
+  assert.equal(demoNarration.voice.style, "auto");
   assert.equal(demoNarration.outputFormat, "audio-48khz-192kbitrate-mono-mp3");
+  assert.equal(demoNarration.scenes.length, 11);
   const demoGenerator = await readFile(path.join(root, "scripts", "generate-demo-narration.ps1"), "utf8");
   assert.match(demoGenerator, /ValidateSet\("ava-hd-warm", "aria-hd-warm", "aria-professional"\)/);
   assert.match(demoGenerator, /\$selectedProfile\.style/);
   assert.match(demoGenerator, /-ApproveExternal/);
+  assert.match(demoGenerator, /AzureUSGovernment = "tts\.speech\.azure\.us"/);
+  assert.match(demoGenerator, /AZURE_SPEECH_CLOUD must be AzureCloud or AzureUSGovernment/);
+  assert.match(demoGenerator, /between one and 99 ordered scenes/);
   assert.doesNotMatch(demoGenerator, /pitch=/);
   const demoAnimation = await readFile(path.join(root, "Demo", "project-skills-orchestrator-animation.html"), "utf8");
+  assert.equal((demoAnimation.match(/<section class="scene/g) ?? []).length, demoNarration.scenes.length);
+  for (const scene of demoNarration.scenes) {
+    assert.ok(demoAnimation.includes(scene.text), `Demo scene ${scene.id} narration must match its manifest text.`);
+  }
+  assert.match(demoAnimation, /guided or autonomous-research/);
+  assert.match(demoAnimation, /Never silently publish/);
+  assert.match(demoAnimation, /P4 BLOCKED/);
   assert.match(demoAnimation, /SpeechSynthesisUtterance/);
   assert.match(demoAnimation, /defaultEnglishVoice/);
   assert.match(demoAnimation, /Local browser voice/);
   assert.match(demoAnimation, /utterance\.onend = \(\) =>/);
   assert.match(demoAnimation, /scheduleAdvance\(token\)/);
+  const demoPowerPoint = await readFile(path.join(root, "Demo", "Project-Orchestrator-Demo.pptx"));
+  assert.deepEqual([...demoPowerPoint.subarray(0, 4)], [0x50, 0x4b, 0x03, 0x04]);
+  const demoPowerPointSlideIds = new Set(
+    [...demoPowerPoint.toString("latin1").matchAll(/ppt\/slides\/slide(\d+)\.xml/g)].map((match) => Number(match[1]))
+  );
+  assert.deepEqual([...demoPowerPointSlideIds].sort((left, right) => left - right), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
+  const videoSlideRelationships = readZipEntry(demoPowerPoint, "ppt/slides/_rels/slide3.xml.rels").toString("utf8");
+  assert.match(videoSlideRelationships, /Target="file:\/\/\/C:[\\/]repos[\\/]Skills-Orchestrator[\\/]dist[\\/]project-video[\\/]skills-orchestrator-1-1-0\.html"/);
+  assert.match(videoSlideRelationships, /TargetMode="External"/);
   const demoRunbook = await readFile(path.join(root, "Demo", "DEMO-DAY.md"), "utf8");
+  assert.match(demoRunbook, /PowerPoint deck as the primary current product story/);
+  assert.match(demoRunbook, /Watch: Built by Project Orchestrator/);
+  assert.match(demoRunbook, /repository-relative path manually/);
   assert.match(demoRunbook, /\/project-video --proceed/);
   assert.match(demoRunbook, /manifest-verified MP4/);
   assert.match(demoRunbook, /azure-discovery -Gov/);
@@ -351,18 +419,39 @@ test("project video is a portable narrated MP4 capability", async () => {
   assert.equal(scaffold.templates.find((item) => item.path === ".github/prompts/project-video.prompt.md"), undefined);
 });
 
-test("skill authoring routes through skill-create and reuses existing capabilities", async () => {
+test("skill authoring has distinct create and update owners", async () => {
   const skills = new Map((await loadSkills()).map((skill) => [skill.metadata.name, skill]));
   const skillCreate = skills.get("skill-create");
+  const skillUpdate = skills.get("skill-update");
   const orchestrator = skills.get("project-skills-orchestrator");
   assert.match(skillCreate.metadata.description, /Always use when a user asks.*create.*skill/);
-  assert.match(skillCreate.source, /every request to create a skill, regardless of the user's wording/);
+  assert.match(skillCreate.source, /every request to create a new skill, regardless of the user's wording/);
   assert.match(skillCreate.source, /Run `skill-inventory` and compare the request/);
   assert.match(skillCreate.source, /Reuse or extend a matching capability/);
   assert.match(skillCreate.source, /obtain explicit approval before authoring a new skill/);
   assert.match(skillCreate.source, /identify reusable skills/);
   assert.match(skillCreate.source, /project-understanding/);
+  assert.match(skillCreate.source, /Analyze both directions of integration/);
+  assert.match(skillCreate.source, /<skill-name>-help\.prompt\.md/);
+  assert.match(skillCreate.source, /Refresh the authoritative skill inventory, Project Understanding/);
+  assert.match(skillUpdate.metadata.description, /Always use when a user asks.*update an existing skill/);
+  assert.match(skillUpdate.source, /rank the plausible matches.*offer the candidate IDs as options/is);
+  assert.match(skillUpdate.source, /Never mutate the closest match merely because it ranked first/);
+  assert.match(skillUpdate.source, /names the exact skill ID and every file to change/);
+  assert.match(skillUpdate.source, /require the user to enter `-Proceed` or `--proceed`/);
+  assert.match(skillUpdate.source, /A prior general request, an inferred preference, silence, or a different token does not authorize mutation/);
+  assert.match(skillUpdate.source, /incoming and outgoing integration/);
+  assert.match(skillUpdate.source, /<skill-name>-help\.prompt\.md/);
+  assert.match(skillUpdate.source, /Refresh the authoritative skill inventory, Project Understanding/);
+  assert.deepEqual(sectionItems(skillUpdate.source, "Composition and Dependencies"), [
+    "skill-inventory",
+    "skill-dependency-manager",
+    "project-understanding",
+    "documentation-builder"
+  ]);
   assert.match(orchestrator.source, /Route any request to create, add, define, author, build, or make a skill to `skill-create`/);
+  assert.match(orchestrator.source, /Route any request to modify, revise, enhance, fix, or update an existing skill to `skill-update`/);
+  assert.match(orchestrator.source, /candidate identification and user selection/);
   assert.match(orchestrator.source, /duplicate\/reuse analysis before authoring/);
   const repositoryInstructions = await readFile(path.join(root, ".github", "copilot-instructions.md"), "utf8");
   const repositoryAgentInstructions = await readFile(path.join(root, "AGENTS.md"), "utf8");
@@ -371,6 +460,7 @@ test("skill authoring routes through skill-create and reuses existing capabiliti
     assert.match(instructions, /automatically use an existing skill/i);
     assert.match(instructions, /Prefer reuse over duplicating/i);
     assert.match(instructions, /obtain explicit approval.*new skill/i);
+    assert.match(instructions, /existing skill.*`\/skill-update`/i);
   }
   assert.match(repositoryInstructions, /Launch Pad boundary/);
   assert.match(repositoryAgentInstructions, /Launch Pad boundary/);
@@ -410,6 +500,30 @@ test("clarification has a bounded portable evidence contract", async () => {
   assert.equal(schema.properties.rounds.items.properties.questions.items.additionalProperties, false);
   assert.equal(schema.allOf[0].then.properties.openQuestions.minItems, 1);
   assert.equal(schema.allOf[0].then.properties.decision.const, "wait-for-answers");
+});
+
+test("workflow planning has a strict backward-compatible execution contract", async () => {
+  const skills = new Map((await loadSkills()).map((skill) => [skill.metadata.name, skill]));
+  const planner = skills.get("workflow-planner");
+  assert.match(planner.source, /schema 1\.1/);
+  assert.match(planner.source, /onBlocked/);
+  assert.match(planner.source, /terminal handoff/);
+  assert.match(planner.source, /workflow-planned/);
+
+  const schema = JSON.parse(await readFile(path.join(root, "schemas", "workflow-plan.schema.json"), "utf8"));
+  assert.equal(schema.$id, "https://project-skills.dev/schemas/workflow-plan/1.1.0");
+  assert.equal(schema.$defs.legacyPlan.properties.schemaVersion.const, "1.0.0");
+  assert.equal(schema.$defs.governedPlan.properties.schemaVersion.const, "1.1.0");
+  assert.equal(schema.$defs.governedStep.additionalProperties, false);
+  assert.ok(schema.$defs.governedStep.required.includes("checkpoint"));
+  assert.ok(schema.$defs.governedStep.required.includes("onBlocked"));
+  assert.ok(schema.$defs.governedStep.required.includes("approvalClasses"));
+
+  const runtime = await readFile(path.join(root, "pso.mjs"), "utf8");
+  assert.match(runtime, /step IDs must be unique/);
+  assert.match(runtime, /prerequisite cycle/);
+  assert.match(runtime, /cannot reach terminal handoff/);
+  assert.match(runtime, /current-execution-state\.json/);
 });
 
 test("every generated and adopted project carries the mandatory clarification protocol", async () => {
@@ -581,13 +695,50 @@ test("every governed skill has deterministic help coverage", async () => {
   assert.equal(configuration.properties.clarification.properties.questionsPerPrompt.minimum, 1);
   assert.equal(configuration.properties.clarification.properties.confirmPlanBeforeExecution.type, "boolean");
   assert.ok(configuration.properties.clarification.required.includes("askEveryPrompt"));
+  for (const relative of [
+    ".github/skills/agent-builder/SKILL.md",
+    ".github/skills/agent-builder/scripts/agent-builder.mjs",
+    ".github/skills/agent-builder/scripts/azure-context.ps1",
+    "schemas/agent-blueprint.schema.json",
+    "schemas/agent-builder-plan.schema.json",
+    "schemas/agent-builder-result.schema.json"
+  ]) {
+    assert.ok(existsSync(path.join(root, relative)), `missing Agent Builder contract ${relative}`);
+  }
+  const agentBlueprint = JSON.parse(await readFile(path.join(root, "schemas", "agent-blueprint.schema.json"), "utf8"));
+  assert.deepEqual(agentBlueprint.properties.schemaVersion.enum, ["1.0.0", "2.0.0", "2.1.0", "2.2.0"]);
+  assert.equal(agentBlueprint.properties.autonomy.additionalProperties, false);
+  assert.deepEqual(agentBlueprint.properties.autonomy.required, ["mode", "approvalRequiredFor", "webSafety"]);
+  assert.deepEqual(agentBlueprint.properties.autonomy.properties.mode.enum, ["guided", "autonomous-research"]);
+  assert.deepEqual(agentBlueprint.properties.autonomy.properties.webSafety.enum, ["standard", "threat-informed"]);
+  const approvalGates = agentBlueprint.properties.autonomy.properties.approvalRequiredFor.items.enum;
+  assert.equal(agentBlueprint.properties.autonomy.properties.approvalRequiredFor.minItems, approvalGates.length);
+  assert.deepEqual(
+    agentBlueprint.properties.autonomy.allOf.map((condition) => condition.properties.approvalRequiredFor.contains.const),
+    approvalGates
+  );
+  assert.equal(agentBlueprint.properties.publication.additionalProperties, false);
+  assert.deepEqual(agentBlueprint.properties.publication.required, ["targets", "versionPolicy"]);
+  assert.deepEqual(agentBlueprint.properties.publication.properties.targets.items.enum, [
+    "foundry-endpoint",
+    "microsoft-365-copilot-and-teams",
+    "chatgpt-action"
+  ]);
+  const agentBuilderPlan = JSON.parse(await readFile(path.join(root, "schemas", "agent-builder-plan.schema.json"), "utf8"));
+  assert.deepEqual(agentBuilderPlan.properties.schemaVersion.enum, ["1.0.0", "1.1.0"]);
+  assert.deepEqual(agentBuilderPlan.properties.publication.type, ["object", "null"]);
+  for (const agent of ["azure-architect", "security-reviewer", "documentation-writer"]) {
+    const source = await readFile(path.join(templateRoot, ".github", "agents", `${agent}.agent.md`), "utf8");
+    assert.doesNotMatch(source, /tools:.*(?:fetch|githubRepo|microsoft-learn|problems|azure)/);
+    assert.match(source, /tools: \["read", "search", "web"/);
+  }
 });
 
 test("profiles are dependency-closed", async () => {
   const skills = await loadSkills();
   const graph = new Map(skills.map((skill) => [
     skill.metadata.name,
-    sectionItems(skill.source, "Composition and Dependencies").filter((dependency) => dependency !== "None")
+    dependencyItems(skill.source)
   ]));
   const profiles = await loadProfiles();
 
@@ -606,6 +757,7 @@ test("profiles are dependency-closed", async () => {
       }
     }
   }
+  assert.ok(effective("core").has("agent-builder"), "core profile must include the governed Agent Builder");
 });
 
 test("the default new-project profile requires Azure audit and remediation execution", async () => {
@@ -665,7 +817,7 @@ test("all dependencies resolve and the graph is acyclic", async () => {
   const skills = await loadSkills();
   const graph = new Map(skills.map((skill) => [
     skill.metadata.name,
-    sectionItems(skill.source, "Composition and Dependencies").filter((dependency) => dependency !== "None")
+    dependencyItems(skill.source)
   ]));
   const visited = new Set();
   const visiting = new Set();
@@ -704,8 +856,17 @@ test("audit pipeline has stable handoffs and schemas", async () => {
   assert.match(audit.source, /CIS Controls/);
   assert.match(audit.source, /SLSA/);
   assert.match(audit.source, /OpenSSF Scorecard/);
-  assert.match(audit.source, /Never claim that a repository is secure or meets all best practices/);
-  assert.match(audit.source, /schemaVersion: 2\.0\.0/);
+  assert.match(audit.source, /OWASP GenAI LLM Top 10 2026/);
+  assert.match(audit.source, /OWASP Top 10 for Agentic Applications 2026/);
+  assert.match(audit.source, /NIST AI RMF 1\.0/);
+  assert.match(audit.source, /AI-slop indicators/);
+  assert.match(audit.source, /CA2000/);
+  assert.match(audit.source, /borrowed, dependency-injection-owned, pooled, shared, factory-managed, and framework-owned/);
+  assert.match(audit.source, /Language-Specific Minimum Verification/);
+  assert.match(audit.source, /Never claim that a repository is secure, fully compliant, or meets all best practices/);
+  assert.match(audit.source, /### Downstream Composition/);
+  assert.match(audit.source, /Resolve the current stable and preview releases from the authoritative source at audit time/);
+  assert.match(audit.source, /schemaVersion: 2\.2\.0/);
   assert.match(audit.source, /automatically dispatch `audit-review-findings`/);
   assert.match(audit.source, /automatically dispatch `audit-plan-remediation`/);
   assert.match(audit.source, /approval-wait/);
@@ -751,17 +912,74 @@ test("audit pipeline has stable handoffs and schemas", async () => {
   const auditEvidenceResult = spawnSync(process.execPath, [auditEvidenceScript, "--root", root], { cwd: root, encoding: "utf8" });
   assert.equal(auditEvidenceResult.status, 0, auditEvidenceResult.stderr);
   const auditEvidence = JSON.parse(auditEvidenceResult.stdout);
+  await rm(path.join(root, auditEvidence.artifact.path), { force: true });
+  const auditEvidenceSource = await readFile(auditEvidenceScript, "utf8");
+  assert.doesNotMatch(auditEvidenceSource, /node\\:/);
+  assert.doesNotMatch(auditEvidenceSource, /url:\s*"\[/);
+  assert.doesNotMatch(auditEvidenceSource, /const specialistReady/);
+  assert.match(auditEvidenceSource, /remote\.search = ""/);
+  assert.match(auditEvidenceSource, /remote\.hash = ""/);
+  assert.match(auditEvidenceSource, /const metadataValid = metadataState\.valid/);
+  assert.match(auditEvidenceSource, /const checkpointValid = checkpointState\.valid/);
+  assert.match(auditEvidenceSource, /const scanDigestValid = scanDigestState\.valid/);
+  assert.match(auditEvidenceSource, /const SECRET_EVIDENCE_MAX_AGE_HOURS = 24/);
+  assert.match(auditEvidenceSource, /status: specialistCompleted \? "completed" : pinnedScannerReady \? "ready" : "blocked"/);
+  assert.match(auditEvidenceSource, /const requiredFindingBuckets = \["worktree", "staged", "history"\]/);
+  assert.match(auditEvidenceSource, /const noSecretFindings = requiredFindingBuckets\.every/);
   assert.equal(auditEvidence.repository.shallow, false);
   assert.ok(auditEvidence.repository.reachableCommitCount > 0);
   assert.ok(auditEvidence.repository.trackedReportCount > 0);
   assert.equal(auditEvidence.hostedGitHub.required, true);
   assert.equal(auditEvidence.hostedGitHub.status, "blocked");
   assert.equal(auditEvidence.assurance.status, "insufficient-evidence");
+  assert.equal(auditEvidence.secretHistory.pinnedScannerReady, true);
+  assert.equal(typeof auditEvidence.secretHistory.pinnedBinaryInstalled, "boolean");
+  assert.equal(typeof auditEvidence.secretHistory.supplementalScannerAvailable, "boolean");
+  assert.deepEqual(auditEvidence.secretHistory.helperValidity, { metadata: true, checkpoint: true, scanDigest: true });
+  assert.equal(auditEvidence.secretHistory.evidenceMaxAgeHours, 24);
+  assert.equal(typeof auditEvidence.secretHistory.scanFresh, "boolean");
+  assert.equal(auditEvidence.repository.root, ".");
+  assert.equal(auditEvidence.repository.rootResolved, true);
   assert.ok(auditEvidence.standardsProfiles.some((profile) => profile.id === "microsoft-sdl"));
   assert.ok(auditEvidence.standardsProfiles.some((profile) => profile.id === "owasp-asvs"));
+  assert.equal(auditEvidence.standardsProfiles.find((profile) => profile.id === "owasp-asvs").version, "5.0.0");
+  assert.equal(auditEvidence.standardsProfiles.find((profile) => profile.id === "owasp-top-10").version, "2025");
+  assert.equal(auditEvidence.standardsProfiles.find((profile) => profile.id === "nist-ssdf").version, "1.1");
+  assert.equal(auditEvidence.standardsProfiles.find((profile) => profile.id === "slsa").version, "1.2");
+  assert.equal(auditEvidence.standardsProfiles.find((profile) => profile.id === "microsoft-cloud-security-benchmark").resolutionRequired, true);
+  assert.equal(auditEvidence.standardsProfiles.find((profile) => profile.id === "microsoft-cloud-security-benchmark").version, "resolve-at-audit-time");
+  assert.equal(auditEvidence.standardsProfiles.find((profile) => profile.id === "owasp-genai-llm-top-10").conditional, true);
+  assert.equal(auditEvidence.standardsProfiles.find((profile) => profile.id === "owasp-agentic-top-10").version, "2026");
+  for (const profile of auditEvidence.standardsProfiles) {
+    assert.doesNotThrow(() => new URL(profile.url), `${profile.id} must use a raw URL`);
+    assert.equal(profile.applicabilityAssessmentRequired, true);
+    assert.equal(profile.currencyVerificationRequired, true);
+    assert.match(profile.profileDeclaredAt, /^\d{4}-\d{2}-\d{2}T/);
+    assert.equal(profile.lastVerifiedAt, null);
+    assert.equal(profile.accessedAt, undefined);
+  }
+  for (const id of ["owasp-asvs", "owasp-top-10", "nist-ssdf", "cis-controls", "slsa", "nist-ai-rmf", "nist-ai-600-1"]) {
+    assert.equal(auditEvidence.standardsProfiles.find((profile) => profile.id === id).resolutionRequired, false, `${id} has a fixed version`);
+  }
+  for (const id of ["microsoft-sdl", "microsoft-cloud-security-benchmark", "azure-well-architected-security", "openssf-scorecard", "owasp-genai-llm-top-10", "owasp-agentic-top-10"]) {
+    assert.equal(auditEvidence.standardsProfiles.find((profile) => profile.id === id).resolutionRequired, true, `${id} requires current resolution`);
+  }
+  assert.deepEqual(dependencyItems(audit.source), []);
+  assert.match(audit.source, /### Downstream Composition[\s\S]*audit-review-findings[\s\S]*audit-plan-remediation/);
+  const strictFindingsSchema = JSON.parse(await readFile(path.join(root, "schemas", "code-audit-findings.schema.json"), "utf8"));
+  assert.ok(strictFindingsSchema.properties.schemaVersion.enum.includes("2.1.0"));
+  assert.deepEqual(strictFindingsSchema.properties.verificationEvidence.required, ["secretExposure", "analyzers", "resourceOwnership", "aiQuality", "assuranceGates"]);
+  assert.ok(strictFindingsSchema.$defs.resourceOwnershipAssessment.required.includes("checks"));
+  const strictFindingsRule = strictFindingsSchema.allOf.find((rule) => rule.if?.properties?.schemaVersion?.const === "2.1.0");
+  assert.deepEqual(strictFindingsRule.then.properties.standards.items.required, ["stability", "baselineRole"]);
+  const strictReviewSchema = JSON.parse(await readFile(path.join(root, "schemas", "audit-findings-review.schema.json"), "utf8"));
+  assert.ok(strictReviewSchema.properties.schemaVersion.enum.includes("2.1.0"));
+  assert.ok(strictReviewSchema.allOf.some((rule) => rule.if?.properties?.schemaVersion?.const === "2.1.0"));
   assert.ok(sectionItems(review.source, "Composition and Dependencies").includes("audit-code"));
   assert.match(review.source, /preserve repository evidence, standards applicability and control status, exceptions and expiry, assurance conclusion/);
   assert.match(review.source, /cannot upgrade or soften the source assurance conclusion/);
+  assert.match(review.source, /preserve `verificationEvidence` exactly/);
+  assert.match(review.source, /matching the source schema version through 2\.2/);
   assert.ok(sectionItems(review.source, "Outputs").includes("reports/code-audit-review.json"));
   assert.ok(sectionItems(remediation.source, "Composition and Dependencies").includes("audit-review-findings"));
   assert.ok(sectionItems(remediation.source, "Outputs").includes("reports/audit-remediation-plan.json"));
@@ -781,6 +999,7 @@ test("audit pipeline has stable handoffs and schemas", async () => {
 
   const schemas = [
     "code-audit-findings.schema.json",
+    "audit-evidence.schema.json",
     "audit-findings-review.schema.json",
     "audit-remediation-plan.schema.json",
     "audit-remediation-execution.schema.json",
@@ -801,6 +1020,8 @@ test("audit pipeline has stable handoffs and schemas", async () => {
   assert.ok(gitleaksSchema.required.includes("scanInputDigest"));
   assert.ok(gitleaksSchema.properties.scopes.items.enum.includes("staged"));
   assert.deepEqual(gitleaksSchema.properties.findings.required, ["worktree", "staged", "history"]);
+  assert.deepEqual(gitleaksSchema.properties.schemaVersion.enum, ["1.0.0", "1.1.0"]);
+  assert.ok(gitleaksSchema.properties.auditRunId);
   assert.equal(gitleaksSchema.$defs.findings.items.additionalProperties, false);
   const allowlistSchema = JSON.parse(await readFile(path.join(root, "schemas", "gitleaks-allowlist.schema.json"), "utf8"));
   assert.equal(allowlistSchema.additionalProperties, false);
@@ -808,7 +1029,7 @@ test("audit pipeline has stable handoffs and schemas", async () => {
   assert.ok(allowlistSchema.properties.entries.items.required.includes("expiresAt"));
 
   const findingsSchema = JSON.parse(await readFile(path.join(root, "schemas", schemas[0]), "utf8"));
-  assert.deepEqual(findingsSchema.properties.schemaVersion.enum, ["1.0.0", "2.0.0"]);
+  assert.deepEqual(findingsSchema.properties.schemaVersion.enum, ["1.0.0", "2.0.0", "2.1.0", "2.2.0"]);
   assert.ok(findingsSchema.properties.repositoryEvidence);
   assert.ok(findingsSchema.properties.standards);
   assert.ok(findingsSchema.properties.assurance);
@@ -829,9 +1050,11 @@ test("audit pipeline has stable handoffs and schemas", async () => {
   assert.ok(findingsSchema.$defs.finding.properties.category.enum.includes("architecture"));
   assert.ok(findingsSchema.$defs.finding.properties.category.enum.includes("concurrency"));
 
-  const planSchema = JSON.parse(await readFile(path.join(root, "schemas", schemas[2]), "utf8"));
+  const planSchema = JSON.parse(await readFile(path.join(root, "schemas", "audit-remediation-plan.schema.json"), "utf8"));
   const item = planSchema.properties.items.items;
-  assert.deepEqual(planSchema.properties.schemaVersion.enum, ["1.0.0", "2.0.0"]);
+  assert.deepEqual(planSchema.properties.schemaVersion.enum, ["1.0.0", "2.0.0", "2.1.0"]);
+  assert.ok(planSchema.properties.auditRunId);
+  assert.ok(planSchema.properties.sourceReviewSha256);
   assert.ok(planSchema.properties.prioritization.items.enum.includes("complexity"));
   assert.ok(item.required.includes("dependsOn"));
   assert.ok(item.required.includes("securitySeverity"));
@@ -841,16 +1064,20 @@ test("audit pipeline has stable handoffs and schemas", async () => {
   assert.ok(planSchema.allOf.some((condition) => condition.then?.properties?.items?.items?.required?.includes("complexity")));
   assert.ok(planSchema.allOf.some((condition) => condition.then?.properties?.prioritization?.contains?.const === "complexity"));
 
-  const reviewSchema = JSON.parse(await readFile(path.join(root, "schemas", schemas[1]), "utf8"));
-  assert.deepEqual(reviewSchema.properties.schemaVersion.enum, ["1.0.0", "2.0.0"]);
+  const reviewSchema = JSON.parse(await readFile(path.join(root, "schemas", "audit-findings-review.schema.json"), "utf8"));
+  assert.deepEqual(reviewSchema.properties.schemaVersion.enum, ["1.0.0", "2.0.0", "2.1.0", "2.2.0"]);
   assert.ok(reviewSchema.properties.repositoryEvidence);
   assert.ok(reviewSchema.properties.standards);
   assert.ok(reviewSchema.properties.assurance);
+  assert.ok(reviewSchema.properties.verificationEvidence);
+  assert.ok(reviewSchema.properties.auditRunId);
+  assert.ok(reviewSchema.properties.auditEvidence);
   assert.equal(reviewSchema.properties.blockingEvidence, undefined);
   assert.ok(reviewSchema.allOf.some((condition) => condition.then?.required?.includes("assurance")));
 
-  const executionSchema = JSON.parse(await readFile(path.join(root, "schemas", schemas[3]), "utf8"));
-  assert.deepEqual(executionSchema.properties.schemaVersion.enum, ["1.0.0", "2.0.0", "3.0.0"]);
+  const executionSchema = JSON.parse(await readFile(path.join(root, "schemas", "audit-remediation-execution.schema.json"), "utf8"));
+  assert.deepEqual(executionSchema.properties.schemaVersion.enum, ["1.0.0", "2.0.0", "3.0.0", "3.1.0"]);
+  assert.ok(executionSchema.properties.auditRunId);
   assert.deepEqual(executionSchema.properties.selection.properties.mode.enum, ["all", "phase", "finding", "resume"]);
   assert.ok(executionSchema.required.includes("checkpoints"));
   assert.ok(executionSchema.required.includes("remaining"));

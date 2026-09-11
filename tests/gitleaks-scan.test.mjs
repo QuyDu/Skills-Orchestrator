@@ -46,13 +46,18 @@ test("gitleaks scans reports, staged content, and reachable history without repo
     await writeFile(path.join(project, "staged-only.txt"), "clean working tree version\n", "utf8");
     await mkdir(path.join(project, "reports"));
     await writeFile(path.join(project, "reports", "current.txt"), secretFixture(synthetic), "utf8");
+    await mkdir(path.join(project, "dist"));
+    await writeFile(path.join(project, "dist", "untracked-artifact.txt"), secretFixture(synthetic), "utf8");
     const result = run(project, "scan", "--root", project, "--tool-root", root);
     assert.equal(result.status, 1);
     assert.doesNotMatch(`${result.stdout}${result.stderr}`, new RegExp(synthetic));
     const report = JSON.parse(await readFile(path.join(project, "reports", "gitleaks-scan.json"), "utf8"));
+    assert.equal(report.schemaVersion, "1.1.0");
+    assert.match(report.auditRunId, /^[0-9a-f-]{36}$/);
     assert.equal(report.status, "failed");
     assert.ok(report.findings.worktree.length > 0);
     assert.ok(report.findings.worktree.some((finding) => finding.path === "reports/current.txt"));
+    assert.ok(report.findings.worktree.some((finding) => finding.path === "dist/untracked-artifact.txt"));
     assert.ok(report.findings.staged.some((finding) => finding.path === "staged-only.txt"));
     assert.ok(report.findings.history.length > 0);
     assert.match(report.scanInputDigest, /^[a-f0-9]{64}$/);

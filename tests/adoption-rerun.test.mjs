@@ -980,6 +980,8 @@ test("created projects preinstall dependencies for Copilot cloud agent", async (
     }
 
     const readme = await readFile(path.join(parent, "agent-env", "README.md"), "utf8");
+    assert.match(readme, /Provisioned with Project Orchestrator/);
+    assert.doesNotMatch(readme, /Project Skills Orchestrator/);
     assert.match(readme, /Copilot cloud agent/);
   } finally {
     await rm(parent, { recursive: true, force: true });
@@ -1202,6 +1204,33 @@ test("every created project receives the Azure discovery and deployment scaffold
     const promptFiles = await readdir(path.join(parent, "infra-demo", ".github", "prompts"));
     assert.equal(promptFiles.filter((file) => file.endsWith("-help.prompt.md") && file !== "skills-help.prompt.md").length, skillCount);
     assert.ok(promptFiles.includes("skills-help.prompt.md"));
+    assert.ok(promptFiles.includes("skill-update-help.prompt.md"));
+    const skillUpdateHelp = await readFile(path.join(parent, "infra-demo", ".github", "prompts", "skill-update-help.prompt.md"), "utf8");
+    assert.match(skillUpdateHelp, /Run the skill with \/skill-update\./);
+    assert.match(skillUpdateHelp, /Open this help with \/skill-update-help\./);
+    const workflowPlannerHelp = await readFile(path.join(parent, "infra-demo", ".github", "prompts", "workflow-planner-help.prompt.md"), "utf8");
+    assert.match(workflowPlannerHelp, /schema 1\.1/);
+    assert.match(workflowPlannerHelp, /terminal handoff/);
+    assert.match(workflowPlannerHelp, /workflow-planned/);
+    const auditCodeHelp = await readFile(path.join(parent, "infra-demo", ".github", "prompts", "audit-code-help.prompt.md"), "utf8");
+    assert.match(auditCodeHelp, /AI-slop findings identify concrete harmful behavior/);
+    assert.match(auditCodeHelp, /locally owned disposable and async-disposable lifetimes/);
+    assert.match(auditCodeHelp, /Draft standards are labeled and never silently replace final baselines/);
+    assert.match(auditCodeHelp, /Current audit reports use schema 2\.2 and reference one immutable content-addressed audit evidence snapshot/);
+    assert.match(auditCodeHelp, /Supplemental scanners provide defense in depth but never satisfy readiness/);
+    assert.match(auditCodeHelp, /worktree result must be empty and covers current tracked reports and untracked distributable files/);
+    assert.match(auditCodeHelp, /Metadata, checkpoint, and scan-digest helpers must exit successfully/);
+    assert.match(auditCodeHelp, /no more than 24 hours old and cannot have a future timestamp/);
+    assert.match(auditCodeHelp, /represent the repository root without an absolute workstation path/);
+    assert.match(auditCodeHelp, /distinguish declaration time, last verified time, version resolution, currency verification/);
+    assert.match(auditCodeHelp, /Every verification record includes audit run ID/);
+    assert.match(auditCodeHelp, /immutable content-addressed audit evidence snapshot/);
+    const auditReviewHelp = await readFile(path.join(parent, "infra-demo", ".github", "prompts", "audit-review-findings-help.prompt.md"), "utf8");
+    assert.match(auditReviewHelp, /Schema 2\.1 reviews preserve verification evidence exactly/);
+    const auditPlanHelp = await readFile(path.join(parent, "infra-demo", ".github", "prompts", "audit-plan-remediation-help.prompt.md"), "utf8");
+    assert.match(auditPlanHelp, /auditRunId and SHA-256 digest/);
+    const auditRemediationHelp = await readFile(path.join(parent, "infra-demo", ".github", "prompts", "audit-remediation-help.prompt.md"), "utf8");
+    assert.match(auditRemediationHelp, /same auditRunId/);
     const instructions = await readFile(path.join(parent, "infra-demo", ".github", "instructions", "azure-deployment.instructions.md"), "utf8");
     assert.match(instructions, /applyTo:\s*"infra\/\*\*"/);
   } finally {

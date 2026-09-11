@@ -1,32 +1,35 @@
 {
   "schemaVersion": "1.0.0",
-  "clarificationId": "CLR-0205",
-  "generatedAt": "2026-09-05T15:20:00.000Z",
+  "clarificationId": "CLR-0218",
+  "generatedAt": "2026-09-11T15:49:20.396Z",
   "status": "ready",
-  "requestSummary": "Execute the approved P4 release-assurance phase under conservative autonomous defaults.",
+  "requestSummary": "Bind immutable provenance, findings, review, remediation plan, and execution to one auditRunId and close remaining audit policy contradictions.",
   "confirmedRequirements": [
-    "Perform local release preparation and read-only hosted GitHub inspection.",
-    "Generate and verify unsigned SBOM, provenance, checksums, and readiness evidence.",
-    "Do not commit, push, tag, release, publish, deploy, sign, mutate GitHub settings, or mutate Azure."
+    "Create or accept a UUID auditRunId and propagate it through Gitleaks, immutable evidence, findings, review, remediation plan, and execution.",
+    "Persist audit evidence as a content-addressed immutable snapshot and bind its SHA-256 from findings.",
+    "Require detailed verification records with tool, version, command, scope, configuration, exit, status, time, evidence digest, revision, and applicable input digests.",
+    "Fix repository-root and external-access approval wording and state all six secret scopes as one invariant.",
+    "Introduce compatible current schema versions while preserving older artifacts as historical evidence."
   ],
   "projectFacts": [
-    "PLAN-2026-09-05-PSO-124 contains only REM-0205 and requires a clean current candidate, hosted cross-platform CI, trusted signature, independent review, and production verification.",
-    "The repository working tree is dirty and includes approved work not reachable from remote HEAD.",
-    "Trusted signing and independent-review identities are not configured."
+    "Schema 2.1 required verification classes but did not bind artifacts to one audit execution.",
+    "No separately owned immutable audit-evidence artifact previously existed.",
+    "Remediation plans and executions previously lacked cross-artifact auditRunId enforcement.",
+    "End-to-end run-binding fixtures now pass, so audit-code remains lifecycle tested."
   ],
   "assumptions": [
-    "The user's autonomous-work response accepts the recommended no-remote-mutation and unsigned-preparation defaults.",
-    "Read-only GitHub API calls and artifact downloads are within the approved P4 evidence scope.",
-    "Missing trusted identities remain blockers rather than being synthesized or self-approved."
+    "The user's delegated answers select generated-or-supplied UUIDs, content-addressed immutable evidence, compatible new schema versions, and temporary lifecycle review.",
+    "The explicit --proceed token authorizes the four-skill schemas, scripts, tests, documentation, and evidence boundary.",
+    "No audit execution, remediation, hosted mutation, secret validation, commit, push, or publication is authorized."
   ],
   "conflicts": [],
   "rounds": [
     {
       "round": 1,
       "questions": [
-        { "id": "Q-0205", "question": "How far may P4 go with hosted GitHub operations?", "materialDecision": "External read-only versus remote mutation scope", "recommendedDefault": "Read-only inspection only", "answer": "Work autonomously and make good decisions; conservative default applied." },
-        { "id": "Q-0206", "question": "What signing boundary should P4 use?", "materialDecision": "Trusted signing authority", "recommendedDefault": "Prepare and verify unsigned evidence", "answer": "Work autonomously and make good decisions; unsigned preparation default applied." },
-        { "id": "Q-0207", "question": "Does this approval include commit, push, tag, release, or publication?", "materialDecision": "Remote and irreversible mutation authority", "recommendedDefault": "No remote mutations", "answer": "Work autonomously and make good decisions; no-remote-mutation default applied." }
+        { "id": "Q-0244", "question": "How should auditRunId be created and passed?", "materialDecision": "Audit execution identity semantics", "recommendedDefault": "Caller-supplied or generated UUID", "answer": "The user is not available to respond and will review your work later. Work autonomously and make good decisions." },
+        { "id": "Q-0245", "question": "Should audit evidence be separately immutable?", "materialDecision": "Provenance storage and digest binding", "recommendedDefault": "Content-addressed immutable snapshot", "answer": "The user is not available to respond and will review your work later. Work autonomously and make good decisions." },
+        { "id": "Q-0246", "question": "How should compatibility and lifecycle be handled?", "materialDecision": "Schema migration and tested status", "recommendedDefault": "New current versions, legacy readable, restore tested after fixtures pass", "answer": "The user is not available to respond and will review your work later. Work autonomously and make good decisions." }
       ]
     }
   ],

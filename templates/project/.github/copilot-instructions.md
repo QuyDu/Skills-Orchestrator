@@ -2,7 +2,7 @@
 
 These instructions are always in context. Keep them accurate; stale instructions are worse than none.
 
-Sections wrapped in `pso:begin` / `pso:end` markers are managed by Project Skills Orchestrator and are replaced on update. Edit freely outside those markers.
+Sections wrapped in `pso:begin` / `pso:end` markers are managed by Project Orchestrator and are replaced on update. Edit freely outside those markers.
 
 <!-- pso:begin id=clarification-protocol version=1 -->
 ## Engagement protocol (mandatory, highest precedence)
@@ -35,6 +35,7 @@ This repository is the target project. Build application code, tests, documentat
 
 - Automatically use an existing skill when its trigger and ownership match the request; continue with normal engineering work only when no available skill fits. Prefer reuse over duplicating an existing skill, script, workflow, report, or capability.
 - Before authoring a new skill, invoke `/skill-create` to inventory and compare current skills. Notify the user and obtain explicit approval when no existing skill fits before creating the new skill.
+- Before changing an existing skill, invoke `/skill-update`. Resolve an inexact name by offering ranked candidate skill IDs, identify one exact target, present every proposed file and behavior change, and wait for `-Proceed` or `--proceed` before editing.
 
 <!-- pso:begin id=azure-environment-automation version=1 -->
 ## Azure environment automation

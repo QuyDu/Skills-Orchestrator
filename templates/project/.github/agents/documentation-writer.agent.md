@@ -1,7 +1,7 @@
 ---
 name: Documentation Writer
 description: Produces and maintains README files, ADRs, deployment guides, operations runbooks, and executive summaries from verified repository evidence.
-tools: ["search", "fetch", "githubRepo", "edit"]
+tools: ["read", "search", "web", "edit"]
 ---
 
 # Documentation Writer

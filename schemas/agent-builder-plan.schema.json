@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://project-skills.dev/schemas/agent-builder-plan/1.1.0",
+  "title": "Agent Builder Plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "generatedAt", "status", "projectRoot", "blueprintPath", "blueprintSha256", "targetPath", "targetState", "action", "renderedSha256", "renderedAgent", "warnings"],
+  "properties": {
+    "schemaVersion": { "enum": ["1.0.0", "1.1.0"] },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "status": { "const": "review-required" },
+    "projectRoot": { "type": "string", "minLength": 1 },
+    "blueprintPath": { "type": "string", "minLength": 1 },
+    "blueprintSha256": { "$ref": "#/$defs/sha256" },
+    "targetPath": { "type": "string", "pattern": "^\\.github/agents/[a-z][a-z0-9]*(?:-[a-z0-9]+)*\\.agent\\.md$" },
+    "targetState": { "anyOf": [{ "const": "missing" }, { "type": "string", "pattern": "^file:sha256:[a-f0-9]{64}$" }] },
+    "action": { "enum": ["create", "update", "unchanged"] },
+    "renderedSha256": { "$ref": "#/$defs/sha256" },
+    "renderedAgent": { "type": "string", "minLength": 1 },
+    "publication": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["targets", "versionPolicy"],
+      "properties": {
+        "targets": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": { "enum": ["foundry-endpoint", "microsoft-365-copilot-and-teams", "chatgpt-action"] }
+        },
+        "versionPolicy": { "enum": ["latest", "pinned"] },
+        "microsoft365Audience": { "enum": ["individual", "tenant"] },
+        "chatgptVisibility": { "enum": ["workspace", "link", "gpt-store"] }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "targets": { "contains": { "const": "microsoft-365-copilot-and-teams" } } },
+            "required": ["targets"]
+          },
+          "then": { "required": ["microsoft365Audience"] },
+          "else": { "not": { "required": ["microsoft365Audience"] } }
+        },
+        {
+          "if": {
+            "properties": { "targets": { "contains": { "const": "chatgpt-action" } } },
+            "required": ["targets"]
+          },
+          "then": { "required": ["chatgptVisibility"] },
+          "else": { "not": { "required": ["chatgptVisibility"] } }
+        }
+      ]
+    },
+    "warnings": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "schemaVersion": { "const": "1.1.0" } }, "required": ["schemaVersion"] },
+      "then": { "required": ["publication"] },
+      "else": { "not": { "required": ["publication"] } }
+    }
+  ],
+  "$defs": { "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" } }
+}

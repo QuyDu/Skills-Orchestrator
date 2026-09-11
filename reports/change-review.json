@@ -1,26 +1,45 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-09-05T16:05:00.000Z",
+  "generatedAt": "2026-09-11T20:00:00.000Z",
   "status": "passed",
   "boundary": {
     "type": "working-tree",
-    "baseCommit": "4f967865024134efc2793acfa449b2d66fd295c7",
+    "baseCommit": "7110f313f2a3b48b40a27e0a2dde28ddd0528e35",
     "head": "local working tree",
-    "objective": "Review the complete demo, audit-remediation, Gitleaks, CodeQL, schema, release-assurance, and evidence candidate before commit."
+    "objective": "Resolve CodeQL alerts 12 and 13 with atomic file operations, add immutable-evidence collision and tamper coverage, and preserve attributable generated verification reports."
   },
   "findings": [],
   "validation": [
-    { "command": "Complete working-tree change review", "status": "passed", "evidence": "The only finding was a stale 42-skill documentation count; all authoritative and derived references were corrected to 43." },
-    { "command": "Focused release-source gate review", "status": "passed", "evidence": "No pathspec, rename, untracked-file, platform, candidate-byte, or build-control defect remained after excluding non-shipped reports from cleanliness." },
-    { "command": "npm run check", "status": "passed", "evidence": "One hundred seven tests passed with one platform-alias skip; 198 files passed built-in security scanning; 151 release files were checksum-covered; 43 of 43 skills passed." },
-    { "command": "npm run security:gitleaks", "status": "passed", "evidence": "Pinned Gitleaks 8.30.1 passed worktree, staged-index, report, all-local-ref, and reachable-history scopes with full redaction." }
+    {
+      "command": "GitHub Advanced Security review for check run 103395821279",
+      "status": "passed",
+      "evidence": "CodeQL identified two high js/file-system-race alerts at Agent Builder file-state inspection and audit-evidence immutable creation."
+    },
+    {
+      "command": "Temporary-junction reproduction with focused Agent Builder tests",
+      "status": "passed",
+      "evidence": "Both formerly failing tests and the new project-root alias regression passed after the repair."
+    },
+    {
+      "command": "node --test tests/agent-builder.test.mjs",
+      "status": "passed",
+      "evidence": "18 tests passed with no failures or skips."
+    },
+    {
+      "command": "node --test tests/agent-builder.test.mjs tests/audit-assurance.test.mjs",
+      "status": "passed",
+      "evidence": "28 affected-suite tests passed, including forced existing immutable evidence and tamper rejection."
+    },
+    {
+      "command": "npm run check",
+      "status": "passed",
+      "evidence": "134 of 135 tests passed with one expected platform-specific skip; all 45 skills passed, 221 files were security-scanned, and 161 unsigned candidate files were verified."
+    }
   ],
   "openQuestions": [],
   "residualRisks": [
-    "Merge-SHA matrix and CodeQL evidence cover the exact release source; report-only updates remain outside candidate bytes.",
-    "Trusted signing and independent review require distinct authorized identities.",
-    "ARCF-0205 and SECF-0205 require hosted mutation and then fresh verification.",
-    "Overall assurance remains insufficient-evidence."
+    "Replacement hosted matrix and CodeQL checks must pass before protected auto-merge.",
+    "The release and production-assurance blockers remain unchanged."
   ],
-  "recommendation": "Commit and push the reviewed candidate, verify current hosted CI, remediate hosted controls, and retain signature and independent-review blockers until distinct trusted identities complete them."
+  "recommendation": "Commit and push the atomic-I/O repair to pull request #8, retain protected auto-merge, and report success only after replacement hosted checks and merge complete."
 }

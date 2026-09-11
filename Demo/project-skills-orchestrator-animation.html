@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Project Skills Orchestrator — Animated Guide</title>
+  <title>Project Orchestrator 1.1.1 — Animated Guide</title>
   <style>
     :root {
       --ink: #132129;
@@ -93,21 +93,21 @@
 
     .scene {
       position: absolute;
-      inset: 0;
+      inset: 0 0 168px;
       z-index: 2;
       display: grid;
       align-items: center;
-      padding: 78px 7vw 150px;
+      padding: 78px 7vw 24px;
+      overflow-x: hidden;
+      overflow-y: auto;
       opacity: 0;
       visibility: hidden;
-      transform: translateY(18px);
-      transition: opacity .7s ease, transform .7s ease, visibility .7s;
+      transition: opacity .7s ease, visibility .7s;
     }
 
     .scene.active {
       opacity: 1;
       visibility: visible;
-      transform: translateY(0);
     }
 
     .scene-grid {
@@ -358,6 +358,114 @@
     .workflow-step strong { font-size: 18px; }
     .workflow-step code { color: var(--blue); font: 13px/1.5 Consolas, monospace; }
 
+    .agent-builder-scene .workflow-step { min-height: 210px; }
+
+    .schema-band {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 18px;
+      align-items: center;
+      margin-top: 18px;
+      padding: 15px 18px;
+      background: var(--ink);
+      color: var(--white);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .schema-band code {
+      color: #75dbe1;
+      font: 700 13px Consolas, monospace;
+      white-space: nowrap;
+    }
+
+    .publication-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 32px;
+    }
+
+    .publication-target {
+      min-height: 220px;
+      padding: 22px;
+      background: var(--white);
+      border-top: 6px solid var(--cyan);
+      box-shadow: 0 12px 36px rgba(19,33,41,.1);
+    }
+
+    .publication-target:nth-child(2) { border-color: var(--gold); }
+    .publication-target:nth-child(3) { border-color: var(--coral); }
+
+    .target-label {
+      display: block;
+      margin-bottom: 20px;
+      color: var(--blue);
+      font: 700 12px Bahnschrift, sans-serif;
+      text-transform: uppercase;
+    }
+
+    .publication-target strong {
+      display: block;
+      margin-bottom: 12px;
+      font-size: 21px;
+      line-height: 1.15;
+    }
+
+    .publication-target p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .boundary-banner {
+      margin-top: 14px;
+      padding: 14px 18px;
+      background: var(--ink);
+      color: var(--white);
+      font-size: 15px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .proof-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .proof-item {
+      min-height: 145px;
+      padding: 22px;
+      background: var(--white);
+      border-left: 6px solid var(--cyan);
+      box-shadow: 0 12px 36px rgba(19,33,41,.1);
+    }
+
+    .proof-item:nth-child(2) { border-color: var(--green); }
+    .proof-item:nth-child(3) { border-color: var(--gold); }
+    .proof-item:nth-child(4) { border-color: var(--blue); }
+
+    .proof-value {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--ink);
+      font: 700 42px/1 Bahnschrift, sans-serif;
+    }
+
+    .proof-label { color: var(--muted); font-size: 14px; font-weight: 700; }
+
+    .release-blocker {
+      grid-column: 1 / -1;
+      padding: 16px 18px;
+      background: var(--coral);
+      color: var(--white);
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
     .shield {
       position: relative;
       width: min(460px, 36vw);
@@ -441,12 +549,14 @@
       bottom: 72px;
       z-index: 30;
       width: min(900px, calc(100% - 48px));
-      min-height: 58px;
+      height: 96px;
       padding: 12px 18px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
       transform: translateX(-50%);
       background: rgba(19,33,41,.94);
       color: var(--white);
-      font-size: clamp(15px, 1.3vw, 20px);
+      font-size: 16px;
       line-height: 1.45;
       text-align: center;
       box-shadow: 0 8px 30px rgba(0,0,0,.2);
@@ -532,10 +642,19 @@
     @keyframes enter-up { to { opacity: 1; transform: translateY(0); } }
     @keyframes type { to { width: 100%; } }
 
+    @media (max-height: 760px) and (min-width: 861px) {
+      .scene { padding-top: 64px; }
+      .workflow-step { min-height: 190px; }
+      .agent-builder-scene .workflow-step { min-height: 175px; }
+      .publication-grid { margin-top: 20px; }
+      .publication-target { min-height: 185px; padding: 18px; }
+      .schema-band { margin-top: 12px; padding-block: 11px; }
+    }
+
     @media (max-width: 860px) {
       .stage { min-height: 600px; }
       .brand { top: 18px; left: 20px; }
-      .scene { align-items: start; padding: 76px 22px 132px; overflow-x: hidden; overflow-y: auto; }
+      .scene { bottom: 238px; align-items: start; padding: 76px 22px 24px; }
       .scene-grid { grid-template-columns: 1fr; gap: 28px; }
       h1 { font-size: clamp(48px, 15vw, 76px); }
       h2 { font-size: clamp(38px, 11vw, 58px); }
@@ -545,9 +664,12 @@
       .orbit-system { right: -18vw; top: 72%; width: 74vw; opacity: .4; }
       .workflow { grid-template-columns: repeat(2, 1fr); }
       .workflow-step { min-height: 165px; }
+      .agent-builder-scene .workflow-step { min-height: 165px; }
+      .publication-grid { margin-top: 20px; }
+      .publication-target { min-height: 190px; padding: 18px; }
       .shield { width: min(300px, 70vw); }
       .terminal pre { min-height: 230px; padding: 20px; font-size: 12px; }
-      .caption { bottom: 68px; width: calc(100% - 24px); font-size: 14px; }
+      .caption { bottom: 68px; width: calc(100% - 24px); height: 170px; font-size: 14px; }
       .controls { grid-template-columns: auto auto auto 1fr auto; padding: 8px 12px; }
       .scene-nav { gap: 6px; }
       .scene-dot { width: 8px; height: 8px; }
@@ -566,6 +688,12 @@
       .workflow { grid-template-columns: 1fr 1fr; }
       .workflow-step { min-height: 140px; padding: 16px; }
       .step-number { font-size: 34px; }
+      .schema-band { grid-template-columns: 1fr; gap: 5px; padding: 12px; }
+      .publication-grid { grid-template-columns: 1fr; }
+      .publication-target { min-height: 0; padding: 16px; }
+      .publication-target strong { font-size: 18px; }
+      .proof-item { min-height: 112px; padding: 16px; }
+      .proof-value { font-size: 34px; }
       .shield { width: min(180px, 48vw); }
       .shield::after { font-size: 64px; }
       .guardrails { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 16px; }
@@ -580,10 +708,10 @@
   </style>
 </head>
 <body>
-  <main class="stage" aria-label="Project Skills Orchestrator animated guide">
-    <div class="brand" aria-label="Project Skills Orchestrator">
+  <main class="stage" aria-label="Project Orchestrator animated guide">
+    <div class="brand" aria-label="Project Orchestrator">
       <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
-      Project Skills Orchestrator
+      Project Orchestrator
     </div>
 
     <section class="scene hero-scene active" data-title="Introduction">
@@ -595,7 +723,7 @@
       <div class="orbit-system" aria-hidden="true">
         <div class="orbit"><span class="orbit-dot"></span></div>
         <div class="orbit"><span class="orbit-dot"></span></div>
-        <div class="core">40</div>
+        <div class="core">44</div>
         <span class="skill-pill">security-review</span>
         <span class="skill-pill">workflow-planner</span>
         <span class="skill-pill">audit-code</span>
@@ -614,7 +742,7 @@
         <div class="feature-stack">
           <div class="feature-row"><span class="feature-icon">I</span><span><strong>Instructions</strong><small>Always-on and stack-specific standards</small></span><b>SCOPED</b></div>
           <div class="feature-row"><span class="feature-icon">/</span><span><strong>Prompts & agents</strong><small>Repeatable entry points and specialist roles</small></span><b>DISCOVERED</b></div>
-          <div class="feature-row"><span class="feature-icon">S</span><span><strong>40 governed skills</strong><small>Explicit inputs, outputs, validation, and stop conditions</small></span><b>BOUNDED</b></div>
+          <div class="feature-row"><span class="feature-icon">S</span><span><strong>44 governed skills</strong><small>Explicit inputs, outputs, validation, and stop conditions</small></span><b>BOUNDED</b></div>
           <div class="feature-row"><span class="feature-icon">✓</span><span><strong>Verification</strong><small>Machine-readable contracts and conformance checks</small></span><b>PROVABLE</b></div>
         </div>
       </div>
@@ -697,28 +825,74 @@ Blocking conflicts: 0
       </div>
     </section>
 
+    <section class="scene agent-builder-scene" data-title="Build governed agents">
+      <div style="width:min(1380px,100%);margin:auto">
+        <p class="eyebrow">Agent Builder · guided or autonomous-research</p>
+        <h2 style="margin-bottom:32px">Create locally. <span class="accent">Review before install.</span></h2>
+        <div class="workflow">
+          <div class="workflow-step"><span class="step-number">01</span><strong>Define</strong><code>guided requirements</code></div>
+          <div class="workflow-step"><span class="step-number">02</span><strong>Research</strong><code>bounded evidence</code></div>
+          <div class="workflow-step"><span class="step-number">03</span><strong>Validate</strong><code>least privilege</code></div>
+          <div class="workflow-step"><span class="step-number">04</span><strong>Install</strong><code>transactional apply</code></div>
+        </div>
+        <div class="schema-band"><code>blueprint 2.2 · plan 1.1</code><span>CLI, runtime, schemas, and tests propagate with the packaged framework into every newly generated project.</span></div>
+      </div>
+    </section>
+
+    <section class="scene" data-title="Plan publication">
+      <div style="width:min(1220px,100%);margin:auto">
+        <p class="eyebrow">Publication intent · governed handoff</p>
+        <h2>Plan the destination. <span class="accent">Never silently publish.</span></h2>
+        <div class="publication-grid">
+          <div class="publication-target"><span class="target-label">Microsoft Foundry</span><strong>Managed endpoint</strong><p>The endpoint is managed with the Foundry agent through its owning workflow.</p></div>
+          <div class="publication-target"><span class="target-label">Microsoft 365 + Teams</span><strong>Direct distribution</strong><p>Activity Protocol and Bot Service prerequisites remain separate, approved platform work.</p></div>
+          <div class="publication-target"><span class="target-label">ChatGPT</span><strong>Indirect Action</strong><p>A separately governed Custom GPT calls an HTTPS/OpenAPI Action. Agent Builder does not create it.</p></div>
+        </div>
+        <div class="boundary-banner">Agent Builder records intent and readiness. Platform workflows own every external mutation after approval.</div>
+      </div>
+    </section>
+
     <section class="scene" data-title="Safety model">
       <div class="scene-grid">
         <div>
-          <p class="eyebrow">Designed for control</p>
-          <h2>Safe defaults remain <span class="accent">visible and reversible.</span></h2>
-          <p class="lede">The agent clarifies before acting. Dry runs expose changes. Transactions preserve recovery paths. Reports hold authoritative evidence.</p>
+          <p class="eyebrow">Six gates · always mandatory</p>
+          <h2>Autonomy does not <span class="accent">erase consent.</span></h2>
+          <p class="lede">Neither autonomy mode nor publication intent can bypass consequential-action approval.</p>
           <div class="guardrails">
-            <span class="guardrail">Three-question clarification</span>
-            <span class="guardrail">Explicit approval gates</span>
-            <span class="guardrail">Journaled mutations</span>
-            <span class="guardrail">Automatic verification</span>
+            <span class="guardrail">Purchases</span>
+            <span class="guardrail">Bookings</span>
+            <span class="guardrail">Messages</span>
+            <span class="guardrail">Account security</span>
+            <span class="guardrail">Sensitive disclosure</span>
+            <span class="guardrail">Destructive actions</span>
           </div>
         </div>
         <div class="shield" aria-label="Verified safety shield"></div>
       </div>
     </section>
 
+    <section class="scene" data-title="Evidence and limits">
+      <div class="scene-grid">
+        <div>
+          <p class="eyebrow">Validated milestone · honest boundary</p>
+          <h2>Evidence is green. <span class="accent">Release is not.</span></h2>
+          <p class="lede">Azure Government readiness fails closed when service, channel, authorization, or data-boundary evidence is unknown.</p>
+        </div>
+        <div class="proof-grid">
+          <div class="proof-item"><span class="proof-value">124</span><span class="proof-label">tests passed · one platform skip</span></div>
+          <div class="proof-item"><span class="proof-value">44</span><span class="proof-label">framework skills verified</span></div>
+          <div class="proof-item"><span class="proof-value">206</span><span class="proof-label">files security-scanned</span></div>
+          <div class="proof-item"><span class="proof-value">158</span><span class="proof-label">release files checksum-verified</span></div>
+          <div class="release-blocker">P4 BLOCKED · Candidate unsigned · Independent review, artifact health, and revocation evidence remain incomplete.</div>
+        </div>
+      </div>
+    </section>
+
     <section class="scene closing-scene" data-title="Get started">
       <div class="closing-content">
-        <p class="eyebrow">Project Skills Orchestrator · 1.1.0</p>
+        <p class="eyebrow">Project Orchestrator · 1.1.1</p>
         <h2>Make the way you build<br><span class="accent">part of the repository.</span></h2>
-        <p class="lede">Verify the distribution. Provision a workspace. Start with a blueprint. Let every important action leave evidence.</p>
+        <p class="lede">Verify the distribution. Provision a workspace. Build governed agents. Let every important action leave reviewable evidence.</p>
         <span class="command-chip">node .\pso.mjs verify</span>
       </div>
     </section>
@@ -732,7 +906,7 @@ Blocking conflicts: 0
       <button id="musicButton" class="control-button" type="button" title="Ambient audio" aria-label="Toggle ambient audio" aria-pressed="true">♫</button>
       <div id="sceneNav" class="scene-nav" aria-label="Scenes"></div>
       <button id="captionButton" class="control-button" type="button" title="Captions" aria-label="Toggle captions" aria-pressed="true">CC</button>
-      <span id="timecode" class="timecode">0:00 / 2:24</span>
+      <span id="timecode" class="timecode">0:00 / 4:18</span>
     </nav>
   </main>
 
@@ -741,12 +915,12 @@ Blocking conflicts: 0
       {
         duration: 22,
         audio: "audio/narration/scene-01.mp3",
-        narration: "Every software project needs more than code. It also needs a clear, shared way of working. Project Skills Orchestrator brings that structure into your repository. It gives GitHub Copilot the instructions, prompts, agents, and reusable skills it needs — all installed as one verified foundation."
+        narration: "Every software project needs more than code. It also needs a clear, shared way of working. Project Orchestrator brings that structure into your repository. It gives GitHub Copilot the instructions, prompts, agents, and reusable skills it needs — all installed as one verified foundation."
       },
       {
         duration: 24,
         audio: "audio/narration/scene-02.mp3",
-        narration: "There are two parts. First, a registry-free command-line installer can create a new workspace, or carefully adopt an existing one. It runs entirely on the tools built into Node.js. Then, a catalog of forty governed skills gives Copilot focused capabilities — with clear inputs, outputs, checks, approval gates, and stop conditions."
+        narration: "There are two parts. First, a registry-free command-line installer can create a new workspace, or carefully adopt an existing one. It runs entirely on the tools built into Node.js. Then, a catalog of forty-four governed skills gives Copilot focused capabilities — with clear inputs, outputs, checks, approval gates, and stop conditions."
       },
       {
         duration: 21,
@@ -769,14 +943,29 @@ Blocking conflicts: 0
         narration: "Once you are inside Visual Studio Code, begin with project start. Project blueprint captures the agreed purpose, technology stack, delivery target, quality requirements, assumptions, and acceptance criteria. From there, specialized skills can help plan, implement, review, test, and document the work. Project validate and project status keep blocked, stale, or pending work visible."
       },
       {
-        duration: 22,
+        duration: 25,
         audio: "audio/narration/scene-07.mp3",
-        narration: "Control is built into the system. Each new prompt begins with three clarifying questions, followed by your confirmation, before any files are changed. Risky operations need explicit approval. Dry runs show proposed changes in advance. Transaction journals support rollback and recovery. And machine-readable reports preserve the authoritative evidence of what happened."
+        narration: "Agent Builder now supports two deliberate paths. Guided mode starts from supplied requirements. Autonomous research gathers bounded evidence before proposing a blueprint. Both validate a least-privilege local agent, require review, and install transactionally. Publication intent uses blueprint schema two point two and plan schema one point one, while the updated command line, runtime, schemas, and tests propagate into newly generated projects."
+      },
+      {
+        duration: 24,
+        audio: "audio/narration/scene-08.mp3",
+        narration: "Publication is a governed handoff, not an automatic side effect. A Foundry endpoint is managed with its agent. Microsoft 365 Copilot and Teams distribution requires its own Activity Protocol and Bot Service prerequisites. ChatGPT integration is indirect, through a separately governed Custom GPT HTTPS and OpenAPI Action. Agent Builder records the plan, but it creates none of those external resources."
+      },
+      {
+        duration: 22,
+        audio: "audio/narration/scene-09.mp3",
+        narration: "Autonomy does not erase consent. Six consequential actions always remain approval-gated: purchases, bookings, messages, account-security changes, sensitive disclosures, and destructive actions. Publication metadata stays in the reviewed plan and never enters the installed agent instructions, so distribution intent cannot trigger runtime behavior."
+      },
+      {
+        duration: 24,
+        audio: "audio/narration/scene-10.mp3",
+        narration: "The milestone is backed by current evidence: one hundred twenty-four tests passed with one platform-specific skip, all forty-four skills were verified, two hundred six files passed the security scan, and one hundred fifty-eight release files passed checksum verification. Azure Government readiness fails closed when current evidence is unknown. The candidate is still unsigned, and P4 release assurance remains blocked."
       },
       {
         duration: 20,
-        audio: "audio/narration/scene-08.mp3",
-        narration: "That is Project Skills Orchestrator — a repeatable way to make your engineering process part of the repository itself. Verify the distribution. Provision a workspace. Begin with a blueprint. Then let each important action leave evidence that both people and automation can inspect."
+        audio: "audio/narration/scene-11.mp3",
+        narration: "That is Project Orchestrator version one point one point one — a repeatable way to make both engineering workflows and agent creation part of the repository itself. Verify the distribution. Provision a workspace. Build governed agents. Then let each important action leave evidence that people and automation can inspect."
       }
     ];
 

@@ -1,12 +1,14 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://project-skills.dev/schemas/code-audit-findings/2.0.0",
+  "$id": "https://project-skills.dev/schemas/code-audit-findings/2.2.0",
   "title": "Code Audit Findings",
   "type": "object",
   "additionalProperties": false,
   "required": ["schemaVersion", "auditId", "generatedAt", "scope", "provenance", "coverage", "summary", "findings", "limitations"],
   "properties": {
-    "schemaVersion": { "enum": ["1.0.0", "2.0.0"] },
+    "schemaVersion": { "enum": ["1.0.0", "2.0.0", "2.1.0", "2.2.0"] },
+    "auditRunId": { "type": "string", "format": "uuid" },
+    "auditEvidence": { "type": "object", "additionalProperties": false, "required": ["path", "sha256"], "properties": { "path": { "type": "string", "pattern": "^reports/audit-evidence/[a-fA-F0-9]{64}\\.json$" }, "sha256": { "type": "string", "pattern": "^[a-fA-F0-9]{64}$" } } },
     "auditId": { "type": "string", "minLength": 1 },
     "generatedAt": { "type": "string", "format": "date-time" },
     "scope": {
@@ -142,6 +144,19 @@
         "expiredExceptionCount": { "type": "integer", "minimum": 0 }
       }
     },
+    "verificationEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["secretExposure", "analyzers", "resourceOwnership", "aiQuality", "assuranceGates"],
+      "properties": {
+        "secretExposure": { "$ref": "#/$defs/secretExposureAssessment" },
+        "analyzers": { "$ref": "#/$defs/analyzerAssessment" },
+        "resourceOwnership": { "$ref": "#/$defs/resourceOwnershipAssessment" },
+        "aiQuality": { "$ref": "#/$defs/aiQualityAssessment" },
+        "assuranceGates": { "$ref": "#/$defs/assuranceGateAssessment" },
+        "records": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/verificationRecord" } }
+      }
+    },
     "findings": {
       "type": "array",
       "items": { "$ref": "#/$defs/finding" }
@@ -152,9 +167,123 @@
     {
       "if": { "properties": { "schemaVersion": { "const": "2.0.0" } }, "required": ["schemaVersion"] },
       "then": { "required": ["repositoryEvidence", "standards", "assurance"] }
+    },
+    {
+      "if": { "properties": { "schemaVersion": { "const": "2.1.0" } }, "required": ["schemaVersion"] },
+      "then": {
+        "required": ["repositoryEvidence", "standards", "assurance", "verificationEvidence"],
+        "properties": {
+          "standards": {
+            "items": { "required": ["stability", "baselineRole"] }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "schemaVersion": { "const": "2.2.0" } }, "required": ["schemaVersion"] },
+      "then": {
+        "required": ["auditRunId", "auditEvidence", "repositoryEvidence", "standards", "assurance", "verificationEvidence"],
+        "properties": { "standards": { "items": { "required": ["stability", "baselineRole"] } }, "verificationEvidence": { "required": ["records"] } }
+      }
     }
   ],
   "$defs": {
+    "verificationRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["auditRunId", "tool", "toolVersion", "command", "scope", "configurationDigest", "exitCode", "status", "executedAt", "evidenceSha256", "repositoryRevision"],
+      "properties": {
+        "auditRunId": { "type": "string", "format": "uuid" },
+        "tool": { "type": "string", "minLength": 1 },
+        "toolVersion": { "type": "string", "minLength": 1 },
+        "command": { "type": "string", "minLength": 1 },
+        "scope": { "type": "string", "minLength": 1 },
+        "configurationDigest": { "type": ["string", "null"], "pattern": "^[a-fA-F0-9]{64}$" },
+        "exitCode": { "type": ["integer", "null"] },
+        "status": { "enum": ["passed", "failed", "blocked", "skipped", "degraded"] },
+        "executedAt": { "type": "string", "format": "date-time" },
+        "evidenceSha256": { "type": "string", "pattern": "^[a-fA-F0-9]{64}$" },
+        "repositoryRevision": { "type": "string", "pattern": "^[a-fA-F0-9]{40,64}$" },
+        "worktreeDigest": { "type": "string", "pattern": "^[a-fA-F0-9]{64}$" },
+        "inputDigest": { "type": "string", "pattern": "^[a-fA-F0-9]{64}$" }
+      }
+    },
+    "verificationStatus": {
+      "enum": ["completed", "partial", "blocked", "not-applicable", "failed"]
+    },
+    "secretExposureAssessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "scopes", "evidence", "limitations"],
+      "properties": {
+        "status": { "$ref": "#/$defs/verificationStatus" },
+        "scopes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "evidence": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "limitations": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "analyzerAssessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "detectedLanguages", "tools", "evidence", "limitations"],
+      "properties": {
+        "status": { "$ref": "#/$defs/verificationStatus" },
+        "detectedLanguages": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "tools": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["language", "tool", "version", "status"],
+            "properties": {
+              "language": { "type": "string", "minLength": 1 },
+              "tool": { "type": "string", "minLength": 1 },
+              "version": { "type": ["string", "null"] },
+              "status": { "enum": ["passed", "failed", "blocked", "skipped", "degraded"] },
+              "configurationDigest": { "type": ["string", "null"], "pattern": "^[a-fA-F0-9]{64}$" }
+            }
+          }
+        },
+        "evidence": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "limitations": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "resourceOwnershipAssessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "ownershipModels", "checks", "pathsChecked", "evidence", "limitations"],
+      "properties": {
+        "status": { "$ref": "#/$defs/verificationStatus" },
+        "ownershipModels": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["locally-owned", "borrowed", "dependency-injection-owned", "pooled", "shared", "factory-managed", "framework-owned", "not-applicable"] } },
+        "checks": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "pathsChecked": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "evidence": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "limitations": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "aiQualityAssessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "aiComponentsDetected", "checks", "evidence", "limitations"],
+      "properties": {
+        "status": { "$ref": "#/$defs/verificationStatus" },
+        "aiComponentsDetected": { "type": "boolean" },
+        "checks": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "evidence": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "limitations": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "assuranceGateAssessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "gates", "evidence", "limitations"],
+      "properties": {
+        "status": { "$ref": "#/$defs/verificationStatus" },
+        "gates": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "evidence": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "limitations": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
     "controlAssessment": {
       "type": "object",
       "additionalProperties": false,
@@ -181,6 +310,8 @@
         "reference": { "type": "string", "format": "uri" },
         "accessedAt": { "type": "string", "format": "date" },
         "applicability": { "enum": ["applicable", "partially-applicable", "not-applicable"] },
+        "stability": { "enum": ["stable", "final", "current", "preview", "draft"] },
+        "baselineRole": { "enum": ["normative", "informational"] },
         "rationale": { "type": "string" },
         "controls": { "type": "array", "items": { "$ref": "#/$defs/controlAssessment" } }
       }

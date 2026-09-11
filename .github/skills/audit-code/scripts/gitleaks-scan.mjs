@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { existsSync } from "node:fs";
 import { lstat, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -204,7 +204,7 @@ async function readFindings(reportPath) {
   return existsSync(reportPath) ? JSON.parse(await readFile(reportPath, "utf8")) : [];
 }
 
-async function scan(root, toolRoot) {
+async function scan(root, toolRoot, auditRunId) {
   const { binary, key, archiveSha256 } = await install(toolRoot);
   const { directory } = toolPaths(toolRoot);
   const generated = await scannerConfig(root, directory);
@@ -227,7 +227,8 @@ async function scan(root, toolRoot) {
       throw new Error("Repository changed during Gitleaks scan; discard stale evidence and retry");
     }
     const report = {
-      schemaVersion: "1.0.0",
+      schemaVersion: "1.1.0",
+      auditRunId,
       generatedAt: new Date().toISOString(),
       scanner: { name: "gitleaks", version: VERSION, releaseUrl: `${RELEASE}/`, platform: key, archiveSha256, checksumsSha256: CHECKSUMS_SHA256 },
       configurationSha256: generated.sha256,
@@ -273,6 +274,19 @@ function option(args, name, fallback) {
   return path.resolve(args[index + 1]);
 }
 
+function valueOption(args, name, fallback) {
+  const index = args.indexOf(name);
+  if (index < 0) return fallback;
+  if (!args[index + 1]) throw new Error(`${name} requires a value`);
+  return args[index + 1];
+}
+
+function resolveAuditRunId(args) {
+  const value = valueOption(args, "--audit-run-id", randomUUID());
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value)) throw new Error("--audit-run-id must be a UUID");
+  return value;
+}
+
 const [command, ...args] = process.argv.slice(2);
 if (command === "metadata") {
   console.log(JSON.stringify(metadata()));
@@ -283,7 +297,7 @@ if (command === "metadata") {
   const root = option(args, "--root", frameworkRoot);
   const toolRoot = option(args, "--tool-root", frameworkRoot);
   if (command === "install") console.log(JSON.stringify(await install(toolRoot)));
-  else await scan(root, toolRoot);
+  else await scan(root, toolRoot, resolveAuditRunId(args));
 } else {
-  throw new Error("Use metadata|digest|install|scan [--root PATH] [--tool-root PATH]");
+  throw new Error("Use metadata|digest|install|scan [--root PATH] [--tool-root PATH] [--audit-run-id UUID]");
 }

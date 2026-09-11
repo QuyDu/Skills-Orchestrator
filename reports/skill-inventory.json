@@ -1,8 +1,26 @@
 {
   "schemaVersion": "1.0.0",
   "runtimeVersion": "1.1.1",
-  "generatedAt": "2026-09-05T18:57:14.938Z",
+  "generatedAt": "2026-09-11T19:47:09.614Z",
   "skills": [
+    {
+      "name": "agent-builder",
+      "path": ".github/skills/agent-builder/SKILL.md",
+      "description": "Build, validate, preview, and transactionally install least-privilege custom agents, including governed publication handoffs for Foundry endpoints, Microsoft 365 Copilot and Teams, or ChatGPT actions. Use when creating, updating, or reviewing .agent.md files; do not use for cloud deployment, channel publication, or MCP installation.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "clarify-the-ask",
+        "policy-engine",
+        "azure-discovery"
+      ],
+      "reports": [
+        "reports/agent-builder-plan.json",
+        "reports/agent-builder-plan.md",
+        "reports/agent-builder-result.json",
+        "reports/agent-blueprints/<id>.json"
+      ]
+    },
     {
       "name": "architecture-review",
       "path": ".github/skills/architecture-review/SKILL.md",
@@ -52,7 +70,8 @@
       "dependencies": [],
       "reports": [
         "reports/code-audit-findings.json",
-        "reports/gitleaks-scan.json"
+        "reports/gitleaks-scan.json",
+        "reports/audit-evidence/*.json"
       ]
     },
     {
@@ -397,7 +416,8 @@
         "workflow-planner",
         "skill-inventory",
         "policy-engine",
-        "workflow-state-manager"
+        "workflow-state-manager",
+        "skill-update"
       ],
       "reports": [
         "reports/workflow-completion.json",
@@ -494,12 +514,14 @@
     {
       "name": "skill-create",
       "path": ".github/skills/skill-create/SKILL.md",
-      "description": "Create or update concise, composable skill packages with valid metadata, bounded tools, ownership, validation, dependencies, and examples. Always use when a user asks, directly or indirectly, to create, add, define, author, build, or make a skill; do not use to invoke an existing skill.",
+      "description": "Create concise, composable skill packages with valid metadata, bounded tools, ownership, validation, dependencies, help, and documentation. Always use when a user asks, directly or indirectly, to create, add, define, author, build, or make a new skill; use skill-update for an existing skill.",
       "lifecycle": "draft",
       "confidence": "low",
       "dependencies": [
         "skill-inventory",
-        "skill-dependency-manager"
+        "skill-dependency-manager",
+        "project-understanding",
+        "documentation-builder"
       ],
       "reports": []
     },
@@ -547,6 +569,20 @@
         "reports/skill-registry.json",
         "reports/skill-registry.md"
       ]
+    },
+    {
+      "name": "skill-update",
+      "path": ".github/skills/skill-update/SKILL.md",
+      "description": "Identify and update an existing governed skill through candidate resolution, bounded change review, explicit proceed approval, dependency analysis, help regeneration, and project documentation refresh. Always use when a user asks to modify, revise, enhance, fix, or update an existing skill; use skill-create for new skills.",
+      "lifecycle": "draft",
+      "confidence": "low",
+      "dependencies": [
+        "skill-inventory",
+        "skill-dependency-manager",
+        "project-understanding",
+        "documentation-builder"
+      ],
+      "reports": []
     },
     {
       "name": "systematic-debugging",

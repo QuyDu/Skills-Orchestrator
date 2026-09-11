@@ -1,17 +1,24 @@
-# Project Skills Orchestrator
+# Project Orchestrator
 
-Turn any repository into a governed GitHub Copilot workspace: agent instructions, scoped standards, reusable prompts, specialist agents, and 43 governed skills — installed consistently, verified after every run, and safe to rerun.
+Turn any repository into a governed GitHub Copilot workspace: agent instructions, scoped standards, reusable prompts, specialist agents, and 45 governed skills — installed consistently, verified after every run, and safe to rerun.
 
 | Item | Value |
 | --- | --- |
 | Runtime version | `1.1.1` |
 | Framework version | `9.0.0` |
-| Skill catalog | 43 governed skills |
+| Skill catalog | 45 governed skills |
 | Supported Node.js | 22, 24, 26 |
 | Dependencies | None |
 | Distribution | Authorized internal use only |
 
+> **Name compatibility.** The product is now **Project Orchestrator**. The `pso` command,
+> `project-skills-orchestrator` package and skill identifiers, repository URL, schema IDs, and
+> `.skills-orchestrator` state directory remain stable compatibility interfaces for existing
+> projects and automation.
+
 > **Release status.** This build is an unsigned internal candidate. Three release blockers remain open and are tracked in [release/release-manifest.json](release/release-manifest.json): trusted signing identity, independent security review, and cross-platform CI evidence. See [SECURITY.md](SECURITY.md) and [docs/THREAT-MODEL.md](docs/THREAT-MODEL.md).
+
+> **Security and use notice.** Reasonable security efforts do not eliminate all risk. Before using this software, read [DISCLAIMER.md](DISCLAIMER.md), perform independent checks appropriate to your environment, and comply with the internal-use terms in [LICENSE](LICENSE).
 
 ---
 
@@ -23,7 +30,7 @@ It has two halves.
 
 **A command-line installer** (`pso.mjs`) that creates a new project or adopts an existing one. It runs entirely on Node.js built-ins — no packages to install, no registry access — and every change it makes is planned, journaled, and verified.
 
-**A catalog of 43 skills** installed into `.github/skills/`, invoked from GitHub Copilot Chat in Agent mode. Each skill is a bounded contract: what it owns, what it reads, what it writes, when it must stop and ask you.
+**A catalog of 45 skills** installed into `.github/skills/`, invoked from GitHub Copilot Chat in Agent mode. Each skill is a bounded contract: what it owns, what it reads, what it writes, when it must stop and ask you.
 
 ### What makes it different
 
@@ -151,6 +158,81 @@ node .\pso.mjs --help azure-cleanup
 The guide includes the skill's purpose, inputs, boundaries, validation, approval gates, and
 composition dependencies. Help is read-only; it never authorizes deployment, cleanup, commits,
 pushes, or other gated actions.
+
+### Build a governed custom agent
+
+`/agent-builder` turns a focused role into a reviewable, least-privilege VS Code and GitHub Copilot
+custom agent. Unlike a basic `.agent.md` generator, it uses a strict JSON blueprint, portable tool
+aliases, deterministic rendering, destination-drift detection, explicit approval, atomic writes,
+and transaction backups. It does not install extensions or MCP servers, pin models, or deploy a
+hosted agent.
+
+Create a blueprint such as `accessibility-reviewer.json`:
+
+```json
+{
+  "schemaVersion": "1.0.0",
+  "id": "accessibility-reviewer",
+  "name": "Accessibility Reviewer",
+  "description": "Use when reviewing interfaces for accessibility defects and actionable WCAG improvements.",
+  "purpose": "Review repository evidence and report accessibility defects without changing project files.",
+  "risk": "read-only",
+  "capabilities": ["read", "search"],
+  "invocation": { "userInvocable": true, "modelInvocable": true },
+  "instructions": {
+    "constraints": ["Do not modify files or execute commands during accessibility review."],
+    "approach": [
+      "Inspect interface source and existing accessibility test evidence.",
+      "Report concrete findings with locations, impact, and suggested remediation."
+    ],
+    "outputFormat": "Return severity-ordered findings followed by unassessed scope and validation gaps."
+  },
+  "subagents": [],
+  "handoffs": []
+}
+```
+
+Validate and review before applying:
+
+```powershell
+node .\pso.mjs agent build --project C:\repos\my-project `
+  --type copilot `
+  --id accessibility-reviewer `
+  --name "Accessibility Reviewer" `
+  --description "Use when reviewing interfaces for accessibility defects and actionable WCAG improvements." `
+  --purpose "Review repository evidence and report accessibility defects without changing project files." `
+  --risk read-only `
+  --capabilities read,search `
+  --user-invocable true `
+  --model-invocable true `
+  --constraints "Do not modify files or execute commands during accessibility review." `
+  --approach "Inspect interface source and tests.|Report findings with locations and remediation." `
+  --output-format "Return severity-ordered findings and validation gaps." `
+  --subagents none `
+  --handoffs-file none
+
+node .\pso.mjs agent validate --project C:\repos\my-project `
+  --blueprint C:\repos\my-project\reports\agent-blueprints\accessibility-reviewer.json
+node .\pso.mjs agent plan --project C:\repos\my-project `
+  --blueprint C:\repos\my-project\reports\agent-blueprints\accessibility-reviewer.json
+# Review reports/agent-builder-plan.md before accepting the write.
+node .\pso.mjs agent apply --project C:\repos\my-project `
+  --blueprint C:\repos\my-project\reports\agent-blueprints\accessibility-reviewer.json `
+  --plan C:\repos\my-project\reports\agent-builder-plan.json --accept-risk
+```
+
+The first release intentionally supports only portable capabilities: `read`, `search`, `web`,
+`edit`, `execute`, `agent`, and `todo`. Environment-specific extension tools, hooks, MCP servers,
+and hosted Foundry agents require separate design and approval rather than being emitted silently.
+
+`agent build` accepts `copilot`, `foundry-prompt`, and `foundry-hosted` as design types. Omitted
+parameters are requested interactively; supplied values are not requested again. Foundry types,
+or `--azure-required true`, resolve `--cloud`, `--location`, `--environment-name`,
+`--authentication-method`, and optional `--subscription-id` from explicit input or the ignored
+`.azure/environment.json` profile. The matching Azure CLI login starts only when required.
+Passwords, secrets, tokens, keys, and connection strings are prohibited as parameters. A
+Foundry-aware blueprint records sanitized environment metadata but does not create or deploy a
+hosted agent; that remains a separate Microsoft Foundry workflow and approval boundary.
 
 ### Demo prompt
 
@@ -356,7 +438,8 @@ Open the project in VS Code, start Copilot Chat in **Agent** mode, and invoke a 
 /architecture-review      Well-Architected assessment of the defined architecture
 /deployment-review        Is this release candidate deployable, and how do we roll back
 /documentation-builder    Build the canonical project guide and supporting documentation
-/skill-create             Create or update a skill after duplicate and reuse analysis
+/skill-create             Create a skill after duplicate, reuse, and wiring analysis
+/skill-update             Resolve and update one existing skill after explicit approval
 /project-status           Check lifecycle, Azure resource health, sync freshness, and deployment currency
 /project-understanding    Completely rescan and rebuild the current project guide
 /project-video            Create a project-specific animated MP4 with approved narration
@@ -445,7 +528,7 @@ node .\.github\skills\project-video\scripts\project-video.mjs narrate --approve-
 
 The installer does not install Python globally or modify the application dependency graph. It verifies the official Piper wheel digest for the current platform, retains and hashes the resolved wheel set, verifies the pinned model, and records an installation manifest. Local WAV narration and the final MP4 are labeled `local-piper`; switching later to Azure requires an explicit plan change and the normal Azure audition workflow.
 
-For the bundled animation under `Demo/`, generate its matching audition set and final Ava HD narration with:
+For the bundled animation under `Demo/`, generate its matching audition set and final Ava Neural narration with:
 
 ```powershell
 .\scripts\generate-demo-narration.ps1 -Audition -ApproveExternal
@@ -473,8 +556,14 @@ The skill will not persist credentials or silently change narration providers. M
 | `node .\pso.mjs recover --project PATH` | Restore an interrupted adoption |
 | `node .\pso.mjs inventory --root PATH` | Regenerate and validate the skill inventory |
 | `node .\pso.mjs plan --root PATH --intent TEXT` | Create a workflow plan |
+| `node .\pso.mjs agent build --project PATH [parameters]` | Ask for missing fields, conditionally establish Azure context, and generate a v2.1 agent blueprint and review plan |
+| `node .\pso.mjs agent validate --project PATH --blueprint FILE` | Validate a governed agent blueprint |
+| `node .\pso.mjs agent plan --project PATH --blueprint FILE` | Render a reviewable agent plan without changing the agent |
+| `node .\pso.mjs agent apply --project PATH --blueprint FILE --plan FILE --accept-risk` | Apply a current reviewed agent plan transactionally |
 | `npm run evidence:adoption` | Regenerate disposable-fixture adoption and no-op evidence |
 | `npm run check` | Full conformance gate |
+
+Use `--autonomy autonomous-research --web-safety threat-informed` to let a read-only `read,search,web` agent continue research without conversational approval pauses. VS Code tool and URL confirmations remain controlled by the session permission level; do not use Bypass Approvals or Autopilot with agents that expose mutating tools.
 
 ## Reports
 

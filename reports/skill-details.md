@@ -1,9 +1,10 @@
 # Skill Details
 
-Generated: 2026-09-05T18:57:14.938Z
+Generated: 2026-09-11T19:47:09.614Z
 
 | Skill | Lifecycle | Confidence | Audit | Dependencies |
 | --- | --- | --- | --- | --- |
+| agent-builder | draft | low | passed | clarify-the-ask, policy-engine, azure-discovery |
 | architecture-review | draft | low | passed | clarify-the-ask |
 | artifact-upgrade | draft | low | passed | skill-inventory, skill-dependency-manager |
 | audit-azure-environment | draft | low | passed | None |
@@ -30,16 +31,17 @@ Generated: 2026-09-05T18:57:14.938Z
 | project-knowledge-capture | draft | low | passed | project-handoff |
 | project-memory | draft | low | passed | project-knowledge-capture |
 | project-setup | draft | low | passed | clarify-the-ask, workflow-planner |
-| project-skills-orchestrator | tested | medium | passed | clarify-the-ask, workflow-planner, skill-inventory, policy-engine, workflow-state-manager |
+| project-skills-orchestrator | tested | medium | passed | clarify-the-ask, workflow-planner, skill-inventory, policy-engine, workflow-state-manager, skill-update |
 | project-status | tested | medium | passed | project-handoff, workflow-telemetry, audit-azure-environment |
 | project-understanding | draft | low | passed | clarify-the-ask |
 | project-video | draft | low | passed | clarify-the-ask, project-understanding, documentation-builder, azure-discovery |
 | regression-test-development | draft | low | passed | policy-engine, workflow-state-manager |
 | security-review | draft | low | passed | audit-code |
-| skill-create | draft | low | passed | skill-inventory, skill-dependency-manager |
+| skill-create | draft | low | passed | skill-inventory, skill-dependency-manager, project-understanding, documentation-builder |
 | skill-dependency-manager | draft | low | passed | skill-inventory |
 | skill-inventory | tested | medium | passed | None |
 | skill-registry | draft | low | passed | skill-inventory, skill-dependency-manager, policy-engine |
+| skill-update | draft | low | passed | skill-inventory, skill-dependency-manager, project-understanding, documentation-builder |
 | systematic-debugging | draft | low | passed | policy-engine, workflow-state-manager |
 | workflow-planner | draft | low | passed | clarify-the-ask, skill-inventory, skill-dependency-manager |
 | workflow-recovery | draft | low | passed | workflow-state-manager, project-handoff |

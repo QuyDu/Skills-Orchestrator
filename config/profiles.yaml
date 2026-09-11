@@ -9,6 +9,8 @@ profiles:
       - skill-inventory
       - skill-dependency-manager
       - skill-create
+      - skill-update
+      - agent-builder
       - framework-health-check
       - project-setup
       - project-understanding

@@ -41,9 +41,12 @@ Convert user intent into an ordered, validated workflow plan with inputs, output
 1. Validate that clarification is ready and resolve its confirmed objective into candidate workflow steps owned by available skills.
 2. Define step inputs, expected outputs, and completion criteria per skill boundary.
 3. Order steps using dependency graph evidence and reject cyclic plans.
-4. Insert checkpoints, rollback points, and explicit approval gates where mutation risk exists.
-5. Define failure recovery branches for blocked, denied, or failed steps.
-6. Emit machine-readable and markdown workflow plans with identical ordering.
+4. Assign every step either one existing skill owner or one explicit operator owner. Operator steps are approval gates, never inferred executable skills.
+5. Insert checkpoints, rollback points, explicit approval classes, and terminal handoff routes where mutation risk or interruption exists.
+6. Define `onBlocked` and `onFailed` recovery branches for every nonterminal step and require both routes to reach the `project-handoff` terminal step.
+7. Emit schema 1.1 machine-readable and Markdown workflow plans with identical ordering. Continue to read legacy schema 1.0 plans, but require schema 1.1 for new execution lineage.
+8. Validate unique step IDs, owner resolution, prerequisite references, acyclic dependencies, approval consistency, exactly one ready prerequisite-free step, and terminal-route reachability.
+9. Append one `workflow-planned` event and derive synchronized current execution state for the same workflow and run IDs without rewriting accepted event records.
 
 ## Validation
 
@@ -52,6 +55,11 @@ Convert user intent into an ordered, validated workflow plan with inputs, output
 - Ordering respects dependency constraints and contains no unresolved cycles.
 - Approval gates are tied to concrete mutation or external-impact operations.
 - Recovery branches exist for each critical path failure point.
+- Every blocked or failed nonterminal path reaches a terminal handoff that records partial outcomes and one next action.
+- The workflow plan, planning event, and current execution state carry the same workflow ID, run ID, step count, and initial owner.
+- New plans use schema 1.1 while legacy schema 1.0 plans remain readable.
+- A workflow-planned event is appended before matching current execution state is published.
+- `node pso.mjs plan validate` rejects duplicate IDs, dangling references, unknown skill owners, cycles, inconsistent approval declarations, and unreachable terminal routes.
 
 ## Outputs
 

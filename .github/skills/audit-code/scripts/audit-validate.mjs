@@ -2,7 +2,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { lstatSync, readFileSync, readlinkSync, realpathSync } from "node:fs";
+import { existsSync, lstatSync, readFileSync, readlinkSync, realpathSync } from "node:fs";
 import path from "node:path";
 
 const REQUIRED_STANDARDS = new Set([
@@ -17,6 +17,9 @@ const REQUIRED_STANDARDS = new Set([
   "openssf-scorecard"
 ]);
 const REQUIRED_SECRET_SCOPES = new Set(["worktree", "tracked-reports", "all-local-refs", "reachable-history"]);
+const REQUIRED_RESOURCE_CHECKS = new Set(["ownership-classification", "normal-exit", "early-return", "exception", "cancellation"]);
+const REQUIRED_AI_QUALITY_CHECKS = new Set(["ai-slop-indicators", "ai-authorship-non-inference", "agentic-security-applicability"]);
+const REQUIRED_ASSURANCE_GATES = new Set(["critical-high-findings", "secret-evidence", "analyzer-evidence", "standards-evidence", "hosted-evidence"]);
 const WORKFLOW_STATE_PATHS = new Set([
   "reports/audit-remediation-execution.json",
   "reports/audit-remediation-execution.md",
@@ -71,6 +74,34 @@ function stable(value) {
 
 function equal(left, right) {
   return JSON.stringify(stable(left)) === JSON.stringify(stable(right));
+}
+
+function validUuid(value) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value ?? "");
+}
+
+function validateAuditEvidenceBinding(report, errors) {
+  if (!validUuid(report.auditRunId)) errors.push("auditRunId must be a UUID");
+  const reference = report.auditEvidence ?? {};
+  const match = /^reports\/audit-evidence\/([a-fA-F0-9]{64})\.json$/.exec(reference.path ?? "");
+  if (!match || reference.sha256 !== match[1]) {
+    errors.push("audit evidence path and digest must be content-addressed and equal");
+    return;
+  }
+  const evidencePath = path.resolve(reference.path);
+  if (!existsSync(evidencePath)) {
+    errors.push("referenced audit evidence snapshot is missing");
+    return;
+  }
+  const bytes = readFileSync(evidencePath);
+  if (createHash("sha256").update(bytes).digest("hex") !== reference.sha256) errors.push("audit evidence snapshot digest does not match");
+  try {
+    const evidence = JSON.parse(bytes.toString("utf8"));
+    if (evidence.auditRunId !== report.auditRunId) errors.push("audit evidence auditRunId does not match findings");
+    if (evidence.repository?.head !== report.repositoryEvidence?.localGit?.revision) errors.push("audit evidence repository revision does not match findings");
+  } catch {
+    errors.push("audit evidence snapshot is not valid JSON");
+  }
 }
 
 function sameMembers(left, right) {
@@ -176,7 +207,7 @@ function worktreeDigest(root) {
 function validateFindings(report) {
   if (report.schemaVersion === "1.0.0") return;
   const errors = [];
-  if (report.schemaVersion !== "2.0.0") errors.push("findings schemaVersion must be 1.0.0 or 2.0.0");
+  if (!new Set(["2.0.0", "2.1.0", "2.2.0"]).has(report.schemaVersion)) errors.push("findings schemaVersion must be 1.0.0, 2.0.0, 2.1.0, or 2.2.0");
 
   const repository = report.repositoryEvidence ?? {};
   const secret = repository.secretScanning ?? {};
@@ -184,6 +215,8 @@ function validateFindings(report) {
   const standards = Array.isArray(report.standards) ? report.standards : [];
   const assurance = report.assurance ?? {};
   const standardIds = standards.map((standard) => standard.id);
+  const requiresStrictEvidence = new Set(["2.1.0", "2.2.0"]).has(report.schemaVersion);
+  if (report.schemaVersion === "2.2.0") validateAuditEvidenceBinding(report, errors);
 
   for (const id of REQUIRED_STANDARDS) {
     if (!standardIds.includes(id)) errors.push(`required standard '${id}' is missing`);
@@ -206,6 +239,24 @@ function validateFindings(report) {
   let nonConformant = false;
   const now = Date.now();
   for (const standard of standards) {
+    if (!standard.version) errors.push(`standard '${standard.id}' has no version`);
+    if (!standard.reference) errors.push(`standard '${standard.id}' has no authoritative reference`);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(standard.accessedAt ?? "")) errors.push(`standard '${standard.id}' has no valid access date`);
+    const accessedAt = Date.parse(`${standard.accessedAt ?? ""}T00:00:00.000Z`);
+    const generatedAt = Date.parse(report.generatedAt ?? "");
+    if (requiresStrictEvidence && Number.isFinite(accessedAt) && Number.isFinite(generatedAt)) {
+      const ageDays = (generatedAt - accessedAt) / 86_400_000;
+      if (ageDays < -1 || ageDays > 30) incompleteEvidence.push(`standard '${standard.id}' evidence is not current at report generation`);
+    }
+    if (requiresStrictEvidence && !new Set(["stable", "final", "current", "preview", "draft"]).has(standard.stability)) {
+      errors.push(`standard '${standard.id}' has no valid stability`);
+    }
+    if (requiresStrictEvidence && !new Set(["normative", "informational"]).has(standard.baselineRole)) {
+      errors.push(`standard '${standard.id}' has no valid baselineRole`);
+    }
+    if (standard.baselineRole === "normative" && new Set(["preview", "draft"]).has(standard.stability)) {
+      incompleteEvidence.push(`standard '${standard.id}' uses ${standard.stability} guidance as a normative baseline`);
+    }
     if (standard.applicability !== "not-applicable" && !(standard.controls?.length > 0)) {
       incompleteEvidence.push(`applicable standard '${standard.id}' has no controls`);
     }
@@ -218,6 +269,68 @@ function validateFindings(report) {
         if (!control.exceptionOwner) errors.push(`exception '${standard.id}/${control.id}' has no owner`);
         if (!Number.isFinite(expiry)) errors.push(`exception '${standard.id}/${control.id}' has no valid expiry`);
         else if (expiry <= now) expiredExceptions++;
+      }
+    }
+  }
+
+  if (requiresStrictEvidence) {
+    const verification = report.verificationEvidence ?? {};
+    const requiredAssessments = ["secretExposure", "analyzers", "resourceOwnership", "aiQuality", "assuranceGates"];
+    for (const name of requiredAssessments) {
+      const assessment = verification[name];
+      if (!assessment) {
+        errors.push(`verificationEvidence.${name} is required`);
+        continue;
+      }
+      if (assessment.status === "completed" && !(assessment.evidence?.length > 0)) {
+        incompleteEvidence.push(`verificationEvidence.${name} is completed without evidence`);
+      }
+      if (new Set(["partial", "blocked", "failed"]).has(assessment.status) && !(assessment.limitations?.length > 0)) {
+        errors.push(`verificationEvidence.${name} must explain incomplete status`);
+      }
+    }
+
+    const secretEvidence = verification.secretExposure ?? {};
+    if (secretEvidence.status === "not-applicable") errors.push("verificationEvidence.secretExposure cannot be not-applicable");
+    for (const scope of REQUIRED_SECRET_SCOPES) {
+      if (!secretEvidence.scopes?.includes(scope)) incompleteEvidence.push(`verification secret scope '${scope}' is missing`);
+    }
+
+    const analyzers = verification.analyzers ?? {};
+    if (analyzers.status === "not-applicable" && analyzers.detectedLanguages?.length) {
+      errors.push("verificationEvidence.analyzers cannot be not-applicable when languages are detected");
+    }
+    if (analyzers.status === "completed" && !(analyzers.tools?.length > 0)) incompleteEvidence.push("analyzer evidence has no tools");
+    if (analyzers.tools?.some((tool) => tool.status !== "passed")) incompleteEvidence.push("one or more required analyzers did not pass");
+
+    const resources = verification.resourceOwnership ?? {};
+    for (const check of REQUIRED_RESOURCE_CHECKS) {
+      if (!resources.checks?.includes(check)) incompleteEvidence.push(`resource ownership check '${check}' is missing`);
+    }
+    if (resources.status === "completed" && !(resources.pathsChecked?.length > 0)) incompleteEvidence.push("resource ownership evidence has no checked paths");
+
+    const aiQuality = verification.aiQuality ?? {};
+    for (const check of REQUIRED_AI_QUALITY_CHECKS) {
+      if (!aiQuality.checks?.includes(check)) incompleteEvidence.push(`AI quality check '${check}' is missing`);
+    }
+    if (aiQuality.aiComponentsDetected && aiQuality.status !== "completed") incompleteEvidence.push("AI or agentic components were detected without completed AI quality evidence");
+    if (!aiQuality.aiComponentsDetected && aiQuality.status === "not-applicable" && !(aiQuality.limitations?.length > 0)) {
+      errors.push("not-applicable AI quality evidence must explain the applicability decision");
+    }
+
+    const assuranceGates = verification.assuranceGates ?? {};
+    if (assuranceGates.status === "not-applicable") errors.push("verificationEvidence.assuranceGates cannot be not-applicable");
+    for (const gate of REQUIRED_ASSURANCE_GATES) {
+      if (!assuranceGates.gates?.includes(gate)) incompleteEvidence.push(`assurance gate '${gate}' is missing`);
+    }
+    if (report.schemaVersion === "2.2.0") {
+      if (!(verification.records?.length > 0)) errors.push("verificationEvidence.records is required");
+      for (const record of verification.records ?? []) {
+        if (record.auditRunId !== report.auditRunId) errors.push(`verification record '${record.tool ?? "unknown"}' auditRunId does not match`);
+        if (record.repositoryRevision !== repository.localGit?.revision) errors.push(`verification record '${record.tool ?? "unknown"}' repository revision does not match`);
+        for (const field of ["tool", "toolVersion", "command", "scope", "executedAt", "evidenceSha256"]) {
+          if (!record[field]) errors.push(`verification record '${record.tool ?? "unknown"}' is missing ${field}`);
+        }
       }
     }
   }
@@ -243,30 +356,49 @@ function validateFindings(report) {
 }
 
 function validateReview(source, review) {
-  if (source.schemaVersion !== "2.0.0") return;
+  if (!new Set(["2.0.0", "2.1.0", "2.2.0"]).has(source.schemaVersion)) return;
   const errors = [];
-  if (review.schemaVersion !== "2.0.0") errors.push("reviews of schema 2.0 findings must use review schema 2.0.0");
+  if (review.schemaVersion !== source.schemaVersion) errors.push(`reviews of schema ${source.schemaVersion} findings must use the same review schema version`);
   if (!equal(review.repositoryEvidence, source.repositoryEvidence)) errors.push("review must preserve source repository evidence exactly");
   if (!equal(review.standards, source.standards)) errors.push("review must preserve source standards exactly");
   if (!equal(review.assurance, source.assurance)) errors.push("review must preserve source assurance exactly");
+  if (source.schemaVersion === "2.1.0" && !equal(review.verificationEvidence, source.verificationEvidence)) {
+    errors.push("review must preserve source verification evidence exactly");
+  }
+  if (source.schemaVersion === "2.2.0") {
+    if (review.auditRunId !== source.auditRunId) errors.push("review auditRunId must match source findings");
+    if (!equal(review.auditEvidence, source.auditEvidence)) errors.push("review must preserve source audit evidence reference exactly");
+    if (!equal(review.verificationEvidence, source.verificationEvidence)) errors.push("review must preserve source verification evidence exactly");
+  }
   if (errors.length) fail(errors);
 }
 
 function validatePlan(plan) {
   if (plan.schemaVersion === "1.0.0") return;
   const errors = [];
-  if (plan.schemaVersion !== "2.0.0") errors.push("plan schemaVersion must be 1.0.0 or 2.0.0");
+  if (!new Set(["2.0.0", "2.1.0"]).has(plan.schemaVersion)) errors.push("plan schemaVersion must be 1.0.0, 2.0.0, or 2.1.0");
   if (!plan.prioritization?.includes("complexity")) errors.push("schema 2.0 remediation prioritization must include complexity");
   for (const item of plan.items ?? []) {
     if (!item.complexity) errors.push(`item '${item.id ?? "unknown"}' has no complexity`);
     if (!item.complexityRationale) errors.push(`item '${item.id ?? "unknown"}' has no complexity rationale`);
+  }
+  if (plan.schemaVersion === "2.1.0") {
+    if (!validUuid(plan.auditRunId)) errors.push("plan auditRunId must be a UUID");
+    const reviewPath = path.resolve(plan.sourceReview ?? "");
+    if (!existsSync(reviewPath)) errors.push("plan source review is missing");
+    else {
+      const bytes = readFileSync(reviewPath);
+      if (createHash("sha256").update(bytes).digest("hex") !== plan.sourceReviewSha256) errors.push("plan source review digest does not match");
+      try { if (JSON.parse(bytes.toString("utf8")).auditRunId !== plan.auditRunId) errors.push("plan auditRunId does not match source review"); } catch { errors.push("plan source review is invalid JSON"); }
+    }
   }
   if (errors.length) fail(errors);
 }
 
 async function validateExecution(plan, execution, planPath, planSha256, repositoryRoot, resumeRoot) {
   const errors = [];
-  if (execution.schemaVersion !== "3.0.0") errors.push("new execution artifacts must use schemaVersion 3.0.0");
+  if (!new Set(["3.0.0", "3.1.0"]).has(execution.schemaVersion)) errors.push("new execution artifacts must use schemaVersion 3.0.0 or 3.1.0");
+  if (execution.schemaVersion === "3.1.0" && execution.auditRunId !== plan.auditRunId) errors.push("execution auditRunId does not match plan");
   const snapshotPattern = /^reports\/audit-remediation-plans\/([a-fA-F0-9]{64})\.json$/;
   const snapshotMatch = snapshotPattern.exec(execution.sourcePlan?.path ?? "");
   if (!snapshotMatch) errors.push("execution source plan path must be a content-addressed immutable snapshot");
@@ -397,7 +529,11 @@ async function validateExecution(plan, execution, planPath, planSha256, reposito
 const [command, ...args] = process.argv.slice(2);
 let result = { status: "valid", command };
 if (command === "findings" && args.length === 1) validateFindings(await loadJson(args[0]));
-else if (command === "review" && args.length === 2) validateReview(await loadJson(args[0]), await loadJson(args[1]));
+else if (command === "review" && args.length === 2) {
+  const source = await loadJson(args[0]);
+  validateFindings(source);
+  validateReview(source, await loadJson(args[1]));
+}
 else if (command === "plan" && args.length === 1) validatePlan(await loadJson(args[0]));
 else if (command === "execution" && (args.length === 4 || args.length === 6) && args[2] === "--root" && (args.length === 4 || args[4] === "--resume-root")) {
   const planArtifact = await loadJsonArtifact(args[0]);

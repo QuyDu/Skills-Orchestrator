@@ -41,6 +41,18 @@ test("private package installs offline and resolves bundled project assets", asy
     assert.equal(create.status, 0, `${create.stdout}\n${create.stderr}`);
     const createdProject = path.join(projects, "packaged-fixture");
     assert.ok(existsSync(path.join(createdProject, ".github", "skills", "project-skills-orchestrator", "SKILL.md")));
+    assert.ok(existsSync(path.join(createdProject, ".github", "skills", "agent-builder", "scripts", "agent-builder.mjs")));
+    assert.ok(existsSync(path.join(createdProject, "schemas", "agent-blueprint.schema.json")));
+    const installedAgentBuilder = await readFile(path.join(createdProject, ".github", "skills", "agent-builder", "SKILL.md"), "utf8");
+    const installedAgentBuilderRuntime = await readFile(path.join(createdProject, ".github", "skills", "agent-builder", "scripts", "agent-builder.mjs"), "utf8");
+    const installedRuntimeSource = await readFile(installedRuntime, "utf8");
+    const installedBlueprintSchema = JSON.parse(await readFile(path.join(createdProject, "schemas", "agent-blueprint.schema.json"), "utf8"));
+    const installedPlanSchema = JSON.parse(await readFile(path.join(createdProject, "schemas", "agent-builder-plan.schema.json"), "utf8"));
+    assert.match(installedAgentBuilder, /chatgpt-action.*not direct Foundry publication/);
+    assert.match(installedAgentBuilderRuntime, /"foundry-endpoint", "microsoft-365-copilot-and-teams", "chatgpt-action"/);
+    assert.match(installedRuntimeSource, /"publication-targets", "version-policy", "microsoft365-audience", "chatgpt-visibility"/);
+    assert.ok(installedBlueprintSchema.properties.schemaVersion.enum.includes("2.2.0"));
+    assert.ok(installedPlanSchema.properties.schemaVersion.enum.includes("1.1.0"));
     const verification = JSON.parse(await readFile(path.join(createdProject, "reports", "installation-verification.json"), "utf8"));
     assert.equal(verification.status, "passed");
     assert.equal(verification.checks.frameworkSkills, expectedSkillCount);

@@ -13,6 +13,14 @@ function run(...args) {
   return spawnSync(process.execPath, [runtime, ...args], { cwd: root, encoding: "utf8" });
 }
 
+async function installWorkflowOwners(project) {
+  for (const skillName of ["project-skills-orchestrator", "project-handoff", "workflow-planner"]) {
+    const skillRoot = path.join(project, ".github", "skills", skillName);
+    await mkdir(skillRoot, { recursive: true });
+    await writeFile(path.join(skillRoot, "SKILL.md"), `---\nname: ${skillName}\ndescription: Test owner.\n---\n`, "utf8");
+  }
+}
+
 test("configuration parser fails closed for adversarial structured inputs", async () => {
   const invalidConfigurations = [
     null,
@@ -131,6 +139,67 @@ test("workflow planning refuses a concurrent writer lock", async () => {
     assert.match(`${result.stdout}${result.stderr}`, /Another workflow planner holds/);
     assert.equal(existsSync(path.join(project, "reports", "workflow-plan.json")), false);
     assert.equal(existsSync(path.join(project, "reports", "execution-log.jsonl")), false);
+  } finally {
+    await rm(project, { recursive: true, force: true });
+  }
+});
+
+test("workflow planning emits governed plan, markdown, event, and matching state", async () => {
+  const project = await mkdtemp(path.join(os.tmpdir(), "pso-plan-lineage-"));
+  try {
+    await writeFile(path.join(project, "package.json"), "{\"name\":\"plan-lineage\"}\n", "utf8");
+    await installWorkflowOwners(project);
+    const result = run("plan", "--root", project, "--intent", "establish governed lineage");
+    assert.equal(result.status, 0, `${result.stdout}${result.stderr}`);
+
+    const plan = JSON.parse(await readFile(path.join(project, "reports", "workflow-plan.json"), "utf8"));
+    const state = JSON.parse(await readFile(path.join(project, "reports", "current-execution-state.json"), "utf8"));
+    const event = JSON.parse((await readFile(path.join(project, "reports", "execution-log.jsonl"), "utf8")).trim());
+    const markdown = await readFile(path.join(project, "reports", "workflow-plan.md"), "utf8");
+    assert.equal(plan.schemaVersion, "1.1.0");
+    assert.equal(plan.terminalStepId, "STEP-002");
+    assert.equal(plan.steps[0].status, "ready");
+    assert.deepEqual(plan.steps[0].owner, { type: "skill", id: "project-skills-orchestrator" });
+    assert.match(markdown, /STEP-001.*skill:project-skills-orchestrator/);
+    assert.equal(event.event, "workflow-planned");
+    assert.equal(event.workflowId, plan.workflowId);
+    assert.equal(event.runId, plan.runId);
+    assert.equal(state.workflowId, plan.workflowId);
+    assert.equal(state.runId, plan.runId);
+    assert.equal(state.totalSteps, plan.steps.length);
+    assert.equal(state.lastSequence, event.sequence);
+    assert.equal(run("plan", "validate", "--root", project).status, 0);
+  } finally {
+    await rm(project, { recursive: true, force: true });
+  }
+});
+
+test("workflow plan validation rejects broken ownership, topology, and terminal routes", async () => {
+  const project = await mkdtemp(path.join(os.tmpdir(), "pso-plan-validation-"));
+  try {
+    await writeFile(path.join(project, "package.json"), "{\"name\":\"plan-validation\"}\n", "utf8");
+    await installWorkflowOwners(project);
+    assert.equal(run("plan", "--root", project, "--intent", "validate governed topology").status, 0);
+    const planPath = path.join(project, "reports", "workflow-plan.json");
+    const valid = JSON.parse(await readFile(planPath, "utf8"));
+    const invalidPlans = [
+      ["duplicate IDs", (plan) => { plan.steps[1].id = "STEP-001"; }, /step IDs must be unique/],
+      ["dangling reference", (plan) => { plan.steps[0].onFailed = "STEP-999"; }, /references unknown step/],
+      ["dependency cycle", (plan) => { plan.steps[0].prerequisites = ["STEP-002"]; }, /prerequisite cycle/],
+      ["unknown owner", (plan) => { plan.steps[0].owner.id = "missing-skill"; }, /unknown skill owner/],
+      ["unreachable handoff", (plan) => { plan.steps[0].onBlocked = "STEP-001"; }, /cannot reach terminal handoff/],
+      ["operator without approval", (plan) => { plan.steps[0].owner = { type: "operator", id: "release-owner" }; }, /operator step.*must require approval/],
+      ["unsupported approval", (plan) => { plan.steps[0].requiresApproval = true; plan.steps[0].approvalClasses = ["bypass"]; }, /unsupported approval classes/],
+      ["invalid checkpoint", (plan) => { plan.steps[0].checkpoint = "checkpoint one"; }, /checkpoint.*invalid format/]
+    ];
+    for (const [label, mutate, expected] of invalidPlans) {
+      const candidate = structuredClone(valid);
+      mutate(candidate);
+      await writeFile(planPath, `${JSON.stringify(candidate, null, 2)}\n`, "utf8");
+      const result = run("plan", "validate", "--root", project);
+      assert.notEqual(result.status, 0, `${label} unexpectedly passed`);
+      assert.match(`${result.stdout}${result.stderr}`, expected);
+    }
   } finally {
     await rm(project, { recursive: true, force: true });
   }

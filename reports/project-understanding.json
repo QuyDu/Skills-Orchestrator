@@ -1,22 +1,22 @@
 {
   "schemaVersion": "1.0.0",
   "status": "complete",
-  "generatedAt": "2026-09-02T00:56:30.393Z",
+  "generatedAt": "2026-09-11T15:49:50.936Z",
   "generator": "project-understanding",
   "project": {
     "name": "project-skills-orchestrator",
-    "displayName": "Project Skills Orchestrator",
-    "purpose": "Turn any repository into a governed GitHub Copilot workspace: agent instructions, scoped standards, reusable prompts, specialist agents, and 43 governed skills — installed consistently, verified after every run, and safe to rerun.",
+    "displayName": "Project Orchestrator",
+    "purpose": "Turn any repository into a governed GitHub Copilot workspace: agent instructions, scoped standards, reusable prompts, specialist agents, and 45 governed skills — installed consistently, verified after every run, and safe to rerun.",
     "evidence": [
       "README.md"
     ]
   },
   "scan": {
     "mode": "full-rebuild",
-    "repositoryDigestSha256": "fdbeef5e41dd8fbeee15834a92a47721e1fba91d943103bd0bf5c8922970d73a",
-    "fileCount": 232,
-    "sourceFileCount": 18,
-    "testFileCount": 9,
+    "repositoryDigestSha256": "ce98d7e4d9e023b6f8018a567242a781480ed7eeba3c2abbf6eaf82782da9e4e",
+    "fileCount": 299,
+    "sourceFileCount": 20,
+    "testFileCount": 13,
     "excludedDirectories": [
       ".git",
       ".skills-orchestrator",
@@ -51,8 +51,8 @@
       },
       {
         "path": ".github/copilot-instructions.md",
-        "bytes": 4607,
-        "sha256": "29a7a49f282f1bc7ee164d8a596201e937570db963a89e76fa5090263d37a015"
+        "bytes": 4215,
+        "sha256": "5af1bfe699824ce7742da91c1f13d68ae7cff58c3c02b91e51a80a1fdd070500"
       },
       {
         "path": ".github/dependabot.yml",
@@ -66,13 +66,13 @@
       },
       {
         "path": ".github/prompts/demo-create-project.prompt.md",
-        "bytes": 5626,
-        "sha256": "8312e8a13bf6da1438ae153eccb32807d839feb5ec16a3dbb45a172762687b80"
+        "bytes": 5606,
+        "sha256": "1691eb5cb241e99c79cc36dc554298309952359a4a4b7d5eaadb793a6d5f05b9"
       },
       {
         "path": ".github/prompts/demo-web-app.prompt.md",
-        "bytes": 6563,
-        "sha256": "e7a5c392072f499ff8d44d443f6d34b77b44e666686589bd898acb77efd96e84"
+        "bytes": 8914,
+        "sha256": "84589697433565e668fcac57c58844356e9795a78850557b394391057c9bfa1d"
       },
       {
         "path": ".github/prompts/environment-update-help.prompt.md",
@@ -110,6 +110,21 @@
         "sha256": "1407e49cb83aadd3efddcf41d64982b3f758d860a351a037dbe1acad2d1934ad"
       },
       {
+        "path": ".github/skills/agent-builder/scripts/agent-builder.mjs",
+        "bytes": 45545,
+        "sha256": "b45d0d5e0abb8d54a1e3c75bff559c9ef446ee6276159b8def33421272c9f31a"
+      },
+      {
+        "path": ".github/skills/agent-builder/scripts/azure-context.ps1",
+        "bytes": 3944,
+        "sha256": "44bfaf322fd8e901c3e4d3f9a3d928005385384e5cb6635c097eee6efeef9c25"
+      },
+      {
+        "path": ".github/skills/agent-builder/SKILL.md",
+        "bytes": 12066,
+        "sha256": "1e6e2164a40a9e41c3fffe49617f4be3cfb49246b4fbde28c7605f10e6460832"
+      },
+      {
         "path": ".github/skills/architecture-review/SKILL.md",
         "bytes": 4720,
         "sha256": "e989ed7f3b6d07f5b9a08d1c65cb4a0721cdc4d0f2a9bb45fc2e55cce2b41919"
@@ -125,19 +140,54 @@
         "sha256": "48f95d09cc794e75ab7c0daaf3f19ed7dacd5658219dcec167e7cd21eec6a688"
       },
       {
+        "path": ".github/skills/audit-code/config/gitleaks-allowlist.json",
+        "bytes": 620,
+        "sha256": "a5e1b50dc5b973dc3b582376ea1dfd3d170a4378a7e4a0df962635962c831976"
+      },
+      {
+        "path": ".github/skills/audit-code/config/gitleaks.toml",
+        "bytes": 184,
+        "sha256": "59e92fcf9ecc85815802f170d3cd9a8736edaf4760b6b63cc8d1ad0b3c849463"
+      },
+      {
+        "path": ".github/skills/audit-code/scripts/audit-evidence.mjs",
+        "bytes": 14980,
+        "sha256": "41343073e2d87a974f537a740f2e7085a37be394b35c841995f7253ac9624627"
+      },
+      {
+        "path": ".github/skills/audit-code/scripts/audit-validate.mjs",
+        "bytes": 31889,
+        "sha256": "fd341baf92709fe014056fae1d78056ac9daa385c84e75e88607d5b8b2e52131"
+      },
+      {
+        "path": ".github/skills/audit-code/scripts/gitleaks-scan.mjs",
+        "bytes": 15727,
+        "sha256": "66346c029d1ca9b9b1f38d22c265e1729c470785e5d0cad9757dbf2cb444bb65"
+      },
+      {
+        "path": ".github/skills/audit-code/scripts/safe-path.mjs",
+        "bytes": 1282,
+        "sha256": "7882e91022e22fd333685feecd87be2767ca8425f8a9c0c14bc24d61c89af2e3"
+      },
+      {
         "path": ".github/skills/audit-code/SKILL.md",
-        "bytes": 7307,
-        "sha256": "657b463e728b22033d8b6af63158b7b05b951b308ed6f8bf49f7dbc29d28eaa8"
+        "bytes": 28243,
+        "sha256": "30d50398540d4ae171f9a7af92b77ed1c8898fc8a567301f96b409b8d281d603"
       },
       {
         "path": ".github/skills/audit-plan-remediation/SKILL.md",
-        "bytes": 4305,
-        "sha256": "0fe3cf4a0fbb680ed0a18aa093ade3e0b54c70531ff33a360214f21d2cb3705a"
+        "bytes": 5142,
+        "sha256": "79c3448b50a370ce288a4aac31dab5af7826f342edf90077492c98c460332b1f"
+      },
+      {
+        "path": ".github/skills/audit-remediation/SKILL.md",
+        "bytes": 10589,
+        "sha256": "f2d26a422960d39d25323d0c2cfc8395c5895f08fc1f135e8b89215385a94414"
       },
       {
         "path": ".github/skills/audit-review-findings/SKILL.md",
-        "bytes": 4361,
-        "sha256": "1f7b7f056910b4f202c37c46e9d9c79a1bbc1c09d2cdd2be22ae3b028d1ae21d"
+        "bytes": 4992,
+        "sha256": "5af87ef67be924f93610fe6f5a9bc1b34534339ff8d590de6d3b890eba70393d"
       },
       {
         "path": ".github/skills/azure-cleanup/SKILL.md",
@@ -251,8 +301,8 @@
       },
       {
         "path": ".github/skills/project-skills-orchestrator/SKILL.md",
-        "bytes": 4078,
-        "sha256": "57642b23d9ac9bb890203201f79de62027f5e69b255e2db02a5143b21ccd48be"
+        "bytes": 4525,
+        "sha256": "aaada067e6262a3162f00be35c4b89e543727ad7b2e8886cabf0b57293ac9126"
       },
       {
         "path": ".github/skills/project-status/scripts/project-status.mjs",
@@ -296,8 +346,8 @@
       },
       {
         "path": ".github/skills/skill-create/SKILL.md",
-        "bytes": 4538,
-        "sha256": "fc4455817c0ae38f4ec60e95432fa79d0f221ac41eb2b53c62132153a0df021c"
+        "bytes": 5675,
+        "sha256": "67ba8b8d3b8a590b48a39c82f324e567c1e214fd2029bba24e34f6cba0c94cef"
       },
       {
         "path": ".github/skills/skill-dependency-manager/SKILL.md",
@@ -315,14 +365,19 @@
         "sha256": "7111fd686c4aa95773f598c0859afc8e1424645f0531f493a0a69a47a2180b91"
       },
       {
+        "path": ".github/skills/skill-update/SKILL.md",
+        "bytes": 6985,
+        "sha256": "e5fa34274e6c3a65a98d23e18b017a22c584da982393bf3ca5bd1a5a82cbada1"
+      },
+      {
         "path": ".github/skills/systematic-debugging/SKILL.md",
         "bytes": 3792,
         "sha256": "66d0cbe5b4f5fd6de5c8c01464741778d1f38265df17e139565ff0010f314073"
       },
       {
         "path": ".github/skills/workflow-planner/SKILL.md",
-        "bytes": 3202,
-        "sha256": "5b380eb3ddafa8c4d292db46958a82ed34159a5cae439e236f9506809b68a676"
+        "bytes": 4528,
+        "sha256": "09fbf4b60cf9b114905a7816fbe1f92cac2dc760faaba27f1d89117f15bc9a64"
       },
       {
         "path": ".github/skills/workflow-recovery/SKILL.md",
@@ -351,18 +406,23 @@
       },
       {
         "path": ".github/workflows/codeql.yml",
-        "bytes": 1330,
-        "sha256": "cdee15483210806d777639e4e9ff715a15d094ee3b659589dce1516524a208d3"
+        "bytes": 1357,
+        "sha256": "829d97f2dfbadbfe93b8741242ff4ad75484317bbbcc9c5d174c198bebb7e5a1"
       },
       {
         "path": ".github/workflows/security-validation.yml",
-        "bytes": 2873,
-        "sha256": "3c1e0d21dafb0853e415fcbfdd47022afb00c0ecf93fcc063c5ecfc73f026126"
+        "bytes": 4226,
+        "sha256": "24c397fd54bc737ec2db09048a156572d8180ea405ba0b8ba35faf2c36717a7d"
       },
       {
         "path": ".gitignore",
         "bytes": 115,
         "sha256": "a5e5bfb5fb00966be5d6dafc70cfc6c47f3ac7c5502ce3ba7ef8f3938d4d8533"
+      },
+      {
+        "path": ".gitleaks.toml",
+        "bytes": 184,
+        "sha256": "59e92fcf9ecc85815802f170d3cd9a8736edaf4760b6b63cc8d1ad0b3c849463"
       },
       {
         "path": ".npmrc",
@@ -376,13 +436,18 @@
       },
       {
         "path": ".vscode/settings.json",
-        "bytes": 380,
-        "sha256": "dbcd007f73ac7aaa984386b0885c50905a58cf53214cdbae308d0f4ade6b08b0"
+        "bytes": 373,
+        "sha256": "a41d70d66304ca1c66c0219d5dbe5772e70d95e1949d40306935a05a3f24c5b7"
       },
       {
         "path": "AGENTS.md",
-        "bytes": 3753,
-        "sha256": "d5b6d83c0acac81404bd8dd0675415d85fcdccf619f2d60e12fb98a4990eb296"
+        "bytes": 3988,
+        "sha256": "41307edbbcecab0141ee0f2f92f9eb288f936e23a68d1bcfa5425438eca7472b"
+      },
+      {
+        "path": "config/gitleaks-allowlist.json",
+        "bytes": 620,
+        "sha256": "a5e1b50dc5b973dc3b582376ea1dfd3d170a4378a7e4a0df962635962c831976"
       },
       {
         "path": "config/orchestrator.yaml",
@@ -391,8 +456,8 @@
       },
       {
         "path": "config/profiles.yaml",
-        "bytes": 1416,
-        "sha256": "e503c53ca3b74d678263b72c40fab785c1ded164ec6c9a8ba86b73452309ce54"
+        "bytes": 1485,
+        "sha256": "d00d132b1b38bdc02a44d6028e9e3cd9a1c1f4b9c49365471a3b67546aa0bef1"
       },
       {
         "path": "config/skills-orchestrator.json",
@@ -400,29 +465,99 @@
         "sha256": "3b3c42ae287b63c7ab372ee7a751ba79d326756edaa148ec56b1dd36be232fc3"
       },
       {
+        "path": "Demo/audio/narration/scene-01.mp3",
+        "bytes": 460800,
+        "sha256": "a85caa47123c0ae1a36b752a6dea07605f210e5f0a0880e8c63a40ad8c8c5a93"
+      },
+      {
+        "path": "Demo/audio/narration/scene-02.mp3",
+        "bytes": 589824,
+        "sha256": "ffa692c02ebd55ca5432fedaf1517a3e8257ed8b64643923aa7652bc91455159"
+      },
+      {
+        "path": "Demo/audio/narration/scene-03.mp3",
+        "bytes": 558144,
+        "sha256": "defc57013e06db3e3f49aa9a8b487da768b50b27cb4b87fa0692cd8e5e2c12f6"
+      },
+      {
+        "path": "Demo/audio/narration/scene-04.mp3",
+        "bytes": 668160,
+        "sha256": "d81ebe052965aaffe2107eb8e2a421dcc38148a12186ce27babbdbf3e22560fc"
+      },
+      {
+        "path": "Demo/audio/narration/scene-05.mp3",
+        "bytes": 665856,
+        "sha256": "0b995bfda7e1d4233ce4317e030604829ba66695395a55fb34338d5bcbd9bbcf"
+      },
+      {
+        "path": "Demo/audio/narration/scene-06.mp3",
+        "bytes": 675072,
+        "sha256": "54f8af4a448fcccd38fe2c678f5899e2a177ee2ff650af1e07b208d00cfd0d1c"
+      },
+      {
+        "path": "Demo/audio/narration/scene-07.mp3",
+        "bytes": 751680,
+        "sha256": "ff4f847b820ce4653a3ff9f012fc6307919252d1e8de5e19788905719c30617a"
+      },
+      {
+        "path": "Demo/audio/narration/scene-08.mp3",
+        "bytes": 722880,
+        "sha256": "9c39cdc801ebd423752435ef1f6392adf869e7af07dfe6465f5f5d9a5169e84f"
+      },
+      {
+        "path": "Demo/audio/narration/scene-09.mp3",
+        "bytes": 570816,
+        "sha256": "8a9690714c432e19dfa8a66ce5beed53d7b26d9696cd2bfc2ee6eff042fcda85"
+      },
+      {
+        "path": "Demo/audio/narration/scene-10.mp3",
+        "bytes": 678528,
+        "sha256": "e2bb44bc6fe215903269978b39eff6a8bcfd0af271b838a6773a4509afaefcb0"
+      },
+      {
+        "path": "Demo/audio/narration/scene-11.mp3",
+        "bytes": 528768,
+        "sha256": "af428933c258d04f69cf0d926f00ed281dfba37dc1f4dc9d08e62af0bbc23b7f"
+      },
+      {
         "path": "Demo/audio/narration/scenes.json",
-        "bytes": 3697,
-        "sha256": "fb960d6b167afe731d08e72bef80fc07b9a3800e5b23b50dfe37f3d5750e0565"
+        "bytes": 5191,
+        "sha256": "d378afa53ffb968f17ec4beaa227c93321eeb5291807e2a4ae7ba8aa8b86fdf9"
       },
       {
         "path": "Demo/DEMO-DAY.md",
-        "bytes": 4741,
-        "sha256": "b346ebdec05fbf723fb336fd253731fda41422da2f2925edf935fb80a6035a5b"
+        "bytes": 8038,
+        "sha256": "35a91989f485c75f7aec3a90777e183af31cb7a5ac624c16a675d21ba2069cf1"
+      },
+      {
+        "path": "Demo/Project-Orchestrator-Demo.pptx",
+        "bytes": 63095,
+        "sha256": "e93db2f36d093f13daea0e0ebb67577e50cd12005b5b6868f074bfef189031be"
       },
       {
         "path": "Demo/project-skills-orchestrator-animation.html",
-        "bytes": 39034,
-        "sha256": "9fec1a46c94c935691eade80f3be64c68894c68ebdaf14fdde7a77d05f02bdb2"
+        "bytes": 47616,
+        "sha256": "7a774d7159cc5bbb168aa09244b3f2a3ad7dc2c8bfbd069aa19d0a7e825b6ad4"
+      },
+      {
+        "path": "DISCLAIMER.md",
+        "bytes": 3088,
+        "sha256": "5553a1daf8864d499b36160340c9669230b9a8641eb0711ed59d756498c41a52"
       },
       {
         "path": "docs/INTERNAL-RELEASE.md",
-        "bytes": 3843,
-        "sha256": "a9126d6f57faff323c191c2fb161504c14d1af6f7926794f401edf1a666cdd78"
+        "bytes": 5449,
+        "sha256": "8cf4302fe4504f115adc21b3ef2b574be3ab140140cd4ef58a503b1ac5c85586"
       },
       {
         "path": "docs/PROJECT-ARCHITECTURE.md",
-        "bytes": 4970,
-        "sha256": "b4e8e7f28638b226a4b432841c9a50c482d5b18a4b1fd1395691729f4291bc33"
+        "bytes": 4956,
+        "sha256": "792b4d9d227bcb1e65bdaed4805e0339bad535e4cb7c5bfa67ee823133acfc95"
+      },
+      {
+        "path": "docs/PROJECT-OVERVIEW.md",
+        "bytes": 50303,
+        "sha256": "1aae38a21708bf3dc69d84cd8139a1bfb5c24cd5ed3028c61bfe446145446ac3"
       },
       {
         "path": "docs/SKILL-ECOSYSTEM-AUDIT.md",
@@ -446,13 +581,13 @@
       },
       {
         "path": "package.json",
-        "bytes": 1861,
-        "sha256": "8df74adead19aa5017c692b0f7604e14a4666a9a82e1fbf8e02df1fe1fa0ba95"
+        "bytes": 2334,
+        "sha256": "7583acde428320bc4f4f63d9d277d8127c9d76bbfc7b86327a5e8b0ee99f5a10"
       },
       {
         "path": "pso.mjs",
-        "bytes": 136643,
-        "sha256": "1d16cc85ac13b68977dc8ee5c3974a9361aacaeb7dc27241e67c755e88d5642a"
+        "bytes": 152450,
+        "sha256": "f5b0815f295e0915f9cf0bdf36b663140aa206b5c944c38f3406da37796adf63"
       },
       {
         "path": "pso.ps1",
@@ -461,13 +596,13 @@
       },
       {
         "path": "README.md",
-        "bytes": 31058,
-        "sha256": "945e629c4754b7fed5b48551191d59fe1b56e339af2b6cd0e7e57025faf7b231"
+        "bytes": 37147,
+        "sha256": "595660d07dc734dd021bc4146d5d25ab45dbdb5fd9e797c60f647362aa0678a8"
       },
       {
         "path": "release/release-manifest.json",
-        "bytes": 646,
-        "sha256": "8ba3c469eef4d13c6e96bbcf23a6c8ca5cf52477225ad13b4ea9d041f535c866"
+        "bytes": 952,
+        "sha256": "3769edccf0be94da628b9bbe6673ba5585b2e0d55b0607cfaa11b5c8fba439bf"
       },
       {
         "path": "reports/adoption-rerun-evidence.json",
@@ -480,19 +615,59 @@
         "sha256": "f8aa40b6817c0e811bfd2aee7f3b5843fbfae9abb12b28f2a02b30eb717c5d09"
       },
       {
+        "path": "reports/architecture-review.json",
+        "bytes": 4577,
+        "sha256": "e25c32166417dce61eaea2c21fb9d7a800ff2e4c515a38f6913d4776de3ce333"
+      },
+      {
+        "path": "reports/architecture-review.md",
+        "bytes": 829,
+        "sha256": "0e21f39cc1a551e6f5be0866c3daf09ef1f8a30bfb2981a33a9de5359fc6d6c6"
+      },
+      {
         "path": "reports/artifact-ownership.json",
-        "bytes": 10291,
-        "sha256": "9bdbf7eb76a6d9ad320969b8706f62121bbbdb75f0b926e8c7fa60a3bd80d8f5"
+        "bytes": 11089,
+        "sha256": "0380ef61e1546407eb821ec2cbcf6f8f8c41e21f9b563616a82ea57797327a8d"
+      },
+      {
+        "path": "reports/audit-remediation-execution.json",
+        "bytes": 5668,
+        "sha256": "a0e51b0da1cbdbcd0fad01b49f00b54f035855ad82f4583a4d7ccb76b2884d55"
+      },
+      {
+        "path": "reports/audit-remediation-execution.md",
+        "bytes": 954,
+        "sha256": "624df1dfb74c66a53c15fb4e324b2bcce0a78d57bba9d502d840a80a8a9f71e4"
       },
       {
         "path": "reports/audit-remediation-plan.json",
-        "bytes": 12387,
-        "sha256": "3dea85045ee561bb758677256093c5f746402d5ac1e6c8773bb75204f6ea0c82"
+        "bytes": 3069,
+        "sha256": "76bceaeb2a8cddc5422aed23ced05ba4885e0bcf22478e125407737872604235"
       },
       {
         "path": "reports/audit-remediation-plan.md",
-        "bytes": 7571,
-        "sha256": "4c1eb9d7ccc6942a47238b66afe802c6c5d81a78bf146305d7f9ad7c9b413625"
+        "bytes": 1563,
+        "sha256": "94c367c742781cb3ccd848b2391ccf41d1409fb5414ba5211872a2d08b74a3eb"
+      },
+      {
+        "path": "reports/audit-remediation-plans/040dad9a30d0f52ebda13c232d1885abbd9ee27b6dcbbeeab3174b1c60de65e7.json",
+        "bytes": 2720,
+        "sha256": "040dad9a30d0f52ebda13c232d1885abbd9ee27b6dcbbeeab3174b1c60de65e7"
+      },
+      {
+        "path": "reports/audit-remediation-plans/3b056e49f5cede0cc2081d544aaedae3d3cc8788ffe408f9591998facb7c0d0d.json",
+        "bytes": 6523,
+        "sha256": "3b056e49f5cede0cc2081d544aaedae3d3cc8788ffe408f9591998facb7c0d0d"
+      },
+      {
+        "path": "reports/audit-remediation-plans/8eab33fda5129f0fd99f1f008f57f625e2d00e9271bc1f1c802e598d07a3dcc2.json",
+        "bytes": 4543,
+        "sha256": "8eab33fda5129f0fd99f1f008f57f625e2d00e9271bc1f1c802e598d07a3dcc2"
+      },
+      {
+        "path": "reports/audit-remediation-plans/d2cf2e59ca1b23eec747938169fac90836c9b5522490ed608a31ed63b7105a06.json",
+        "bytes": 3069,
+        "sha256": "76bceaeb2a8cddc5422aed23ced05ba4885e0bcf22478e125407737872604235"
       },
       {
         "path": "reports/azure-discovery.json",
@@ -506,58 +681,113 @@
       },
       {
         "path": "reports/change-review.json",
-        "bytes": 1383,
-        "sha256": "7f5dc807e8ceb767de88f37068833568cac498a15fd9f522e294ab1b750971a9"
+        "bytes": 4487,
+        "sha256": "38ff1537d7930975e757b52976ad82b71fbfae0d56b41cf76ddeb4c2bd678e39"
       },
       {
         "path": "reports/change-review.md",
-        "bytes": 1178,
-        "sha256": "9bc1af6ac85712fc830ab028e813df61620255fed988315f1d65d477946b7d22"
+        "bytes": 1946,
+        "sha256": "b1510efd2d7cda3020a10e1e12c94cdc4dfc7664493d682f06131d467d4ecbe8"
+      },
+      {
+        "path": "reports/clarification-result.json",
+        "bytes": 3053,
+        "sha256": "8d4796e12b760eca8da177eb382a841cdc32d6fcdeeb925ef04adaefe3bd01cc"
+      },
+      {
+        "path": "reports/clarification-result.md",
+        "bytes": 743,
+        "sha256": "bdfb118c8d1cb37cd6e6c4a80f81abf304d01350dfaef99dcc498a566aa1e010"
       },
       {
         "path": "reports/code-audit-findings.json",
-        "bytes": 10104,
-        "sha256": "cd9de2ea561d344448c47b994d11a4f1b054482307f26818cb6e36928126a073"
+        "bytes": 20109,
+        "sha256": "ff722a4f3ba5ab8d98423c7e64ea84fac3328ffecda3d7ecf724cc73207aaa2e"
       },
       {
         "path": "reports/code-audit-review.json",
-        "bytes": 16582,
-        "sha256": "d4a47368605ab7dbf4e03752c5c8128698f2c148516297fd36ce796e641c385c"
+        "bytes": 11992,
+        "sha256": "8888ec53e3abad35389d973636fbe328e84e6b3219ad033286a839525a43ec35"
       },
       {
         "path": "reports/code-audit-review.md",
-        "bytes": 8739,
-        "sha256": "90593a75203811758bbd5d5d4f0f8b15d5890e53d0354039ff587ae64bf63d3a"
+        "bytes": 2096,
+        "sha256": "b20b2010a424c87b71fe823a6a82995ab5b16024260c6964b9ff1cbb34f25074"
       },
       {
         "path": "reports/cross-platform-ci-evidence.json",
         "bytes": 2116,
-        "sha256": "9b3efcce0fed302f434b2abb8872846c9842bbe1de05a3dae08070489f05c3fc"
+        "sha256": "dd163560a3d70f9552da3fad1a3b5d9f9c27f4f63fc87e7466c800871db8bc08"
+      },
+      {
+        "path": "reports/current-execution-state.json",
+        "bytes": 330,
+        "sha256": "ab57e0b0d4f23b95780543cc1a77700384eda6ff84c3831dcb36eee1cf6a0561"
+      },
+      {
+        "path": "reports/current-execution-state.md",
+        "bytes": 399,
+        "sha256": "d677583ea136f2b11e5cf6f51dba68fb178c0d7e19dfb09e5dbc3173f17bc054"
       },
       {
         "path": "reports/current-work-state.json",
-        "bytes": 2281,
-        "sha256": "e8cc2b057cdd07b2e94e6a4a975653434147ae39443e006569689c8f502248ec"
+        "bytes": 3170,
+        "sha256": "6fe6865e653976c3e6ec93e3f2b1b7f007b28ba0cb9240105278340e9bbda167"
       },
       {
         "path": "reports/deployment-review.json",
-        "bytes": 5249,
-        "sha256": "749a1e9a0420e59e99ded3b6ad65610ed80e9533480f19fd46b03edd77a3ab8d"
+        "bytes": 5792,
+        "sha256": "275b80bce3d08449fc7a8fc8c3d1cf1e64efdb8ee004624f4dec7427215daf3f"
       },
       {
         "path": "reports/deployment-review.md",
-        "bytes": 2004,
-        "sha256": "1ddcbfcf609b670774ab20c120195aef04f10cd5cfdbf82a8fc02211a3fbc513"
+        "bytes": 1905,
+        "sha256": "04d6512ba614c9be9c37a6b16075f94450514b8214b7e6dfa248d5d725480d03"
+      },
+      {
+        "path": "reports/documentation-plan.json",
+        "bytes": 3043,
+        "sha256": "d7531ff6ff2128b608dbda3d7e63ed983f3f04ddd663d73e13d30f90aa61c73b"
+      },
+      {
+        "path": "reports/documentation-plan.md",
+        "bytes": 1413,
+        "sha256": "78314be576f4e775cfc5d5e7eee18266c8b33c031805e37f25818862d3880ed0"
+      },
+      {
+        "path": "reports/execution-log.jsonl",
+        "bytes": 11010,
+        "sha256": "f7b848a4eafe35f05d78012c932cc68de197d31254aa9c8b2c3dea5170fec50e"
+      },
+      {
+        "path": "reports/gitleaks-scan.json",
+        "bytes": 1626,
+        "sha256": "75b84fdeb8810b8a38386cc281d8a688b49a791082532d2a12b3d6e63ed90739"
+      },
+      {
+        "path": "reports/policy-decision-log.jsonl",
+        "bytes": 1901,
+        "sha256": "ed992ac8f10655b58df1dbd6029edcea8764b16d08b2d07cbdc64728b2b8228f"
+      },
+      {
+        "path": "reports/policy-evaluation.json",
+        "bytes": 1964,
+        "sha256": "a3c4c9f48dfe13a7a1522ba280580ce8da619737dc8dfcb58db7ed32c23efe46"
+      },
+      {
+        "path": "reports/policy-evaluation.md",
+        "bytes": 781,
+        "sha256": "a7ce5926061434fb9dd395fe89b41eef7671660ade9325c3412a65eebba7bf1d"
       },
       {
         "path": "reports/project-handoff.json",
-        "bytes": 13568,
-        "sha256": "50404d7b1aadce839a7ce5e4c8f3bf996f3cb3ccfa21153a703388c637ff009a"
+        "bytes": 8742,
+        "sha256": "5028aa5e9c64c9fd68cf19c9945bc8d49b90d57670f9ed2d2827b9002710c930"
       },
       {
         "path": "reports/project-handoff.md",
-        "bytes": 6225,
-        "sha256": "1641a355dc65b46c1f9848c4ff95d7bef2c863ba95221c8906d81e5e0b78be5c"
+        "bytes": 2721,
+        "sha256": "e7284ae25e3824acad8fb3cef64ec72bde9469e1f1b271bb94bba07c6237a962"
       },
       {
         "path": "reports/project-video/audio/narration-manifest.json",
@@ -710,34 +940,69 @@
         "sha256": "8123c84b58a12684e14da51f1631902dee0d2f9abd7885f06be6cb387b83f789"
       },
       {
+        "path": "reports/release-operations.json",
+        "bytes": 1758,
+        "sha256": "e09250dbc06b14d8362e3227e89fcfd4bd3187e31458ea2abfb723c003e637b5"
+      },
+      {
         "path": "reports/release-readiness.json",
-        "bytes": 4810,
-        "sha256": "faf4db67f26760bc6307bc8dc7d9b59c58971fd9c34de424bce4c18e69ef8128"
+        "bytes": 2348,
+        "sha256": "605a952e61a3d18bd407b26243d88e95c5ff826043e377653b56b018f49fb49e"
       },
       {
         "path": "reports/security-check.json",
         "bytes": 342,
-        "sha256": "d67502c8795082a2d71e824147b79203169d681fcce5ffa921cf87a082e48fcd"
+        "sha256": "286c091d2dac41f08ee3e8074ea8d39f12d1f74cdaac45dc33d1a74038da6daa"
+      },
+      {
+        "path": "reports/security-review.json",
+        "bytes": 3278,
+        "sha256": "70bc50b48d80e636a7ee14ff2ae90cd99581d225e5c819aa689052592aa82c33"
+      },
+      {
+        "path": "reports/security-review.md",
+        "bytes": 728,
+        "sha256": "418e508bb9873d3b6e96d7d42b938ff6b94496b9ef9745dafc9c754d9db965a8"
       },
       {
         "path": "reports/skill-details.json",
-        "bytes": 36711,
-        "sha256": "15e1d37ca176c4c16522409fa1206a948e7960c00b48ee4332dcc0be7b9426ad"
+        "bytes": 39929,
+        "sha256": "43dc0ed02a5d4c5fda4dee6e5665d7a3afe1036923389ce7659f52fbfee297d6"
       },
       {
         "path": "reports/skill-details.md",
-        "bytes": 3626,
-        "sha256": "f0c57a352eecd01e456149723f99f61b7dabd36788a301b9cd5707491fc9662f"
+        "bytes": 4130,
+        "sha256": "2c04e65623c1efcde033215a6b205f5fdf3676a9d520809d8b7eb23ea1dba295"
       },
       {
         "path": "reports/skill-inventory.json",
-        "bytes": 27891,
-        "sha256": "2c78367fb63901202cb5ed05dd384fd95fa97749b69f1f1cdcfe541ff7ccf693"
+        "bytes": 30479,
+        "sha256": "3a23743d9d89d0df366f6e7a7cbf4717d3bfb7621709b8312aa504b44f56b11e"
       },
       {
         "path": "reports/skill-inventory.md",
-        "bytes": 12141,
-        "sha256": "2e07868ab5020da31465c03cb3d5e3234399d8d686b61de0389b9fe8ccb02beb"
+        "bytes": 13163,
+        "sha256": "57f75db959d4975e7b820065fec96b988e31b71dcf0cb53dd45849a286b68816"
+      },
+      {
+        "path": "reports/workflow-completion.json",
+        "bytes": 1049,
+        "sha256": "693c10ca819b22584852cae0a6b4141e699e217bf31836ee78a5038e4a9df887"
+      },
+      {
+        "path": "reports/workflow-completion.md",
+        "bytes": 610,
+        "sha256": "d8027666ff3d4a8feb444a66853782e8c36dce65b25417df7fd4d9c91ea05845"
+      },
+      {
+        "path": "reports/workflow-plan.json",
+        "bytes": 23100,
+        "sha256": "c0fe2ba6abd5ef8670a9184cee631c4e7b31b6b8ed3402f7c5d1f1d9de3cfb6d"
+      },
+      {
+        "path": "reports/workflow-plan.md",
+        "bytes": 10258,
+        "sha256": "e2ad4328f0192672046d26ad9976a361c4ec9a27936f7e70cccf33d5a9948f8f"
       },
       {
         "path": "schemas/adoption-transaction.schema.json",
@@ -745,19 +1010,44 @@
         "sha256": "020a9dfb7a7f6e191eab911e8a8cf7221188dc3da4bf4a6c379865ea0064472a"
       },
       {
+        "path": "schemas/agent-blueprint.schema.json",
+        "bytes": 8045,
+        "sha256": "4b08047f0e20399f6f23976d673c4fb89904ad32918046688d006b2e92f1c5c9"
+      },
+      {
+        "path": "schemas/agent-builder-plan.schema.json",
+        "bytes": 2937,
+        "sha256": "55e0d91e2450c1ae8dbf7f6e9b3ca67e88739b6ea47ecfeaf415342faf5f2e6d"
+      },
+      {
+        "path": "schemas/agent-builder-result.schema.json",
+        "bytes": 991,
+        "sha256": "7df52bac9f61b8007219aec1e878861564e92dfe059adc5d3c0da0226624d778"
+      },
+      {
         "path": "schemas/architecture-review.schema.json",
         "bytes": 3115,
         "sha256": "f5e3cf00c1c02ecca9205536524055d8ddc865e2284b9fad52845d9d45943bcc"
       },
       {
+        "path": "schemas/audit-evidence.schema.json",
+        "bytes": 2286,
+        "sha256": "4e6e71f0fb422f3862de80cd3ffc9940ad49b48422ee4a74998af0570498f972"
+      },
+      {
         "path": "schemas/audit-findings-review.schema.json",
-        "bytes": 3185,
-        "sha256": "8373f0e8ccb91c22db2920c81c795bbb4ce544b16a48277c6cae1bdd64afd697"
+        "bytes": 4453,
+        "sha256": "559eda4c632361d5dd57349c602d00ea0dbfcfe0f3997d5540fd440d3f0d89ae"
+      },
+      {
+        "path": "schemas/audit-remediation-execution.schema.json",
+        "bytes": 7030,
+        "sha256": "73c10292dca1d5c89f36433309866563e92b8f68e5e6161a3713458de304e6ea"
       },
       {
         "path": "schemas/audit-remediation-plan.schema.json",
-        "bytes": 3295,
-        "sha256": "b36abf2e18bb26db625733341642c89a6898960857b142d2de2b00c5f5c436ea"
+        "bytes": 4394,
+        "sha256": "cb92b615b0fd8d871700085b5243b3f56540f449815bcc1cc49570e4468400a1"
       },
       {
         "path": "schemas/azure-discovery.schema.json",
@@ -776,8 +1066,8 @@
       },
       {
         "path": "schemas/code-audit-findings.schema.json",
-        "bytes": 6840,
-        "sha256": "2e408c5139f528f3a8fb3f58c383c995b38ab3f1ebd2345d9e7e855776866a2b"
+        "bytes": 19270,
+        "sha256": "d5c20911563c41625e77a9dce834bc61518499b67101d56282b0fc0a9b3e053e"
       },
       {
         "path": "schemas/cross-platform-ci-evidence.schema.json",
@@ -803,6 +1093,16 @@
         "path": "schemas/documentation-plan.schema.json",
         "bytes": 2199,
         "sha256": "27205c9c983a173f06b3c94dbe6b61579962b66e9d22a75a23c4cbebdbc9437e"
+      },
+      {
+        "path": "schemas/gitleaks-allowlist.schema.json",
+        "bytes": 1469,
+        "sha256": "314d7fb814cfe2b21210b59195f130b2704858de3e1e9c78e6cb058afc3685d0"
+      },
+      {
+        "path": "schemas/gitleaks-scan.schema.json",
+        "bytes": 3975,
+        "sha256": "00d75f796b9089f4dcfa19b253888c7b9b4bae7efcf1895a968c71e5f268d3ab"
       },
       {
         "path": "schemas/independent-review.schema.json",
@@ -876,8 +1176,13 @@
       },
       {
         "path": "schemas/release-manifest.schema.json",
-        "bytes": 1400,
-        "sha256": "8a4ff96f621c9d8ea38511ac4566d3d865131f2460887c2006c55c1e5337bb9d"
+        "bytes": 2057,
+        "sha256": "6d706ef277e880bbe5d0e26c2d4e4bcce11fe603e391954a11735e470fab085b"
+      },
+      {
+        "path": "schemas/release-operations.schema.json",
+        "bytes": 2126,
+        "sha256": "802ce52455dd58eafc0fca3bec93d06131bacf3033b8a4b5a7dcccf36fbc2cc1"
       },
       {
         "path": "schemas/release-readiness.schema.json",
@@ -921,8 +1226,8 @@
       },
       {
         "path": "schemas/workflow-plan.schema.json",
-        "bytes": 1259,
-        "sha256": "7dc0764d602c6df484c5f3a8260536c7be2d8060ecc8a20835a1d59ba71d5757"
+        "bytes": 4723,
+        "sha256": "e90ec9b159d95f8931dae352ff9a34ebc8cf124ed620b71fe07546a690e59fa2"
       },
       {
         "path": "scripts/adoption-evidence.mjs",
@@ -931,8 +1236,8 @@
       },
       {
         "path": "scripts/build-release.mjs",
-        "bytes": 7305,
-        "sha256": "e218eea252402bc9e8f1117639b18d86f797a7a6014030d63295942042506e98"
+        "bytes": 7657,
+        "sha256": "121b0220b8c9aa58a1bc8b5f38dbfcdc96025fea887085229e437ff21310d58b"
       },
       {
         "path": "scripts/ci-evidence.mjs",
@@ -941,8 +1246,8 @@
       },
       {
         "path": "scripts/generate-demo-narration.ps1",
-        "bytes": 9828,
-        "sha256": "55044217d377ef0c3f78dc3db569cd6566e9bee436fe76ca91b9bb418c7edc20"
+        "bytes": 10382,
+        "sha256": "6a663cda96b6037ebe32ce44dc4a7a1bcdbd16d17f2d92de5697b392cb840517"
       },
       {
         "path": "scripts/release-lock.mjs",
@@ -950,9 +1255,19 @@
         "sha256": "ffe72be3c4ee6e7567ecf0c1eb5d2552ff1a6e2b3e3bf0ba99da7f618d6d6227"
       },
       {
+        "path": "scripts/release-metadata.mjs",
+        "bytes": 761,
+        "sha256": "7bf1067f52ef7ad13fefc0abba999204a1fe04cef4ca392ba8e786fc9f0ce962"
+      },
+      {
         "path": "scripts/release-status.mjs",
-        "bytes": 5312,
-        "sha256": "0e3429f66a23f269bfa29ae6ad793c34ef12b3be028e1410ccd1cc41abdfa711"
+        "bytes": 6930,
+        "sha256": "cb7204bfbbcafa69bd99da43e18b08a9fb9afc3d8a4713a8c22e8a4a6297846f"
+      },
+      {
+        "path": "scripts/release-worktree.mjs",
+        "bytes": 328,
+        "sha256": "ec8daa61614771d7e22da497c4b5d142c7cc167074089a4e6cf1aea92b87627a"
       },
       {
         "path": "scripts/safe-path.mjs",
@@ -976,8 +1291,8 @@
       },
       {
         "path": "SECURITY.md",
-        "bytes": 9132,
-        "sha256": "2824bd83f73c6dee185a1046e68e734886ec8d340caa9972ec5fcaaf02cd8853"
+        "bytes": 9346,
+        "sha256": "d953b9a6ed3c013bb431a95d3b8ab4f7cf3f876472cf0decca037e1d9be3d372"
       },
       {
         "path": "STANDALONE-WINDOWS.md",
@@ -996,23 +1311,23 @@
       },
       {
         "path": "templates/project/.github/agents/azure-architect.agent.md",
-        "bytes": 2001,
-        "sha256": "183a2d3c2fea751d3be20c76462c0ef6f120558d5951cb0332856e0148a1aa9d"
+        "bytes": 1965,
+        "sha256": "1849b3469e9f0328a9c261254124b5840b5548a57add34e926b99d2f41bf2c9c"
       },
       {
         "path": "templates/project/.github/agents/documentation-writer.agent.md",
-        "bytes": 1687,
-        "sha256": "634ae2346162ae6f40d343bf53a7e2bd2786da8cfd65c1f2ed3c1ab865c0fe2c"
+        "bytes": 1679,
+        "sha256": "6040751f49b9462a1b90a6a56fbcacc0d650f2ddccb67c0cd5307010256ab56c"
       },
       {
         "path": "templates/project/.github/agents/security-reviewer.agent.md",
-        "bytes": 2012,
-        "sha256": "9a1a3d1fd5142fc569c9bd6186eadfb604c9bcfe87a1827c7bdaf8b6e23b15a1"
+        "bytes": 1973,
+        "sha256": "afd63b41947a0039dd41fdff68a49d69943dfd071cb7295a54fee77eec3a5886"
       },
       {
         "path": "templates/project/.github/copilot-instructions.md",
-        "bytes": 9373,
-        "sha256": "d52df8bb507d7021a4a76c4f432f743d8b9427fb28a84756f3eced77170ca36f"
+        "bytes": 9622,
+        "sha256": "0a4f7a4c4d7a974ade822fed002e6f477e0597e9968e54ca98ab50811e67d9a9"
       },
       {
         "path": "templates/project/.github/instructions/azure-deployment.instructions.md",
@@ -1156,8 +1471,23 @@
       },
       {
         "path": "tests/adoption-rerun.test.mjs",
-        "bytes": 77858,
-        "sha256": "d60388807a1a471a8e0853b4faadf781594262fa35abe33725720aed81a4865d"
+        "bytes": 82169,
+        "sha256": "87792b49718c6cebfef66f9ea51d0ad129655deef96d9418ed0c29186b9e28a5"
+      },
+      {
+        "path": "tests/agent-builder.test.mjs",
+        "bytes": 32872,
+        "sha256": "cfd56c95354f1dcb83aa51c971e0287efe0070dd2b373e1a5ef89d24d4ac7219"
+      },
+      {
+        "path": "tests/audit-assurance.test.mjs",
+        "bytes": 20558,
+        "sha256": "5880bbc7b8b903cfb1782eff5c3d8966f9e9eee7ee519c26f1beac50be2e1e1d"
+      },
+      {
+        "path": "tests/audit-execution.test.mjs",
+        "bytes": 12207,
+        "sha256": "d2f44a46fdbd4a340f7076a3cd9464427aec6307e3471ba5e3ac8d43f6eeefaf"
       },
       {
         "path": "tests/documentation-builder.test.mjs",
@@ -1165,14 +1495,19 @@
         "sha256": "0d898e5008f3470fdd14a9724b8ccf221da8f5667841de913551c8aeeef7b6ed"
       },
       {
+        "path": "tests/gitleaks-scan.test.mjs",
+        "bytes": 8309,
+        "sha256": "5526751da713c66649dac6509701976ec49cb23728edb55df0dbb2af701cb244"
+      },
+      {
         "path": "tests/package-install.test.mjs",
-        "bytes": 3066,
-        "sha256": "0dc705e9b1b8c09deb098c1388b6209cda10ce8dca5e7c5b3bdc187b0443a4b1"
+        "bytes": 4473,
+        "sha256": "9880aa0cd2c5e63bd997472f4de8c0e38517fd929524dd00bf766225069e4195"
       },
       {
         "path": "tests/production-gates.test.mjs",
-        "bytes": 12910,
-        "sha256": "04e59869019ae9a07f7a93ad3409cc930f883f6e77deb46c336fb4b45a0e81b5"
+        "bytes": 16761,
+        "sha256": "eb58378e9cceae5beead232fcfdf6b62e4fe0cdf03a602b11fecad8e46beeebd"
       },
       {
         "path": "tests/project-status.test.mjs",
@@ -1191,13 +1526,13 @@
       },
       {
         "path": "tests/security-fuzz.test.mjs",
-        "bytes": 7467,
-        "sha256": "c3f5afd87438d391e27901d0197af0df6cffff6ecb50dbf1dd829262a36d69a7"
+        "bytes": 11777,
+        "sha256": "a1dcad87d3d9351b395117cd83607bdb7653ac8a38ad1ddcde7cd2ddff72bfa2"
       },
       {
         "path": "tests/skill-contracts.test.mjs",
-        "bytes": 49493,
-        "sha256": "22a140d09eea5eebe8a32bad7091d41c91ea6986b4db55f7c656fa937ed4910d"
+        "bytes": 77993,
+        "sha256": "b39ed7b9e7d0cd6f99be36dccbb69c70d0bac6dadb070ea993d9a9ad6ff38704"
       }
     ]
   },
@@ -1212,7 +1547,7 @@
     },
     {
       "name": ".github",
-      "description": "Top-level project boundary containing 62 scanned files.",
+      "description": "Top-level project boundary containing 73 scanned files.",
       "evidence": [
         ".github/copilot-instructions.md"
       ],
@@ -1228,23 +1563,23 @@
     },
     {
       "name": "Demo",
-      "description": "Top-level project boundary containing 3 scanned files.",
+      "description": "Top-level project boundary containing 15 scanned files.",
       "evidence": [
-        "Demo/audio/narration/scenes.json"
+        "Demo/audio/narration/scene-01.mp3"
       ],
       "status": "verified"
     },
     {
       "name": "config",
-      "description": "Top-level project boundary containing 3 scanned files.",
+      "description": "Top-level project boundary containing 4 scanned files.",
       "evidence": [
-        "config/orchestrator.yaml"
+        "config/gitleaks-allowlist.json"
       ],
       "status": "verified"
     },
     {
       "name": "docs",
-      "description": "Top-level project boundary containing 4 scanned files.",
+      "description": "Top-level project boundary containing 5 scanned files.",
       "evidence": [
         "docs/INTERNAL-RELEASE.md"
       ],
@@ -1260,7 +1595,7 @@
     },
     {
       "name": "reports",
-      "description": "Top-level project boundary containing 54 scanned files.",
+      "description": "Top-level project boundary containing 80 scanned files.",
       "evidence": [
         "reports/adoption-rerun-evidence.json"
       ],
@@ -1268,7 +1603,7 @@
     },
     {
       "name": "schemas",
-      "description": "Top-level project boundary containing 37 scanned files.",
+      "description": "Top-level project boundary containing 45 scanned files.",
       "evidence": [
         "schemas/adoption-transaction.schema.json"
       ],
@@ -1276,7 +1611,7 @@
     },
     {
       "name": "scripts",
-      "description": "Top-level project boundary containing 10 scanned files.",
+      "description": "Top-level project boundary containing 12 scanned files.",
       "evidence": [
         "scripts/adoption-evidence.mjs"
       ],
@@ -1292,7 +1627,7 @@
     },
     {
       "name": "tests",
-      "description": "Top-level project boundary containing 9 scanned files.",
+      "description": "Top-level project boundary containing 13 scanned files.",
       "evidence": [
         "tests/adoption-rerun.test.mjs"
       ],
@@ -1302,7 +1637,7 @@
   "technology": [
     {
       "name": ".md",
-      "description": "97 scanned files use this extension.",
+      "description": "111 scanned files use this extension.",
       "evidence": [
         ".github/copilot-instructions.md"
       ],
@@ -1310,7 +1645,7 @@
     },
     {
       "name": ".json",
-      "description": "70 scanned files use this extension.",
+      "description": "95 scanned files use this extension.",
       "evidence": [
         ".azure/environment.json"
       ],
@@ -1318,25 +1653,25 @@
     },
     {
       "name": ".mjs",
-      "description": "23 scanned files use this extension.",
+      "description": "34 scanned files use this extension.",
       "evidence": [
-        ".github/skills/documentation-builder/scripts/documentation-builder.mjs"
+        ".github/skills/agent-builder/scripts/agent-builder.mjs"
       ],
       "status": "verified"
     },
     {
       "name": ".mp3",
-      "description": "11 scanned files use this extension.",
+      "description": "22 scanned files use this extension.",
       "evidence": [
-        "reports/project-video/audio/scene-01.mp3"
+        "Demo/audio/narration/scene-01.mp3"
       ],
       "status": "verified"
     },
     {
       "name": ".ps1",
-      "description": "9 scanned files use this extension.",
+      "description": "10 scanned files use this extension.",
       "evidence": [
-        ".github/skills/azure-discovery/scripts/azure-discovery.ps1"
+        ".github/skills/agent-builder/scripts/azure-context.ps1"
       ],
       "status": "verified"
     },
@@ -1357,6 +1692,14 @@
       "status": "verified"
     },
     {
+      "name": ".toml",
+      "description": "2 scanned files use this extension.",
+      "evidence": [
+        ".github/skills/audit-code/config/gitleaks.toml"
+      ],
+      "status": "verified"
+    },
+    {
       "name": ".yaml",
       "description": "2 scanned files use this extension.",
       "evidence": [
@@ -1373,10 +1716,18 @@
       "status": "verified"
     },
     {
-      "name": ".bicep",
+      "name": ".jsonl",
+      "description": "2 scanned files use this extension.",
+      "evidence": [
+        "reports/execution-log.jsonl"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": ".pptx",
       "description": "1 scanned files use this extension.",
       "evidence": [
-        "templates/project/infra/main.bicep"
+        "Demo/Project-Orchestrator-Demo.pptx"
       ],
       "status": "verified"
     }
@@ -1384,7 +1735,7 @@
   "usage": [
     {
       "name": "npm run check",
-      "description": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-status.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
+      "description": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/agent-builder.test.mjs tests/audit-assurance.test.mjs tests/audit-execution.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-status.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
       "evidence": [
         "package.json"
       ],
@@ -1447,8 +1798,32 @@
       "status": "verified"
     },
     {
+      "name": "npm run security:gitleaks",
+      "description": "node .github/skills/audit-code/scripts/gitleaks-scan.mjs scan",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "npm run security:gitleaks:install",
+      "description": "node .github/skills/audit-code/scripts/gitleaks-scan.mjs install",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
       "name": "npm run test",
-      "description": "node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-status.test.mjs tests/project-video.test.mjs",
+      "description": "node --test tests/skill-contracts.test.mjs tests/agent-builder.test.mjs tests/audit-assurance.test.mjs tests/audit-execution.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-status.test.mjs tests/project-video.test.mjs",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "npm run test:gitleaks",
+      "description": "node --test tests/gitleaks-scan.test.mjs",
       "evidence": [
         "package.json"
       ],
@@ -1466,13 +1841,13 @@
   "features": [
     {
       "name": "Governed skill workflows",
-      "description": "42 installed skills provide bounded project actions.",
+      "description": "45 installed skills provide bounded project actions.",
       "evidence": [
+        ".github/skills/agent-builder/SKILL.md",
         ".github/skills/architecture-review/SKILL.md",
         ".github/skills/artifact-upgrade/SKILL.md",
         ".github/skills/audit-azure-environment/SKILL.md",
-        ".github/skills/audit-code/SKILL.md",
-        ".github/skills/audit-plan-remediation/SKILL.md"
+        ".github/skills/audit-code/SKILL.md"
       ],
       "status": "verified"
     },
@@ -1508,7 +1883,7 @@
   "workflows": [
     {
       "name": "npm run check",
-      "description": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-status.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
+      "description": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/agent-builder.test.mjs tests/audit-assurance.test.mjs tests/audit-execution.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-status.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
       "evidence": [
         "package.json"
       ],
@@ -1571,8 +1946,32 @@
       "status": "verified"
     },
     {
+      "name": "npm run security:gitleaks",
+      "description": "node .github/skills/audit-code/scripts/gitleaks-scan.mjs scan",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "npm run security:gitleaks:install",
+      "description": "node .github/skills/audit-code/scripts/gitleaks-scan.mjs install",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
       "name": "npm run test",
-      "description": "node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-status.test.mjs tests/project-video.test.mjs",
+      "description": "node --test tests/skill-contracts.test.mjs tests/agent-builder.test.mjs tests/audit-assurance.test.mjs tests/audit-execution.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-status.test.mjs tests/project-video.test.mjs",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "npm run test:gitleaks",
+      "description": "node --test tests/gitleaks-scan.test.mjs",
       "evidence": [
         "package.json"
       ],
@@ -1589,6 +1988,15 @@
   ],
   "customizations": {
     "skills": [
+      {
+        "name": "agent-builder",
+        "description": "Build, validate, preview, and transactionally install least-privilege custom agents, including governed publication handoffs for Foundry endpoints, Microsoft 365 Copilot and Teams, or ChatGPT actions. Use when creating, updating, or reviewing .agent.md files; do not use for cloud deployment, channel publication, or MCP installation.",
+        "evidence": [
+          ".github/skills/agent-builder/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/agent-builder"
+      },
       {
         "name": "architecture-review",
         "description": "Assess a repository's designed architecture against reliability, security, cost, operational, and performance criteria using infrastructure-as-code, configuration, and decision records. Use for design-time review of the architecture a repository defines; use audit-azure-environment instead to assess a deployed cloud tenant.",
@@ -1633,6 +2041,15 @@
         ],
         "status": "verified",
         "invocation": "/audit-plan-remediation"
+      },
+      {
+        "name": "audit-remediation",
+        "description": "Execute an approved audit remediation plan by all eligible phases, one phase, one finding, or resume state, with validation, rollback, checkpoints, and project handoff updates. Use only after audit-plan-remediation produces a valid plan; do not use to discover, review, or prioritize findings.",
+        "evidence": [
+          ".github/skills/audit-remediation/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/audit-remediation"
       },
       {
         "name": "audit-review-findings",
@@ -1870,7 +2287,7 @@
       },
       {
         "name": "skill-create",
-        "description": "Create or update concise, composable skill packages with valid metadata, bounded tools, ownership, validation, dependencies, and examples. Always use when a user asks, directly or indirectly, to create, add, define, author, build, or make a skill; do not use to invoke an existing skill.",
+        "description": "Create concise, composable skill packages with valid metadata, bounded tools, ownership, validation, dependencies, help, and documentation. Always use when a user asks, directly or indirectly, to create, add, define, author, build, or make a new skill; use skill-update for an existing skill.",
         "evidence": [
           ".github/skills/skill-create/SKILL.md"
         ],
@@ -1903,6 +2320,15 @@
         ],
         "status": "verified",
         "invocation": "/skill-registry"
+      },
+      {
+        "name": "skill-update",
+        "description": "Identify and update an existing governed skill through candidate resolution, bounded change review, explicit proceed approval, dependency analysis, help regeneration, and project documentation refresh. Always use when a user asks to modify, revise, enhance, fix, or update an existing skill; use skill-create for new skills.",
+        "evidence": [
+          ".github/skills/skill-update/SKILL.md"
+        ],
+        "status": "verified",
+        "invocation": "/skill-update"
       },
       {
         "name": "systematic-debugging",
@@ -2071,6 +2497,30 @@
         "status": "verified"
       },
       {
+        "name": "agent-blueprint.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/agent-blueprint.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "agent-builder-plan.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/agent-builder-plan.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "agent-builder-result.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/agent-builder-result.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
         "name": "architecture-review.schema.json",
         "description": "Machine-readable contract for a governed project artifact.",
         "evidence": [
@@ -2079,10 +2529,26 @@
         "status": "verified"
       },
       {
+        "name": "audit-evidence.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/audit-evidence.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
         "name": "audit-findings-review.schema.json",
         "description": "Machine-readable contract for a governed project artifact.",
         "evidence": [
           "schemas/audit-findings-review.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "audit-remediation-execution.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/audit-remediation-execution.schema.json"
         ],
         "status": "verified"
       },
@@ -2163,6 +2629,22 @@
         "description": "Machine-readable contract for a governed project artifact.",
         "evidence": [
           "schemas/documentation-plan.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "gitleaks-allowlist.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/gitleaks-allowlist.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
+        "name": "gitleaks-scan.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/gitleaks-scan.schema.json"
         ],
         "status": "verified"
       },
@@ -2287,6 +2769,14 @@
         "status": "verified"
       },
       {
+        "name": "release-operations.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/release-operations.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
         "name": "release-readiness.schema.json",
         "description": "Machine-readable contract for a governed project artifact.",
         "evidence": [
@@ -2363,7 +2853,7 @@
   "validation": [
     {
       "name": "npm run check",
-      "description": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-status.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
+      "description": "node --check pso.mjs && npm run security && npm run release && npm run release:verify:candidate && node --test tests/skill-contracts.test.mjs tests/agent-builder.test.mjs tests/audit-assurance.test.mjs tests/audit-execution.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-status.test.mjs tests/project-video.test.mjs && node pso.mjs verify",
       "evidence": [
         "package.json"
       ],
@@ -2394,8 +2884,32 @@
       "status": "verified"
     },
     {
+      "name": "npm run security:gitleaks",
+      "description": "node .github/skills/audit-code/scripts/gitleaks-scan.mjs scan",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "npm run security:gitleaks:install",
+      "description": "node .github/skills/audit-code/scripts/gitleaks-scan.mjs install",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
       "name": "npm run test",
-      "description": "node --test tests/skill-contracts.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-status.test.mjs tests/project-video.test.mjs",
+      "description": "node --test tests/skill-contracts.test.mjs tests/agent-builder.test.mjs tests/audit-assurance.test.mjs tests/audit-execution.test.mjs tests/adoption-rerun.test.mjs tests/security-fuzz.test.mjs tests/production-gates.test.mjs tests/package-install.test.mjs tests/project-understanding.test.mjs tests/documentation-builder.test.mjs tests/project-status.test.mjs tests/project-video.test.mjs",
+      "evidence": [
+        "package.json"
+      ],
+      "status": "verified"
+    },
+    {
+      "name": "npm run test:gitleaks",
+      "description": "node --test tests/gitleaks-scan.test.mjs",
       "evidence": [
         "package.json"
       ],
@@ -2412,5 +2926,5 @@
   ],
   "limitations": [],
   "markdown": "reports/project-understanding.md",
-  "markdownSha256": "de1a61188666334c0dadf4b9f4f0cd1a600193cca9fd4f7e9bb4692c632304ba"
+  "markdownSha256": "15621cd2f3f4df019c5b8d8098acedde7363b6947edeafc87be5ded5a9c518cf"
 }

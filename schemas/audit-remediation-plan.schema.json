@@ -1,12 +1,14 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://project-skills.dev/schemas/audit-remediation-plan/2.0.0",
+  "$id": "https://project-skills.dev/schemas/audit-remediation-plan/2.1.0",
   "title": "Audit Remediation Plan",
   "type": "object",
   "additionalProperties": false,
   "required": ["schemaVersion", "planId", "generatedAt", "sourceReview", "prioritization", "milestones", "items", "dispositions", "limitations"],
   "properties": {
-    "schemaVersion": { "enum": ["1.0.0", "2.0.0"] },
+    "schemaVersion": { "enum": ["1.0.0", "2.0.0", "2.1.0"] },
+    "auditRunId": { "type": "string", "format": "uuid" },
+    "sourceReviewSha256": { "type": "string", "pattern": "^[a-fA-F0-9]{64}$" },
     "planId": { "type": "string", "minLength": 1 },
     "generatedAt": { "type": "string", "format": "date-time" },
     "sourceReview": { "type": "string" },
@@ -58,6 +60,10 @@
           }
         }
       }
+    },
+    {
+      "if": { "properties": { "schemaVersion": { "const": "2.1.0" } }, "required": ["schemaVersion"] },
+      "then": { "required": ["auditRunId", "sourceReviewSha256"], "properties": { "prioritization": { "contains": { "const": "complexity" } }, "items": { "items": { "required": ["complexity", "complexityRationale"] } } } }
     }
   ]
 }

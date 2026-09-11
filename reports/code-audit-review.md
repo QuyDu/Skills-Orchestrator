@@ -1,46 +1,47 @@
 # Code Audit Review
 
-- Review: `REVIEW-2026-09-05-PSO-125`
-- Source audit: `AUDIT-2026-09-05-PSO-125`
-- Revision: `4f967865024134efc2793acfa449b2d66fd295c7` plus complete working tree
+- Review: `REVIEW-2026-09-11-PSO-126`
+- Source audit: `AUDIT-2026-09-11-PSO-126`
+- Audit run: `d343d673-dc11-4469-bce4-ccc0681608d1`
+- Revision: `39c1b62b2cc48f032f5acddc60800572b1523ce9` plus the recorded working tree
 - Assurance: **insufficient evidence**
 
-Machine-readable `reports/code-audit-review.json` is authoritative and preserves the schema 2.0 repository evidence, standards, assurance, and blockers from `reports/code-audit-findings.json`.
+Machine-readable `reports/code-audit-review.json` is authoritative and preserves the schema 2.2 repository evidence, standards, assurance, verification records, and immutable audit-evidence reference from `reports/code-audit-findings.json`.
 
 ## Summary
 
-| Severity | Findings |
+| Severity | Confirmed findings |
 | --- | ---: |
 | Critical | 0 |
 | High | 0 |
-| Medium | 1 |
+| Medium | 3 |
 | Low | 0 |
-| None | 0 |
-| **Total confirmed** | **1** |
+| None | 1 |
+| **Total** | **4** |
 
-Local and hosted validation is healthy for `5190959`: 107 local gate tests with one platform-alias skip, 198 built-in security-scanned files, 151 release-candidate files, 43 skills, nine hosted OS/Node jobs, three hosted Gitleaks jobs, and CodeQL all pass. Hosted branch, secret, dependency, Actions, CodeQL, and vulnerability safeguards are enabled.
+The local repository gate passed 133 tests with one platform-specific skip, verified all 45 skills, scanned 221 files, and verified 161 unsigned candidate files. Pinned Gitleaks 8.30.1 passed the six approved local scopes with zero findings.
 
 ## Findings
 
-| ID | Severity | Impact | Resolution |
+| ID | Severity | Finding | Remediation |
 | --- | --- | --- | --- |
-| `AUD-0205` | medium | The tested candidate lacks trusted signature and distinct independently signed review evidence. | Provision separate trusted identities, sign and review the exact candidate, then verify production release. |
+| `AUD-0301` | medium | Audit evidence content is accepted without schema validation. | Validate immutable snapshots against the evidence schema and required semantics. |
+| `AUD-0302` | medium | Audit validators follow report paths without canonical containment checks. | Require a repository root and reject outside-root, symlinked, or non-file artifacts. |
+| `AUD-0303` | medium | Verification record digests are not bound to named artifacts. | Bind each record to contained immutable bytes and validate identity and scope. |
+| `AUD-0304` | none | Digest equality conflicts with the schema's mixed-case hexadecimal format. | Select and enforce one canonical digest representation. |
 
-## Priority Analysis
+## Review Decision
 
-1. Complete `AUD-0205` after a controlled signer and distinct qualified reviewer are provisioned and distribution monitoring is established.
+All four findings are confirmed with high confidence. No severity or confidence was changed. The validated remediation plan is `PLAN-2026-09-11-PSO-126` in `reports/audit-remediation-plan.json`.
 
 ## Containment
 
-- Keep assurance at `insufficient-evidence`.
-- Preserve every remediation source plan through schema-v3 immutable snapshots.
-- Keep production distribution blocked until trusted signature, independent review, and production verification pass.
-- Keep production distribution blocked until `AUD-0205` is resolved.
+- Keep audit assurance at `insufficient-evidence`.
+- Treat affected records as local assessment evidence rather than independently tamper-evident proof until remediation passes.
+- Preserve the production release block; source publication does not authorize a package, release, deployment, signing, or production-readiness claim.
 
 ## Limitations
 
-- Hosted GitHub security settings and remote-only evidence were not inspected.
-- Pinned specialist local scanning completed; remote-only refs and unreachable objects were not assessed.
-- External advisories and current control documents were not retrieved.
-- No Azure environment or deployment was assessed.
+- Hosted GitHub, advisory, deployed-cloud, and current external-standards evidence was not collected for this audit.
+- Remote-only refs and unreachable Git objects were excluded.
 - This review does not execute remediation.

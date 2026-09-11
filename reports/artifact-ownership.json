@@ -1,7 +1,23 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-09-05T18:57:14.938Z",
+  "generatedAt": "2026-09-11T19:47:09.614Z",
   "artifacts": [
+    {
+      "report": "reports/agent-builder-plan.json",
+      "producer": "agent-builder"
+    },
+    {
+      "report": "reports/agent-builder-plan.md",
+      "producer": "agent-builder"
+    },
+    {
+      "report": "reports/agent-builder-result.json",
+      "producer": "agent-builder"
+    },
+    {
+      "report": "reports/agent-blueprints/<id>.json",
+      "producer": "agent-builder"
+    },
     {
       "report": "reports/architecture-review.json",
       "producer": "architecture-review"
@@ -28,6 +44,10 @@
     },
     {
       "report": "reports/gitleaks-scan.json",
+      "producer": "audit-code"
+    },
+    {
+      "report": "reports/audit-evidence/*.json",
       "producer": "audit-code"
     },
     {

@@ -1,8 +1,10 @@
 # Current Execution State
 
-- Run: `EXEC-2026-09-05-P4-RELEASE-ASSURANCE`
-- Status: blocked
-- Checkpoint: `CP-2026-09-05-P4-BLOCKED`
-- Last sequence: 31
+- Workflow: `WF-P4-CONTINUATION-20260911`
+- Run: `RUN-P4-PLAN-20260911-01`
+- Status: planned
+- Current step: 1 of 17
+- Active owner: `workflow-recovery`
+- Last sequence: 32
 
-P4 source, deterministic candidate, hosted CI, CodeQL, and repository-hardening work completed, but `REM-0205` remains incomplete. Resume requires trusted signing and independent reviewer identities plus a restricted internal artifact destination with tested install health and revocation.
+`STEP-001` is the only ready step. It performs read-only recovery analysis against the historical P4 checkpoint before any candidate, external, signing, publication, commit, push, or release action.

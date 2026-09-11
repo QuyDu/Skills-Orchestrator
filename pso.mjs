@@ -137,7 +137,7 @@ Apply this to every new user prompt, without exception, before any analysis, too
 const COPILOT_ORCHESTRATION_INSTRUCTION = `## Orchestration
 
 ${COPILOT_INSTRUCTION}`;
-const AGENT_INSTRUCTION = `## Project Skills Orchestrator
+const AGENT_INSTRUCTION = `## Project Orchestrator
 
 - Read \`${ORCHESTRATION_ROUTE}\` before multi-skill work.
 - Automatically use an existing skill when its trigger and ownership match the request; continue with normal engineering work only when no available skill fits. Prefer reuse over duplicating an existing skill, script, workflow, report, or capability.
@@ -1184,7 +1184,7 @@ function projectBrief({ displayName, profile, declaredStack, createdAt, intent }
 | Profile | ${profile} |
 | Stack | ${stackRow} |
 | Created | ${createdAt} |
-| Provisioned by | Project Skills Orchestrator ${VERSION} |
+| Provisioned by | Project Orchestrator ${VERSION} |
 
 ## Requested outcome
 
@@ -1252,7 +1252,7 @@ values.
 // Kept pure so the composed handover text can be asserted without launching an editor.
 function kickoffPrompt({ createdAt, intent }) {
   return [
-    `This project was created by Project Skills Orchestrator at ${createdAt}.`,
+    `This project was created by Project Orchestrator at ${createdAt}.`,
     "Read docs/PROJECT-BRIEF.md and .github/copilot-instructions.md before proposing anything.",
     `Requested outcome: ${intent}`,
     "Resolve relative times against the creation timestamp in the brief.",
@@ -1477,7 +1477,7 @@ async function createProject({ name: enteredName, destination, profile = DEFAULT
       nextAction: "Run development-environment-readiness before the first implementation objective"
     };
     const files = new Map([
-      ["README.md", `# ${displayName}\n\nProvisioned with Project Skills Orchestrator ${VERSION} using the ${profile} profile${declaredStack.size ? ` for the ${[...declaredStack].sort().join(", ")} stack` : ""}.\n\n## What this repository currently contains\n\nThis is a governed development baseline: agent instructions, scoped standards, reusable prompts, specialist agents, the skill catalog, editor configuration, and a continuous-integration workflow. **It does not yet contain application code.** Add your application under \`src/\` and its tests under \`tests/\`.\n\n## First steps\n\n1. Open \`${name}.code-workspace\` in Visual Studio Code.\n2. Select **Yes, I trust the authors** when Visual Studio Code asks about workspace trust. Tasks, debugging, and MCP servers stay disabled until you do.\n3. Select **Install** when Visual Studio Code offers the recommended extensions.\n4. Read \`.github/copilot-instructions.md\`. Every agent prompt in this project begins with the mandatory clarification protocol defined there.\n5. Open GitHub Copilot Chat in Agent mode and run \`/development-environment-readiness\` to validate tools, runtimes, authentication, debugging, and security gates.\n\nThe agent customization layer needs no configuration. Visual Studio Code discovers it automatically:\n\n| Location | What it provides |\n| --- | --- |\n| \`.github/copilot-instructions.md\` and \`AGENTS.md\` | Always-on project instructions |\n| \`.github/instructions/\` | Standards applied by file pattern |\n| \`.github/prompts/\` | Slash commands such as \`/create-adr\` and \`/security-review\` |\n| \`.github/agents/\` | Specialist agents in the agent picker |\n| \`.github/skills/\` | The governed skill catalog |\n\n${declaredStack.size ? "## Build, test, and debug\n\n`Ctrl+Shift+B` runs the build task and the Test Explorer runs the test task, both defined in `.vscode/tasks.json`. Debug configurations are in `.vscode/launch.json`; any value containing `REPLACE_WITH_` is a placeholder that needs your entry point before `F5` will work.\n\nThe continuous-integration workflow runs real build and test commands for the declared stack. Confirm they match this project before relying on the result.\n\n## Copilot cloud agent\n\n`.github/workflows/copilot-setup-steps.yml` preinstalls this project's dependencies in the ephemeral environment used by Copilot cloud agent and Copilot code review, so the agent can build and test instead of guessing at dependencies. It only takes effect once it is on the default branch." : "## Build, test, and debug\n\nNo stack was declared, so no build task, debug configuration, Copilot setup steps, or continuous-integration command was generated. The pipeline in `.github/workflows/ci.yml` fails until you configure one. That is deliberate: a pipeline that passes without testing anything is worse than no pipeline.\n\nRerun setup with `--stack` to generate tasks, debug configurations, Copilot cloud agent setup steps, and real CI commands."}\n`],
+      ["README.md", `# ${displayName}\n\nProvisioned with Project Orchestrator ${VERSION} using the ${profile} profile${declaredStack.size ? ` for the ${[...declaredStack].sort().join(", ")} stack` : ""}.\n\n## What this repository currently contains\n\nThis is a governed development baseline: agent instructions, scoped standards, reusable prompts, specialist agents, the skill catalog, editor configuration, and a continuous-integration workflow. **It does not yet contain application code.** Add your application under \`src/\` and its tests under \`tests/\`.\n\n## First steps\n\n1. Open \`${name}.code-workspace\` in Visual Studio Code.\n2. Select **Yes, I trust the authors** when Visual Studio Code asks about workspace trust. Tasks, debugging, and MCP servers stay disabled until you do.\n3. Select **Install** when Visual Studio Code offers the recommended extensions.\n4. Read \`.github/copilot-instructions.md\`. Every agent prompt in this project begins with the mandatory clarification protocol defined there.\n5. Open GitHub Copilot Chat in Agent mode and run \`/development-environment-readiness\` to validate tools, runtimes, authentication, debugging, and security gates.\n\nThe agent customization layer needs no configuration. Visual Studio Code discovers it automatically:\n\n| Location | What it provides |\n| --- | --- |\n| \`.github/copilot-instructions.md\` and \`AGENTS.md\` | Always-on project instructions |\n| \`.github/instructions/\` | Standards applied by file pattern |\n| \`.github/prompts/\` | Slash commands such as \`/create-adr\` and \`/security-review\` |\n| \`.github/agents/\` | Specialist agents in the agent picker |\n| \`.github/skills/\` | The governed skill catalog |\n\n${declaredStack.size ? "## Build, test, and debug\n\n`Ctrl+Shift+B` runs the build task and the Test Explorer runs the test task, both defined in `.vscode/tasks.json`. Debug configurations are in `.vscode/launch.json`; any value containing `REPLACE_WITH_` is a placeholder that needs your entry point before `F5` will work.\n\nThe continuous-integration workflow runs real build and test commands for the declared stack. Confirm they match this project before relying on the result.\n\n## Copilot cloud agent\n\n`.github/workflows/copilot-setup-steps.yml` preinstalls this project's dependencies in the ephemeral environment used by Copilot cloud agent and Copilot code review, so the agent can build and test instead of guessing at dependencies. It only takes effect once it is on the default branch." : "## Build, test, and debug\n\nNo stack was declared, so no build task, debug configuration, Copilot setup steps, or continuous-integration command was generated. The pipeline in `.github/workflows/ci.yml` fails until you configure one. That is deliberate: a pipeline that passes without testing anything is worse than no pipeline.\n\nRerun setup with `--stack` to generate tasks, debug configurations, Copilot cloud agent setup steps, and real CI commands."}\n`],
       ["AGENTS.md", mergedInstructionContent("# Project Agent Instructions", AGENT_INSTRUCTION_BLOCKS)],
       [".gitignore", "dist/\nnode_modules/\n.env\n.azure/environment.json\n.skills-orchestrator/\n"],
       [".github/workflows/ci.yml", continuousIntegrationWorkflow(declaredStack)],
@@ -1595,6 +1595,15 @@ function sectionItems(source, heading) {
   return [...content.matchAll(/^\s*-\s+`?([^`\r\n]+?)`?\s*$/gm)]
     .map((item) => item[1].trim())
     .filter((item) => item.toLowerCase() !== "none" && !item.toLowerCase().startsWith("no dedicated"));
+}
+
+function dependencyItems(source) {
+  const section = source.match(/^## Composition and Dependencies\s*$([\s\S]*?)(?=^## |(?![\s\S]))/m)?.[1] ?? "";
+  const prerequisites = section.match(/^### Prerequisite Dependencies\s*$([\s\S]*?)(?=^### |(?![\s\S]))/m)?.[1];
+  const content = prerequisites ?? section;
+  return [...content.matchAll(/^\s*-\s+`?([^`\r\n]+?)`?\s*$/gm)]
+    .map((item) => item[1].trim())
+    .filter((item) => item.toLowerCase() !== "none");
 }
 
 async function discoverSkills(root) {
@@ -2224,7 +2233,7 @@ async function applyAdoptionLocked(plan) {
   await mkdir(reports, { recursive: true });
   const reportPlan = portableAdoptionPlan(plan);
   await writeFile(path.join(reports, "adoption-plan.json"), `${JSON.stringify(reportPlan, null, 2)}\n`, "utf8");
-  const markdown = `# Project Skills Orchestrator Adoption
+  const markdown = `# Project Orchestrator Adoption
 
 - Project: \`${plan.projectName ?? path.basename(plan.projectRoot)}\`
 - Profile: \`${plan.profile}\`
@@ -2259,7 +2268,7 @@ async function inventory(requestedRoot) {
     const confidence = frontmatter.confidence || "low";
     if (!lifecycles.has(lifecycle)) throw new Error(`Invalid lifecycle '${lifecycle}' in ${skill.name}`);
     if (!confidenceLevels.has(confidence)) throw new Error(`Invalid confidence '${confidence}' in ${skill.name}`);
-    const dependencies = sectionItems(skill.source, "Composition and Dependencies");
+    const dependencies = dependencyItems(skill.source);
     const reports = sectionItems(skill.source, "Outputs").filter((item) => /^(reports|artifacts)\//.test(item));
     const missingSections = requiredSections.filter((heading) => !new RegExp(`^## ${heading.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*$`, "m").test(skill.source));
     const findings = [];
@@ -2393,6 +2402,132 @@ async function inventory(requestedRoot) {
   console.log(`Audited ${details.length} skills (${details.filter((skill) => skill.audit.status === "passed").length} passed)`);
 }
 
+function requireWorkflowString(value, label) {
+  if (typeof value !== "string" || !value.trim()) throw new Error(`Invalid workflow plan: ${label} must be a non-empty string`);
+}
+
+function validateWorkflowPlanShape(workflow) {
+  if (!workflow || typeof workflow !== "object" || Array.isArray(workflow)) throw new Error("Invalid workflow plan: root must be an object");
+  if (workflow.schemaVersion === "1.0.0") {
+    for (const field of ["workflowId", "runId", "intent", "createdAt"]) requireWorkflowString(workflow[field], field);
+    if (workflow.status !== "planned") throw new Error("Invalid workflow plan: status must be planned");
+    if (!Array.isArray(workflow.steps) || !workflow.steps.length) throw new Error("Invalid workflow plan: steps must not be empty");
+    return;
+  }
+  if (workflow.schemaVersion !== "1.1.0") throw new Error(`Invalid workflow plan: unsupported schemaVersion ${workflow.schemaVersion ?? "missing"}`);
+  const topFields = new Set(["schemaVersion", "workflowId", "runId", "intent", "status", "createdAt", "terminalStepId", "steps"]);
+  const stepFields = new Set(["id", "owner", "action", "status", "inputs", "outputs", "requiresApproval", "approvalClasses", "prerequisites", "completionCriteria", "checkpoint", "rollback", "recovery", "onBlocked", "onFailed"]);
+  const ownerFields = new Set(["type", "id"]);
+  const approvalClasses = new Set(["external", "privileged", "destructive", "irreversible", "production-data-mutation", "commit", "push", "phase", "signing", "publication", "release"]);
+  const unexpectedTopFields = Object.keys(workflow).filter((field) => !topFields.has(field));
+  if (unexpectedTopFields.length) throw new Error(`Invalid workflow plan: unexpected fields ${unexpectedTopFields.join(", ")}`);
+  for (const field of ["workflowId", "runId", "intent", "createdAt", "terminalStepId"]) requireWorkflowString(workflow[field], field);
+  if (Number.isNaN(Date.parse(workflow.createdAt))) throw new Error("Invalid workflow plan: createdAt must be a date-time");
+  if (!/^STEP-[0-9]{3,}$/.test(workflow.terminalStepId)) throw new Error("Invalid workflow plan: terminalStepId has an invalid format");
+  if (workflow.status !== "planned") throw new Error("Invalid workflow plan: status must be planned");
+  if (!Array.isArray(workflow.steps) || !workflow.steps.length) throw new Error("Invalid workflow plan: steps must not be empty");
+  for (const step of workflow.steps) {
+    if (!step || typeof step !== "object" || Array.isArray(step)) throw new Error("Invalid workflow plan: every step must be an object");
+    const unexpectedStepFields = Object.keys(step).filter((field) => !stepFields.has(field));
+    if (unexpectedStepFields.length) throw new Error(`Invalid workflow plan: unexpected step fields ${unexpectedStepFields.join(", ")}`);
+    for (const field of ["id", "action", "checkpoint", "rollback", "recovery", "onBlocked", "onFailed"]) requireWorkflowString(step[field], `${step.id ?? "step"}.${field}`);
+    if (!/^STEP-[0-9]{3,}$/.test(step.id)) throw new Error(`Invalid workflow plan: step ID ${step.id} has an invalid format`);
+    if (!/^CP-[A-Z0-9-]+$/.test(step.checkpoint)) throw new Error(`Invalid workflow plan: checkpoint ${step.checkpoint} has an invalid format`);
+    if (!step.owner || typeof step.owner !== "object" || Array.isArray(step.owner)) throw new Error(`Invalid workflow plan: ${step.id}.owner must be an object`);
+    const unexpectedOwnerFields = Object.keys(step.owner).filter((field) => !ownerFields.has(field));
+    if (unexpectedOwnerFields.length) throw new Error(`Invalid workflow plan: unexpected owner fields ${unexpectedOwnerFields.join(", ")}`);
+    if (!new Set(["skill", "operator"]).has(step.owner.type)) throw new Error(`Invalid workflow plan: ${step.id}.owner.type must be skill or operator`);
+    requireWorkflowString(step.owner.id, `${step.id}.owner.id`);
+    if (!new Set(["planned", "ready", "blocked", "completed", "failed", "skipped"]).has(step.status)) throw new Error(`Invalid workflow plan: unsupported status for ${step.id}`);
+    for (const field of ["inputs", "outputs", "approvalClasses", "prerequisites", "completionCriteria"]) {
+      if (!Array.isArray(step[field])) throw new Error(`Invalid workflow plan: ${step.id}.${field} must be an array`);
+      if (field === "completionCriteria" && !step[field].length) throw new Error(`Invalid workflow plan: ${step.id}.completionCriteria must not be empty`);
+      if (new Set(step[field]).size !== step[field].length) throw new Error(`Invalid workflow plan: ${step.id}.${field} contains duplicates`);
+      for (const item of step[field]) requireWorkflowString(item, `${step.id}.${field}`);
+    }
+    if (typeof step.requiresApproval !== "boolean") throw new Error(`Invalid workflow plan: ${step.id}.requiresApproval must be boolean`);
+    const unsupportedApprovals = step.approvalClasses.filter((approvalClass) => !approvalClasses.has(approvalClass));
+    if (unsupportedApprovals.length) throw new Error(`Invalid workflow plan: ${step.id} has unsupported approval classes ${unsupportedApprovals.join(", ")}`);
+    if (step.requiresApproval !== (step.approvalClasses.length > 0)) throw new Error(`Invalid workflow plan: ${step.id} approval declaration is inconsistent`);
+    if (step.owner.type === "operator" && !step.requiresApproval) throw new Error(`Invalid workflow plan: operator step ${step.id} must require approval`);
+  }
+}
+
+async function validateWorkflowPlan(workflow, root) {
+  validateWorkflowPlanShape(workflow);
+  if (workflow.schemaVersion === "1.0.0") return workflow;
+  const ids = workflow.steps.map((step) => step.id);
+  if (new Set(ids).size !== ids.length) throw new Error("Invalid workflow plan: step IDs must be unique");
+  const byId = new Map(workflow.steps.map((step) => [step.id, step]));
+  if (!byId.has(workflow.terminalStepId)) throw new Error(`Invalid workflow plan: terminal step ${workflow.terminalStepId} does not exist`);
+  const terminal = byId.get(workflow.terminalStepId);
+  if (terminal.owner.type !== "skill" || terminal.owner.id !== "project-handoff") throw new Error("Invalid workflow plan: terminal step must be owned by project-handoff");
+  const skillNames = new Set((await discoverSkills(root)).map((skill) => skill.name));
+  for (const step of workflow.steps) {
+    if (step.owner.type === "skill" && !skillNames.has(step.owner.id)) throw new Error(`Invalid workflow plan: unknown skill owner ${step.owner.id}`);
+    for (const reference of [...step.prerequisites, step.onBlocked, step.onFailed]) {
+      if (!byId.has(reference)) throw new Error(`Invalid workflow plan: ${step.id} references unknown step ${reference}`);
+    }
+  }
+  const visiting = new Set();
+  const visited = new Set();
+  function visitPrerequisites(id, trail = []) {
+    if (visiting.has(id)) throw new Error(`Invalid workflow plan: prerequisite cycle ${[...trail, id].join(" -> ")}`);
+    if (visited.has(id)) return;
+    visiting.add(id);
+    for (const prerequisite of byId.get(id).prerequisites) visitPrerequisites(prerequisite, [...trail, id]);
+    visiting.delete(id);
+    visited.add(id);
+  }
+  for (const id of ids) visitPrerequisites(id);
+  const ready = workflow.steps.filter((step) => step.status === "ready");
+  if (ready.length !== 1 || ready[0].prerequisites.length) throw new Error("Invalid workflow plan: exactly one prerequisite-free step must be ready");
+  function reachesTerminal(start, route) {
+    const seen = new Set();
+    let current = start;
+    while (current !== workflow.terminalStepId) {
+      if (seen.has(current)) return false;
+      seen.add(current);
+      current = byId.get(current)[route];
+    }
+    return true;
+  }
+  for (const step of workflow.steps) {
+    if (step.id === workflow.terminalStepId) continue;
+    if (!reachesTerminal(step.id, "onBlocked")) throw new Error(`Invalid workflow plan: ${step.id} blocked route cannot reach terminal handoff`);
+    if (!reachesTerminal(step.id, "onFailed")) throw new Error(`Invalid workflow plan: ${step.id} failed route cannot reach terminal handoff`);
+  }
+  return workflow;
+}
+
+function workflowPlanMarkdown(workflow) {
+  return [
+    "# Workflow Plan", "", `Generated: ${workflow.createdAt}`, "", `Intent: ${workflow.intent}`, "",
+    "| Step | Owner | Status | Action | Approval |", "| --- | --- | --- | --- | --- |",
+    ...workflow.steps.map((step) => `| ${step.id} | ${step.owner.type}:${step.owner.id} | ${step.status} | ${step.action.replaceAll("|", "\\|")} | ${step.approvalClasses.join(", ") || "None"} |`),
+    "", `Terminal handoff: ${workflow.terminalStepId}`, ""
+  ].join("\n");
+}
+
+function workflowStateMarkdown(state) {
+  return [
+    "# Current Execution State", "", `- Workflow: \`${state.workflowId}\``, `- Run: \`${state.runId}\``,
+    `- Status: ${state.status}`, `- Current step: ${state.currentStep} of ${state.totalSteps}`,
+    `- Active owner: \`${state.activeSkill}\``, `- Last sequence: ${state.lastSequence}`, ""
+  ].join("\n");
+}
+
+async function validateWorkflowPlanFile(requestedRoot, requestedFile) {
+  const root = await realpath(path.resolve(requestedRoot));
+  const target = requestedFile ? path.resolve(root, requestedFile) : path.join(root, "reports", "workflow-plan.json");
+  const relative = path.relative(root, target);
+  validateRelativePath(relative);
+  await assertSafeManagedPath(root, relative);
+  const workflow = JSON.parse(await readFile(target, "utf8"));
+  await validateWorkflowPlan(workflow, root);
+  console.log(`Validated workflow plan: ${workflow.workflowId}`);
+}
+
 async function plan(requestedRoot, intent) {
   if (!intent) throw new Error("Use --intent to describe the requested outcome");
   const root = await realpath(path.resolve(requestedRoot));
@@ -2415,10 +2550,24 @@ async function plan(requestedRoot, intent) {
     const runId = `RUN-${randomUUID()}`;
     const now = new Date().toISOString();
     const workflow = {
-      schemaVersion: "1.0.0", workflowId, runId, intent,
-      status: "planned", createdAt: now,
-      steps: [{ id: "STEP-001", skill: "project-skills-orchestrator", action: "Route intent", status: "planned" }]
+      schemaVersion: "1.1.0", workflowId, runId, intent,
+      status: "planned", createdAt: now, terminalStepId: "STEP-002",
+      steps: [
+        {
+          id: "STEP-001", owner: { type: "skill", id: "project-skills-orchestrator" }, action: "Route clarified intent", status: "ready",
+          inputs: ["Clarified user intent"], outputs: ["Routed workflow outcome"], requiresApproval: false, approvalClasses: [], prerequisites: [],
+          completionCriteria: ["Intent is routed to exactly one owning skill per executable step."], checkpoint: "CP-ROUTED",
+          rollback: "Preserve the prior valid plan.", recovery: "Correct unresolved ownership and replan.", onBlocked: "STEP-002", onFailed: "STEP-002"
+        },
+        {
+          id: "STEP-002", owner: { type: "skill", id: "project-handoff" }, action: "Publish terminal workflow continuity", status: "planned",
+          inputs: ["STEP-001 outcome"], outputs: ["reports/project-handoff.json", "reports/project-handoff.md", "reports/current-work-state.json"], requiresApproval: false, approvalClasses: [], prerequisites: ["STEP-001"],
+          completionCriteria: ["The handoff records completed, blocked, failed, and pending work with one next action."], checkpoint: "CP-HANDOFF",
+          rollback: "Preserve the prior valid handoff.", recovery: "Regenerate synchronized continuity from the latest valid outcome.", onBlocked: "STEP-002", onFailed: "STEP-002"
+        }
+      ]
     };
+    await validateWorkflowPlan(workflow, root);
     const eventFile = path.join(reports, "execution-log.jsonl");
     await assertSafeManagedPath(root, "reports/execution-log.jsonl");
     let sequence = 1;
@@ -2429,11 +2578,19 @@ async function plan(requestedRoot, intent) {
       if (error.code !== "ENOENT") throw error;
     }
     const event = {
-      eventId: randomUUID(), eventType: "workflow.planned", occurredAt: now, sequence,
-      workflowId, runId, actor: "pso-standalone", payload: { intent, totalSteps: 1 }
+      schemaVersion: "1.0.0", sequence, timestamp: now, workflowId, runId,
+      event: "workflow-planned", actor: "pso-standalone", intent, totalSteps: workflow.steps.length
+    };
+    const state = {
+      schemaVersion: "1.0.0", workflowId, runId, status: "planned", currentStep: 1,
+      totalSteps: workflow.steps.length, activeSkill: workflow.steps[0].owner.id,
+      lastCompletedStep: 0, resumeFromStep: 1, lastSequence: sequence, updatedAt: now
     };
     await appendFile(eventFile, `${JSON.stringify(event)}\n`, "utf8");
     await writeTextAtomic(path.join(reports, "workflow-plan.json"), `${JSON.stringify(workflow, null, 2)}\n`);
+    await writeTextAtomic(path.join(reports, "workflow-plan.md"), workflowPlanMarkdown(workflow));
+    await writeTextAtomic(path.join(reports, "current-execution-state.json"), `${JSON.stringify(state, null, 2)}\n`);
+    await writeTextAtomic(path.join(reports, "current-execution-state.md"), workflowStateMarkdown(state));
     console.log(`Created workflow ${workflowId}`);
   } finally {
     await rm(lockPath, { force: true });
@@ -2483,6 +2640,36 @@ function reportLaunch({ launch, prompt, brief }) {
   }
   console.log(`Could not open Visual Studio Code automatically: ${launch.reason}. Open the workspace file listed above manually.`);
   if (prompt) console.log(`Paste this into Copilot Chat in the new project:\n\n${prompt}\n`);
+}
+
+function runAgentBuilder(options) {
+  const action = options._[1];
+  if (!action) throw new Error("Use agent build, agent validate, agent plan, or agent apply");
+  const script = path.join(SCRIPT_ROOT, ".github", "skills", "agent-builder", "scripts", "agent-builder.mjs");
+  if (!existsSync(script)) throw new Error("Distribution is missing the Agent Builder engine");
+  const args = [script, action];
+  const valueOptions = [
+    "project", "blueprint", "plan", "agent", "type", "id", "name", "description", "purpose", "risk", "capabilities",
+    "user-invocable", "model-invocable", "autonomy", "web-safety", "constraints", "approach", "output-format", "subagents", "handoffs-file",
+    "azure-required", "cloud", "location", "environment-name", "authentication-method", "subscription-id",
+    "publication-targets", "version-policy", "microsoft365-audience", "chatgpt-visibility"
+  ];
+  const flagOptions = ["accept-risk", "json"];
+  for (const key of Object.keys(options).filter((item) => item !== "_")) {
+    if (/^(?:password|client-secret|secret|token|api-key|access-key|connection-string)$/i.test(key)) {
+      throw new Error(`Credential parameter --${key} is prohibited; authenticate directly through the Azure CLI session`);
+    }
+    if (![...valueOptions, ...flagOptions].includes(key)) throw new Error(`Unknown Agent Builder parameter: --${key}`);
+  }
+  for (const key of valueOptions) {
+    if (options[key] !== undefined) args.push(`--${key}`, String(options[key]));
+  }
+  for (const key of flagOptions) {
+    if (options[key] === true) args.push(`--${key}`);
+  }
+  const result = spawnSync(process.execPath, args, { cwd: process.cwd(), stdio: "inherit", windowsHide: true });
+  if (result.error) throw new Error(`Agent Builder could not start: ${result.error.message}`);
+  if (result.status !== 0) throw new Error(`Agent Builder failed with exit code ${result.status}`);
 }
 
 // Windows can refuse a directory rename while an indexer or scanner still holds a handle in the staging tree.
@@ -2545,7 +2732,7 @@ async function cloneAndSetup({ repository: enteredRepository, destination, profi
 async function guidedSetup() {
   const terminal = createInterface({ input: process.stdin, output: process.stdout });
   try {
-    console.log("Project Skills Orchestrator Setup\n");
+    console.log("Project Orchestrator Setup\n");
     const projectType = (await terminal.question("Is this a (N)ew project, (E)xisting local project, or (R)emote GitHub repository? [N/E/R]: ")).trim().toLowerCase();
     if (projectType === "n" || projectType === "new") {
       const name = await terminal.question("Project name: ");
@@ -2605,7 +2792,7 @@ async function guidedSetup() {
 }
 
 function help() {
-  console.log(`Project Skills Orchestrator ${VERSION}
+  console.log(`Project Orchestrator ${VERSION}
 
 Usage:
   node .\\pso.mjs
@@ -2616,6 +2803,11 @@ Usage:
   node .\\pso.mjs recover --project "C:\\repos\\existing" [--transaction ID]
   node .\\pso.mjs inventory [--root "C:\\repos\\my-project"]
   node .\\pso.mjs plan --intent "Build a customer portal" [--root PATH]
+  node .\\pso.mjs plan validate [--root PATH] [--file reports/workflow-plan.json]
+  node .\\pso.mjs agent build --project "C:\\repos\\my-project" [agent parameters]
+  node .\\pso.mjs agent validate --project "C:\\repos\\my-project" --blueprint agent.json
+  node .\\pso.mjs agent plan --project "C:\\repos\\my-project" --blueprint agent.json
+  node .\\pso.mjs agent apply --project "C:\\repos\\my-project" --blueprint agent.json --plan reports/agent-builder-plan.json --accept-risk
   node .\\pso.mjs verify
   node .\\pso.mjs --version
 
@@ -2634,6 +2826,19 @@ New project:
   docs/PROJECT-BRIEF.md, and with --open it is handed to Copilot Chat in ask
   mode so the first turn can plan and ask questions but cannot change files.
   Describe the application only; the project itself already exists by then.
+
+Agent Builder:
+  agent build accepts --type, --id, --name, --description, --purpose, --risk,
+  --capabilities, --user-invocable, --model-invocable, --autonomy, --web-safety,
+  --constraints, --approach, --output-format, --subagents, and --handoffs-file.
+  Missing values are requested. Autonomous research is limited to read-only
+  read, search, and web capabilities.
+  Foundry publication planning accepts --publication-targets, --version-policy,
+  --microsoft365-audience, and --chatgpt-visibility. It records a review handoff
+  but does not deploy, configure endpoints, publish channels, or create a GPT.
+  Foundry types or --azure-required true also resolve --cloud, --location,
+  --environment-name, --authentication-method, and optional --subscription-id.
+  Azure CLI authentication starts only when required. Credential values are never accepted.
 
 Adoption:
   --force-templates installs framework templates even where an equivalent exists.
@@ -2728,7 +2933,9 @@ async function main() {
     if (!options.project) throw new Error("Use --project with the repository path to recover");
     return recoverAdoption(options.project, options.transaction);
   }
+  if (command === "agent") return runAgentBuilder(options);
   if (command === "inventory") return inventory(path.resolve(options.root ?? process.cwd()));
+  if (command === "plan" && options._[1] === "validate") return validateWorkflowPlanFile(path.resolve(options.root ?? process.cwd()), options.file);
   if (command === "plan") return plan(path.resolve(options.root ?? process.cwd()), options.intent);
   if (!command) return guidedSetup();
   throw new Error(`Unknown command: ${command}`);
