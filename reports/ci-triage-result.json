@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-09-11T18:15:00.000Z",
+  "provider": "github-actions",
+  "repository": "QuyDu/Skills-Orchestrator",
+  "pullRequest": 8,
+  "runId": 34630219417,
+  "sourceRevision": "57568fb667e1b6ccc462dc1cc5b16c1c8c544bda",
+  "status": "repair-validated-locally",
+  "classification": "product-code",
+  "failedJobs": [
+    {"name":"windows-latest / Node 22","jobId":103364920573},
+    {"name":"windows-latest / Node 24","jobId":103364920592},
+    {"name":"windows-latest / Node 26","jobId":103364920624},
+    {"name":"macos-latest / Node 22","jobId":103364920712},
+    {"name":"macos-latest / Node 24","jobId":103364920628},
+    {"name":"macos-latest / Node 26","jobId":103364920625}
+  ],
+  "firstCausalFailure": {
+    "test": "Agent Builder plans, applies, and validates a least-privilege agent",
+    "message": "Agent Builder stopped: --agent must match the blueprint target inside the project",
+    "relatedTest": "pso agent updates an existing agent with a transaction backup"
+  },
+  "rootCause": "safeProjectRoot canonicalized the project root, but validateInstalled compared its canonical target with a lexical path.resolve(agentFile). Equivalent paths through runner filesystem aliases therefore compared unequal.",
+  "repair": {
+    "paths": [
+      ".github/skills/agent-builder/scripts/agent-builder.mjs",
+      "tests/agent-builder.test.mjs"
+    ],
+    "summary": "Canonicalize the supplied existing agent path, compare Windows paths case-insensitively, and cover validation through a project-root filesystem alias."
+  },
+  "validation": [
+    {"command":"Temporary-junction reproduction with three focused Agent Builder tests","status":"passed","evidence":"3 passed, 0 failed, including both formerly failing tests and the new alias regression."},
+    {"command":"node --test tests/agent-builder.test.mjs","status":"passed","evidence":"18 passed, 0 failed."},
+    {"command":"npm run check","status":"passed","evidence":"134 passed, 1 platform-specific skip, 0 failed; 45 skills verified; 221 files security-scanned; 161 unsigned candidate files verified."}
+  ],
+  "remoteRecheck": {
+    "status": "pending-push",
+    "requirement": "Observe replacement GitHub Actions checks pass before auto-merge."
+  },
+  "limitations": [
+    "Local validation does not substitute for the replacement hosted Windows and macOS matrix.",
+    "The source-only pull request does not authorize a release or production-readiness claim."
+  ]
+}

@@ -124,6 +124,31 @@ test("Agent Builder plans, applies, and validates a least-privilege agent", asyn
   }
 });
 
+test("Agent Builder validates an agent through a canonical project-root alias", async (context) => {
+  const { project, blueprintPath } = await fixture();
+  const alias = path.join(path.dirname(project), `${path.basename(project)}-alias`);
+  try {
+    try {
+      await symlink(project, alias, process.platform === "win32" ? "junction" : "dir");
+    } catch (error) {
+      if (["EPERM", "EACCES", "ENOTSUP"].includes(error.code)) return context.skip(`Filesystem aliases are unavailable: ${error.code}`);
+      throw error;
+    }
+    const aliasedBlueprint = path.join(alias, path.basename(blueprintPath));
+    const plan = run(alias, "plan", aliasedBlueprint);
+    assert.equal(plan.status, 0, plan.stderr);
+    const planPath = path.join(alias, "reports", "agent-builder-plan.json");
+    const apply = run(alias, "apply", aliasedBlueprint, ["--plan", planPath, "--accept-risk"]);
+    assert.equal(apply.status, 0, apply.stderr);
+    const aliasedTarget = path.join(alias, ".github", "agents", "accessibility-reviewer.agent.md");
+    const validate = run(alias, "validate", aliasedBlueprint, ["--agent", aliasedTarget]);
+    assert.equal(validate.status, 0, validate.stderr);
+  } finally {
+    await rm(alias, { recursive: true, force: true });
+    await rm(project, { recursive: true, force: true });
+  }
+});
+
 test("Agent Builder preserves schema 2.0 compatibility and requires schema 2.1 autonomy", async () => {
   const { project, blueprintPath } = await fixture();
   try {

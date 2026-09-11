@@ -1,27 +1,28 @@
 # Change Review
 
-- Base: `39c1b62b2cc48f032f5acddc60800572b1523ce9`
+- Base: `57568fb667e1b6ccc462dc1cc5b16c1c8c544bda`
 - Head: local working tree
 - Status: **passed**
-- Findings: **none introduced by the bounded change**
+- Findings: **none**
 
 ## Boundary
 
-The review covers the complete workflow-planner and audit-pipeline hardening, schema evolution, tests, generated documentation and reports, immutable evidence, and corrected PSO-126 remediation plan intended for source-only publication through the protected default branch.
+Repair the cross-platform Agent Builder path-alias failure from GitHub Actions run `34630219417`, add durable regression coverage, and preserve the generated inventory and security evidence refreshed by the successful repository gate.
+
+## Evidence
+
+- Authenticated logs showed the same two Agent Builder failures across Windows and macOS Node 22, 24, and 26.
+- The supplied `--agent` path was lexical while the expected target was rooted under a canonical project path.
+- The repair canonicalizes the supplied existing file and preserves managed-path symlink rejection.
+- A project-root alias regression now exercises the previously failing behavior.
 
 ## Validation
 
-- The findings, review, and remediation plan validate as one `auditRunId`- and digest-bound chain.
-- `npm run check` passed 133 of 134 tests with one platform-specific skip.
-- All 45 skills passed verification; 221 files were security-scanned and 161 unsigned candidate files were verified.
-- `git diff --check` reported no whitespace errors or unmerged paths.
+- Focused alias reproduction: 3 passed, 0 failed.
+- Complete Agent Builder suite: 18 passed, 0 failed.
+- `npm run check`: 134 passed, 1 expected platform-specific skip, 0 failed.
+- All 45 skills verified; 221 files security-scanned; 161 unsigned candidate files verified.
 
-## Residual Risk
+## Remaining Gate
 
-- `AUD-0301`, `AUD-0302`, and `AUD-0303` remain confirmed medium audit-framework integrity findings; `AUD-0304` remains a non-security correctness finding. They are disclosed and mapped to `PLAN-2026-09-11-PSO-126`, not represented as resolved.
-- Hosted CI must pass against the pushed commit before merge.
-- P4 release assurance remains blocked. Source publication does not authorize a package, release, deployment, or production-readiness claim.
-
-## Recommendation
-
-Create one source-only commit, push `feat/agent-builder-latest` normally, and merge through a protected pull request into default `main`. Do not force-push or publish a release package.
+Replacement hosted checks must pass before protected auto-merge. Release and production-assurance blockers are unchanged.

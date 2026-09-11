@@ -1,42 +1,40 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-09-11T17:30:00.000Z",
+  "generatedAt": "2026-09-11T18:15:00.000Z",
   "status": "passed",
   "boundary": {
     "type": "working-tree",
-    "baseCommit": "39c1b62b2cc48f032f5acddc60800572b1523ce9",
+    "baseCommit": "57568fb667e1b6ccc462dc1cc5b16c1c8c544bda",
     "head": "local working tree",
-    "objective": "Review the complete workflow-planner and audit-pipeline hardening, schema evolution, tests, generated documentation and reports, immutable evidence, and corrected PSO-126 remediation plan before source-only publication through the protected default branch."
+    "objective": "Repair the cross-platform Agent Builder path-alias failure from GitHub Actions run 34630219417, add durable regression coverage, and preserve attributable generated verification reports."
   },
   "findings": [],
   "validation": [
     {
-      "command": "Read-only bounded review of the complete working-tree diff and controlling skill, schema, validator, test, report, and generated-documentation paths",
+      "command": "Authenticated GitHub Actions log review for run 34630219417",
       "status": "passed",
-      "evidence": "No new correctness defect, security regression, compatibility break, stale modified artifact, ownership violation, or missing critical test was identified. Historical schema 2.0 and 3.0 artifacts remain intentionally readable and unchanged."
+      "evidence": "All Windows and macOS Node jobs shared the same two Agent Builder failures; the first causal error rejected an equivalent --agent path after the project root had been canonicalized."
     },
     {
-      "command": "node .github/skills/audit-code/scripts/audit-validate.mjs findings reports/code-audit-findings.json; review; plan",
+      "command": "Temporary-junction reproduction with focused Agent Builder tests",
       "status": "passed",
-      "evidence": "PSO-126 findings, review, immutable evidence reference, auditRunId, and remediation-plan source digest validate as one chain."
+      "evidence": "Both formerly failing tests and the new project-root alias regression passed after the repair."
+    },
+    {
+      "command": "node --test tests/agent-builder.test.mjs",
+      "status": "passed",
+      "evidence": "18 tests passed with no failures or skips."
     },
     {
       "command": "npm run check",
       "status": "passed",
-      "evidence": "The repository gate passed 133 of 134 tests with one platform-specific skip, verified all 45 skills, scanned 221 files, and verified 161 unsigned candidate files."
-    },
-    {
-      "command": "git diff --check",
-      "status": "passed",
-      "evidence": "No whitespace errors or unmerged paths were found in the bounded candidate."
+      "evidence": "134 of 135 tests passed with one expected platform-specific skip; all 45 skills passed, 221 files were security-scanned, and 161 unsigned candidate files were verified."
     }
   ],
   "openQuestions": [],
   "residualRisks": [
-    "AUD-0301, AUD-0302, and AUD-0303 remain confirmed medium audit-framework integrity findings; AUD-0304 remains a non-security correctness finding. They are disclosed and mapped to PLAN-2026-09-11-PSO-126, not represented as resolved.",
-    "Hosted CI must run against the pushed commit before protected merge.",
-    "The public source update does not authorize a package, GitHub release, deployment, trusted-signature claim, independent-review claim, or production-readiness claim.",
-    "P4 release assurance remains blocked by signing, independent review, operational evidence, revocation, and production verification."
+    "Replacement hosted Windows and macOS checks must pass before protected auto-merge.",
+    "The release and production-assurance blockers remain unchanged."
   ],
-  "recommendation": "The full bounded worktree is ready for one source-only commit and normal push to feat/agent-builder-latest, followed by a protected pull request to default main. Do not force-push or publish a release package."
+  "recommendation": "Commit and push the focused repair to pull request #8, retain protected auto-merge, and report success only after the replacement hosted checks and merge complete."
 }

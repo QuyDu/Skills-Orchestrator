@@ -728,7 +728,13 @@ async function validateInstalled(root, blueprintFile, agentFile) {
   await validateReferences(root, blueprint);
   const expected = renderAgent(blueprint);
   const target = await safeTarget(root, `.github/agents/${blueprint.id}.agent.md`);
-  if (agentFile && path.resolve(agentFile) !== target) throw new Error("--agent must match the blueprint target inside the project");
+  if (agentFile) {
+    const suppliedAgent = await realpath(path.resolve(agentFile));
+    const matchesTarget = process.platform === "win32"
+      ? suppliedAgent.toLowerCase() === target.toLowerCase()
+      : suppliedAgent === target;
+    if (!matchesTarget) throw new Error("--agent must match the blueprint target inside the project");
+  }
   const actual = await readFile(target, "utf8");
   if (actual !== expected) throw new Error(`Installed agent does not match blueprint: ${path.relative(root, target)}`);
   return { status: "valid", id: blueprint.id, sha256: sha256(actual) };
