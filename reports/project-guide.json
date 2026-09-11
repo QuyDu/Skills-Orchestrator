@@ -1,14 +1,14 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-09-10T00:50:13.381Z",
+  "generatedAt": "2026-09-11T15:49:52.352Z",
   "projectUnderstanding": {
     "json": "reports/project-understanding.json",
-    "jsonSha256": "cec06ff56295a97c53a6757e8e8e0aaf4aa63baadf46e2cd019feb6e49f6c8d9",
+    "jsonSha256": "c7c5a7e9c928fe297a8dd4dabac19fbd85a569e50a875ea65661fbc0d5e6c2f2",
     "markdown": "reports/project-understanding.md",
-    "markdownSha256": "17567fb6783f9931961230406e98aab430fdaacba1d3f33e2c76452667a003db"
+    "markdownSha256": "15621cd2f3f4df019c5b8d8098acedde7363b6947edeafc87be5ded5a9c518cf"
   },
   "guide": "docs/PROJECT-GUIDE.md",
-  "guideSha256": "397f56a8593610f8236350eff12f75bf8f8183de125673cbb81ede247b2dfda6",
+  "guideSha256": "e60061bcd66df3fbba4831fe0391f40556d88e67208b2b631c29f6e1449fd4ef",
   "claims": [
     {
       "id": "claim-01-azure",
@@ -77,7 +77,7 @@
       "id": "claim-08-reports",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "Top-level project boundary containing 78 scanned files.",
+      "statement": "Top-level project boundary containing 80 scanned files.",
       "evidence": [
         "reports/adoption-rerun-evidence.json"
       ]
@@ -86,7 +86,7 @@
       "id": "claim-09-schemas",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "Top-level project boundary containing 44 scanned files.",
+      "statement": "Top-level project boundary containing 45 scanned files.",
       "evidence": [
         "schemas/adoption-transaction.schema.json"
       ]
@@ -122,7 +122,7 @@
       "id": "claim-13-md",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "110 scanned files use this extension.",
+      "statement": "111 scanned files use this extension.",
       "evidence": [
         ".github/copilot-instructions.md"
       ]
@@ -131,7 +131,7 @@
       "id": "claim-14-json",
       "topic": "project-understanding",
       "status": "verified",
-      "statement": "93 scanned files use this extension.",
+      "statement": "95 scanned files use this extension.",
       "evidence": [
         ".azure/environment.json"
       ]

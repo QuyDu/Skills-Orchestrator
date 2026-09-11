@@ -1,7 +1,9 @@
 # Clarification Result
 
-The requested outcome is a complete, shareable Markdown overview explaining what Project Orchestrator is, what it is for, how to use it, and why it is valuable.
+The requested outcome is end-to-end audit execution identity and immutable provenance binding.
 
-The user was unavailable for the required question round and instructed the agent to work autonomously. The recommended defaults therefore apply: create `docs/PROJECT-OVERVIEW.md`, write for mixed leadership and engineering readers, and structure it as an executive summary followed by a detailed technical and operational guide.
+The user delegated the required choices and supplied `--proceed`. The selected design generates or accepts a UUID, writes content-addressed immutable audit evidence, and requires matching run identity through Gitleaks, findings, review, remediation plan, and execution.
 
-The document will cover purpose, value, architecture, capabilities, workflows, setup, usage, governance, validation, limitations, pilot adoption, and terminology. Every command and claim will be grounded in current repository evidence. The document will preserve the authorized-internal-use boundary and state that the unsigned candidate remains blocked from production release.
+Current schemas advance compatibly to Gitleaks 1.1, findings/review 2.2, remediation plan 2.1, and execution 3.1. End-to-end fixtures passed, so lifecycle remains tested. No real audit execution, remediation, hosted mutation, commit, push, or publication is authorized.
+
+Decision: proceed to execution within the approved local update boundary.

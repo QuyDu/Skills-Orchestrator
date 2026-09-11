@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "runtimeVersion": "1.1.1",
-  "generatedAt": "2026-09-10T01:04:56.168Z",
+  "generatedAt": "2026-09-11T17:52:58.587Z",
   "skills": [
     {
       "name": "agent-builder",
@@ -70,7 +70,8 @@
       "dependencies": [],
       "reports": [
         "reports/code-audit-findings.json",
-        "reports/gitleaks-scan.json"
+        "reports/gitleaks-scan.json",
+        "reports/audit-evidence/*.json"
       ]
     },
     {

@@ -1,40 +1,38 @@
 {
   "schemaVersion": "1.0.0",
-  "clarificationId": "CLR-0212",
-  "generatedAt": "2026-09-09T09:19:56.607Z",
+  "clarificationId": "CLR-0218",
+  "generatedAt": "2026-09-11T15:49:20.396Z",
   "status": "ready",
-  "requestSummary": "Create a complete, shareable Markdown overview explaining what Project Orchestrator is, what it is for, how to use it, and why it is valuable.",
+  "requestSummary": "Bind immutable provenance, findings, review, remediation plan, and execution to one auditRunId and close remaining audit policy contradictions.",
   "confirmedRequirements": [
-    "Create docs/PROJECT-OVERVIEW.md as a standalone, shareable document without replacing the generated canonical project guide.",
-    "Address mixed leadership and engineering readers by leading with value and following with technical and operational detail.",
-    "Organize the document as an executive summary plus a complete technical guide.",
-    "Explain purpose, problems solved, differentiated value, architecture, capabilities, workflows, installation, usage, governance, validation, limitations, pilot adoption, and terminology.",
-    "Ground every claim and command in current repository evidence and retain the internal-only, unsigned-candidate release boundary."
+    "Create or accept a UUID auditRunId and propagate it through Gitleaks, immutable evidence, findings, review, remediation plan, and execution.",
+    "Persist audit evidence as a content-addressed immutable snapshot and bind its SHA-256 from findings.",
+    "Require detailed verification records with tool, version, command, scope, configuration, exit, status, time, evidence digest, revision, and applicable input digests.",
+    "Fix repository-root and external-access approval wording and state all six secret scopes as one invariant.",
+    "Introduce compatible current schema versions while preserving older artifacts as historical evidence."
   ],
   "projectFacts": [
-    "Project Orchestrator version 1.1.1 and framework version 9.0.0 provide a registry-free Node.js runtime and 44 governed skills.",
-    "The runtime supports Node.js 22, 24, and 26 and uses no application package dependencies.",
-    "It can create a governed baseline, adopt an existing local repository, clone and adopt a GitHub repository, and update an installed standalone project while preserving project-owned content.",
-    "Core controls include bounded clarification, stack-aware installation, overlap detection, dry-run planning, explicit risk acceptance, transactional writes, rollback and recovery, policy decisions, schemas, event-sourced state, and machine-readable reports.",
-    "Agent Builder creates and validates least-privilege local agent definitions and publication handoff plans without deploying or publishing external resources.",
-    "The current evidence reports 124 passing tests, zero failures, one platform-specific skip, 44 audited skills, 219 security-scanned files, and 158 checksum-covered candidate files; release remains blocked."
+    "Schema 2.1 required verification classes but did not bind artifacts to one audit execution.",
+    "No separately owned immutable audit-evidence artifact previously existed.",
+    "Remediation plans and executions previously lacked cross-artifact auditRunId enforcement.",
+    "End-to-end run-binding fixtures now pass, so audit-code remains lifecycle tested."
   ],
   "assumptions": [
-    "The user's unavailable response selects the recommended new-document, mixed-audience, and executive-summary-plus-technical-guide defaults.",
-    "A standalone overview is preferable to expanding README.md because it preserves the concise repository entry point and the generated canonical guide.",
-    "The document may recommend a bounded pilot but must not imply public distribution or production readiness."
+    "The user's delegated answers select generated-or-supplied UUIDs, content-addressed immutable evidence, compatible new schema versions, and temporary lifecycle review.",
+    "The explicit --proceed token authorizes the four-skill schemas, scripts, tests, documentation, and evidence boundary.",
+    "No audit execution, remediation, hosted mutation, secret validation, commit, push, or publication is authorized."
   ],
   "conflicts": [],
   "rounds": [
     {
       "round": 1,
       "questions": [
-        { "id": "Q-0226", "question": "Where should the complete Markdown live?", "materialDecision": "Whether to create a standalone document, expand the repository homepage, or return chat-only content", "recommendedDefault": "Create docs/PROJECT-OVERVIEW.md", "answer": "The user is not available to respond and will review your work later. Work autonomously and make good decisions." },
-        { "id": "Q-0227", "question": "Who should the document persuade first?", "materialDecision": "Balance between outcome-oriented narrative and implementation detail", "recommendedDefault": "Mixed leaders and engineers", "answer": "The user is not available to respond and will review your work later. Work autonomously and make good decisions." },
-        { "id": "Q-0228", "question": "How should the detailed material be organized?", "materialDecision": "Document structure and depth", "recommendedDefault": "Executive summary plus technical guide", "answer": "The user is not available to respond and will review your work later. Work autonomously and make good decisions." }
+        { "id": "Q-0244", "question": "How should auditRunId be created and passed?", "materialDecision": "Audit execution identity semantics", "recommendedDefault": "Caller-supplied or generated UUID", "answer": "The user is not available to respond and will review your work later. Work autonomously and make good decisions." },
+        { "id": "Q-0245", "question": "Should audit evidence be separately immutable?", "materialDecision": "Provenance storage and digest binding", "recommendedDefault": "Content-addressed immutable snapshot", "answer": "The user is not available to respond and will review your work later. Work autonomously and make good decisions." },
+        { "id": "Q-0246", "question": "How should compatibility and lifecycle be handled?", "materialDecision": "Schema migration and tested status", "recommendedDefault": "New current versions, legacy readable, restore tested after fixtures pass", "answer": "The user is not available to respond and will review your work later. Work autonomously and make good decisions." }
       ]
     }
   ],
   "openQuestions": [],
-  "decision": "proceed-to-execution"
+  "decision": "proceed-to-planning"
 }

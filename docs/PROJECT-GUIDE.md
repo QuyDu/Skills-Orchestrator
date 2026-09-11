@@ -15,16 +15,16 @@ Turn any repository into a governed GitHub Copilot workspace: agent instructions
 - **config**: Top-level project boundary containing 4 scanned files.
 - **docs**: Top-level project boundary containing 5 scanned files.
 - **release**: Top-level project boundary containing 1 scanned files.
-- **reports**: Top-level project boundary containing 78 scanned files.
-- **schemas**: Top-level project boundary containing 44 scanned files.
+- **reports**: Top-level project boundary containing 80 scanned files.
+- **schemas**: Top-level project boundary containing 45 scanned files.
 - **scripts**: Top-level project boundary containing 12 scanned files.
 - **templates**: Top-level project boundary containing 34 scanned files.
 - **tests**: Top-level project boundary containing 13 scanned files.
 
 ## Technology
 
-- **.md**: 110 scanned files use this extension.
-- **.json**: 93 scanned files use this extension.
+- **.md**: 111 scanned files use this extension.
+- **.json**: 95 scanned files use this extension.
 - **.mjs**: 34 scanned files use this extension.
 - **.mp3**: 22 scanned files use this extension.
 - **.ps1**: 10 scanned files use this extension.

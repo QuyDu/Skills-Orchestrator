@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { readFile, readdir } from "node:fs/promises";
+import { readFile, readdir, rm } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import test from "node:test";
@@ -106,6 +106,13 @@ function sectionItems(source, heading) {
   const next = remainder.search(/^## /m);
   const section = next === -1 ? remainder : remainder.slice(0, next);
   return [...section.matchAll(/^\s*-\s+`?([^`\r\n]+?)`?\s*$/gm)].map((match) => match[1].trim());
+}
+
+function dependencyItems(source) {
+  const section = source.match(/^## Composition and Dependencies\s*$([\s\S]*?)(?=^## |(?![\s\S]))/m)?.[1] ?? "";
+  const prerequisites = section.match(/^### Prerequisite Dependencies\s*$([\s\S]*?)(?=^### |(?![\s\S]))/m)?.[1];
+  const content = prerequisites ?? section;
+  return [...content.matchAll(/^\s*-\s+`?([^`\r\n]+?)`?\s*$/gm)].map((match) => match[1].trim()).filter((item) => item !== "None");
 }
 
 async function loadSkills() {
@@ -495,6 +502,30 @@ test("clarification has a bounded portable evidence contract", async () => {
   assert.equal(schema.allOf[0].then.properties.decision.const, "wait-for-answers");
 });
 
+test("workflow planning has a strict backward-compatible execution contract", async () => {
+  const skills = new Map((await loadSkills()).map((skill) => [skill.metadata.name, skill]));
+  const planner = skills.get("workflow-planner");
+  assert.match(planner.source, /schema 1\.1/);
+  assert.match(planner.source, /onBlocked/);
+  assert.match(planner.source, /terminal handoff/);
+  assert.match(planner.source, /workflow-planned/);
+
+  const schema = JSON.parse(await readFile(path.join(root, "schemas", "workflow-plan.schema.json"), "utf8"));
+  assert.equal(schema.$id, "https://project-skills.dev/schemas/workflow-plan/1.1.0");
+  assert.equal(schema.$defs.legacyPlan.properties.schemaVersion.const, "1.0.0");
+  assert.equal(schema.$defs.governedPlan.properties.schemaVersion.const, "1.1.0");
+  assert.equal(schema.$defs.governedStep.additionalProperties, false);
+  assert.ok(schema.$defs.governedStep.required.includes("checkpoint"));
+  assert.ok(schema.$defs.governedStep.required.includes("onBlocked"));
+  assert.ok(schema.$defs.governedStep.required.includes("approvalClasses"));
+
+  const runtime = await readFile(path.join(root, "pso.mjs"), "utf8");
+  assert.match(runtime, /step IDs must be unique/);
+  assert.match(runtime, /prerequisite cycle/);
+  assert.match(runtime, /cannot reach terminal handoff/);
+  assert.match(runtime, /current-execution-state\.json/);
+});
+
 test("every generated and adopted project carries the mandatory clarification protocol", async () => {
   const skills = new Map((await loadSkills()).map((skill) => [skill.metadata.name, skill]));
   const clarification = skills.get("clarify-the-ask");
@@ -707,7 +738,7 @@ test("profiles are dependency-closed", async () => {
   const skills = await loadSkills();
   const graph = new Map(skills.map((skill) => [
     skill.metadata.name,
-    sectionItems(skill.source, "Composition and Dependencies").filter((dependency) => dependency !== "None")
+    dependencyItems(skill.source)
   ]));
   const profiles = await loadProfiles();
 
@@ -786,7 +817,7 @@ test("all dependencies resolve and the graph is acyclic", async () => {
   const skills = await loadSkills();
   const graph = new Map(skills.map((skill) => [
     skill.metadata.name,
-    sectionItems(skill.source, "Composition and Dependencies").filter((dependency) => dependency !== "None")
+    dependencyItems(skill.source)
   ]));
   const visited = new Set();
   const visiting = new Set();
@@ -825,8 +856,17 @@ test("audit pipeline has stable handoffs and schemas", async () => {
   assert.match(audit.source, /CIS Controls/);
   assert.match(audit.source, /SLSA/);
   assert.match(audit.source, /OpenSSF Scorecard/);
-  assert.match(audit.source, /Never claim that a repository is secure or meets all best practices/);
-  assert.match(audit.source, /schemaVersion: 2\.0\.0/);
+  assert.match(audit.source, /OWASP GenAI LLM Top 10 2026/);
+  assert.match(audit.source, /OWASP Top 10 for Agentic Applications 2026/);
+  assert.match(audit.source, /NIST AI RMF 1\.0/);
+  assert.match(audit.source, /AI-slop indicators/);
+  assert.match(audit.source, /CA2000/);
+  assert.match(audit.source, /borrowed, dependency-injection-owned, pooled, shared, factory-managed, and framework-owned/);
+  assert.match(audit.source, /Language-Specific Minimum Verification/);
+  assert.match(audit.source, /Never claim that a repository is secure, fully compliant, or meets all best practices/);
+  assert.match(audit.source, /### Downstream Composition/);
+  assert.match(audit.source, /Resolve the current stable and preview releases from the authoritative source at audit time/);
+  assert.match(audit.source, /schemaVersion: 2\.2\.0/);
   assert.match(audit.source, /automatically dispatch `audit-review-findings`/);
   assert.match(audit.source, /automatically dispatch `audit-plan-remediation`/);
   assert.match(audit.source, /approval-wait/);
@@ -872,17 +912,74 @@ test("audit pipeline has stable handoffs and schemas", async () => {
   const auditEvidenceResult = spawnSync(process.execPath, [auditEvidenceScript, "--root", root], { cwd: root, encoding: "utf8" });
   assert.equal(auditEvidenceResult.status, 0, auditEvidenceResult.stderr);
   const auditEvidence = JSON.parse(auditEvidenceResult.stdout);
+  await rm(path.join(root, auditEvidence.artifact.path), { force: true });
+  const auditEvidenceSource = await readFile(auditEvidenceScript, "utf8");
+  assert.doesNotMatch(auditEvidenceSource, /node\\:/);
+  assert.doesNotMatch(auditEvidenceSource, /url:\s*"\[/);
+  assert.doesNotMatch(auditEvidenceSource, /const specialistReady/);
+  assert.match(auditEvidenceSource, /remote\.search = ""/);
+  assert.match(auditEvidenceSource, /remote\.hash = ""/);
+  assert.match(auditEvidenceSource, /const metadataValid = metadataState\.valid/);
+  assert.match(auditEvidenceSource, /const checkpointValid = checkpointState\.valid/);
+  assert.match(auditEvidenceSource, /const scanDigestValid = scanDigestState\.valid/);
+  assert.match(auditEvidenceSource, /const SECRET_EVIDENCE_MAX_AGE_HOURS = 24/);
+  assert.match(auditEvidenceSource, /status: specialistCompleted \? "completed" : pinnedScannerReady \? "ready" : "blocked"/);
+  assert.match(auditEvidenceSource, /const requiredFindingBuckets = \["worktree", "staged", "history"\]/);
+  assert.match(auditEvidenceSource, /const noSecretFindings = requiredFindingBuckets\.every/);
   assert.equal(auditEvidence.repository.shallow, false);
   assert.ok(auditEvidence.repository.reachableCommitCount > 0);
   assert.ok(auditEvidence.repository.trackedReportCount > 0);
   assert.equal(auditEvidence.hostedGitHub.required, true);
   assert.equal(auditEvidence.hostedGitHub.status, "blocked");
   assert.equal(auditEvidence.assurance.status, "insufficient-evidence");
+  assert.equal(auditEvidence.secretHistory.pinnedScannerReady, true);
+  assert.equal(typeof auditEvidence.secretHistory.pinnedBinaryInstalled, "boolean");
+  assert.equal(typeof auditEvidence.secretHistory.supplementalScannerAvailable, "boolean");
+  assert.deepEqual(auditEvidence.secretHistory.helperValidity, { metadata: true, checkpoint: true, scanDigest: true });
+  assert.equal(auditEvidence.secretHistory.evidenceMaxAgeHours, 24);
+  assert.equal(typeof auditEvidence.secretHistory.scanFresh, "boolean");
+  assert.equal(auditEvidence.repository.root, ".");
+  assert.equal(auditEvidence.repository.rootResolved, true);
   assert.ok(auditEvidence.standardsProfiles.some((profile) => profile.id === "microsoft-sdl"));
   assert.ok(auditEvidence.standardsProfiles.some((profile) => profile.id === "owasp-asvs"));
+  assert.equal(auditEvidence.standardsProfiles.find((profile) => profile.id === "owasp-asvs").version, "5.0.0");
+  assert.equal(auditEvidence.standardsProfiles.find((profile) => profile.id === "owasp-top-10").version, "2025");
+  assert.equal(auditEvidence.standardsProfiles.find((profile) => profile.id === "nist-ssdf").version, "1.1");
+  assert.equal(auditEvidence.standardsProfiles.find((profile) => profile.id === "slsa").version, "1.2");
+  assert.equal(auditEvidence.standardsProfiles.find((profile) => profile.id === "microsoft-cloud-security-benchmark").resolutionRequired, true);
+  assert.equal(auditEvidence.standardsProfiles.find((profile) => profile.id === "microsoft-cloud-security-benchmark").version, "resolve-at-audit-time");
+  assert.equal(auditEvidence.standardsProfiles.find((profile) => profile.id === "owasp-genai-llm-top-10").conditional, true);
+  assert.equal(auditEvidence.standardsProfiles.find((profile) => profile.id === "owasp-agentic-top-10").version, "2026");
+  for (const profile of auditEvidence.standardsProfiles) {
+    assert.doesNotThrow(() => new URL(profile.url), `${profile.id} must use a raw URL`);
+    assert.equal(profile.applicabilityAssessmentRequired, true);
+    assert.equal(profile.currencyVerificationRequired, true);
+    assert.match(profile.profileDeclaredAt, /^\d{4}-\d{2}-\d{2}T/);
+    assert.equal(profile.lastVerifiedAt, null);
+    assert.equal(profile.accessedAt, undefined);
+  }
+  for (const id of ["owasp-asvs", "owasp-top-10", "nist-ssdf", "cis-controls", "slsa", "nist-ai-rmf", "nist-ai-600-1"]) {
+    assert.equal(auditEvidence.standardsProfiles.find((profile) => profile.id === id).resolutionRequired, false, `${id} has a fixed version`);
+  }
+  for (const id of ["microsoft-sdl", "microsoft-cloud-security-benchmark", "azure-well-architected-security", "openssf-scorecard", "owasp-genai-llm-top-10", "owasp-agentic-top-10"]) {
+    assert.equal(auditEvidence.standardsProfiles.find((profile) => profile.id === id).resolutionRequired, true, `${id} requires current resolution`);
+  }
+  assert.deepEqual(dependencyItems(audit.source), []);
+  assert.match(audit.source, /### Downstream Composition[\s\S]*audit-review-findings[\s\S]*audit-plan-remediation/);
+  const strictFindingsSchema = JSON.parse(await readFile(path.join(root, "schemas", "code-audit-findings.schema.json"), "utf8"));
+  assert.ok(strictFindingsSchema.properties.schemaVersion.enum.includes("2.1.0"));
+  assert.deepEqual(strictFindingsSchema.properties.verificationEvidence.required, ["secretExposure", "analyzers", "resourceOwnership", "aiQuality", "assuranceGates"]);
+  assert.ok(strictFindingsSchema.$defs.resourceOwnershipAssessment.required.includes("checks"));
+  const strictFindingsRule = strictFindingsSchema.allOf.find((rule) => rule.if?.properties?.schemaVersion?.const === "2.1.0");
+  assert.deepEqual(strictFindingsRule.then.properties.standards.items.required, ["stability", "baselineRole"]);
+  const strictReviewSchema = JSON.parse(await readFile(path.join(root, "schemas", "audit-findings-review.schema.json"), "utf8"));
+  assert.ok(strictReviewSchema.properties.schemaVersion.enum.includes("2.1.0"));
+  assert.ok(strictReviewSchema.allOf.some((rule) => rule.if?.properties?.schemaVersion?.const === "2.1.0"));
   assert.ok(sectionItems(review.source, "Composition and Dependencies").includes("audit-code"));
   assert.match(review.source, /preserve repository evidence, standards applicability and control status, exceptions and expiry, assurance conclusion/);
   assert.match(review.source, /cannot upgrade or soften the source assurance conclusion/);
+  assert.match(review.source, /preserve `verificationEvidence` exactly/);
+  assert.match(review.source, /matching the source schema version through 2\.2/);
   assert.ok(sectionItems(review.source, "Outputs").includes("reports/code-audit-review.json"));
   assert.ok(sectionItems(remediation.source, "Composition and Dependencies").includes("audit-review-findings"));
   assert.ok(sectionItems(remediation.source, "Outputs").includes("reports/audit-remediation-plan.json"));
@@ -902,6 +999,7 @@ test("audit pipeline has stable handoffs and schemas", async () => {
 
   const schemas = [
     "code-audit-findings.schema.json",
+    "audit-evidence.schema.json",
     "audit-findings-review.schema.json",
     "audit-remediation-plan.schema.json",
     "audit-remediation-execution.schema.json",
@@ -922,6 +1020,8 @@ test("audit pipeline has stable handoffs and schemas", async () => {
   assert.ok(gitleaksSchema.required.includes("scanInputDigest"));
   assert.ok(gitleaksSchema.properties.scopes.items.enum.includes("staged"));
   assert.deepEqual(gitleaksSchema.properties.findings.required, ["worktree", "staged", "history"]);
+  assert.deepEqual(gitleaksSchema.properties.schemaVersion.enum, ["1.0.0", "1.1.0"]);
+  assert.ok(gitleaksSchema.properties.auditRunId);
   assert.equal(gitleaksSchema.$defs.findings.items.additionalProperties, false);
   const allowlistSchema = JSON.parse(await readFile(path.join(root, "schemas", "gitleaks-allowlist.schema.json"), "utf8"));
   assert.equal(allowlistSchema.additionalProperties, false);
@@ -929,7 +1029,7 @@ test("audit pipeline has stable handoffs and schemas", async () => {
   assert.ok(allowlistSchema.properties.entries.items.required.includes("expiresAt"));
 
   const findingsSchema = JSON.parse(await readFile(path.join(root, "schemas", schemas[0]), "utf8"));
-  assert.deepEqual(findingsSchema.properties.schemaVersion.enum, ["1.0.0", "2.0.0"]);
+  assert.deepEqual(findingsSchema.properties.schemaVersion.enum, ["1.0.0", "2.0.0", "2.1.0", "2.2.0"]);
   assert.ok(findingsSchema.properties.repositoryEvidence);
   assert.ok(findingsSchema.properties.standards);
   assert.ok(findingsSchema.properties.assurance);
@@ -950,9 +1050,11 @@ test("audit pipeline has stable handoffs and schemas", async () => {
   assert.ok(findingsSchema.$defs.finding.properties.category.enum.includes("architecture"));
   assert.ok(findingsSchema.$defs.finding.properties.category.enum.includes("concurrency"));
 
-  const planSchema = JSON.parse(await readFile(path.join(root, "schemas", schemas[2]), "utf8"));
+  const planSchema = JSON.parse(await readFile(path.join(root, "schemas", "audit-remediation-plan.schema.json"), "utf8"));
   const item = planSchema.properties.items.items;
-  assert.deepEqual(planSchema.properties.schemaVersion.enum, ["1.0.0", "2.0.0"]);
+  assert.deepEqual(planSchema.properties.schemaVersion.enum, ["1.0.0", "2.0.0", "2.1.0"]);
+  assert.ok(planSchema.properties.auditRunId);
+  assert.ok(planSchema.properties.sourceReviewSha256);
   assert.ok(planSchema.properties.prioritization.items.enum.includes("complexity"));
   assert.ok(item.required.includes("dependsOn"));
   assert.ok(item.required.includes("securitySeverity"));
@@ -962,16 +1064,20 @@ test("audit pipeline has stable handoffs and schemas", async () => {
   assert.ok(planSchema.allOf.some((condition) => condition.then?.properties?.items?.items?.required?.includes("complexity")));
   assert.ok(planSchema.allOf.some((condition) => condition.then?.properties?.prioritization?.contains?.const === "complexity"));
 
-  const reviewSchema = JSON.parse(await readFile(path.join(root, "schemas", schemas[1]), "utf8"));
-  assert.deepEqual(reviewSchema.properties.schemaVersion.enum, ["1.0.0", "2.0.0"]);
+  const reviewSchema = JSON.parse(await readFile(path.join(root, "schemas", "audit-findings-review.schema.json"), "utf8"));
+  assert.deepEqual(reviewSchema.properties.schemaVersion.enum, ["1.0.0", "2.0.0", "2.1.0", "2.2.0"]);
   assert.ok(reviewSchema.properties.repositoryEvidence);
   assert.ok(reviewSchema.properties.standards);
   assert.ok(reviewSchema.properties.assurance);
+  assert.ok(reviewSchema.properties.verificationEvidence);
+  assert.ok(reviewSchema.properties.auditRunId);
+  assert.ok(reviewSchema.properties.auditEvidence);
   assert.equal(reviewSchema.properties.blockingEvidence, undefined);
   assert.ok(reviewSchema.allOf.some((condition) => condition.then?.required?.includes("assurance")));
 
-  const executionSchema = JSON.parse(await readFile(path.join(root, "schemas", schemas[3]), "utf8"));
-  assert.deepEqual(executionSchema.properties.schemaVersion.enum, ["1.0.0", "2.0.0", "3.0.0"]);
+  const executionSchema = JSON.parse(await readFile(path.join(root, "schemas", "audit-remediation-execution.schema.json"), "utf8"));
+  assert.deepEqual(executionSchema.properties.schemaVersion.enum, ["1.0.0", "2.0.0", "3.0.0", "3.1.0"]);
+  assert.ok(executionSchema.properties.auditRunId);
   assert.deepEqual(executionSchema.properties.selection.properties.mode.enum, ["all", "phase", "finding", "resume"]);
   assert.ok(executionSchema.required.includes("checkpoints"));
   assert.ok(executionSchema.required.includes("remaining"));

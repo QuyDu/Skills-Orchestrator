@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://project-skills.dev/schemas/audit-evidence/1.0.0",
+  "title": "Audit Evidence Snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "auditRunId", "generatedAt", "repository", "secretHistory", "hostedGitHub", "standardsProfiles", "assurance"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "auditRunId": { "type": "string", "format": "uuid" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "repository": { "type": "object", "additionalProperties": true, "required": ["root", "rootResolved", "head", "worktreeDirty", "shallow", "remotes"], "properties": { "root": { "const": "." }, "rootResolved": { "const": true }, "head": { "type": "string", "pattern": "^[a-f0-9]{40,64}$" }, "worktreeDirty": { "type": "boolean" }, "shallow": { "type": "boolean" }, "remotes": { "type": "array" } } },
+    "secretHistory": { "type": "object", "additionalProperties": true, "required": ["status", "helperValidity", "evidenceMaxAgeHours", "scanFresh", "requiredScope", "scanners", "limitations"], "properties": { "status": { "enum": ["completed", "ready", "blocked"] }, "helperValidity": { "type": "object", "required": ["metadata", "checkpoint", "scanDigest"] }, "evidenceMaxAgeHours": { "const": 24 }, "scanFresh": { "type": "boolean" }, "requiredScope": { "type": "array", "minItems": 6, "uniqueItems": true }, "scanners": { "type": "array" }, "limitations": { "type": "array" } } },
+    "hostedGitHub": { "type": "object" },
+    "standardsProfiles": { "type": "array", "minItems": 1, "items": { "type": "object", "additionalProperties": true, "required": ["id", "version", "url", "resolutionRequired", "currencyVerificationRequired", "applicabilityAssessmentRequired", "profileDeclaredAt", "lastVerifiedAt", "status"], "properties": { "url": { "type": "string", "format": "uri" }, "profileDeclaredAt": { "type": "string", "format": "date-time" }, "lastVerifiedAt": { "type": ["string", "null"], "format": "date-time" }, "resolutionRequired": { "type": "boolean" }, "currencyVerificationRequired": { "const": true }, "applicabilityAssessmentRequired": { "const": true } } } },
+    "assurance": { "type": "object" }
+  }
+}

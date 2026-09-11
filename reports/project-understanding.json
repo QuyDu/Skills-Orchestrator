@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "status": "complete",
-  "generatedAt": "2026-09-10T00:50:13.152Z",
+  "generatedAt": "2026-09-11T15:49:50.936Z",
   "generator": "project-understanding",
   "project": {
     "name": "project-skills-orchestrator",
@@ -13,8 +13,8 @@
   },
   "scan": {
     "mode": "full-rebuild",
-    "repositoryDigestSha256": "a84e660d0d2d64c64d542947bd9cda6d32eb9e87d59db2ea41aadc861e3fc55c",
-    "fileCount": 296,
+    "repositoryDigestSha256": "ce98d7e4d9e023b6f8018a567242a781480ed7eeba3c2abbf6eaf82782da9e4e",
+    "fileCount": 299,
     "sourceFileCount": 20,
     "testFileCount": 13,
     "excludedDirectories": [
@@ -151,18 +151,18 @@
       },
       {
         "path": ".github/skills/audit-code/scripts/audit-evidence.mjs",
-        "bytes": 9505,
-        "sha256": "e668b8a59a99d00104aed630c6f1c1016bada9b2ae6a39f2c1712fc37704a4c8"
+        "bytes": 14980,
+        "sha256": "41343073e2d87a974f537a740f2e7085a37be394b35c841995f7253ac9624627"
       },
       {
         "path": ".github/skills/audit-code/scripts/audit-validate.mjs",
-        "bytes": 22829,
-        "sha256": "298a9fac02b2229e79d57bd88005e8bee2a84a9c564d92e911eb2d26a6a634c0"
+        "bytes": 31889,
+        "sha256": "fd341baf92709fe014056fae1d78056ac9daa385c84e75e88607d5b8b2e52131"
       },
       {
         "path": ".github/skills/audit-code/scripts/gitleaks-scan.mjs",
-        "bytes": 15143,
-        "sha256": "5deb7d0ca2ff6ecc34db4195997714f100304cf87984e3fa42490cbd124ef9c1"
+        "bytes": 15727,
+        "sha256": "66346c029d1ca9b9b1f38d22c265e1729c470785e5d0cad9757dbf2cb444bb65"
       },
       {
         "path": ".github/skills/audit-code/scripts/safe-path.mjs",
@@ -171,23 +171,23 @@
       },
       {
         "path": ".github/skills/audit-code/SKILL.md",
-        "bytes": 15619,
-        "sha256": "cb4fddb53a17db71cc49fd93fa75e05a6e2c6043f404e78f434328fee575dfa5"
+        "bytes": 28243,
+        "sha256": "30d50398540d4ae171f9a7af92b77ed1c8898fc8a567301f96b409b8d281d603"
       },
       {
         "path": ".github/skills/audit-plan-remediation/SKILL.md",
-        "bytes": 5420,
-        "sha256": "ae84fdd08f47987e57854c4a02117a129d7c0ed9b787f208eec15d7d3c48e6e9"
+        "bytes": 5142,
+        "sha256": "79c3448b50a370ce288a4aac31dab5af7826f342edf90077492c98c460332b1f"
       },
       {
         "path": ".github/skills/audit-remediation/SKILL.md",
-        "bytes": 10659,
-        "sha256": "6eb930914a2b8ace35157855a9b43a917c99c0e25288fc18c704e0ae49cf9b66"
+        "bytes": 10589,
+        "sha256": "f2d26a422960d39d25323d0c2cfc8395c5895f08fc1f135e8b89215385a94414"
       },
       {
         "path": ".github/skills/audit-review-findings/SKILL.md",
-        "bytes": 4995,
-        "sha256": "2ea9b461ecff6dd9f3b2f405b51ab44f1b45951254f9c03fea437a394220f327"
+        "bytes": 4992,
+        "sha256": "5af87ef67be924f93610fe6f5a9bc1b34534339ff8d590de6d3b890eba70393d"
       },
       {
         "path": ".github/skills/azure-cleanup/SKILL.md",
@@ -376,8 +376,8 @@
       },
       {
         "path": ".github/skills/workflow-planner/SKILL.md",
-        "bytes": 3202,
-        "sha256": "5b380eb3ddafa8c4d292db46958a82ed34159a5cae439e236f9506809b68a676"
+        "bytes": 4528,
+        "sha256": "09fbf4b60cf9b114905a7816fbe1f92cac2dc760faaba27f1d89117f15bc9a64"
       },
       {
         "path": ".github/skills/workflow-recovery/SKILL.md",
@@ -526,8 +526,8 @@
       },
       {
         "path": "Demo/DEMO-DAY.md",
-        "bytes": 8122,
-        "sha256": "5cfa3d0bea634e5b5d55740c93910fe93afb74f867cd75b12319a28943ec82e6"
+        "bytes": 8038,
+        "sha256": "35a91989f485c75f7aec3a90777e183af31cb7a5ac624c16a675d21ba2069cf1"
       },
       {
         "path": "Demo/Project-Orchestrator-Demo.pptx",
@@ -556,8 +556,8 @@
       },
       {
         "path": "docs/PROJECT-OVERVIEW.md",
-        "bytes": 50090,
-        "sha256": "03870cdfd978b0d7c02d4ede3b0efd5c0bcb6424a191fe9c896ca2842714ad84"
+        "bytes": 50303,
+        "sha256": "1aae38a21708bf3dc69d84cd8139a1bfb5c24cd5ed3028c61bfe446145446ac3"
       },
       {
         "path": "docs/SKILL-ECOSYSTEM-AUDIT.md",
@@ -586,8 +586,8 @@
       },
       {
         "path": "pso.mjs",
-        "bytes": 140408,
-        "sha256": "306ed74915093aa4f751fae67f0dc756fa4607fe9886c67d972e979c3131b4dd"
+        "bytes": 152450,
+        "sha256": "f5b0815f295e0915f9cf0bdf36b663140aa206b5c944c38f3406da37796adf63"
       },
       {
         "path": "pso.ps1",
@@ -626,8 +626,8 @@
       },
       {
         "path": "reports/artifact-ownership.json",
-        "bytes": 10996,
-        "sha256": "484399272e7a1cc06a63452d5b93d6d840b75aaf8683c1244740f9e24411deff"
+        "bytes": 11089,
+        "sha256": "0380ef61e1546407eb821ec2cbcf6f8f8c41e21f9b563616a82ea57797327a8d"
       },
       {
         "path": "reports/audit-remediation-execution.json",
@@ -691,13 +691,13 @@
       },
       {
         "path": "reports/clarification-result.json",
-        "bytes": 3813,
-        "sha256": "da7897c4fe4185d77b89db813682cb875f99863d47bb7e4be63e270c17be1b17"
+        "bytes": 3053,
+        "sha256": "8d4796e12b760eca8da177eb382a841cdc32d6fcdeeb925ef04adaefe3bd01cc"
       },
       {
         "path": "reports/clarification-result.md",
-        "bytes": 901,
-        "sha256": "514e4d5c2386485c7320dc78f722b173bbf80cad58d79ceb2f96437bd964d145"
+        "bytes": 743,
+        "sha256": "bdfb118c8d1cb37cd6e6c4a80f81abf304d01350dfaef99dcc498a566aa1e010"
       },
       {
         "path": "reports/code-audit-findings.json",
@@ -721,18 +721,18 @@
       },
       {
         "path": "reports/current-execution-state.json",
-        "bytes": 332,
-        "sha256": "1048c2d9bdf1cdcf30aef338ef996b133c9ca70ca7fd7a22fa7ca890ac8d8b76"
+        "bytes": 330,
+        "sha256": "ab57e0b0d4f23b95780543cc1a77700384eda6ff84c3831dcb36eee1cf6a0561"
       },
       {
         "path": "reports/current-execution-state.md",
-        "bytes": 442,
-        "sha256": "314b53ae12946582dc83fb21aa44c548ff6270f992c2efac486f06e9334576f1"
+        "bytes": 399,
+        "sha256": "d677583ea136f2b11e5cf6f51dba68fb178c0d7e19dfb09e5dbc3173f17bc054"
       },
       {
         "path": "reports/current-work-state.json",
-        "bytes": 3231,
-        "sha256": "8d2723f48ba812ea8433b7ab47db7d98b4442ca123376d79fcd0930bc6c7f0f5"
+        "bytes": 3170,
+        "sha256": "6fe6865e653976c3e6ec93e3f2b1b7f007b28ba0cb9240105278340e9bbda167"
       },
       {
         "path": "reports/deployment-review.json",
@@ -756,8 +756,8 @@
       },
       {
         "path": "reports/execution-log.jsonl",
-        "bytes": 10589,
-        "sha256": "70081f5d03e4568082a18c87395a86ef0179ed254c3eff0ddfbe2d88f72f788c"
+        "bytes": 11010,
+        "sha256": "f7b848a4eafe35f05d78012c932cc68de197d31254aa9c8b2c3dea5170fec50e"
       },
       {
         "path": "reports/gitleaks-scan.json",
@@ -781,13 +781,13 @@
       },
       {
         "path": "reports/project-handoff.json",
-        "bytes": 9198,
-        "sha256": "b5cc4c8c1539423742b5b43b6e1bc0be71cbca2d92e251d3ebfacf79a9597c66"
+        "bytes": 8742,
+        "sha256": "5028aa5e9c64c9fd68cf19c9945bc8d49b90d57670f9ed2d2827b9002710c930"
       },
       {
         "path": "reports/project-handoff.md",
-        "bytes": 2606,
-        "sha256": "ac35ae3e34f3b110cfca1ca14dddc97d08fbbec82e11ed78d6d35eb126e982f7"
+        "bytes": 2721,
+        "sha256": "e7284ae25e3824acad8fb3cef64ec72bde9469e1f1b271bb94bba07c6237a962"
       },
       {
         "path": "reports/project-video/audio/narration-manifest.json",
@@ -952,7 +952,7 @@
       {
         "path": "reports/security-check.json",
         "bytes": 342,
-        "sha256": "f6a9a74495815a52acd8fc7ac7bfa4cdcc528aa09ac638e52519ae9c2ecc401a"
+        "sha256": "286c091d2dac41f08ee3e8074ea8d39f12d1f74cdaac45dc33d1a74038da6daa"
       },
       {
         "path": "reports/security-review.json",
@@ -966,23 +966,23 @@
       },
       {
         "path": "reports/skill-details.json",
-        "bytes": 39888,
-        "sha256": "15af02b857eaf71f5dccad6c24cb39c33ce4328b40edbcea3f41fecd2d5ae384"
+        "bytes": 39929,
+        "sha256": "43dc0ed02a5d4c5fda4dee6e5665d7a3afe1036923389ce7659f52fbfee297d6"
       },
       {
         "path": "reports/skill-details.md",
         "bytes": 4130,
-        "sha256": "fd75408886f22325424378c3ee3cd9be18d9801bba4341838ddb0ff048a01aec"
+        "sha256": "2c04e65623c1efcde033215a6b205f5fdf3676a9d520809d8b7eb23ea1dba295"
       },
       {
         "path": "reports/skill-inventory.json",
-        "bytes": 30438,
-        "sha256": "22cc98151cf63445a7694d1b1bd0d6f70d09a75770376dd928c9005653f79685"
+        "bytes": 30479,
+        "sha256": "3a23743d9d89d0df366f6e7a7cbf4717d3bfb7621709b8312aa504b44f56b11e"
       },
       {
         "path": "reports/skill-inventory.md",
         "bytes": 13163,
-        "sha256": "98ee6fefba53b1e883ada5092cff33b3ae18d3beccfe35f00694baae931f5801"
+        "sha256": "57f75db959d4975e7b820065fec96b988e31b71dcf0cb53dd45849a286b68816"
       },
       {
         "path": "reports/workflow-completion.json",
@@ -993,6 +993,16 @@
         "path": "reports/workflow-completion.md",
         "bytes": 610,
         "sha256": "d8027666ff3d4a8feb444a66853782e8c36dce65b25417df7fd4d9c91ea05845"
+      },
+      {
+        "path": "reports/workflow-plan.json",
+        "bytes": 23100,
+        "sha256": "c0fe2ba6abd5ef8670a9184cee631c4e7b31b6b8ed3402f7c5d1f1d9de3cfb6d"
+      },
+      {
+        "path": "reports/workflow-plan.md",
+        "bytes": 10258,
+        "sha256": "e2ad4328f0192672046d26ad9976a361c4ec9a27936f7e70cccf33d5a9948f8f"
       },
       {
         "path": "schemas/adoption-transaction.schema.json",
@@ -1020,19 +1030,24 @@
         "sha256": "f5e3cf00c1c02ecca9205536524055d8ddc865e2284b9fad52845d9d45943bcc"
       },
       {
+        "path": "schemas/audit-evidence.schema.json",
+        "bytes": 2286,
+        "sha256": "4e6e71f0fb422f3862de80cd3ffc9940ad49b48422ee4a74998af0570498f972"
+      },
+      {
         "path": "schemas/audit-findings-review.schema.json",
-        "bytes": 3693,
-        "sha256": "c2b47d54bde8cd9bf34acd2fc01882486f00beb1d40abb51f39fc41af13e9228"
+        "bytes": 4453,
+        "sha256": "559eda4c632361d5dd57349c602d00ea0dbfcfe0f3997d5540fd440d3f0d89ae"
       },
       {
         "path": "schemas/audit-remediation-execution.schema.json",
-        "bytes": 6659,
-        "sha256": "14cfd1c92c865a6df52b0c788546e55e40870bcc9d656f6f774139d5a3cf3795"
+        "bytes": 7030,
+        "sha256": "73c10292dca1d5c89f36433309866563e92b8f68e5e6161a3713458de304e6ea"
       },
       {
         "path": "schemas/audit-remediation-plan.schema.json",
-        "bytes": 3901,
-        "sha256": "b1c52118d43c2e97361dc319216019ef85aae5f514f146c0a22939646da39919"
+        "bytes": 4394,
+        "sha256": "cb92b615b0fd8d871700085b5243b3f56540f449815bcc1cc49570e4468400a1"
       },
       {
         "path": "schemas/azure-discovery.schema.json",
@@ -1051,8 +1066,8 @@
       },
       {
         "path": "schemas/code-audit-findings.schema.json",
-        "bytes": 11929,
-        "sha256": "cd3fc3a24a12de4760185b511a976a57b2d402dd97fc9516c0eb562d575f3f5e"
+        "bytes": 19270,
+        "sha256": "d5c20911563c41625e77a9dce834bc61518499b67101d56282b0fc0a9b3e053e"
       },
       {
         "path": "schemas/cross-platform-ci-evidence.schema.json",
@@ -1086,8 +1101,8 @@
       },
       {
         "path": "schemas/gitleaks-scan.schema.json",
-        "bytes": 3740,
-        "sha256": "93778d4df1ed15c884bf78087620aa6128518f523f06db8d0c074d63fb347b56"
+        "bytes": 3975,
+        "sha256": "00d75f796b9089f4dcfa19b253888c7b9b4bae7efcf1895a968c71e5f268d3ab"
       },
       {
         "path": "schemas/independent-review.schema.json",
@@ -1211,8 +1226,8 @@
       },
       {
         "path": "schemas/workflow-plan.schema.json",
-        "bytes": 1259,
-        "sha256": "7dc0764d602c6df484c5f3a8260536c7be2d8060ecc8a20835a1d59ba71d5757"
+        "bytes": 4723,
+        "sha256": "e90ec9b159d95f8931dae352ff9a34ebc8cf124ed620b71fe07546a690e59fa2"
       },
       {
         "path": "scripts/adoption-evidence.mjs",
@@ -1456,8 +1471,8 @@
       },
       {
         "path": "tests/adoption-rerun.test.mjs",
-        "bytes": 79412,
-        "sha256": "1140ea5b1e077858296228af52b4407e2cf0a707b762ae9d6a8ee3fccf5b9494"
+        "bytes": 82169,
+        "sha256": "87792b49718c6cebfef66f9ea51d0ad129655deef96d9418ed0c29186b9e28a5"
       },
       {
         "path": "tests/agent-builder.test.mjs",
@@ -1466,13 +1481,13 @@
       },
       {
         "path": "tests/audit-assurance.test.mjs",
-        "bytes": 7929,
-        "sha256": "bc1efc8f5e30af3067d65f8576fc7452bdeb6e881b8e18baab57720800ab6142"
+        "bytes": 20558,
+        "sha256": "5880bbc7b8b903cfb1782eff5c3d8966f9e9eee7ee519c26f1beac50be2e1e1d"
       },
       {
         "path": "tests/audit-execution.test.mjs",
-        "bytes": 11457,
-        "sha256": "84d83c043b3b6b8fd741c072a35dea0cf032734b4516e968cf441e2e259c9436"
+        "bytes": 12207,
+        "sha256": "d2f44a46fdbd4a340f7076a3cd9464427aec6307e3471ba5e3ac8d43f6eeefaf"
       },
       {
         "path": "tests/documentation-builder.test.mjs",
@@ -1481,8 +1496,8 @@
       },
       {
         "path": "tests/gitleaks-scan.test.mjs",
-        "bytes": 7938,
-        "sha256": "a52b9db6f6d7d577a8826041fc2425dfb27ed83e03b3afcf816bbee823001663"
+        "bytes": 8309,
+        "sha256": "5526751da713c66649dac6509701976ec49cb23728edb55df0dbb2af701cb244"
       },
       {
         "path": "tests/package-install.test.mjs",
@@ -1511,13 +1526,13 @@
       },
       {
         "path": "tests/security-fuzz.test.mjs",
-        "bytes": 7467,
-        "sha256": "c3f5afd87438d391e27901d0197af0df6cffff6ecb50dbf1dd829262a36d69a7"
+        "bytes": 11777,
+        "sha256": "a1dcad87d3d9351b395117cd83607bdb7653ac8a38ad1ddcde7cd2ddff72bfa2"
       },
       {
         "path": "tests/skill-contracts.test.mjs",
-        "bytes": 69883,
-        "sha256": "c512d606a6f4bc84a95285254c8bfb1f5f67055f4a63c4cae2c8840102b9f44e"
+        "bytes": 77993,
+        "sha256": "b39ed7b9e7d0cd6f99be36dccbb69c70d0bac6dadb070ea993d9a9ad6ff38704"
       }
     ]
   },
@@ -1580,7 +1595,7 @@
     },
     {
       "name": "reports",
-      "description": "Top-level project boundary containing 78 scanned files.",
+      "description": "Top-level project boundary containing 80 scanned files.",
       "evidence": [
         "reports/adoption-rerun-evidence.json"
       ],
@@ -1588,7 +1603,7 @@
     },
     {
       "name": "schemas",
-      "description": "Top-level project boundary containing 44 scanned files.",
+      "description": "Top-level project boundary containing 45 scanned files.",
       "evidence": [
         "schemas/adoption-transaction.schema.json"
       ],
@@ -1622,7 +1637,7 @@
   "technology": [
     {
       "name": ".md",
-      "description": "110 scanned files use this extension.",
+      "description": "111 scanned files use this extension.",
       "evidence": [
         ".github/copilot-instructions.md"
       ],
@@ -1630,7 +1645,7 @@
     },
     {
       "name": ".json",
-      "description": "93 scanned files use this extension.",
+      "description": "95 scanned files use this extension.",
       "evidence": [
         ".azure/environment.json"
       ],
@@ -2514,6 +2529,14 @@
         "status": "verified"
       },
       {
+        "name": "audit-evidence.schema.json",
+        "description": "Machine-readable contract for a governed project artifact.",
+        "evidence": [
+          "schemas/audit-evidence.schema.json"
+        ],
+        "status": "verified"
+      },
+      {
         "name": "audit-findings-review.schema.json",
         "description": "Machine-readable contract for a governed project artifact.",
         "evidence": [
@@ -2903,5 +2926,5 @@
   ],
   "limitations": [],
   "markdown": "reports/project-understanding.md",
-  "markdownSha256": "17567fb6783f9931961230406e98aab430fdaacba1d3f33e2c76452667a003db"
+  "markdownSha256": "15621cd2f3f4df019c5b8d8098acedde7363b6947edeafc87be5ded5a9c518cf"
 }

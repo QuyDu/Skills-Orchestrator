@@ -1,11 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://skills-orchestrator.dev/schemas/gitleaks-scan/1.0.0",
+  "$id": "https://skills-orchestrator.dev/schemas/gitleaks-scan/1.1.0",
   "type": "object",
   "additionalProperties": false,
   "required": ["schemaVersion", "generatedAt", "scanner", "configurationSha256", "allowlistCount", "repositoryRevision", "worktreeDigest", "scanInputDigest", "scopes", "commands", "status", "findings", "limitations"],
   "properties": {
-    "schemaVersion": { "const": "1.0.0" },
+    "schemaVersion": { "enum": ["1.0.0", "1.1.0"] },
+    "auditRunId": { "type": "string", "format": "uuid" },
     "generatedAt": { "type": "string", "format": "date-time" },
     "scanner": {
       "type": "object",
@@ -66,6 +67,10 @@
     }
   },
   "allOf": [
+    {
+      "if": { "properties": { "schemaVersion": { "const": "1.1.0" } }, "required": ["schemaVersion"] },
+      "then": { "required": ["auditRunId"] }
+    },
     {
       "if": { "properties": { "status": { "const": "passed" } }, "required": ["status"] },
       "then": {

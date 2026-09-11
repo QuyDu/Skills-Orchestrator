@@ -46,7 +46,7 @@ Convert validated audit findings into prioritized, complexity-estimated remediat
 7. For each work item define owner role, scope, prerequisites, implementation steps, complexity and rationale, Microsoft and industry guidance inherited from review, acceptance criteria, tests, security validation, rollout, rollback, approvals, and residual risk.
 8. Define stable milestone IDs as executable phase IDs and list their ordered item IDs. Separate immediate containment, permanent remediation, and deferred risk acceptance; identify parallelizable work without violating dependencies.
 9. Require explicit approval for accepted risk, destructive changes, production deployment, external mutation, or bypassing a security control.
-10. Emit new plans with `schemaVersion: 2.0.0`, include `complexity` in the authoritative prioritization sequence, validate the JSON plan against `schemas/audit-remediation-plan.schema.json`, and run `node .github/skills/audit-code/scripts/audit-validate.mjs plan reports/audit-remediation-plan.json`. Generate the Markdown view from the same ordered data and identify `/audit-remediation -All`, `-Phase <milestone-id>`, `-Finding <AUD-id>`, and `-Resume` as the separately approval-gated execution entry points. Legacy 1.0 plans remain readable but must be upgraded before execution because they lack required complexity evidence.
+10. Emit new plans with `schemaVersion: 2.1.0`, preserve the source review `auditRunId`, bind `sourceReviewSha256`, include `complexity`, validate schema, and run `audit-validate.mjs plan`. Legacy plans remain readable but cannot establish current run-bound execution.
 
 ## Validation
 
@@ -55,6 +55,7 @@ Convert validated audit findings into prioritized, complexity-estimated remediat
 - Each item has acceptance criteria, verification, owner role, rollout, rollback, approval requirements, and source finding IDs.
 - Every item has a complexity estimate and rationale; every milestone has a stable phase ID usable by `audit-remediation -Phase`.
 - The JSON validates against `schemas/audit-remediation-plan.schema.json`; Markdown preserves the same ordering and traceability.
+- Current schema 2.1 plans preserve the source review auditRunId and SHA-256 digest.
 
 ## Outputs
 

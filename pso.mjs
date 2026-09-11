@@ -1597,6 +1597,15 @@ function sectionItems(source, heading) {
     .filter((item) => item.toLowerCase() !== "none" && !item.toLowerCase().startsWith("no dedicated"));
 }
 
+function dependencyItems(source) {
+  const section = source.match(/^## Composition and Dependencies\s*$([\s\S]*?)(?=^## |(?![\s\S]))/m)?.[1] ?? "";
+  const prerequisites = section.match(/^### Prerequisite Dependencies\s*$([\s\S]*?)(?=^### |(?![\s\S]))/m)?.[1];
+  const content = prerequisites ?? section;
+  return [...content.matchAll(/^\s*-\s+`?([^`\r\n]+?)`?\s*$/gm)]
+    .map((item) => item[1].trim())
+    .filter((item) => item.toLowerCase() !== "none");
+}
+
 async function discoverSkills(root) {
   const skillsRoot = path.join(root, ".github", "skills");
   if (!existsSync(skillsRoot)) return [];
@@ -2259,7 +2268,7 @@ async function inventory(requestedRoot) {
     const confidence = frontmatter.confidence || "low";
     if (!lifecycles.has(lifecycle)) throw new Error(`Invalid lifecycle '${lifecycle}' in ${skill.name}`);
     if (!confidenceLevels.has(confidence)) throw new Error(`Invalid confidence '${confidence}' in ${skill.name}`);
-    const dependencies = sectionItems(skill.source, "Composition and Dependencies");
+    const dependencies = dependencyItems(skill.source);
     const reports = sectionItems(skill.source, "Outputs").filter((item) => /^(reports|artifacts)\//.test(item));
     const missingSections = requiredSections.filter((heading) => !new RegExp(`^## ${heading.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*$`, "m").test(skill.source));
     const findings = [];
@@ -2393,6 +2402,132 @@ async function inventory(requestedRoot) {
   console.log(`Audited ${details.length} skills (${details.filter((skill) => skill.audit.status === "passed").length} passed)`);
 }
 
+function requireWorkflowString(value, label) {
+  if (typeof value !== "string" || !value.trim()) throw new Error(`Invalid workflow plan: ${label} must be a non-empty string`);
+}
+
+function validateWorkflowPlanShape(workflow) {
+  if (!workflow || typeof workflow !== "object" || Array.isArray(workflow)) throw new Error("Invalid workflow plan: root must be an object");
+  if (workflow.schemaVersion === "1.0.0") {
+    for (const field of ["workflowId", "runId", "intent", "createdAt"]) requireWorkflowString(workflow[field], field);
+    if (workflow.status !== "planned") throw new Error("Invalid workflow plan: status must be planned");
+    if (!Array.isArray(workflow.steps) || !workflow.steps.length) throw new Error("Invalid workflow plan: steps must not be empty");
+    return;
+  }
+  if (workflow.schemaVersion !== "1.1.0") throw new Error(`Invalid workflow plan: unsupported schemaVersion ${workflow.schemaVersion ?? "missing"}`);
+  const topFields = new Set(["schemaVersion", "workflowId", "runId", "intent", "status", "createdAt", "terminalStepId", "steps"]);
+  const stepFields = new Set(["id", "owner", "action", "status", "inputs", "outputs", "requiresApproval", "approvalClasses", "prerequisites", "completionCriteria", "checkpoint", "rollback", "recovery", "onBlocked", "onFailed"]);
+  const ownerFields = new Set(["type", "id"]);
+  const approvalClasses = new Set(["external", "privileged", "destructive", "irreversible", "production-data-mutation", "commit", "push", "phase", "signing", "publication", "release"]);
+  const unexpectedTopFields = Object.keys(workflow).filter((field) => !topFields.has(field));
+  if (unexpectedTopFields.length) throw new Error(`Invalid workflow plan: unexpected fields ${unexpectedTopFields.join(", ")}`);
+  for (const field of ["workflowId", "runId", "intent", "createdAt", "terminalStepId"]) requireWorkflowString(workflow[field], field);
+  if (Number.isNaN(Date.parse(workflow.createdAt))) throw new Error("Invalid workflow plan: createdAt must be a date-time");
+  if (!/^STEP-[0-9]{3,}$/.test(workflow.terminalStepId)) throw new Error("Invalid workflow plan: terminalStepId has an invalid format");
+  if (workflow.status !== "planned") throw new Error("Invalid workflow plan: status must be planned");
+  if (!Array.isArray(workflow.steps) || !workflow.steps.length) throw new Error("Invalid workflow plan: steps must not be empty");
+  for (const step of workflow.steps) {
+    if (!step || typeof step !== "object" || Array.isArray(step)) throw new Error("Invalid workflow plan: every step must be an object");
+    const unexpectedStepFields = Object.keys(step).filter((field) => !stepFields.has(field));
+    if (unexpectedStepFields.length) throw new Error(`Invalid workflow plan: unexpected step fields ${unexpectedStepFields.join(", ")}`);
+    for (const field of ["id", "action", "checkpoint", "rollback", "recovery", "onBlocked", "onFailed"]) requireWorkflowString(step[field], `${step.id ?? "step"}.${field}`);
+    if (!/^STEP-[0-9]{3,}$/.test(step.id)) throw new Error(`Invalid workflow plan: step ID ${step.id} has an invalid format`);
+    if (!/^CP-[A-Z0-9-]+$/.test(step.checkpoint)) throw new Error(`Invalid workflow plan: checkpoint ${step.checkpoint} has an invalid format`);
+    if (!step.owner || typeof step.owner !== "object" || Array.isArray(step.owner)) throw new Error(`Invalid workflow plan: ${step.id}.owner must be an object`);
+    const unexpectedOwnerFields = Object.keys(step.owner).filter((field) => !ownerFields.has(field));
+    if (unexpectedOwnerFields.length) throw new Error(`Invalid workflow plan: unexpected owner fields ${unexpectedOwnerFields.join(", ")}`);
+    if (!new Set(["skill", "operator"]).has(step.owner.type)) throw new Error(`Invalid workflow plan: ${step.id}.owner.type must be skill or operator`);
+    requireWorkflowString(step.owner.id, `${step.id}.owner.id`);
+    if (!new Set(["planned", "ready", "blocked", "completed", "failed", "skipped"]).has(step.status)) throw new Error(`Invalid workflow plan: unsupported status for ${step.id}`);
+    for (const field of ["inputs", "outputs", "approvalClasses", "prerequisites", "completionCriteria"]) {
+      if (!Array.isArray(step[field])) throw new Error(`Invalid workflow plan: ${step.id}.${field} must be an array`);
+      if (field === "completionCriteria" && !step[field].length) throw new Error(`Invalid workflow plan: ${step.id}.completionCriteria must not be empty`);
+      if (new Set(step[field]).size !== step[field].length) throw new Error(`Invalid workflow plan: ${step.id}.${field} contains duplicates`);
+      for (const item of step[field]) requireWorkflowString(item, `${step.id}.${field}`);
+    }
+    if (typeof step.requiresApproval !== "boolean") throw new Error(`Invalid workflow plan: ${step.id}.requiresApproval must be boolean`);
+    const unsupportedApprovals = step.approvalClasses.filter((approvalClass) => !approvalClasses.has(approvalClass));
+    if (unsupportedApprovals.length) throw new Error(`Invalid workflow plan: ${step.id} has unsupported approval classes ${unsupportedApprovals.join(", ")}`);
+    if (step.requiresApproval !== (step.approvalClasses.length > 0)) throw new Error(`Invalid workflow plan: ${step.id} approval declaration is inconsistent`);
+    if (step.owner.type === "operator" && !step.requiresApproval) throw new Error(`Invalid workflow plan: operator step ${step.id} must require approval`);
+  }
+}
+
+async function validateWorkflowPlan(workflow, root) {
+  validateWorkflowPlanShape(workflow);
+  if (workflow.schemaVersion === "1.0.0") return workflow;
+  const ids = workflow.steps.map((step) => step.id);
+  if (new Set(ids).size !== ids.length) throw new Error("Invalid workflow plan: step IDs must be unique");
+  const byId = new Map(workflow.steps.map((step) => [step.id, step]));
+  if (!byId.has(workflow.terminalStepId)) throw new Error(`Invalid workflow plan: terminal step ${workflow.terminalStepId} does not exist`);
+  const terminal = byId.get(workflow.terminalStepId);
+  if (terminal.owner.type !== "skill" || terminal.owner.id !== "project-handoff") throw new Error("Invalid workflow plan: terminal step must be owned by project-handoff");
+  const skillNames = new Set((await discoverSkills(root)).map((skill) => skill.name));
+  for (const step of workflow.steps) {
+    if (step.owner.type === "skill" && !skillNames.has(step.owner.id)) throw new Error(`Invalid workflow plan: unknown skill owner ${step.owner.id}`);
+    for (const reference of [...step.prerequisites, step.onBlocked, step.onFailed]) {
+      if (!byId.has(reference)) throw new Error(`Invalid workflow plan: ${step.id} references unknown step ${reference}`);
+    }
+  }
+  const visiting = new Set();
+  const visited = new Set();
+  function visitPrerequisites(id, trail = []) {
+    if (visiting.has(id)) throw new Error(`Invalid workflow plan: prerequisite cycle ${[...trail, id].join(" -> ")}`);
+    if (visited.has(id)) return;
+    visiting.add(id);
+    for (const prerequisite of byId.get(id).prerequisites) visitPrerequisites(prerequisite, [...trail, id]);
+    visiting.delete(id);
+    visited.add(id);
+  }
+  for (const id of ids) visitPrerequisites(id);
+  const ready = workflow.steps.filter((step) => step.status === "ready");
+  if (ready.length !== 1 || ready[0].prerequisites.length) throw new Error("Invalid workflow plan: exactly one prerequisite-free step must be ready");
+  function reachesTerminal(start, route) {
+    const seen = new Set();
+    let current = start;
+    while (current !== workflow.terminalStepId) {
+      if (seen.has(current)) return false;
+      seen.add(current);
+      current = byId.get(current)[route];
+    }
+    return true;
+  }
+  for (const step of workflow.steps) {
+    if (step.id === workflow.terminalStepId) continue;
+    if (!reachesTerminal(step.id, "onBlocked")) throw new Error(`Invalid workflow plan: ${step.id} blocked route cannot reach terminal handoff`);
+    if (!reachesTerminal(step.id, "onFailed")) throw new Error(`Invalid workflow plan: ${step.id} failed route cannot reach terminal handoff`);
+  }
+  return workflow;
+}
+
+function workflowPlanMarkdown(workflow) {
+  return [
+    "# Workflow Plan", "", `Generated: ${workflow.createdAt}`, "", `Intent: ${workflow.intent}`, "",
+    "| Step | Owner | Status | Action | Approval |", "| --- | --- | --- | --- | --- |",
+    ...workflow.steps.map((step) => `| ${step.id} | ${step.owner.type}:${step.owner.id} | ${step.status} | ${step.action.replaceAll("|", "\\|")} | ${step.approvalClasses.join(", ") || "None"} |`),
+    "", `Terminal handoff: ${workflow.terminalStepId}`, ""
+  ].join("\n");
+}
+
+function workflowStateMarkdown(state) {
+  return [
+    "# Current Execution State", "", `- Workflow: \`${state.workflowId}\``, `- Run: \`${state.runId}\``,
+    `- Status: ${state.status}`, `- Current step: ${state.currentStep} of ${state.totalSteps}`,
+    `- Active owner: \`${state.activeSkill}\``, `- Last sequence: ${state.lastSequence}`, ""
+  ].join("\n");
+}
+
+async function validateWorkflowPlanFile(requestedRoot, requestedFile) {
+  const root = await realpath(path.resolve(requestedRoot));
+  const target = requestedFile ? path.resolve(root, requestedFile) : path.join(root, "reports", "workflow-plan.json");
+  const relative = path.relative(root, target);
+  validateRelativePath(relative);
+  await assertSafeManagedPath(root, relative);
+  const workflow = JSON.parse(await readFile(target, "utf8"));
+  await validateWorkflowPlan(workflow, root);
+  console.log(`Validated workflow plan: ${workflow.workflowId}`);
+}
+
 async function plan(requestedRoot, intent) {
   if (!intent) throw new Error("Use --intent to describe the requested outcome");
   const root = await realpath(path.resolve(requestedRoot));
@@ -2415,10 +2550,24 @@ async function plan(requestedRoot, intent) {
     const runId = `RUN-${randomUUID()}`;
     const now = new Date().toISOString();
     const workflow = {
-      schemaVersion: "1.0.0", workflowId, runId, intent,
-      status: "planned", createdAt: now,
-      steps: [{ id: "STEP-001", skill: "project-skills-orchestrator", action: "Route intent", status: "planned" }]
+      schemaVersion: "1.1.0", workflowId, runId, intent,
+      status: "planned", createdAt: now, terminalStepId: "STEP-002",
+      steps: [
+        {
+          id: "STEP-001", owner: { type: "skill", id: "project-skills-orchestrator" }, action: "Route clarified intent", status: "ready",
+          inputs: ["Clarified user intent"], outputs: ["Routed workflow outcome"], requiresApproval: false, approvalClasses: [], prerequisites: [],
+          completionCriteria: ["Intent is routed to exactly one owning skill per executable step."], checkpoint: "CP-ROUTED",
+          rollback: "Preserve the prior valid plan.", recovery: "Correct unresolved ownership and replan.", onBlocked: "STEP-002", onFailed: "STEP-002"
+        },
+        {
+          id: "STEP-002", owner: { type: "skill", id: "project-handoff" }, action: "Publish terminal workflow continuity", status: "planned",
+          inputs: ["STEP-001 outcome"], outputs: ["reports/project-handoff.json", "reports/project-handoff.md", "reports/current-work-state.json"], requiresApproval: false, approvalClasses: [], prerequisites: ["STEP-001"],
+          completionCriteria: ["The handoff records completed, blocked, failed, and pending work with one next action."], checkpoint: "CP-HANDOFF",
+          rollback: "Preserve the prior valid handoff.", recovery: "Regenerate synchronized continuity from the latest valid outcome.", onBlocked: "STEP-002", onFailed: "STEP-002"
+        }
+      ]
     };
+    await validateWorkflowPlan(workflow, root);
     const eventFile = path.join(reports, "execution-log.jsonl");
     await assertSafeManagedPath(root, "reports/execution-log.jsonl");
     let sequence = 1;
@@ -2429,11 +2578,19 @@ async function plan(requestedRoot, intent) {
       if (error.code !== "ENOENT") throw error;
     }
     const event = {
-      eventId: randomUUID(), eventType: "workflow.planned", occurredAt: now, sequence,
-      workflowId, runId, actor: "pso-standalone", payload: { intent, totalSteps: 1 }
+      schemaVersion: "1.0.0", sequence, timestamp: now, workflowId, runId,
+      event: "workflow-planned", actor: "pso-standalone", intent, totalSteps: workflow.steps.length
+    };
+    const state = {
+      schemaVersion: "1.0.0", workflowId, runId, status: "planned", currentStep: 1,
+      totalSteps: workflow.steps.length, activeSkill: workflow.steps[0].owner.id,
+      lastCompletedStep: 0, resumeFromStep: 1, lastSequence: sequence, updatedAt: now
     };
     await appendFile(eventFile, `${JSON.stringify(event)}\n`, "utf8");
     await writeTextAtomic(path.join(reports, "workflow-plan.json"), `${JSON.stringify(workflow, null, 2)}\n`);
+    await writeTextAtomic(path.join(reports, "workflow-plan.md"), workflowPlanMarkdown(workflow));
+    await writeTextAtomic(path.join(reports, "current-execution-state.json"), `${JSON.stringify(state, null, 2)}\n`);
+    await writeTextAtomic(path.join(reports, "current-execution-state.md"), workflowStateMarkdown(state));
     console.log(`Created workflow ${workflowId}`);
   } finally {
     await rm(lockPath, { force: true });
@@ -2646,6 +2803,7 @@ Usage:
   node .\\pso.mjs recover --project "C:\\repos\\existing" [--transaction ID]
   node .\\pso.mjs inventory [--root "C:\\repos\\my-project"]
   node .\\pso.mjs plan --intent "Build a customer portal" [--root PATH]
+  node .\\pso.mjs plan validate [--root PATH] [--file reports/workflow-plan.json]
   node .\\pso.mjs agent build --project "C:\\repos\\my-project" [agent parameters]
   node .\\pso.mjs agent validate --project "C:\\repos\\my-project" --blueprint agent.json
   node .\\pso.mjs agent plan --project "C:\\repos\\my-project" --blueprint agent.json
@@ -2777,6 +2935,7 @@ async function main() {
   }
   if (command === "agent") return runAgentBuilder(options);
   if (command === "inventory") return inventory(path.resolve(options.root ?? process.cwd()));
+  if (command === "plan" && options._[1] === "validate") return validateWorkflowPlanFile(path.resolve(options.root ?? process.cwd()), options.file);
   if (command === "plan") return plan(path.resolve(options.root ?? process.cwd()), options.intent);
   if (!command) return guidedSetup();
   throw new Error(`Unknown command: ${command}`);

@@ -8,6 +8,7 @@ import test from "node:test";
 
 const root = path.resolve(import.meta.dirname, "..");
 const validator = path.join(root, ".github", "skills", "audit-code", "scripts", "audit-validate.mjs");
+const fixtureAuditRunId = "123e4567-e89b-42d3-a456-426614174000";
 
 function run(...args) {
   return spawnSync(process.execPath, [validator, ...args], { cwd: root, encoding: "utf8" });
@@ -22,6 +23,7 @@ function git(cwd, ...args) {
 function plan() {
   return {
     schemaVersion: "2.0.0",
+    auditRunId: fixtureAuditRunId,
     planId: "PLAN-TEST",
     sourceReview: "reports/code-audit-review.json",
     prioritization: ["prerequisite", "complexity"],
@@ -237,5 +239,19 @@ test("resume validation rejects repository and same-status content drift", async
     const result = validate("--resume-root", resumeRepository);
     assert.notEqual(result.status, 0);
     assert.match(result.stderr, /worktree digest/i);
+  });
+});
+
+test("schema 3.1 execution requires the immutable plan audit run", async () => {
+  await withArtifacts(async ({ executionPath, validate, value }) => {
+    value.schemaVersion = "3.1.0";
+    value.auditRunId = fixtureAuditRunId;
+    await writeFile(executionPath, `${JSON.stringify(value)}\n`, "utf8");
+    assert.equal(validate().status, 0);
+    value.auditRunId = "223e4567-e89b-42d3-a456-426614174000";
+    await writeFile(executionPath, `${JSON.stringify(value)}\n`, "utf8");
+    const mismatch = validate();
+    assert.notEqual(mismatch.status, 0);
+    assert.match(mismatch.stderr, /auditRunId does not match plan/);
   });
 });

@@ -468,7 +468,7 @@ The inventory below groups the current skill catalog by the problem each skill p
 | --- | --- |
 | `project-skills-orchestrator` | Routes multi-skill requests, enforces ownership boundaries, and coordinates governed execution. |
 | `clarify-the-ask` | Resolves material requirements and assumptions through a bounded question round. |
-| `workflow-planner` | Converts confirmed intent into ordered steps, approvals, checkpoints, validation, and recovery routes. |
+| `workflow-planner` | Converts confirmed intent into schema-validated steps with explicit skill or operator owners, approvals, checkpoints, terminal handoff routes, and event-sourced execution lineage. |
 | `policy-engine` | Evaluates whether governed actions are allowed, denied, or approval-gated without executing them. |
 | `workflow-state-manager` | Maintains event-sourced execution state and deterministic pause, resume, approval-wait, and terminal behavior. |
 
@@ -498,9 +498,9 @@ The inventory below groups the current skill catalog by the problem each skill p
 
 | Skill | Primary responsibility |
 | --- | --- |
-| `audit-code` | Performs a complete read-only repository audit for security, correctness, performance, dependencies, tests, and maintainability. |
+| `audit-code` | Performs a complete read-only repository audit and emits run-bound schema 2.2 findings backed by an immutable content-addressed evidence snapshot and detailed verification records. |
 | `audit-azure-environment` | Assesses a deployed Azure scope for security, reliability, governance, cost, and configuration. |
-| `audit-review-findings` | Converts structured findings into a traceable review without changing their IDs or evidence. |
+| `audit-review-findings` | Converts findings into a traceable review while preserving schema 2.2 audit-run identity, immutable evidence reference, standards, assurance, and verification evidence exactly. |
 | `audit-plan-remediation` | Produces prioritized remediation work with owners, dependencies, verification, rollout, and rollback. |
 | `audit-remediation` | Executes an approved remediation plan with checkpoints, validation, and rollback. |
 | `security-review` | Performs a focused security review for exploitable weaknesses, secrets, identity, authorization, and OWASP risks. |

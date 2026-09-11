@@ -55,7 +55,7 @@ Execute approved items from a validated audit remediation plan while preserving 
 9. After every selected phase or interruption, run `change-review`, write the execution result, create a workflow checkpoint, and dispatch `project-handoff`. The handoff must list completed, failed, blocked, rolled-back, deferred, and remaining item and finding IDs, validation evidence, pending approvals, and the single next eligible action.
 10. For `-Resume`, verify event and checkpoint integrity, plan digest, repository identity, working-tree compatibility, prior side effects, and pending approvals before continuing. Refuse stale or ambiguous resume state and route interrupted recovery analysis to `workflow-recovery`.
 11. After all selected items pass, rerun the applicable security and repository checks. Never mark a source finding resolved solely because implementation steps ran; resolution requires passing acceptance criteria and a subsequent `audit-code` verification that can no longer reproduce it.
-12. Emit schema 3.0 execution artifacts bound to the immutable plan snapshot, validate `reports/audit-remediation-execution.json` against `schemas/audit-remediation-execution.schema.json`, run the deterministic execution validator, derive the Markdown view from the same record, checkpoint the terminal state, and dispatch the final project handoff. Legacy schema 1.0 and 2.0 execution records remain historical evidence and cannot establish current completion.
+12. Emit schema 3.1 execution artifacts carrying the same `auditRunId` as the immutable schema 2.1 plan snapshot, validate schema, run the deterministic execution validator, derive Markdown, checkpoint terminal state, and dispatch final handoff. Earlier execution records remain historical evidence.
 
 ## Validation
 
@@ -66,6 +66,7 @@ Execute approved items from a validated audit remediation plan while preserving 
 - `-Resume` reproduces state from the append-only event log and rejects plan, repository, or worktree drift that invalidates the checkpoint.
 - Project handoff and current-work-state match the latest execution checkpoint and identify all work remaining from the source audit.
 - The JSON uses schema 3.0, references a contained content-addressed snapshot, validates against `schemas/audit-remediation-execution.schema.json`, and passes `audit-validate.mjs execution`; Markdown preserves the same selection, ordering, statuses, evidence, approvals, and next action.
+- Current schema 3.1 execution carries the same auditRunId as its immutable plan snapshot.
 
 ## Outputs
 

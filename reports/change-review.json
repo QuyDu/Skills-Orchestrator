@@ -1,61 +1,42 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-09-08T23:45:00.000Z",
+  "generatedAt": "2026-09-11T17:30:00.000Z",
   "status": "passed",
   "boundary": {
     "type": "working-tree",
-    "baseCommit": "3863e4ab8bd0e0adc3adf320b20111eaa70f62cf",
+    "baseCommit": "39c1b62b2cc48f032f5acddc60800572b1523ce9",
     "head": "local working tree",
-    "objective": "Review the exact 28-path female Ava narration boundary: 11 local scene MP3 assets, Ava metadata, AzureUSGovernment generation support, documentation, focused tests, and attributable validation and governance evidence. Confirm unchanged narration wording and visual artifacts, supported voice delivery, playable audio, exclusion of the transient PowerPoint lock file, and preservation of blocked P4 status."
+    "objective": "Review the complete workflow-planner and audit-pipeline hardening, schema evolution, tests, generated documentation and reports, immutable evidence, and corrected PSO-126 remediation plan before source-only publication through the protected default branch."
   },
   "findings": [],
   "validation": [
     {
-      "command": "Read-only review of the 28-path working-tree diff and nearest narration generator, manifest, animation playback path, tests, and generated evidence",
+      "command": "Read-only bounded review of the complete working-tree diff and controlling skill, schema, validator, test, report, and generated-documentation paths",
       "status": "passed",
-      "evidence": "The only behavior change selects female en-US-AvaNeural with style auto and adds AzureUSGovernment TTS routing. Narration wording is unchanged, generated evidence is attributable, and Demo/~$Project-Orchestrator-Demo.pptx is excluded. No correctness, security, compatibility, requirement, evidence-integrity, or missing-test defect was identified."
+      "evidence": "No new correctness defect, security regression, compatibility break, stale modified artifact, ownership violation, or missing critical test was identified. Historical schema 2.0 and 3.0 artifacts remain intentionally readable and unchanged."
     },
     {
-      "command": "node --test tests/skill-contracts.test.mjs",
+      "command": "node .github/skills/audit-code/scripts/audit-validate.mjs findings reports/code-audit-findings.json; review; plan",
       "status": "passed",
-      "evidence": "All 16 focused contract tests passed after the clarification and policy updates. Coverage pins en-US-AvaNeural, style auto, AzureUSGovernment TTS routing, output format, scene count, narration parity, and playback fallback behavior."
-    },
-    {
-      "command": "PowerShell parser validation for scripts/generate-demo-narration.ps1",
-      "status": "passed",
-      "evidence": "The narration generator parsed with zero PowerShell errors."
-    },
-    {
-      "command": "AzureUSGovernment synthesis plus isolated FFmpeg 6.1.1 inspection and full decode of Demo/audio/narration/scene-01.mp3 through scene-11.mp3",
-      "status": "passed",
-      "evidence": "All 11 female Ava files synthesized in usgovarizona, have unique hashes, total 286.27 seconds, and are nonempty 48 kHz, 192 kbps, mono MP3 files that decode fully."
-    },
-    {
-      "command": "Chromium playback at http://127.0.0.1:43171/Demo/project-skills-orchestrator-animation.html",
-      "status": "passed",
-      "evidence": "Every scene returned HTTP 206, reached media ready state 4, played its local MP3 without error or browser-voice fallback, and scene 1 advanced to scene 2 after its audio completed."
-    },
-    {
-      "command": "SHA-256 verification of Demo/project-skills-orchestrator-animation.html and Demo/Project-Orchestrator-Demo.pptx",
-      "status": "passed",
-      "evidence": "The HTML remains 7A774D7159CC5BBB168AA09244B3F2A3AD7DC2C8BFBD069AA19D0A7E825B6AD4 and the PowerPoint remains EBAB68676D3044CC5BD252CDB4B4447E444312E78E965825C59BC1CE27C9729E, exactly matching the pre-voice values."
+      "evidence": "PSO-126 findings, review, immutable evidence reference, auditRunId, and remediation-plan source digest validate as one chain."
     },
     {
       "command": "npm run check",
       "status": "passed",
-      "evidence": "The mandatory repository gate passed 124 of 125 tests with one platform-specific skip, verified all 44 skills, scanned 219 files without a security failure, and verified 158 checksum-covered release-candidate files."
+      "evidence": "The repository gate passed 133 of 134 tests with one platform-specific skip, verified all 45 skills, scanned 221 files, and verified 161 unsigned candidate files."
     },
     {
-      "command": "git status --short; git diff --check",
+      "command": "git diff --check",
       "status": "passed",
-      "evidence": "The frozen commit boundary contains 28 attributable paths, no staged or unmerged path, and no diff-check error. The separate PowerPoint lock file is the only excluded untracked path."
+      "evidence": "No whitespace errors or unmerged paths were found in the bounded candidate."
     }
   ],
   "openQuestions": [],
   "residualRisks": [
-    "The MP3 assets are binary and cannot receive line-level textual review; full decode, format, hash, manifest-name, and browser-playback checks provide the current integrity evidence.",
-    "Hosted CI across repository-supported platforms and Node versions can run only after the authorized branch push.",
-    "The release candidate remains unsigned and P4 still requires trusted signing, distinct independent review, operational artifact evidence, revocation testing, and production verification."
+    "AUD-0301, AUD-0302, and AUD-0303 remain confirmed medium audit-framework integrity findings; AUD-0304 remains a non-security correctness finding. They are disclosed and mapped to PLAN-2026-09-11-PSO-126, not represented as resolved.",
+    "Hosted CI must run against the pushed commit before protected merge.",
+    "The public source update does not authorize a package, GitHub release, deployment, trusted-signature claim, independent-review claim, or production-readiness claim.",
+    "P4 release assurance remains blocked by signing, independent review, operational evidence, revocation, and production verification."
   ],
-  "recommendation": "The reviewed female Ava narration change set is ready for the authorized normal commit and configured feature-branch push. Exclude Demo/~$Project-Orchestrator-Demo.pptx. Do not force-push, open a pull request, merge, sign, release, publish, deploy, mutate Azure, or represent the unsigned candidate as production-ready."
+  "recommendation": "The full bounded worktree is ready for one source-only commit and normal push to feat/agent-builder-latest, followed by a protected pull request to default main. Do not force-push or publish a release package."
 }

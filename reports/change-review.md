@@ -1,23 +1,27 @@
 # Change Review
 
-Status: **passed**
+- Base: `39c1b62b2cc48f032f5acddc60800572b1523ce9`
+- Head: local working tree
+- Status: **passed**
+- Findings: **none introduced by the bounded change**
 
-Boundary: the exact 28-path female Ava narration change against `3863e4ab8bd0e0adc3adf320b20111eaa70f62cf`, including 11 local scene MP3s, metadata, Government generator support, documentation, tests, and attributable evidence. `Demo/~$Project-Orchestrator-Demo.pptx` is excluded.
+## Boundary
 
-## Findings
-
-No findings. The diff changes the selected voice from unavailable Dragon HD to female `en-US-AvaNeural`, uses supported style `auto`, and adds explicit AzureUSGovernment TTS routing. Narration wording is unchanged. The HTML and PowerPoint have no diff and retain their pre-voice hashes.
+The review covers the complete workflow-planner and audit-pipeline hardening, schema evolution, tests, generated documentation and reports, immutable evidence, and corrected PSO-126 remediation plan intended for source-only publication through the protected default branch.
 
 ## Validation
 
-All 16 focused contract tests pass, and the PowerShell generator parses with zero errors. All 11 Ava files were synthesized through AzureUSGovernment in `usgovarizona`; they are unique, fully decodable 48 kHz, 192 kbps, mono MP3s totaling 286.27 seconds. Chromium loaded and played every scene locally without fallback and advanced on audio completion.
-
-Final `npm run check` passed 124 of 125 tests with one platform-specific skip, verified all 44 skills, scanned 219 files without a security failure, and verified 158 checksum-covered candidate files. `git diff --check` passes. The HTML hash remains `7A774D7159CC5BBB168AA09244B3F2A3AD7DC2C8BFBD069AA19D0A7E825B6AD4`; the PowerPoint hash remains `EBAB68676D3044CC5BD252CDB4B4447E444312E78E965825C59BC1CE27C9729E`.
+- The findings, review, and remediation plan validate as one `auditRunId`- and digest-bound chain.
+- `npm run check` passed 133 of 134 tests with one platform-specific skip.
+- All 45 skills passed verification; 221 files were security-scanned and 161 unsigned candidate files were verified.
+- `git diff --check` reported no whitespace errors or unmerged paths.
 
 ## Residual Risk
 
-The MP3s are binary, so integrity relies on format, full-decode, hash, manifest-name, and browser-playback evidence instead of line review. Hosted CI awaits the branch push. P4 release assurance remains blocked.
+- `AUD-0301`, `AUD-0302`, and `AUD-0303` remain confirmed medium audit-framework integrity findings; `AUD-0304` remains a non-security correctness finding. They are disclosed and mapped to `PLAN-2026-09-11-PSO-126`, not represented as resolved.
+- Hosted CI must pass against the pushed commit before merge.
+- P4 release assurance remains blocked. Source publication does not authorize a package, release, deployment, or production-readiness claim.
 
 ## Recommendation
 
-The reviewed change set is ready for the authorized normal commit and configured feature-branch push. Exclude the PowerPoint lock file. Force push, pull request creation, merge, signing, release, publication, deployment, Azure mutation, and production-readiness claims remain separately gated.
+Create one source-only commit, push `feat/agent-builder-latest` normally, and merge through a protected pull request into default `main`. Do not force-push or publish a release package.

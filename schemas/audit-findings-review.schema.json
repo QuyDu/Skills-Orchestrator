@@ -1,12 +1,14 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://project-skills.dev/schemas/audit-findings-review/2.0.0",
+  "$id": "https://project-skills.dev/schemas/audit-findings-review/2.2.0",
   "title": "Audit Findings Review",
   "type": "object",
   "additionalProperties": false,
   "required": ["schemaVersion", "reviewId", "generatedAt", "sourceReport", "sourceAuditId", "summary", "findings", "limitations"],
   "properties": {
-    "schemaVersion": { "enum": ["1.0.0", "2.0.0"] },
+    "schemaVersion": { "enum": ["1.0.0", "2.0.0", "2.1.0", "2.2.0"] },
+    "auditRunId": { "type": "string", "format": "uuid" },
+    "auditEvidence": { "$ref": "code-audit-findings.schema.json#/properties/auditEvidence" },
     "reviewId": { "type": "string", "minLength": 1 },
     "generatedAt": { "type": "string", "format": "date-time" },
     "sourceReport": { "type": "string" },
@@ -15,6 +17,7 @@
     "repositoryEvidence": { "$ref": "code-audit-findings.schema.json#/properties/repositoryEvidence" },
     "standards": { "$ref": "code-audit-findings.schema.json#/properties/standards" },
     "assurance": { "$ref": "code-audit-findings.schema.json#/properties/assurance" },
+    "verificationEvidence": { "$ref": "code-audit-findings.schema.json#/properties/verificationEvidence" },
     "findings": {
       "type": "array",
       "items": {
@@ -49,6 +52,14 @@
     {
       "if": { "properties": { "schemaVersion": { "const": "2.0.0" } }, "required": ["schemaVersion"] },
       "then": { "required": ["repositoryEvidence", "standards", "assurance"] }
+    },
+    {
+      "if": { "properties": { "schemaVersion": { "const": "2.1.0" } }, "required": ["schemaVersion"] },
+      "then": { "required": ["repositoryEvidence", "standards", "assurance", "verificationEvidence"] }
+    },
+    {
+      "if": { "properties": { "schemaVersion": { "const": "2.2.0" } }, "required": ["schemaVersion"] },
+      "then": { "required": ["auditRunId", "auditEvidence", "repositoryEvidence", "standards", "assurance", "verificationEvidence"] }
     }
   ]
 }

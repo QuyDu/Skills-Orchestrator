@@ -1,12 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://project-skills.dev/schemas/audit-remediation-execution/3.0.0",
+  "$id": "https://project-skills.dev/schemas/audit-remediation-execution/3.1.0",
   "title": "Audit Remediation Execution",
   "type": "object",
   "additionalProperties": false,
   "required": ["schemaVersion", "executionId", "generatedAt", "sourcePlan", "selection", "status", "items", "checkpoints", "remaining", "pendingApprovals", "limitations", "nextAction"],
   "properties": {
-    "schemaVersion": { "enum": ["1.0.0", "2.0.0", "3.0.0"] },
+    "schemaVersion": { "enum": ["1.0.0", "2.0.0", "3.0.0", "3.1.0"] },
+    "auditRunId": { "type": "string", "format": "uuid" },
     "executionId": { "type": "string", "minLength": 1 },
     "generatedAt": { "type": "string", "format": "date-time" },
     "sourcePlan": {
@@ -135,6 +136,10 @@
     {
       "if": { "properties": { "schemaVersion": { "const": "3.0.0" } }, "required": ["schemaVersion"] },
       "then": { "properties": { "sourcePlan": { "properties": { "path": { "pattern": "^reports/audit-remediation-plans/[a-fA-F0-9]{64}\\.json$" } } } } }
+    },
+    {
+      "if": { "properties": { "schemaVersion": { "const": "3.1.0" } }, "required": ["schemaVersion"] },
+      "then": { "required": ["auditRunId"], "properties": { "sourcePlan": { "properties": { "path": { "pattern": "^reports/audit-remediation-plans/[a-fA-F0-9]{64}\\.json$" } } } } }
     }
   ]
 }

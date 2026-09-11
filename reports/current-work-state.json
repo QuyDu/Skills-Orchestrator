@@ -1,34 +1,37 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-09-10T00:53:06.586Z",
-  "project": { "name": "project-skills-orchestrator", "version": "1.1.1", "branch": "feat/agent-builder-latest", "commit": "0981867ca6795a9be48428b2f297ba5d6bf09c1d" },
+  "updatedAt": "2026-09-11T15:56:12.013Z",
+  "project": { "name": "project-skills-orchestrator", "version": "1.1.1", "branch": "feat/agent-builder-latest", "commit": "39c1b62b2cc48f032f5acddc60800572b1523ce9" },
   "status": "blocked",
   "activeMilestone": { "name": "P4 release assurance", "status": "blocked" },
   "lastCompletedAction": {
-    "action": "Complete and validate the skill-update workflow, 45-skill documentation refresh, and 11-slide Demo Day video handoff",
+    "action": "Bind immutable audit evidence, findings, review, remediation plan, and execution to one auditRunId",
     "status": "completed",
-    "completedAt": "2026-09-10T00:53:06.586Z",
+    "completedAt": "2026-09-11T15:50:01.252Z",
     "evidence": [
-      ".github/skills/skill-update/SKILL.md",
-      ".github/skills/skill-create/SKILL.md",
-      "Demo/Project-Orchestrator-Demo.pptx",
-      "Demo/project-skills-orchestrator-animation.html",
-      "Demo/DEMO-DAY.md",
-      "docs/PROJECT-OVERVIEW.md",
-      "reports/skill-inventory.json",
+      ".github/skills/audit-code/SKILL.md",
+      ".github/skills/audit-code/scripts/audit-evidence.mjs",
+      ".github/skills/audit-code/scripts/audit-validate.mjs",
+      ".github/skills/audit-review-findings/SKILL.md",
+      "schemas/code-audit-findings.schema.json",
+      "schemas/audit-findings-review.schema.json",
+      "tests/audit-assurance.test.mjs",
+      "tests/adoption-rerun.test.mjs",
+      "tests/gitleaks-scan.test.mjs",
       "tests/skill-contracts.test.mjs",
-      "tests/adoption-rerun.test.mjs"
+      "reports/project-understanding.json",
+      "docs/PROJECT-GUIDE.md"
     ]
   },
   "validationStatus": {
     "repositoryCheck": "passed",
-    "testsPassed": 124,
+    "testsPassed": 133,
     "testsFailed": 0,
     "testsSkipped": 1,
     "skillsVerified": 45,
     "securityCheck": "passed",
     "releaseCandidateVerification": "passed",
-    "note": "The final npm run check passed 124 tests with one platform-specific skip, verified all 45 skills, scanned 220 files without a security failure, and verified 160 checksum-covered candidate files. The 11-slide 16:9 PowerPoint opened through desktop PowerPoint, and slide 3 contains the validated project-created video hyperlink. P4 remains blocked."
+    "note": "The final npm run check passed 133 of 134 tests with one platform-specific skip, verified all 45 skills, scanned 221 files without a security failure, and verified 161 checksum-covered candidate files. Audit-run binding and immutable provenance fixtures pass end to end. P4 remains blocked."
   },
   "blockers": [
     "AUD-0205: production release assurance remains incomplete.",
@@ -39,8 +42,9 @@
     "Overall P4 assurance remains insufficient-evidence."
   ],
   "pendingApprovals": [
+    "The previously authorized branch commit and push are complete and consumed; any further commit or push requires new explicit approval.",
     "Trusted signing, independent review, revocation testing, pull request creation, merge, release, Foundry agent or endpoint changes, Bot Service creation, Microsoft 365 or Teams publication, Custom GPT creation or sharing, GPT Action configuration, deployment, and MCP installation each require separate approval."
   ],
-  "nextAction": { "skill": "audit-remediation", "status": "blocked", "action": "After the authorized branch update, obtain the distinct qualified reviewer, controlled signer, restricted artifact destination, installation-health evidence, and revocation evidence required before resuming P4 release assurance." },
+  "nextAction": { "skill": "workflow-recovery", "status": "ready", "action": "Execute STEP-001 of reports/workflow-plan.json to reconstruct the stale P4 execution timeline and select a safe restart, resume, or replan route without mutating external systems." },
   "handoff": "reports/project-handoff.json"
 }
