@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 import { createHash, randomUUID } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { existsSync } from "node:fs";
+import { constants, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { createInterface } from "node:readline/promises";
-import { copyFile, lstat, mkdir, readFile, readdir, realpath, rename, rm, writeFile } from "node:fs/promises";
+import { copyFile, lstat, mkdir, open, readFile, readdir, realpath, rename, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const CAPABILITY_ORDER = ["read", "search", "web", "edit", "execute", "agent", "todo"];
@@ -474,10 +474,21 @@ function renderAgent(blueprint) {
 }
 
 async function fileState(file) {
-  if (!existsSync(file)) return "missing";
-  const details = await lstat(file);
-  if (!details.isFile() || details.isSymbolicLink()) throw new Error(`Agent destination is not a regular file: ${file}`);
-  return `file:sha256:${sha256(await readFile(file))}`;
+  let handle;
+  try {
+    handle = await open(file, constants.O_RDONLY | (constants.O_NOFOLLOW ?? 0));
+  } catch (error) {
+    if (error.code === "ENOENT") return "missing";
+    if (error.code === "ELOOP") throw new Error(`Agent destination is not a regular file: ${file}`);
+    throw error;
+  }
+  try {
+    const details = await handle.stat();
+    if (!details.isFile()) throw new Error(`Agent destination is not a regular file: ${file}`);
+    return `file:sha256:${sha256(await handle.readFile())}`;
+  } finally {
+    await handle.close();
+  }
 }
 
 async function loadBlueprint(file) {

@@ -1,11 +1,11 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-09-11T18:15:00.000Z",
+  "generatedAt": "2026-09-11T20:00:00.000Z",
   "provider": "github-actions",
   "repository": "QuyDu/Skills-Orchestrator",
   "pullRequest": 8,
   "runId": 34630219417,
-  "sourceRevision": "57568fb667e1b6ccc462dc1cc5b16c1c8c544bda",
+  "sourceRevision": "7110f313f2a3b48b40a27e0a2dde28ddd0528e35",
   "status": "repair-validated-locally",
   "classification": "product-code",
   "failedJobs": [
@@ -16,30 +16,42 @@
     {"name":"macos-latest / Node 24","jobId":103364920628},
     {"name":"macos-latest / Node 26","jobId":103364920625}
   ],
+  "codeScanning": {
+    "runId": 34639517862,
+    "checkRunId": 103395821279,
+    "status": "failed",
+    "alerts": [
+      {"number":12,"rule":"js/file-system-race","severity":"high","path":".github/skills/audit-code/scripts/audit-evidence.mjs","line":255},
+      {"number":13,"rule":"js/file-system-race","severity":"high","path":".github/skills/agent-builder/scripts/agent-builder.mjs","line":480}
+    ]
+  },
   "firstCausalFailure": {
     "test": "Agent Builder plans, applies, and validates a least-privilege agent",
     "message": "Agent Builder stopped: --agent must match the blueprint target inside the project",
     "relatedTest": "pso agent updates an existing agent with a transaction backup"
   },
-  "rootCause": "safeProjectRoot canonicalized the project root, but validateInstalled compared its canonical target with a lexical path.resolve(agentFile). Equivalent paths through runner filesystem aliases therefore compared unequal.",
+  "rootCause": "The matrix failure came from comparing a canonical target with a lexical agent path. CodeQL then identified check-then-use races in Agent Builder file-state inspection and immutable audit-evidence creation.",
   "repair": {
     "paths": [
       ".github/skills/agent-builder/scripts/agent-builder.mjs",
-      "tests/agent-builder.test.mjs"
+      ".github/skills/audit-code/scripts/audit-evidence.mjs",
+      "tests/agent-builder.test.mjs",
+      "tests/audit-assurance.test.mjs"
     ],
-    "summary": "Canonicalize the supplied existing agent path, compare Windows paths case-insensitively, and cover validation through a project-root filesystem alias."
+    "summary": "Canonicalize equivalent agent paths, inspect destination state through one file handle, create immutable evidence exclusively before handling EEXIST, and cover alias, collision, and tamper behavior."
   },
   "validation": [
     {"command":"Temporary-junction reproduction with three focused Agent Builder tests","status":"passed","evidence":"3 passed, 0 failed, including both formerly failing tests and the new alias regression."},
     {"command":"node --test tests/agent-builder.test.mjs","status":"passed","evidence":"18 passed, 0 failed."},
+    {"command":"node --test tests/agent-builder.test.mjs tests/audit-assurance.test.mjs","status":"passed","evidence":"28 passed, 0 failed."},
     {"command":"npm run check","status":"passed","evidence":"134 passed, 1 platform-specific skip, 0 failed; 45 skills verified; 221 files security-scanned; 161 unsigned candidate files verified."}
   ],
   "remoteRecheck": {
     "status": "pending-push",
-    "requirement": "Observe replacement GitHub Actions checks pass before auto-merge."
+    "requirement": "Observe replacement matrix and CodeQL checks pass before auto-merge."
   },
   "limitations": [
-    "Local validation does not substitute for the replacement hosted Windows and macOS matrix.",
+    "Local validation does not substitute for the replacement hosted matrix and CodeQL analysis.",
     "The source-only pull request does not authorize a release or production-readiness claim."
   ]
 }

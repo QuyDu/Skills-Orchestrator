@@ -249,10 +249,11 @@ mkdirSync(evidenceDirectory, { recursive: true });
 const canonicalEvidenceDirectory = realpathSync(evidenceDirectory);
 if (canonicalEvidenceDirectory !== evidenceDirectory) throw new Error("Audit evidence directory must not redirect through a symbolic link");
 const evidencePath = path.join(evidenceDirectory, `${evidenceSha256}.json`);
-if (existsSync(evidencePath)) {
-  if (!readFileSync(evidencePath).equals(evidenceBytes)) throw new Error("Existing audit evidence snapshot does not match its content digest");
-} else {
+try {
   writeFileSync(evidencePath, evidenceBytes, { flag: "wx", mode: 0o600 });
+} catch (error) {
+  if (error.code !== "EEXIST") throw error;
+  if (!readFileSync(evidencePath).equals(evidenceBytes)) throw new Error("Existing audit evidence snapshot does not match its content digest");
 }
 console.log(JSON.stringify({
   ...evidence,

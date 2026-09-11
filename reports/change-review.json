@@ -1,19 +1,19 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-09-11T18:15:00.000Z",
+  "generatedAt": "2026-09-11T20:00:00.000Z",
   "status": "passed",
   "boundary": {
     "type": "working-tree",
-    "baseCommit": "57568fb667e1b6ccc462dc1cc5b16c1c8c544bda",
+    "baseCommit": "7110f313f2a3b48b40a27e0a2dde28ddd0528e35",
     "head": "local working tree",
-    "objective": "Repair the cross-platform Agent Builder path-alias failure from GitHub Actions run 34630219417, add durable regression coverage, and preserve attributable generated verification reports."
+    "objective": "Resolve CodeQL alerts 12 and 13 with atomic file operations, add immutable-evidence collision and tamper coverage, and preserve attributable generated verification reports."
   },
   "findings": [],
   "validation": [
     {
-      "command": "Authenticated GitHub Actions log review for run 34630219417",
+      "command": "GitHub Advanced Security review for check run 103395821279",
       "status": "passed",
-      "evidence": "All Windows and macOS Node jobs shared the same two Agent Builder failures; the first causal error rejected an equivalent --agent path after the project root had been canonicalized."
+      "evidence": "CodeQL identified two high js/file-system-race alerts at Agent Builder file-state inspection and audit-evidence immutable creation."
     },
     {
       "command": "Temporary-junction reproduction with focused Agent Builder tests",
@@ -26,6 +26,11 @@
       "evidence": "18 tests passed with no failures or skips."
     },
     {
+      "command": "node --test tests/agent-builder.test.mjs tests/audit-assurance.test.mjs",
+      "status": "passed",
+      "evidence": "28 affected-suite tests passed, including forced existing immutable evidence and tamper rejection."
+    },
+    {
       "command": "npm run check",
       "status": "passed",
       "evidence": "134 of 135 tests passed with one expected platform-specific skip; all 45 skills passed, 221 files were security-scanned, and 161 unsigned candidate files were verified."
@@ -33,8 +38,8 @@
   ],
   "openQuestions": [],
   "residualRisks": [
-    "Replacement hosted Windows and macOS checks must pass before protected auto-merge.",
+    "Replacement hosted matrix and CodeQL checks must pass before protected auto-merge.",
     "The release and production-assurance blockers remain unchanged."
   ],
-  "recommendation": "Commit and push the focused repair to pull request #8, retain protected auto-merge, and report success only after the replacement hosted checks and merge complete."
+  "recommendation": "Commit and push the atomic-I/O repair to pull request #8, retain protected auto-merge, and report success only after replacement hosted checks and merge complete."
 }

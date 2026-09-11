@@ -5,6 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import test from "node:test";
+import { pathToFileURL } from "node:url";
 
 const root = path.resolve(import.meta.dirname, "..");
 const validator = path.join(root, ".github", "skills", "audit-code", "scripts", "audit-validate.mjs");
@@ -319,16 +320,28 @@ test("review validation preserves strict schema 2.1 verification evidence", asyn
 test("audit evidence redacts remote query credentials and fails closed on unavailable helpers", async () => {
   const project = await mkdtemp(path.join(os.tmpdir(), "pso-audit-evidence-"));
   try {
+    const fixedClock = path.join(project, "fixed-clock.mjs");
+    await writeFile(fixedClock, `
+const NativeDate = Date;
+const instant = "2026-09-11T12:00:00.000Z";
+globalThis.Date = class extends NativeDate {
+  constructor(...args) { super(...(args.length ? args : [instant])); }
+  static now() { return NativeDate.parse(instant); }
+};
+`, "utf8");
     git(project, "init", "--quiet");
     git(project, "config", "user.name", "Audit Test");
     git(project, "config", "user.email", "audit@example.invalid");
     await writeFile(path.join(project, "README.md"), "fixture\n", "utf8");
-    git(project, "add", "README.md");
+    git(project, "add", "README.md", "fixed-clock.mjs");
     git(project, "commit", "--quiet", "-m", "fixture");
+    await writeFile(path.join(project, "dirty-marker.txt"), "keep worktree state stable\n", "utf8");
     const sensitive = "query-secret-value";
     git(project, "remote", "add", "origin", `https://github.com/example/repository?access_token=${sensitive}#credential`);
 
-    const result = spawnSync(process.execPath, [evidenceCollector, "--root", project], { cwd: root, encoding: "utf8" });
+    const auditRunId = "11111111-1111-4111-8111-111111111111";
+    const collect = () => spawnSync(process.execPath, ["--import", pathToFileURL(fixedClock).href, evidenceCollector, "--root", project, "--audit-run-id", auditRunId], { cwd: root, encoding: "utf8" });
+    const result = collect();
     assert.equal(result.status, 0, result.stderr);
     assert.doesNotMatch(result.stdout, new RegExp(sensitive));
     const evidence = JSON.parse(result.stdout);
@@ -341,6 +354,14 @@ test("audit evidence redacts remote query credentials and fails closed on unavai
     assert.equal(evidence.secretHistory.status, "ready");
     assert.equal(evidence.secretHistory.evidenceMaxAgeHours, 24);
     assert.equal(evidence.secretHistory.scanFresh, false);
+    const repeated = collect();
+    assert.equal(repeated.status, 0, repeated.stderr);
+    assert.equal(JSON.parse(repeated.stdout).artifact.sha256, evidence.artifact.sha256);
+    const evidencePath = path.join(project, evidence.artifact.path);
+    await writeFile(evidencePath, "tampered\n", "utf8");
+    const tampered = collect();
+    assert.notEqual(tampered.status, 0);
+    assert.match(tampered.stderr, /does not match its content digest/);
   } finally {
     await rm(project, { recursive: true, force: true });
   }
