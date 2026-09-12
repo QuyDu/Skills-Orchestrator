@@ -2,33 +2,53 @@
 
 ## Current Status
 
-End-to-end audit-run binding is complete. One UUID now binds immutable audit evidence, Gitleaks, findings, review, remediation planning, and execution; current schemas require detailed verification records and reject mismatched identities or digests. The P4 plan still exposes read-only workflow recovery as its only ready step, and P4 release assurance remains blocked.
+Version 1.1.2 is committed locally at `1444180` and dated September 12, 2026. The prior source hardening is merged to default `main` at `99b9ce6`; protected publication of the 1.1.2 source and report evidence remains pending. P4 release assurance remains blocked, and no GitHub Release or package is authorized.
 
-## Latest Completed Work
+## Planned Initiative: Live Chat Interaction
 
-- Added generated or caller-supplied UUID audit run identity.
-- Added immutable content-addressed `reports/audit-evidence/<sha256>.json` snapshots.
-- Bound Gitleaks 1.1, findings/review 2.2, remediation plans 2.1, and execution 3.1 to the same run.
-- Required detailed tool, command, scope, status, timestamp, digest, revision, and configuration provenance.
-- Added digest and run-ID rejection across every downstream boundary.
-- Resolved root privacy, explicit external approval, and six-scope policy wording.
+`LIVE-CHAT-001` is ready for workflow planning, not implementation.
 
-## Validation
+Objective: let users ask what the application can do, receive guided feature walkthroughs, and continue asking grounded questions by text or voice.
 
-- Run-bound findings-to-execution fixtures: passed.
-- Focused audit pipeline: 35 passed, one platform-specific skip.
-- Dedicated Gitleaks suite: four passed, one symlink skip.
-- Generated-project run-binding guidance: passed.
-- Skill inventory: all 45 skills passed.
-- Project Understanding and canonical project guide: rebuilt and validated.
-- Final repository gate: 133 passed, one platform-specific skip, zero failed, 221 files security-scanned, and 161 unsigned candidate files verified.
+The first version should provide:
 
-## Blockers And Approvals
+- A visible assistant entry point with text input, microphone control, transcript review, and optional spoken responses.
+- Deterministic capability cards and guided walkthroughs.
+- Model-backed freeform Q&A grounded in approved product documentation, with source links and explicit unknowns.
+- Read-only behavior by default and explicit confirmation before any future action.
+- Text-only and guided-only fallback when model or Speech services are unavailable.
 
-P4 still lacks a controlled signer, distinct independent reviewer, restricted internal artifact destination, tested installation-health and revocation operations, second qualified source reviewer, and production verification. Azure Government publication remains fail-closed wherever current service, channel, authorization, or data-boundary availability is unknown.
+## Architecture And Safety Constraints
 
-The previously authorized branch commit and push are complete and consumed. Any further commit or push requires new explicit approval. Pull request creation, merge, force push, signing, release, Foundry agent or endpoint changes, Bot Service creation, Microsoft 365 or Teams publication, Custom GPT creation or sharing, GPT Action configuration, deployment, MCP installation, and Azure mutation remain separately gated.
+- Prototype in `C:\repos\skills-orchestrator-demo`, then generalize the capability into the product.
+- Use only discovery-approved Azure Government model and Speech services.
+- Run Azure discovery before selecting region, model, quota, Speech resource, or deployment topology.
+- Keep credentials out of the browser and use a server-side managed-identity boundary for deployed access.
+- Treat retrieval and model output as untrusted; address prompt injection, unsupported claims, data leakage, and excessive agency.
+- Require clear microphone and transcript privacy notice before cloud processing.
+- This record authorizes no implementation, Azure mutation, cost, deployment, publication, commit, or push.
+
+## Acceptance Direction
+
+- Users can discover capabilities without knowing commands.
+- A user can complete a guided walkthrough and ask contextual follow-up questions.
+- Voice UX covers listening, transcript correction, cancellation, denied permission, and unavailable-service states.
+- Answers cite authoritative product sources, distinguish unknowns, and do not invent capabilities.
+- Keyboard, screen-reader, reduced-motion, responsive, and text-only use remain functional.
+- Security, privacy, quality, latency, cost, and failure-mode evidence pass before deployment approval.
+
+## Open Decisions
+
+- Available Azure Government model and Speech options by subscription and region.
+- Authoritative grounding corpus and refresh/version policy.
+- Spoken-response default and transcript retention policy.
+- Demo and production thresholds for latency, quality, accessibility, and cost.
+- Whether the first prototype is informational only or can propose separately confirmed actions.
+
+## Existing Blockers
+
+P4 still lacks trusted signing, a distinct independent reviewer, restricted artifact distribution, installation-health evidence, tested revocation, and production verification. Live Chat also lacks an approved implementation plan and current Azure Government availability, privacy, quota, cost, and data-boundary evidence.
 
 ## Resume Point
 
-Execute `STEP-001` in `reports/workflow-plan.json`: use `workflow-recovery` to reconstruct the stale P4 execution timeline and select a safe restart, resume, or replan route. This read-only step requires no external-action approval. Do not resume remediation from the old checkpoint directly.
+Run `workflow-planner` to create a non-executing plan for `LIVE-CHAT-001`, covering the demo prototype, reusable architecture, Azure Government discovery, threat model, grounding, voice and text UX, accessibility, evaluation, cost, rollout, rollback, and approval gates. Do not implement, provision, deploy, publish, commit, or push during planning.

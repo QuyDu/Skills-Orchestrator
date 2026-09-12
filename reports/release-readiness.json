@@ -1,17 +1,17 @@
 {
   "schemaVersion": "1.0.0",
   "product": "project-skills-orchestrator",
-  "version": "1.1.1",
-  "evaluatedAt": "2026-09-05T17:28:29.168Z",
-  "commit": "519095930b7deb08606380e7ea9f014ff2b07416",
-  "candidateSha256": "fdf8220092850f2d5baf6669fad37167b815a69a21099f992a1e23c65c9ace2c",
+  "version": "1.1.2",
+  "evaluatedAt": "2026-09-12T16:40:40.540Z",
+  "commit": "14441804ecd6d2fcd700c4ecc96cc33a4947a08f",
+  "candidateSha256": "fad9a3ecd5c84eafdcfcbff18fc61e8953ce7f0c4a4abd265d25a097fc9fb969",
   "status": "blocked",
   "checks": [
     {
       "id": "source-revision",
       "status": "passed",
       "blocking": true,
-      "evidence": "519095930b7deb08606380e7ea9f014ff2b07416"
+      "evidence": "14441804ecd6d2fcd700c4ecc96cc33a4947a08f"
     },
     {
       "id": "clean-worktree",
@@ -23,19 +23,19 @@
       "id": "security-scan",
       "status": "passed",
       "blocking": true,
-      "evidence": "198 files; digest fa50c4e90a8aca82dc1b368ab3b8c823d0d12a589c7c8aa35f988c4521a95722"
+      "evidence": "221 files; digest f5596bcee9984eddbe84b0551b71bac6b5a888b90f3e6a99b5d027ec0bdfbbcd"
     },
     {
       "id": "release-candidate-integrity",
       "status": "passed",
       "blocking": true,
-      "evidence": "Verified unsigned release candidate: 151 checksum-covered files"
+      "evidence": "Verified unsigned release candidate: 161 checksum-covered files"
     },
     {
       "id": "cross-platform-ci",
-      "status": "passed",
+      "status": "blocked",
       "blocking": true,
-      "evidence": "9 required runs passed for 519095930b7deb08606380e7ea9f014ff2b07416"
+      "evidence": "Current-commit Windows, Linux, and macOS evidence for Node 22, 24, and 26 is missing"
     },
     {
       "id": "operational-readiness",

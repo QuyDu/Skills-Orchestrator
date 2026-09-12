@@ -70,11 +70,28 @@ Use Project Orchestrator only as the immutable source framework to provision a n
 
 3. Copy `.github/prompts/demo-web-app.prompt.md` from this source repository into the created project at the same relative path, so the presenter can run `/demo-web-app` there without pasting prompt text. This is the final action performed from the source repository. The copied prompt already bypasses clarification for its bounded build workflow while preserving the generated project's default governance and approval policy. In test mode, preserve the test project for inspection after the run; do not delete it automatically.
 
-4. Open the new project in its own Visual Studio Code window:
+4. Open the new project in its own Visual Studio Code window using a unique temporary workspace
+   identity. Reusing the generated `.code-workspace` path can restore editor tabs from an earlier
+   rehearsal, including a localhost preview before the app server exists. Load the generated
+   workspace as structured JSON, point its folder at the selected project, and write the session
+   copy outside the project so no demo artifact is added:
 
    ```powershell
-   code --new-window "C:\repos\skills-orchestrator-demo\skills-orchestrator-demo.code-workspace"
+   $projectPath = "C:\repos\skills-orchestrator-demo"
+   $generatedWorkspace = Join-Path $projectPath "skills-orchestrator-demo.code-workspace"
+   $sessionWorkspace = Join-Path $env:TEMP "skills-orchestrator-demo-$([guid]::NewGuid().ToString('N')).code-workspace"
+   $workspace = Get-Content $generatedWorkspace -Raw | ConvertFrom-Json
+   $workspace.folders[0].path = $projectPath
+   $workspace.settings.'window.title' = "🚀 Skills Orchestrator Demo • skills-orchestrator-demo (Workspace)"
+   $workspace | ConvertTo-Json -Depth 20 | Set-Content $sessionWorkspace -Encoding utf8
+   code --new-window $sessionWorkspace
    ```
+
+   In test mode, substitute the test project path, generated workspace filename, and title. Require the
+   session workspace path to be under `$env:TEMP`, require its filename to contain a fresh GUID,
+   and confirm its only folder resolves to the selected project before opening it. Never open the
+   stable generated workspace directly during this workflow. Do not delete prior VS Code
+   workspace storage or chat history.
 
    `--new-window` is required. Without it the command can return exit code 0 and open nothing at all. Confirm a window titled `skills-orchestrator-demo (Workspace)` appears before reporting success.
 

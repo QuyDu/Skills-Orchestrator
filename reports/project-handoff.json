@@ -1,128 +1,174 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-09-11T15:56:12.013Z",
-  "project": { "name": "project-skills-orchestrator", "version": "1.1.1", "branch": "feat/agent-builder-latest", "commit": "39c1b62b2cc48f032f5acddc60800572b1523ce9" },
+  "generatedAt": "2026-09-12T16:09:12.3489569Z",
+  "project": {
+    "name": "project-skills-orchestrator",
+    "version": "1.1.2",
+    "branch": "release/1.1.2",
+    "commit": "14441804ecd6d2fcd700c4ecc96cc33a4947a08f",
+    "defaultBranch": "main",
+    "defaultBranchCommit": "99b9ce663b7be69476655d4c40d77e09ff11c442"
+  },
   "status": "blocked",
-  "milestone": { "name": "P4 release assurance", "status": "blocked", "objective": "Produce current release evidence and establish whether version 1.1.1 can pass trusted internal production gates." },
+  "milestone": {
+    "name": "P4 release assurance",
+    "status": "blocked",
+    "objective": "Produce trusted release evidence and establish whether version 1.1.2 can pass internal production gates."
+  },
   "lastCompletedWork": {
-    "summary": "Bound the complete audit pipeline to one UUID auditRunId and immutable content-addressed evidence, including Gitleaks, schema 2.2 findings/review, schema 2.1 remediation plans, schema 3.1 execution, detailed verification records, and cross-artifact digest validation.",
-    "completedAt": "2026-09-11T15:50:01.252Z",
+    "summary": "Merged the validated workflow and audit hardening through protected PR #8, repaired cross-platform path handling and CodeQL file-state races, and validated a fresh-workspace demo launch that does not restore a premature localhost tab.",
+    "completedAt": "2026-09-12T16:09:12.3489569Z",
     "evidence": [
-      ".github/skills/audit-code/SKILL.md",
-      ".github/skills/audit-code/scripts/audit-evidence.mjs",
-      ".github/skills/audit-code/scripts/audit-validate.mjs",
-      ".github/skills/audit-review-findings/SKILL.md",
-      "schemas/code-audit-findings.schema.json",
-      "schemas/audit-findings-review.schema.json",
-      "tests/audit-assurance.test.mjs",
-      "tests/adoption-rerun.test.mjs",
-      "tests/gitleaks-scan.test.mjs",
+      "https://github.com/QuyDu/Skills-Orchestrator/pull/8",
+      ".github/prompts/demo-create-project.prompt.md",
+      "Demo/DEMO-DAY.md",
+      "README.md",
+      "SECURITY.md",
+      "STANDALONE-WINDOWS.md",
+      "config/orchestrator.yaml",
+      "docs/PROJECT-OVERVIEW.md",
+      "package-lock.json",
+      "package.json",
+      "pso.mjs",
       "tests/skill-contracts.test.mjs",
-      "reports/project-understanding.json",
-      "docs/PROJECT-GUIDE.md"
+      "tests/adoption-rerun.test.mjs",
+      "reports/ci-triage-result.json",
+      "reports/change-review.json"
     ]
   },
   "decisions": [
-    { "decision": "Use caller-supplied or generated UUID audit run identity.", "rationale": "One opaque identifier binds all evidence without leaking project or workstation names." },
-    { "decision": "Persist content-addressed immutable audit evidence.", "rationale": "Findings can prove the exact collector output they consumed and reject tampering or unrelated evidence." },
-    { "decision": "Advance current schemas while retaining historical readability.", "rationale": "Run binding is mandatory for new assurance without rewriting accepted legacy artifacts." },
-    { "decision": "Keep P4 release assurance blocked.", "rationale": "Planning and local validation do not satisfy trusted signing, independent review, artifact health, revocation, or production-verification gates." }
+    {
+      "decision": "Keep P4 release assurance blocked.",
+      "rationale": "Source validation and merge do not satisfy trusted signing, independent review, artifact health, revocation, or production verification."
+    },
+    {
+      "decision": "Plan Live Chat Interaction as a reusable Project Orchestrator capability with a demo-first prototype.",
+      "rationale": "The product should explain its capabilities, guide users through features, and answer follow-up questions without coupling the long-term capability to one countdown demo."
+    },
+    {
+      "decision": "Use a hybrid guided and model-backed design with voice and text.",
+      "rationale": "Deterministic walkthroughs provide reliable onboarding while grounded freeform Q&A and optional speech support natural conversation."
+    },
+    {
+      "decision": "Require Azure Government discovery before selecting model or Speech services.",
+      "rationale": "Service, model, region, quota, authorization, and data-boundary availability must be verified rather than assumed."
+    }
+  ],
+  "plannedInitiatives": [
+    {
+      "id": "LIVE-CHAT-001",
+      "name": "Live Chat Interaction",
+      "status": "planning-required",
+      "target": "Reusable product capability, prototyped in C:\\repos\\skills-orchestrator-demo",
+      "objective": "Let a user ask what the application can do, receive a guided feature walkthrough, and continue asking grounded questions by text or voice.",
+      "firstVersion": [
+        "A visible assistant entry point with text input, microphone control, transcript review, and optional spoken responses.",
+        "Deterministic capability cards and guided walkthroughs for reliable onboarding.",
+        "Freeform answers grounded only in approved product documentation and capability metadata, with source links and explicit unknowns.",
+        "Read-only behavior by default; any future action requires separate authorization and explicit user confirmation.",
+        "Graceful text-only and guided-only fallback when model or Speech services are unavailable."
+      ],
+      "architectureConstraints": [
+        "Use AzureUSGovernment only for cloud model or Speech processing.",
+        "Run azure-discovery before selecting a region, model, Speech resource, quota, or deployment topology.",
+        "Keep credentials out of the browser; use a server-side boundary and managed identity for deployed Azure access.",
+        "Treat retrieved content and model output as untrusted; defend against prompt injection, unsupported claims, data leakage, and excessive agency.",
+        "Do not send microphone audio or transcripts to a cloud service until the user has clear notice and the applicable approval and privacy requirements are satisfied.",
+        "Do not create resources, incur cost, deploy, publish, commit, or push from this planning record."
+      ],
+      "acceptanceCriteria": [
+        "Users can discover capabilities without knowing commands or feature names.",
+        "Users can complete at least one guided walkthrough and ask contextual follow-up questions.",
+        "Voice input exposes listening, transcript, correction, cancellation, permission-denied, and unavailable-service states.",
+        "Answers remain grounded, cite their product source, distinguish unknowns, and never claim an unavailable capability.",
+        "Keyboard-only, screen-reader, reduced-motion, responsive, and text-only experiences remain functional.",
+        "Security, privacy, latency, cost, failure-mode, and evaluation evidence pass before deployment approval is requested."
+      ],
+      "openDecisions": [
+        "Which Azure Government model and Speech capabilities are currently available in the selected subscription and region?",
+        "What product documents form the authoritative grounding corpus and how are versions refreshed?",
+        "Should spoken responses default off, and what retention policy applies to transcripts?",
+        "What latency, answer-quality, accessibility, and cost thresholds define demo and production readiness?",
+        "Should the initial prototype remain informational or support separately confirmed product actions?"
+      ]
+    }
   ],
   "validation": [
-    { "check": "Run-bound pipeline fixtures", "status": "passed", "evidence": "Findings, review, remediation plan, and execution accept one shared auditRunId and reject mismatched identities or digests." },
-    { "check": "Immutable audit evidence", "status": "passed", "evidence": "Collector snapshots are content-addressed, digest-verified, report-safe, and cleaned after tests." },
-    { "check": "Focused audit pipeline", "status": "passed", "evidence": "Thirty-five tests passed with one platform-specific skip; four dedicated Gitleaks tests passed with one symlink skip." },
-    { "check": "Generated-project help propagation", "status": "passed", "evidence": "All four audit pipeline skills expose current run-binding requirements in generated help." },
-    { "check": "Generated evidence", "status": "passed", "evidence": "All 45 skills passed inventory audit; Project Understanding and the canonical project guide rebuilt and validated." },
-    { "check": "Repository conformance", "status": "passed", "evidence": "Final npm run check passed 133 of 134 tests with one platform-specific skip, scanned 221 files, verified 161 unsigned candidate files, and verified all 45 skills." },
-    { "check": "Production release", "status": "blocked", "evidence": "Operational artifact health and revocation, trusted signature, distinct independent review, and production verification remain blocked." }
+    {
+      "check": "Protected source merge",
+      "status": "passed",
+      "evidence": "PR #8 merged to default main commit 99b9ce6 after all 15 required checks passed; no PR-scoped CodeQL alerts remained."
+    },
+    {
+      "check": "Demo workspace startup",
+      "status": "passed",
+      "evidence": "A unique temporary workspace identity opened the recreated durable demo without restoring a stale localhost preview."
+    },
+    {
+      "check": "Current local repository gate",
+      "status": "passed",
+      "evidence": "npm run check passed 134 of 135 tests with one expected platform-specific skip and verified all 45 skills."
+    },
+    {
+      "check": "Version 1.1.2 candidate evidence",
+      "status": "passed",
+      "evidence": "The unsigned candidate was rebuilt and checksum-verified against source commit 1444180."
+    },
+    {
+      "check": "Production release",
+      "status": "blocked",
+      "evidence": "reports/release-readiness.json is bound to version 1.1.2 and source commit 1444180; current-commit hosted matrix, trusted signing, independent review, operational artifact evidence, revocation, and production verification remain incomplete."
+    },
+    {
+      "check": "Live Chat Interaction",
+      "status": "not-started",
+      "evidence": "Scope and constraints are recorded; no implementation, Azure discovery, resource creation, or deployment has occurred."
+    }
   ],
   "worktree": {
     "clean": false,
     "unmergedPaths": 0,
     "otherChangesPresent": false,
-    "attribution": "All current changes belong to the approved workflow-planner and four-skill run-bound audit pipeline updates, schemas, validators, tests, generated documentation and evidence, corrected P4 plan lineage, and synchronized continuity.",
+    "attribution": "Current local changes are the approved fresh-workspace demo prompt fix, version 1.1.2 and dated repository documentation, contract coverage, deterministic generated reports, and synchronized continuity.",
     "boundedPaths": [
-      ".github/skills/audit-code/SKILL.md",
-      ".github/skills/audit-code/scripts/audit-evidence.mjs",
-      ".github/skills/audit-code/scripts/audit-validate.mjs",
-      ".github/skills/audit-code/scripts/gitleaks-scan.mjs",
-      ".github/skills/audit-plan-remediation/SKILL.md",
-      ".github/skills/audit-remediation/SKILL.md",
-      ".github/skills/audit-review-findings/SKILL.md",
-      ".github/skills/workflow-planner/SKILL.md",
-      "docs/PROJECT-GUIDE.md",
-      "docs/PROJECT-OVERVIEW.md",
-      "pso.mjs",
+      ".github/prompts/demo-create-project.prompt.md",
+      "tests/skill-contracts.test.mjs",
       "reports/artifact-ownership.json",
-      "reports/clarification-result.json",
-      "reports/clarification-result.md",
-      "reports/current-execution-state.json",
-      "reports/current-execution-state.md",
-      "reports/current-work-state.json",
-      "reports/execution-log.jsonl",
-      "reports/project-guide.json",
-      "reports/project-handoff.json",
-      "reports/project-handoff.md",
-      "reports/project-understanding.json",
-      "reports/project-understanding.md",
       "reports/security-check.json",
       "reports/skill-details.json",
       "reports/skill-details.md",
       "reports/skill-inventory.json",
       "reports/skill-inventory.md",
-      "reports/workflow-plan.json",
-      "reports/workflow-plan.md",
-      "schemas/audit-evidence.schema.json",
-      "schemas/audit-findings-review.schema.json",
-      "schemas/audit-remediation-execution.schema.json",
-      "schemas/audit-remediation-plan.schema.json",
-      "schemas/code-audit-findings.schema.json",
-      "schemas/gitleaks-scan.schema.json",
-      "schemas/workflow-plan.schema.json",
-      "tests/adoption-rerun.test.mjs",
-      "tests/audit-assurance.test.mjs",
-      "tests/audit-execution.test.mjs",
-      "tests/gitleaks-scan.test.mjs",
-      "tests/security-fuzz.test.mjs",
-      "tests/skill-contracts.test.mjs"
+      "reports/project-handoff.json",
+      "reports/project-handoff.md",
+      "reports/current-work-state.json"
     ]
   },
   "blockers": [
-    "AUD-0205 production release assurance remains unresolved.",
-    "Trusted signing and distinct independent-review identities are absent.",
-    "No restricted internal artifact destination, installation-health signal, or tested revocation operation exists.",
-    "Required human source review awaits a second qualified collaborator.",
-    "Azure Government publication readiness remains blocked wherever current service, channel, authorization, or data-boundary availability is unknown.",
-    "Production verification remains blocked."
+    "P4 production release assurance remains incomplete.",
+    "Trusted signing and a distinct qualified independent reviewer are not provisioned.",
+    "Restricted artifact distribution, installation-health signals, tested revocation, and production verification remain incomplete.",
+    "Live Chat Interaction lacks an approved implementation plan and current Azure Government service, model, quota, privacy, cost, and data-boundary evidence."
   ],
   "pendingApprovals": [
-    "Trusted signing by a controlled identity and independent review by a distinct qualified reviewer remain required.",
-    "Any further commit or push requires new explicit approval.",
-    "Pull request creation, merge, release, Foundry agent creation or endpoint mutation, Bot Service creation, Microsoft 365 or Teams publication, Custom GPT creation or sharing, GPT Action configuration, deployment, and MCP installation each require separate approval."
+    "Any commit, push, pull request, merge, release, publication, deployment, Azure discovery, resource creation, or external mutation requires separate approval.",
+    "Live Chat implementation must not begin until its workflow plan is reviewed and approved.",
+    "Azure Government model or Speech provisioning and billable use require point-of-action approval after discovery and cost review."
   ],
   "limitations": [
-    "Legacy audit artifacts remain readable but only current run-bound schema versions can establish current assurance.",
-    "The 24-hour freshness policy is local policy and may need a shorter organization-specific threshold for high-risk audits.",
-    "Standards lastVerifiedAt remains null until an approved audit performs authoritative-source retrieval.",
-    "Supplemental scanner availability is reported but does not satisfy required pinned Gitleaks readiness or completion.",
-    "Tracked reports and untracked distributable files share the worktree findings bucket because one directory scan covers both current-file scopes.",
-    "Standards catalog entries are candidates only; every audit must resolve current lifecycle and version evidence from authoritative sources.",
-    "Schema 1.0 and 2.0 audit artifacts remain readable historical evidence but cannot establish current schema 2.1 assurance.",
-    "Conditional AI and agentic profiles require repository-specific applicability assessment before they affect assurance.",
-    "Legacy schema 1.0 workflow plans remain readable but do not provide schema 1.1 execution guarantees.",
-    "The focused suite does not exercise simultaneous lock contention between two live apply processes.",
-    "No live Foundry endpoint, Microsoft 365 or Teams channel, Bot Service resource, Custom GPT, or GPT Action was created or exercised.",
-    "No signing, release, publication, deployment, hosted-agent creation, MCP installation, or Azure mutation is authorized by this handoff.",
+    "Live Chat Interaction is a planning record, not an implementation commitment or cloud authorization.",
+    "No Azure Government model, Speech service, region, quota, endpoint, or data boundary has been selected or verified.",
+    "The current demo project is a local prototype workspace and is not part of this source repository.",
     "Overall P4 assurance remains insufficient-evidence."
   ],
   "nextAction": {
-    "skill": "workflow-recovery",
+    "skill": "workflow-planner",
     "status": "ready",
-    "action": "Execute STEP-001 of reports/workflow-plan.json to reconstruct the stale P4 execution timeline and select a safe restart, resume, or replan route.",
+    "action": "Create a reviewable, non-executing implementation plan for LIVE-CHAT-001 covering demo prototype, reusable product architecture, Azure Government discovery, threat model, grounding, voice and text UX, accessibility, evaluation, cost, rollout, rollback, and approval gates.",
     "prerequisites": [
-      "Read reports/current-execution-state.json, reports/execution-log.jsonl, reports/audit-remediation-execution.json, and the immutable P4 plan snapshot.",
-      "Perform read-only recovery analysis; do not resume remediation or mutate external systems."
+      "Use this handoff as the confirmed scope boundary.",
+      "Inspect the current demo and product architecture read-only.",
+      "Keep Azure discovery, resource creation, implementation, deployment, publication, commit, and push outside the planning action."
     ]
   }
 }
