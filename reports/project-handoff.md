@@ -2,7 +2,7 @@
 
 ## Current Status
 
-Version 1.1.2 is the pending source update dated September 12, 2026. The prior source hardening is merged to default `main` at `99b9ce6`; the fresh-workspace demo launch fix, version metadata, and this continuity update remain local until protected publication completes. P4 release assurance remains blocked, and no GitHub Release or package is authorized.
+Version 1.1.2 is committed locally at `1444180` and dated September 12, 2026. The prior source hardening is merged to default `main` at `99b9ce6`; protected publication of the 1.1.2 source and report evidence remains pending. P4 release assurance remains blocked, and no GitHub Release or package is authorized.
 
 ## Planned Initiative: Live Chat Interaction
 

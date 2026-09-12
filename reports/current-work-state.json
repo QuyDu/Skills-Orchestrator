@@ -5,7 +5,7 @@
     "name": "project-skills-orchestrator",
     "version": "1.1.2",
     "branch": "release/1.1.2",
-    "commit": "99b9ce663b7be69476655d4c40d77e09ff11c442",
+    "commit": "14441804ecd6d2fcd700c4ecc96cc33a4947a08f",
     "defaultBranch": "main",
     "defaultBranchCommit": "99b9ce663b7be69476655d4c40d77e09ff11c442"
   },

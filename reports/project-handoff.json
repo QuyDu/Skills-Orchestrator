@@ -5,7 +5,7 @@
     "name": "project-skills-orchestrator",
     "version": "1.1.2",
     "branch": "release/1.1.2",
-    "commit": "99b9ce663b7be69476655d4c40d77e09ff11c442",
+    "commit": "14441804ecd6d2fcd700c4ecc96cc33a4947a08f",
     "defaultBranch": "main",
     "defaultBranchCommit": "99b9ce663b7be69476655d4c40d77e09ff11c442"
   },
@@ -110,9 +110,14 @@
       "evidence": "npm run check passed 134 of 135 tests with one expected platform-specific skip and verified all 45 skills."
     },
     {
+      "check": "Version 1.1.2 candidate evidence",
+      "status": "passed",
+      "evidence": "The unsigned candidate was rebuilt and checksum-verified against source commit 1444180."
+    },
+    {
       "check": "Production release",
       "status": "blocked",
-      "evidence": "Trusted signing, independent review, operational artifact evidence, revocation, and production verification remain incomplete."
+      "evidence": "reports/release-readiness.json is bound to version 1.1.2 and source commit 1444180; current-commit hosted matrix, trusted signing, independent review, operational artifact evidence, revocation, and production verification remain incomplete."
     },
     {
       "check": "Live Chat Interaction",
