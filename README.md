@@ -4,7 +4,8 @@ Turn any repository into a governed GitHub Copilot workspace: agent instructions
 
 | Item | Value |
 | --- | --- |
-| Runtime version | `1.1.1` |
+| Runtime version | `1.1.2` |
+| Source version date | September 12, 2026 |
 | Framework version | `9.0.0` |
 | Skill catalog | 45 governed skills |
 | Supported Node.js | 22, 24, 26 |
@@ -16,9 +17,17 @@ Turn any repository into a governed GitHub Copilot workspace: agent instructions
 > `.skills-orchestrator` state directory remain stable compatibility interfaces for existing
 > projects and automation.
 
-> **Release status.** This build is an unsigned internal candidate. Three release blockers remain open and are tracked in [release/release-manifest.json](release/release-manifest.json): trusted signing identity, independent security review, and cross-platform CI evidence. See [SECURITY.md](SECURITY.md) and [docs/THREAT-MODEL.md](docs/THREAT-MODEL.md).
+> **Release status.** Version `1.1.2` is a source update dated September 12, 2026. No GitHub Release or package is published. The formal release remains blocked by trusted signing, independent review, and operational readiness evidence tracked in [release/release-manifest.json](release/release-manifest.json). See [SECURITY.md](SECURITY.md) and [docs/THREAT-MODEL.md](docs/THREAT-MODEL.md).
 
 > **Security and use notice.** Reasonable security efforts do not eliminate all risk. Before using this software, read [DISCLAIMER.md](DISCLAIMER.md), perform independent checks appropriate to your environment, and comply with the internal-use terms in [LICENSE](LICENSE).
+
+## Repository Resources
+
+- [GitHub repository](https://github.com/QuyDu/Skills-Orchestrator)
+- [README](https://github.com/QuyDu/Skills-Orchestrator#readme-ov-file)
+- [License](https://github.com/QuyDu/Skills-Orchestrator#license-1-ov-file)
+- [Security policy](https://github.com/QuyDu/Skills-Orchestrator#security-ov-file)
+- [Activity](https://github.com/QuyDu/Skills-Orchestrator/activity)
 
 ---
 
@@ -358,7 +367,7 @@ Clones into an isolated staging directory, provisions, verifies, and only then p
 | `.github/instructions/` | Scoped standards applied by glob — only the ones your stack needs |
 | `.github/prompts/` | Prompt-only commands such as `/create-adr`, `/project-blueprint`, `/review-architecture`, `/executive-summary`, and `/new-component`, plus skill help prompts; skill-owned names are not duplicated here |
 | `.github/agents/` | Azure Architect, Security Reviewer, Documentation Writer |
-| `.github/skills/` | The 42-skill catalog |
+| `.github/skills/` | The 45-skill catalog |
 | `.github/workflows/ci.yml` | Stack-aware pipeline, SHA-pinned actions (new projects only) |
 | `.github/workflows/copilot-setup-steps.yml` | Preinstalls dependencies for Copilot cloud agent and Copilot code review (new projects with a stack) |
 | `.vscode/tasks.json` | Build and test tasks for the stack — `Ctrl+Shift+B` and Test Explorer work immediately |

@@ -394,7 +394,8 @@ test("project video is a portable narrated MP4 capability", async () => {
   assert.match(videoSlideRelationships, /Target="file:\/\/\/C:[\\/]repos[\\/]Skills-Orchestrator[\\/]dist[\\/]project-video[\\/]skills-orchestrator-1-1-0\.html"/);
   assert.match(videoSlideRelationships, /TargetMode="External"/);
   const demoRunbook = await readFile(path.join(root, "Demo", "DEMO-DAY.md"), "utf8");
-  assert.match(demoRunbook, /PowerPoint deck as the primary current product story/);
+  assert.match(demoRunbook, /PowerPoint deck as an archived version 1\.1\.1 product story/);
+  assert.match(demoRunbook, /not as evidence of the current source version or current test counts/);
   assert.match(demoRunbook, /Watch: Built by Project Orchestrator/);
   assert.match(demoRunbook, /repository-relative path manually/);
   assert.match(demoRunbook, /\/project-video --proceed/);
@@ -639,6 +640,14 @@ test("every governed skill has deterministic help coverage", async () => {
   assert.match(demoPrompt, /Never delete an existing normal/);
   assert.match(demoPrompt, /source repository is immutable during the demo/i);
   assert.match(demoPrompt, /Modify only the newly created project/i);
+  assert.match(demoPrompt, /unique temporary workspace/i);
+  assert.match(demoPrompt, /\$env:TEMP/);
+  assert.match(demoPrompt, /\[guid\]::NewGuid/);
+  assert.match(demoPrompt, /ConvertFrom-Json/);
+  assert.match(demoPrompt, /\$workspace\.settings\.'window\.title'/);
+  assert.match(demoPrompt, /Skills Orchestrator Demo.*skills-orchestrator-demo \(Workspace\)/);
+  assert.match(demoPrompt, /Never open the\s+stable generated workspace directly/i);
+  assert.match(demoPrompt, /Do not delete prior VS Code\s+workspace storage or chat history/i);
   assert.doesNotMatch(demoPrompt, /clarification\.askEveryPrompt/);
   assert.doesNotMatch(demoPrompt, /confirmPlanBeforeExecution/);
   const demoWebAppPrompt = await readFile(path.join(root, ".github", "prompts", "demo-web-app.prompt.md"), "utf8");
